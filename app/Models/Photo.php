@@ -16,6 +16,7 @@ class Photo extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'album_id', // TODO retirer ça et faire une relation automatique
         'title',
         'path',
         'legend',

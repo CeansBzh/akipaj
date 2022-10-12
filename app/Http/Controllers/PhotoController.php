@@ -39,22 +39,22 @@ class PhotoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|max:255',
-            'photo' => 'required|image|mimes:png,jpg,jpeg|max:2048',
-            'legend' => 'nullable|max:2048',
-            'taken' => 'nullable|date',
+            'files' => 'required|array',
+            'files.*' => 'required|image|mimes:png,jpg,jpeg,gif',
         ]);
 
-        $path = $request->file('photo')->store('public/photos');
+        foreach ($request->file('files') as $file) {
+            $path = $file->store('photos', 'public');
+            $photo = Photo::create([
+                'album_id' => 1, // TODO gestion albums
+                'title' => $file->getClientOriginalName(),
+                'path' =>  Storage::url($path),
+                'legend' => $request->legend,
+                'taken' => $request->taken,
+            ]);
+        }
 
-        $photo = Photo::create([
-            'title' => $request->title,
-            'path' =>  Storage::url($path),
-            'legend' => $request->legend,
-            'taken' => $request->taken,
-        ]);
-
-        return back()->with('success', 'Image uploaded successfully!');
+        return back()->with('success', 'Photos mises en ligne avec succès !');
     }
 
     /**
@@ -100,7 +100,7 @@ class PhotoController extends Controller
 
         $photo->update($request->all());
 
-        return redirect()->route('photos.show', $photo)->with('success', 'Image updated successfully!');
+        return redirect()->route('photos.show', $photo)->with('success', 'Photo mise à jour avec succès !');
     }
 
     /**
@@ -113,6 +113,6 @@ class PhotoController extends Controller
     {
         $photo->delete();
 
-        return redirect()->route('photos.index')->with('success', 'Image deleted successfully!');
+        return redirect()->route('photos.index')->with('success', 'Photo supprimée avec succès !');
     }
 }

@@ -1,5 +1,6 @@
 <x-app-layout>
     <h1>Photos du site</h1>
+    <a class="m-1 px-4 py-2 text-blue-100 no-underline bg-blue-500 rounded hover:bg-blue-600 hover:underline hover:text-blue-200" href="{{ route('photos.create') }}">Ajouter une photo</a>
 
     @if(Session::has('success'))
     <div class="text-green-600">
