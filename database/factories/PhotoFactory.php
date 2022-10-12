@@ -17,13 +17,13 @@ class PhotoFactory extends Factory
      */
     public function definition()
     {
-        $image = file_get_contents(fake()->imageUrl);
+        $image = file_get_contents('https://cataas.com/cat');
         $fileName = fake()->slug . '.jpg';
-        Storage::put($fileName, $image);
+        Storage::put('public/photos/'.$fileName, $image);
 
         return [
             'title' => fake()->sentence,
-            'path' => Storage::url($fileName),
+            'path' => Storage::url('public/photos/'.$fileName),
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,
             'place' => fake()->boolean(50) ? fake()->city : null,
             'taken' => fake()->boolean(50) ? fake()->date : null,
