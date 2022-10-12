@@ -65,7 +65,9 @@ class PhotoController extends Controller
      */
     public function show(Photo $photo)
     {
-        //
+        return view('photo.show', [
+            'photo' => $photo
+        ]);
     }
 
     /**
@@ -76,7 +78,9 @@ class PhotoController extends Controller
      */
     public function edit(Photo $photo)
     {
-        //
+        return view('photo.edit', [
+            'photo' => $photo
+        ]);
     }
 
     /**
@@ -88,7 +92,15 @@ class PhotoController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'legend' => 'nullable|max:2048',
+            'taken' => 'nullable|date',
+        ]);
+
+        $photo->update($request->all());
+
+        return redirect()->route('photos.show', $photo)->with('success', 'Image updated successfully!');
     }
 
     /**
@@ -99,6 +111,8 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        //
+        $photo->delete();
+
+        return redirect()->route('photos.index')->with('success', 'Image deleted successfully!');
     }
 }
