@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Album;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
-            $table->id(); // TODO Lier à la table users et à la table albums
-            $table->foreignIdFor(Album::class);
+        Schema::create('albums', function (Blueprint $table) {
+            $table->id();
             $table->string('title');
-            $table->string('path');
-            $table->text('legend')->nullable();
-            $table->date('taken')->nullable();
+            $table->text('description');
+            $table->smallInteger('year');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('photos');
+        Schema::dropIfExists('albums');
     }
 };

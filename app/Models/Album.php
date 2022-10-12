@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Photo extends Model
+class Album extends Model
 {
     use HasFactory;
 
@@ -17,16 +17,15 @@ class Photo extends Model
      */
     protected $fillable = [
         'title',
-        'path',
-        'legend',
-        'taken',
+        'description',
+        'year',
     ];
 
     /**
-     * Get the album that owns the photo.
+     * Get the photos for the album.
      */
-    public function album()
+    public function photos()
     {
-        return $this->belongsTo(Album::class);
+        return $this->hasMany(Photo::class);
     }
 }
