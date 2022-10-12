@@ -25,7 +25,6 @@ class PhotoFactory extends Factory
             'title' => fake()->sentence,
             'path' => Storage::url('public/photos/'.$fileName),
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,
-            'place' => fake()->boolean(50) ? fake()->city : null,
             'taken' => fake()->boolean(50) ? fake()->date : null,
         ];
     }

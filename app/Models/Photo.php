@@ -18,7 +18,6 @@ class Photo extends Model
         'title',
         'path',
         'legend',
-        'place',
         'taken',
     ];
 }
