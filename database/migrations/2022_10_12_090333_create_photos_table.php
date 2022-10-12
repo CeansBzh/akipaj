@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('path');
             $table->text('legend')->nullable();
-            $table->string('place')->nullable();
             $table->date('taken')->nullable();
             $table->timestamps();
         });

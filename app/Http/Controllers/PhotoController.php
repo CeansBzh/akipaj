@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePhotoRequest;
-use App\Http\Requests\UpdatePhotoRequest;
 use App\Models\Photo;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
 {
@@ -27,7 +27,7 @@ class PhotoController extends Controller
      */
     public function create()
     {
-        //
+        return view('photo.create');
     }
 
     /**
@@ -36,9 +36,25 @@ class PhotoController extends Controller
      * @param  \App\Http\Requests\StorePhotoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePhotoRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'photo' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'legend' => 'nullable|max:2048',
+            'taken' => 'nullable|date',
+        ]);
+
+        $path = $request->file('photo')->store('public/photos');
+
+        $photo = Photo::create([
+            'title' => $request->title,
+            'path' =>  Storage::url($path),
+            'legend' => $request->legend,
+            'taken' => $request->taken,
+        ]);
+
+        return back()->with('success', 'Image uploaded successfully!');
     }
 
     /**
@@ -70,7 +86,7 @@ class PhotoController extends Controller
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePhotoRequest $request, Photo $photo)
+    public function update(Request $request, Photo $photo)
     {
         //
     }

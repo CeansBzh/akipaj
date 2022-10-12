@@ -12,7 +12,7 @@
             @foreach ($photos as $photo)
             <tr>
                 <td>
-                    <img src=" {{ $photo->path }}" class="max-w-xs">
+                    <img src="{{ $photo->path }}" class="max-w-xs">
                 </td>
                 <td>{{ $photo->title }}</td>
             </tr>
