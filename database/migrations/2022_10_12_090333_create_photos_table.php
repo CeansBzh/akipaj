@@ -14,7 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('photos', function (Blueprint $table) {
-            $table->id();
+            $table->id(); // TODO Lier à la table users et à la table albums
+            $table->string('title');
+            $table->string('path');
+            $table->text('legend')->nullable();
+            $table->string('place')->nullable();
+            $table->date('taken')->nullable();
             $table->timestamps();
         });
     }
