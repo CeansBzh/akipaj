@@ -22,6 +22,7 @@ class PhotoFactory extends Factory
         Storage::put('public/photos/'.$fileName, $image);
 
         return [
+            'album_id' => fake()->boolean(50) ? \App\Models\Album::inRandomOrder()->first()->id : null,
             'title' => fake()->sentence,
             'path' => Storage::url('public/photos/'.$fileName),
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,

@@ -17,7 +17,9 @@ class AlbumFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => fake()->sentence,
+            'description' => fake()->paragraph,
+            'date' =>  \Carbon\Carbon::parse($this->faker->dateTimeBetween('-50 years', 'now')->format('Y-m-d'))->startOfMonth(),
         ];
     }
 }

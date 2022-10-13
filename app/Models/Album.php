@@ -18,7 +18,16 @@ class Album extends Model
     protected $fillable = [
         'title',
         'description',
-        'year',
+        'date',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'date' => 'datetime:Y-m-d',
     ];
 
     /**

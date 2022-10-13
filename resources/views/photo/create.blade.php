@@ -42,6 +42,39 @@
             </div>
             @enderror
         </div>
+        <p>Ou créer un nouvel album :</p>
+        <div class="my-4">
+            <label for="albumName" class="sr-only">Titre</label>
+            <input type="text" name="albumName" id="albumName" placeholder="Titre de l'album"
+                class="bg-gray-100 border-2 w-full p-4 rounded-lg @error('albumName') border-red-500 @enderror"
+                value="{{ old('albumName') }}">
+            @error('albumName')
+            <div class="text-red-500 mt-2 text-sm">
+                {{ $message }}
+            </div>
+            @enderror
+        </div>
+        <div class="mb-4">
+            <label for="albumDesc" class="sr-only">Description de l'album</label>
+            <textarea name="albumDesc" id="albumDesc" cols="30" rows="5" placeholder="Description de l'album" maxlength="2048"
+                class="bg-gray-100 border-2 w-full p-4 rounded-lg @error('albumDesc') border-red-500 @enderror">{{ old('albumDesc') }}</textarea>
+            @error('albumDesc')
+            <div class="text-red-500 mt-2 text-sm">
+                {{ $message }}
+            </div>
+            @enderror
+        </div>
+        <div class="mb-4">
+            <label for="albumDate" class="sr-only">Mois et année des photos</label>
+            <input type="month" name="albumDate" id="albumDate" placeholder="Date de l'album" min="1950-01" max="{{ date('Y-m') }}"
+                class="bg-gray-100 border-2 w-full p-4 rounded-lg @error('albumDate') border-red-500 @enderror"
+                value="{{ old('albumDate') ?? date('Y-m') }}">
+            @error('albumDate')
+            <div class="text-red-500 mt-2 text-sm">
+                {{ $message }}
+            </div>
+            @enderror
+        </div>
         <div>
             <button type="submit" class="bg-blue-500 text-white px-4 py-3 rounded font-medium w-full">Envoyer</button>
         </div>

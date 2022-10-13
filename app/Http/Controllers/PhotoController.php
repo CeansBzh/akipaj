@@ -27,7 +27,15 @@ class PhotoController extends Controller
      */
     public function create()
     {
-        return view('photo.create');
+        return view('photo.create')->with('albums', \App\Models\Album::all()
+            ->groupBy([
+                function ($val) {
+                    return $val->date->format('Y');
+                },
+                function ($val) {
+                    return $val->date->format('m');
+                },
+            ]));
     }
 
     /**
@@ -41,6 +49,10 @@ class PhotoController extends Controller
         $request->validate([
             'files' => 'required|array',
             'files.*' => 'required|image|mimes:png,jpg,jpeg,gif',
+            'album' => 'required_without_all:albumName,albumDesc,albumDate|integer',
+            'albumName' => 'required_without:album|string',
+            'albumDesc' => 'required_without:album|string',
+            'albumDate' => 'required_without:album|date',
         ]);
 
         foreach ($request->file('files') as $file) {

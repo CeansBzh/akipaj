@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'michel@test.com',
         ]);
 
+        \App\Models\Album::factory(5)->create();
+
         \App\Models\Photo::factory(10)->create();
     }
 }

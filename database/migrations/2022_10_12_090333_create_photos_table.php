@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id(); // TODO Lier à la table users et à la table albums
-            $table->foreignIdFor(Album::class);
+            $table->foreignIdFor(Album::class)->nullable();
             $table->string('title');
             $table->string('path');
             $table->text('legend')->nullable();
