@@ -19,12 +19,13 @@ class PhotoFactory extends Factory
     {
         $image = file_get_contents('https://cataas.com/cat');
         $fileName = fake()->slug . '.jpg';
-        Storage::put('public/photos/'.$fileName, $image);
+        Storage::put('public/photos/' . $fileName, $image);
 
         return [
             'album_id' => fake()->boolean(50) ? \App\Models\Album::inRandomOrder()->first()->id : null,
+            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
             'title' => fake()->sentence,
-            'path' => Storage::url('public/photos/'.$fileName),
+            'path' => Storage::url('public/photos/' . $fileName),
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,
             'taken' => fake()->boolean(50) ? fake()->date : null,
         ];

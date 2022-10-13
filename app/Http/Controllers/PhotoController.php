@@ -63,7 +63,7 @@ class PhotoController extends Controller
             $album = new Album();
             $album->title = $request->input('albumTitle');
             $album->description = $request->input('albumDesc');
-            $album->date = \Carbon\Carbon::createFromFormat('Y-m',$request->input('albumDate'))->startOfMonth();
+            $album->date = \Carbon\Carbon::createFromFormat('Y-m', $request->input('albumDate'))->startOfMonth();
             $album->save();
             $albumid = $album->id;
         }
@@ -78,8 +78,9 @@ class PhotoController extends Controller
             ]);
             if (isset($albumid)) {
                 $photo->album()->associate($albumid);
-                $photo->save();
             }
+            $photo->user()->associate($request->user());
+            $photo->save();
         }
 
         return back()->with('success', 'Photos mises en ligne avec succès !');
