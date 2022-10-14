@@ -14,8 +14,23 @@ class AlbumController extends Controller
      */
     public function index()
     {
+        // Gets all albums with for each the oldest photo they contain.
+        // Gets only the id, album_id and path fields of each photo.
         return view('album.index', [
-            'albums' => Album::simplePaginate(5),
+            'albums' => Album::has('photos')->with('oldestPhoto:id,photos.album_id,path')->simplePaginate(5),
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Album  $album
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Album $album)
+    {
+        return view('album.show', [
+            'album' => $album->load('photos'),
         ]);
     }
 }

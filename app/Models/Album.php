@@ -37,4 +37,12 @@ class Album extends Model
     {
         return $this->hasMany(Photo::class);
     }
+
+    /**
+     * Get the albums's oldest photo.
+     */
+    public function oldestPhoto()
+    {
+        return $this->hasOne(Photo::class)->oldestOfMany();
+    }
 }
