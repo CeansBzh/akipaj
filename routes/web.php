@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PhotoController;
 
@@ -26,4 +27,8 @@ require __DIR__.'/auth.php';
 
 Route::resources([
     'photos' => PhotoController::class,
+]);
+
+Route::resource('albums', AlbumController::class)->only([
+    'index', 'show'
 ]);

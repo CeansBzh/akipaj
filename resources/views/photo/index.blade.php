@@ -24,6 +24,7 @@
                 </td>
                 <td>{{ $photo->title }}</td>
                 <td>
+                    <a href="{{ route('photos.show', $photo->id) }}" class="">Voir</a>
                     <a href="{{ route('photos.edit', $photo->id) }}" class="">Modifier</a>
                     <form method="POST" action="{{ route('photos.destroy', $photo->id) }}">
                         @csrf
