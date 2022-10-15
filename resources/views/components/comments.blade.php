@@ -4,6 +4,13 @@
         <div>
             <strong>{{ $comment->user->name }}</strong>
             <span>{{ $comment->created_at->diffForHumans() }}</span>
+            @if($comment->user_id === Auth::id())
+            <form class="inline" action="{{ route('comments.destroy', $comment) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit">Supprimer</button>
+            </form>
+            @endif
         </div>
         <p>
             {{ $comment->content }}
