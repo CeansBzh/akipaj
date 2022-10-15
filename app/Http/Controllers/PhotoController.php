@@ -95,7 +95,8 @@ class PhotoController extends Controller
     public function show(Photo $photo)
     {
         return view('photo.show', [
-            'photo' => $photo
+            'photo' => $photo,
+            'comments' => $photo->comments,
         ]);
     }
 

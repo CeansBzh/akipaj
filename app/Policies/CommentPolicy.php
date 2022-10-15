@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Photo;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PhotoPolicy
+class CommentPolicy
 {
     use HandlesAuthorization; // TODO Utiliser cette policy
 
@@ -25,10 +25,10 @@ class PhotoPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Photo  $photo
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Photo $photo)
+    public function view(User $user, Comment $comment)
     {
         //
     }
@@ -48,10 +48,10 @@ class PhotoPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Photo  $photo
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Photo $photo)
+    public function update(User $user, Comment $comment)
     {
         //
     }
@@ -60,10 +60,10 @@ class PhotoPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Photo  $photo
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Photo $photo)
+    public function delete(User $user, Comment $comment)
     {
         //
     }
@@ -72,10 +72,10 @@ class PhotoPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Photo  $photo
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Photo $photo)
+    public function restore(User $user, Comment $comment)
     {
         //
     }
@@ -84,10 +84,10 @@ class PhotoPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Photo  $photo
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Photo $photo)
+    public function forceDelete(User $user, Comment $comment)
     {
         //
     }

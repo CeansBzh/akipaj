@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PhotoController;
 
@@ -29,8 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::resources([
         'photos' => PhotoController::class,
     ]);
-
-    Route::resource('albums', AlbumController::class)->only([
-        'index', 'show'
-    ]);
+    Route::resource('albums', AlbumController::class)->only(['index', 'show']);
+    Route::apiResource('comments', CommentController::class)->only(['store', 'update', 'destroy']);
 });

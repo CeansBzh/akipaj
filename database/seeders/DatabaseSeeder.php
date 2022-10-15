@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\Album::factory(5)->create();
-
         \App\Models\Photo::factory(10)->create();
+        \App\Models\Comment::factory(20)->create();
     }
 }

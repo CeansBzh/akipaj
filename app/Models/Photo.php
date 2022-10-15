@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\Album;
+use App\Traits\Commentable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Photo extends Model
 {
-    use HasFactory;
+    use HasFactory, Commentable;
 
     /**
      * The attributes that are mass assignable.

@@ -5,5 +5,8 @@
         {{ Session::get('success') }}
     </div>
     @endif
-    <img src="{{ $photo->path }}" alt="{{ isset($photo->legend) ? substr($photo->legend, 0, 125) : 'Photo sans légende' }}">
+    <img src="{{ $photo->path }}"
+        alt="{{ isset($photo->legend) ? substr($photo->legend, 0, 125) : 'Photo sans légende' }}">
+
+    <x-comments :comments="$comments" :commentable="$photo"/>
 </x-app-layout>
