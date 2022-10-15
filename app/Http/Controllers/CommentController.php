@@ -39,7 +39,15 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        $request->validate([
+            'commentable_id' => 'required|integer',
+            'commentable_type' => 'required|string',
+            'content' => 'required|string',
+        ]);
+
+        $comment->update($request->all());
+        
+        return redirect()->back();
     }
 
     /**
