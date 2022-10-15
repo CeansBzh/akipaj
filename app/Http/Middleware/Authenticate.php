@@ -14,7 +14,8 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
+            session()->flash('status', 'Cette page est réservée aux membres, veuillez-vous connecter pour y accéder.');
             return route('login');
         }
     }
