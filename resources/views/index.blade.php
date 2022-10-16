@@ -13,11 +13,11 @@
                 </h1>
 
                 <div class="mt-8 flex flex-wrap gap-4 text-center">
-                    <a href="#"
+                    <a href="{{ route('register') }}"
                         class="block w-full rounded bg-sky-800 px-12 py-3 font-medium text-white shadow hover:bg-sky-700 focus:outline-none focus:ring active:bg-sky-600 sm:w-auto">
                         Me créer un compte
                     </a>
-                    <a href="#"
+                    <a href="{{ route('login') }}"
                         class="block w-full rounded bg-white px-12 py-3 font-medium text-sky-900 shadow hover:text-sky-500 focus:outline-none focus:ring active:text-sky-400 sm:w-auto">
                         Je suis déjà membre
                     </a>
