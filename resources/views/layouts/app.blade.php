@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
         <!-- Scripts -->
+        <style>[x-cloak] { display: none!important }</style>
+        @livewireStyles
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
@@ -32,6 +34,7 @@
             </main>
         </div>
 
+        @livewireScripts
         @stack('scripts')
     </body>
 </html>

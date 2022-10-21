@@ -9,6 +9,8 @@
         </div>
     </x-slot>
 
+    <livewire:photo-modal />
+
     @if(Session::has('success'))
     <div class="text-green-600">
         {{ Session::get('success') }}
@@ -20,10 +22,13 @@
             {{ $photos->links() }}
             <div class="pt-2 columns-2 md:columns-3 lg:columns-4">
                 @foreach ($photos as $photo)
-                <img class="mb-4 rounded" src="{{ $photo->path }}" />
+                <a onclick="Livewire.emit('create', '{{ $photo->id }}')" class="block cursor-pointer">
+                    <img alt="{{ $photo->legend }}" class="mb-4 rounded" src="{{ $photo->path }}">
+                </a>
                 @endforeach
             </div>
             {{ $photos->links() }}
         </div>
     </section>
+
 </x-app-layout>
