@@ -10,31 +10,28 @@ class Comments extends Component
 
     /**
      * The comments list.
-     *
-     * @var string
      */
     public $comments;
 
     /**
      * The commentable model.
-     *
-     * @var object
      */
     public $commentable;
 
     /**
      * The content of the new comment.
-     *
-     * @var string
      */
     public $content;
+    public $newContent;
 
     public $commentIdToDestroy;
+    public $commentIdToUpdate;
 
     protected $listeners = ['commentsNeedUpdate' => 'updateComments'];
 
     protected $rules = [
-        'content' => 'required|string'
+        'content' => 'required_without:newContent|nullable|string',
+        'newContent' => 'required_without:content|nullable|string'
     ];
 
     public function updateComments($commentableId, $commentableType)
@@ -57,7 +54,30 @@ class Comments extends Component
         $this->updateComments($this->commentable->id, get_class($this->commentable));
     }
 
-    // TODO Update et style champ d'envoi de commentaire
+    public function setCommentToUpdate($id)
+    {
+        if ($id != null && $id != $this->commentIdToUpdate) {
+            $comment = Comment::findOrFail($id);
+            $this->commentIdToUpdate = $comment->id;
+            $this->newContent = $comment->content;
+        } else {
+            $this->commentIdToUpdate = null;
+            $this->newContent = '';
+        }
+    }
+
+    public function update(Comment $comment)
+    {
+        $this->validate();
+
+        $comment->content = $this->newContent;
+        $comment->save();
+
+        $this->commentIdToUpdate = null;
+        $this->newContent = '';
+
+        $this->updateComments($this->commentable->id, get_class($this->commentable));
+    }
 
     public function setCommentToDestroy($id)
     {
@@ -66,7 +86,6 @@ class Comments extends Component
 
     public function destroy(Comment $comment)
     {
-        // TODO Demander confirmation à l'utilisateur avant de supprimer
         $comment->delete();
         $this->updateComments($this->commentable->id, get_class($this->commentable));
     }

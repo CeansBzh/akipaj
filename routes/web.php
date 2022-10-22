@@ -31,5 +31,4 @@ Route::middleware('auth')->group(function () {
         'photos' => PhotoController::class,
     ]);
     Route::resource('albums', AlbumController::class)->only(['index', 'show']);
-    Route::apiResource('comments', CommentController::class)->only(['store', 'update', 'destroy']);
 });
