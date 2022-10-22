@@ -20,7 +20,7 @@
     <section class="overflow-hidden text-gray-700">
         <div class="px-5 py-2 mx-auto md:px-12 lg:pt-5 lg:px-24">
             {{ $photos->links() }}
-            <div class="pt-2 columns-2 md:columns-3 lg:columns-4">
+            <div class="pt-2 columns-2 {{ $photos->count() >= 3 ? 'md:columns-3' : '' }} {{ $photos->count() >= 4 ? 'lg:columns-4' : ''}}">
                 @foreach ($photos as $photo)
                 <a onclick="Livewire.emit('create', '{{ $photo->id }}')" class="block cursor-pointer">
                     <img alt="{{ $photo->legend }}" class="mb-4 rounded" src="{{ $photo->path }}">
