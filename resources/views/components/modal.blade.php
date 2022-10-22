@@ -11,8 +11,8 @@
     x-transition:leave-end="opacity-0 transform" x-on:keydown.escape.window="hide()"
     x-on:click.away="hide()"
     class="p-2 fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center bg-black bg-opacity-75">
-    <div @click.away="hide()" class="flex flex-col max-w-6xl max-h-full overflow-auto overscroll-none">
-        <div class="relative rounded-lg shadow bg-white">
+    <div @click.away="hide()" class="flex flex-col max-w-6xl max-h-full overflow-auto overscroll-none rounded-lg">
+        <div class="relative shadow bg-white">
             <div class="flex flex-row-reverse justify-between items-center p-5 rounded-t border-b">
                 <button @click="hide()" type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"

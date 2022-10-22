@@ -9,7 +9,7 @@
             <img alt="{{ $photo->legend }}" class="mx-auto object-contain max-h-[80vh]" src="{{ $photo->path }}">
             <p class="text-sm font-light">{{ $photo->legend }}</p>
         </div>
-        <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200">
+        <div class="flex items-center px-5 py-2 space-x-2 rounded-b border-t border-gray-200">
             <livewire:comments :comments="$photo->comments" :commentable="$photo" />
         </div>
     </x-modal>
