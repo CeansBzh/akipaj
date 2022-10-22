@@ -40,7 +40,7 @@
     <form wire:submit.prevent="store">
         <div class="mb-4 w-full bg-gray-50 rounded-lg border border-gray-200">
             <div class="py-2 px-4 bg-white rounded-t-lg">
-                <label for="comment" class="sr-only">Your comment</label>
+                <label for="comment" class="sr-only">Votre commentaire</label>
                 <textarea id="content" wire:model.defer="content" name="content" rows="1"
                     class="px-0 min-h-[36px] w-full text-sm text-gray-900 bg-white border-0 focus:ring-0"
                     placeholder="Écrivez votre commentaire..." required></textarea>

@@ -61,7 +61,7 @@ class Comments extends Component
 
     public function setCommentToDestroy($id)
     {
-        $this->commentIdToDestroy = $id;
+        $this->commentIdToDestroy = $this->commentIdToDestroy === $id ? null : $id;
     }
 
     public function destroy(Comment $comment)
