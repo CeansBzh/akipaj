@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory()->create([
-            'name' => 'Michel',
-            'email' => 'michel@test.com',
+        $this->call([
+            RoleSeeder::class,
+            UserSeeder::class,
         ]);
 
         \App\Models\Album::factory(5)->create();
