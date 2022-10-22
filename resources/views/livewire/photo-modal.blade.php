@@ -10,22 +10,7 @@
             <p class="text-sm font-light">{{ $photo->legend }}</p>
         </div>
         <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200">
-            <div>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-                <p>commentaire</p>
-            </div>
-
+            <livewire:comments :comments="$photo->comments" :commentable="$photo" />
         </div>
     </x-modal>
     @endif

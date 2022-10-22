@@ -13,6 +13,7 @@ class PhotoModal extends Modal
     public function create(Photo $photo)
     {
         $this->photo = $photo;
+        $this->emit('commentsNeedUpdate', $photo->id, $photo::class);
         $this->show();
     }
 
