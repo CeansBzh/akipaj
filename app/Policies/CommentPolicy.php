@@ -11,6 +11,18 @@ class CommentPolicy
     use HandlesAuthorization; // TODO Utiliser cette policy
 
     /**
+     * Perform pre-authorization checks.
+     *
+     * @param  \App\Models\User  $user
+     * @param  string  $ability
+     * @return void|bool
+     */
+    public function before(User $user, $ability)
+    {
+        return $user->roles->contains('name', 'administrator') ? true : null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\User  $user
@@ -18,7 +30,7 @@ class CommentPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->roles->contains('name', 'member');
     }
 
     /**
@@ -30,7 +42,7 @@ class CommentPolicy
      */
     public function view(User $user, Comment $comment)
     {
-        //
+        return $user->id === $comment->user_id;
     }
 
     /**
@@ -41,7 +53,7 @@ class CommentPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->roles->contains('name', 'member');
     }
 
     /**
@@ -53,7 +65,7 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment)
     {
-        //
+        return $user->id === $comment->user_id;
     }
 
     /**
@@ -65,7 +77,7 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment)
     {
-        //
+        return $user->id === $comment->user_id;
     }
 
     /**

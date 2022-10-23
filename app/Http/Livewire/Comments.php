@@ -4,9 +4,11 @@ namespace App\Http\Livewire;
 
 use App\Models\Comment;
 use Livewire\Component;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Comments extends Component
 {
+    use AuthorizesRequests;
 
     /**
      * The comments list.
@@ -42,6 +44,7 @@ class Comments extends Component
 
     public function store()
     {
+        $this->authorize('create');
         $this->validate();
 
         $this->commentable->comments()->create([
@@ -58,6 +61,7 @@ class Comments extends Component
     {
         if ($id != null && $id != $this->commentIdToUpdate) {
             $comment = Comment::findOrFail($id);
+            $this->authorize('update', $comment);
             $this->commentIdToUpdate = $comment->id;
             $this->newContent = $comment->content;
         } else {
@@ -68,6 +72,7 @@ class Comments extends Component
 
     public function update(Comment $comment)
     {
+        $this->authorize('update', $comment);
         $this->validate();
 
         $comment->content = $this->newContent;
@@ -81,11 +86,18 @@ class Comments extends Component
 
     public function setCommentToDestroy($id)
     {
-        $this->commentIdToDestroy = $this->commentIdToDestroy === $id ? null : $id;
+        if ($id != null && $id != $this->commentIdToDestroy) {
+            $comment = Comment::findOrFail($id);
+            $this->authorize('delete', $comment);
+            $this->commentIdToDestroy = $comment->id;
+        } else {
+            $this->commentIdToDestroy = null;
+        }
     }
 
     public function destroy(Comment $comment)
     {
+        $this->authorize('delete', $comment);
         $comment->delete();
         $this->updateComments($this->commentable->id, get_class($this->commentable));
     }

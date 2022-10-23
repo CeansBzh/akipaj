@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AlbumController;
-use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PhotoController;
 
@@ -26,7 +25,7 @@ Route::get('/dashboard', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:member'])->group(function () {
     Route::resources([
         'photos' => PhotoController::class,
     ]);
