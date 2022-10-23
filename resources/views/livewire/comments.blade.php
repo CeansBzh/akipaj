@@ -39,7 +39,9 @@
                 <div class="mb-4 w-full bg-gray-50 rounded-lg border border-gray-200">
                     <div class="py-2 px-4 bg-white rounded-t-lg">
                         <label for="newContent" class="sr-only">Votre commentaire</label>
-                        <textarea id="newContent" wire:model.defer="newContent" name="newContent"
+                        <textarea id="newContent" wire:model.defer="newContent"
+                            x-data="{ resize: () => { $el.style.height = '5px'; $el.style.height = $el.scrollHeight + 'px' } }"
+                            x-init="resize()" @input="resize()" name="newContent"
                             class="px-0 min-h-[36px] w-full text-sm text-gray-900 bg-white border-0 focus:ring-0"
                             placeholder="Écrivez votre commentaire..." required></textarea>
                     </div>
@@ -65,7 +67,9 @@
         <div class="mb-4 w-full bg-gray-50 rounded-lg border border-gray-200">
             <div class="py-2 px-4 bg-white rounded-t-lg">
                 <label for="content" class="sr-only">Votre commentaire</label>
-                <textarea id="content" wire:model.defer="content" name="content" rows="1"
+                <textarea id="content" wire:model.defer="content"
+                    x-data="{ resize: () => { $el.style.height = '5px'; $el.style.height = $el.scrollHeight + 'px' } }"
+                    x-init="resize()" @input="resize()" name="content" rows="1"
                     class="px-0 min-h-[36px] w-full text-sm text-gray-900 bg-white border-0 focus:ring-0"
                     placeholder="Écrivez votre commentaire..." required></textarea>
             </div>
