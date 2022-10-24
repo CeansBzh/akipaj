@@ -33,9 +33,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('albums', AlbumController::class)->only(['index', 'show']);
     });
 
-    Route::middleware('role:admin')->group(function () {
-        Route::get('/admin', function () {
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+        Route::get('/', function () {
             return view('admin.index');
-        });
+        })->name('admin.index');
     });
 });
