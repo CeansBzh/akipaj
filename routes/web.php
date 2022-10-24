@@ -25,9 +25,17 @@ Route::get('/dashboard', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth', 'role:member'])->group(function () {
-    Route::resources([
-        'photos' => PhotoController::class,
-    ]);
-    Route::resource('albums', AlbumController::class)->only(['index', 'show']);
+Route::middleware(['auth'])->group(function () {
+    Route::middleware('role:member')->group(function () {
+        Route::resources([
+            'photos' => PhotoController::class,
+        ]);
+        Route::resource('albums', AlbumController::class)->only(['index', 'show']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin', function () {
+            return view('admin.index');
+        });
+    });
 });
