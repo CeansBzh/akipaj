@@ -44,7 +44,7 @@ class Comments extends Component
 
     public function store()
     {
-        $this->authorize('create');
+        $this->authorize('create', Comment::class);
         $this->validate();
 
         $this->commentable->comments()->create([
