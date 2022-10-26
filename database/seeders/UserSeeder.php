@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
             'name' => 'Michel',
             'email' => 'michel@test.com',
         ]);
+        $admin->roles()->attach($memberRole);
         $admin->roles()->attach($adminRole);
 
         $member = User::factory()->create([
