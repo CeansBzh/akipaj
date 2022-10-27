@@ -10,6 +10,8 @@ class Role extends Model
 {
     use HasFactory;
 
+    // TODO Importance des rôles (niveau hiérachique)
+
     /**
      * Get the users for the role.
      */

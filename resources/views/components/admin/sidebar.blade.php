@@ -6,8 +6,8 @@
         <x-admin.sidebar-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
             Panneau d'accueil
         </x-admin.sidebar-link>
-        <x-admin.sidebar-link href="#" :active="false">
-            Test
+        <x-admin.sidebar-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+            Utilisateurs
         </x-admin.sidebar-link>
     </nav>
 </aside>

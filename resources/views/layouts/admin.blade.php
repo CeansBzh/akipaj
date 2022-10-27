@@ -21,12 +21,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-gray-100 flex">
+<body class="font-sans antialiased bg-gray-200 flex">
     <x-admin.sidebar />
 
     <div class="w-full flex flex-col h-screen overflow-y-hidden">
         <x-admin.header />
-        <div class="w-full overflow-x-hidden border-t flex flex-col">
+        <div class="w-full h-full overflow-x-hidden border-t flex flex-col">
             <main class="w-full flex-grow p-6">
                 {{ $slot }}
             </main>

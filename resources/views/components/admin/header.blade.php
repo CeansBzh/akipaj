@@ -54,8 +54,8 @@
         <x-admin.responsive-header-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
             Panneau d'accueil
         </x-admin.responsive-header-link>
-        <x-admin.responsive-header-link href="#" :active="false">
-            Test
+        <x-admin.responsive-header-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+            Utilisateurs
         </x-admin.responsive-header-link>
         <x-admin.responsive-header-link href="#" :active="false">
             Mon profil

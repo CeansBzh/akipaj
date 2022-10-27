@@ -37,5 +37,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', function () {
             return view('admin.index');
         })->name('admin.index');
+        Route::get('/users', function () {
+            return view('admin.users');
+        })->name('admin.users');
     });
 });
