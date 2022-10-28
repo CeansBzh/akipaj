@@ -19,7 +19,8 @@ class CommentPolicy
      */
     public function before(User $user, $ability)
     {
-        return $user->roles->contains('name', 'administrator') ? true : null;
+        // On autorise l'admin à tout faire sur tous les commentaitaires sauf modifier ceux des autres utilisateurs
+        return $user->roles->contains('name', 'admin') && $ability != 'update' ? true : null;
     }
 
     /**
