@@ -53,7 +53,7 @@ class Comments extends Component
         ]);
 
         $this->content = '';
-
+        // TODO Envoi notif de nouveau comm aux abonnés (propritétaire de la photo, ceux qui se sont abonnés, etc..)
         $this->updateComments($this->commentable->id, get_class($this->commentable));
     }
 

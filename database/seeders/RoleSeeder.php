@@ -32,5 +32,7 @@ class RoleSeeder extends Seeder
             'display_name' => 'Visiteur',
             'description' => 'Utilisateur n\'ayant pas un compte validé par l\'administrateur. Ne peut pas utiliser le site comme un membre.',
         ]);
+
+        // TODO Enum rôles (si possible) et ajout rôle bloqué (les guests refusés par l'admin)
     }
 }
