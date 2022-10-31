@@ -26,6 +26,10 @@ Route::get('/dashboard', function () {
 require __DIR__ . '/auth.php';
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
+
     Route::middleware('role:member')->group(function () {
         Route::resources([
             'photos' => PhotoController::class,

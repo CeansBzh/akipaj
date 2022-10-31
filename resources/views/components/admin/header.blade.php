@@ -21,6 +21,9 @@
             </x-slot>
 
             <x-slot name="content">
+                <x-dropdown-link :href="route('profile')">
+                    Mon profil
+                </x-dropdown-link>
                 {{-- Authentication --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -57,7 +60,7 @@
         <x-admin.responsive-header-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
             Utilisateurs
         </x-admin.responsive-header-link>
-        <x-admin.responsive-header-link href="#" :active="false">
+        <x-admin.responsive-header-link :href="route('profile')" :active="request()->routeIs('profile')">
             Mon profil
         </x-admin.responsive-header-link>
         {{-- Authentication --}}
