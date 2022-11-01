@@ -26,7 +26,7 @@ Route::get('/dashboard', function () {
 require __DIR__ . '/auth.php';
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', function () {
+    Route::get('/profil', function () {
         return view('profile');
     })->name('profile');
 
@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', function () {
             return view('admin.index');
         })->name('admin.index');
-        Route::get('/users', function () {
+        Route::get('/utilisateurs', function () {
             return view('admin.users');
         })->name('admin.users');
     });
