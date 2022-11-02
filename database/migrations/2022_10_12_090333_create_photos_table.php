@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('legend')->nullable();
             $table->date('taken')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('commentable_type');
             $table->text('content');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
