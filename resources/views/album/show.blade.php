@@ -1,17 +1,34 @@
 <x-app-layout>
-    <h1 class="text-center">{{ $album->title }}</h1>
-
-    @foreach($album->photos as $photo)
-    <div class="w-52 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
-        <a href="{{ route('photos.show', $photo) }}">
-            <img class="rounded-t-lg h-64 w-full object-cover" src="{{ $photo->path }}" alt="" />
-        </a>
-        <div class="p-5 text-center">
-            <a href="{{ route('photos.show', $photo) }}">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $photo->title }}
-                </h5>
-            </a>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ $album->title }}
+            </h2>
+            <p>Créé le {{ $album->created_at->format('d M Y') }}</p>
         </div>
+    </x-slot>
+
+    <livewire:photo-modal />
+
+    @if(Session::has('success'))
+    <div class="text-green-600">
+        {{ Session::get('success') }}
     </div>
-    @endforeach
+    @endif
+
+    <section class="overflow-hidden text-gray-700">
+        <div class="px-5 py-2 mx-auto md:px-12 lg:pt-5 lg:px-24">
+            {{ $photos->links() }}
+            <div
+                class="pt-2 columns-2 {{ $photos->count() >= 3 ? 'md:columns-3' : '' }} {{ $photos->count() >= 4 ? 'lg:columns-4' : ''}}">
+                @foreach ($photos as $photo)
+                <a onclick="Livewire.emit('create', '{{ $photo->id }}')" class="block cursor-pointer">
+                    <img alt="{{ $photo->legend }}" class="mb-4 rounded" src="{{ $photo->path }}">
+                </a>
+                @endforeach
+            </div>
+            {{ $photos->links() }}
+        </div>
+    </section>
+
 </x-app-layout>
