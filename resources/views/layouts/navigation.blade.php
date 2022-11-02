@@ -28,7 +28,7 @@
                     <x-nav-dropdown class="w-1/3" :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
                         <x-slot name="name">Galerie</x-slot>
                         <x-slot name="children">
-                            <x-responsive-nav-link :href="route('photos.index')" :active="request()->routeIs('photos.*')">
+                            <x-responsive-nav-link class="pr-16" :href="route('photos.index')" :active="request()->routeIs('photos.*')">
                                 {{ __('Voir les photos') }}
                             </x-responsive-nav-link>
                             <x-responsive-nav-link :href="route('albums.index')" :active="request()->routeIs('albums.*')">

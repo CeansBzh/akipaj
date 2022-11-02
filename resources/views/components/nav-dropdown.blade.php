@@ -16,7 +16,7 @@ $classes = ($active ?? false)
         </div>
     </div>
 
-    <div class="w-max border z-50 -left-1 border-gray-300 mt-2 bg-white md:absolute md:top-16"
+    <div class="flex flex-col space-y-1 w-max border z-50 -left-6 border-gray-300 py-1 mt-2 bg-white md:absolute md:top-16"
     x-show="open"
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="transform opacity-0 scale-95"
