@@ -18,12 +18,12 @@ class EnsureHasRole
     public function handle(Request $request, Closure $next, ...$roles)
     {
         foreach ($roles as $role) {
-            if ($request->user()->roles()->where('name', $role)->exists())
+            if ($request->user()->hasRole($role))
                 return $next($request);
         }
 
         // If the user doesn't have any of the required roles AND is a guest, then redirect to the profile page to show a message about account validation by the admin
-        if ($request->user()->roles()->where('name', 'guest')->exists())
+        if ($request->user()->hasRole('guest'))
             return redirect()->route('profile');
 
         abort(403);
