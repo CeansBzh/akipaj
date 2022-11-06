@@ -18,7 +18,6 @@ class ConfirmDeleteProfileModal extends Modal
         $user = User::find(auth()->user()->id);
         if (Hash::check($this->password, $user->password)) {
             $user->delete();
-            // TODO Suppression des données après 30 jours
             // TODO Message de confirmation de la suppression sur l'accueil et envoi notif
             return redirect('/');
         } else {

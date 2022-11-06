@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Photo;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes, Prunable;
 
     /**
      * The attributes that are mass assignable.
@@ -103,5 +104,27 @@ class User extends Authenticatable
         }
 
         return !!$role->intersect($this->roles)->count();
+    }
+
+    /**
+     * Get the users deleted for more than 30 days.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function prunable()
+    {
+        return static::onlyTrashed()->where('deleted_at', '<=', now()->subMonth());
+    }
+
+    /**
+     * Delete all data associated to the pruned user.
+     *
+     * @return void
+     */
+    protected function pruning()
+    {
+        $this->photos()->forceDelete();
+        $this->comments()->forceDelete();
+        $this->roles()->detach();
     }
 }
