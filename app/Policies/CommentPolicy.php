@@ -8,7 +8,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CommentPolicy
 {
-    use HandlesAuthorization; // TODO Utiliser cette policy
+    use HandlesAuthorization;
 
     /**
      * Perform pre-authorization checks.
