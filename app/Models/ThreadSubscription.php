@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ThreadSubscription extends Model
+{
+    use HasFactory;
+
+    /**
+     * Get the user that is subscribed.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the parent subscribeable model.
+     */
+    public function subscribeable()
+    {
+        return $this->morphTo();
+    }
+}

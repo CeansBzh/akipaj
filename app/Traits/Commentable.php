@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Comment;
+use App\Models\ThreadSubscription;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 
 trait Commentable
@@ -22,5 +23,13 @@ trait Commentable
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    /**
+     * Get all of the subscriptions for the commentable.
+     */
+    public function subscriptions()
+    {
+        return $this->morphMany(ThreadSubscription::class, 'subscribeable');
     }
 }

@@ -79,6 +79,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the thread subscriptions for the user.
+     */
+    public function threadSubscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
+
+    /**
      * Attach a role to the user.
      * 
      * @param  \App\Models\Role|string  $role
