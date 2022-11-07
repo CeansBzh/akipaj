@@ -3,7 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\Comment;
+use App\Notifications\CommentPosted;
 use Livewire\Component;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Comments extends Component
@@ -47,13 +49,18 @@ class Comments extends Component
         $this->authorize('create', Comment::class);
         $this->validate();
 
-        $this->commentable->comments()->create([
+        // Enregistrement du commentaire dans la base de données et remise à zéro du texte dans l'input
+        $comment = $this->commentable->comments()->create([
             'content' => $this->content,
             'user_id' => auth()->id(),
         ]);
-
         $this->content = '';
-        // TODO Envoi notif de nouveau comm aux abonnés (propritétaire de la photo, ceux qui se sont abonnés, etc..)
+
+        // Envoi d'un mail à tous les abonnés au fil de discussion
+        $subscribers = $this->commentable->subscribers;
+        Notification::send($subscribers, new CommentPosted($this->commentable->title, $comment));
+
+        // Mise à jour des commentaires dans le composant pour afficher celui qui vient d'être enregistré
         $this->updateComments($this->commentable->id, get_class($this->commentable));
     }
 

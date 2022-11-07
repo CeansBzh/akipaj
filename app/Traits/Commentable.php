@@ -2,9 +2,11 @@
 
 namespace App\Traits;
 
+use App\Models\User;
 use App\Models\Comment;
 use App\Models\ThreadSubscription;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 trait Commentable
 {
@@ -31,5 +33,14 @@ trait Commentable
     public function subscriptions()
     {
         return $this->morphMany(ThreadSubscription::class, 'subscribeable');
+    }
+
+    /**
+     * Get all of the users subscribed to the commentable.
+     */
+    public function subscribers()
+    {
+        return $this->belongsToMany(User::class, ThreadSubscription::class, 'subscribeable_id', 'user_id')
+            ->where('subscribeable_type', static::class);
     }
 }
