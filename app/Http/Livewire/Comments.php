@@ -56,8 +56,8 @@ class Comments extends Component
         ]);
         $this->content = '';
 
-        // Envoi d'un mail à tous les abonnés au fil de discussion
-        $subscribers = $this->commentable->subscribers;
+        // Envoi d'un mail à tous les abonnés au fil de discussion sauf à l'utilisateur qui poste le commentaire
+        $subscribers = $this->commentable->subscribers->except($comment->user_id);
         Notification::send($subscribers, new CommentPosted($this->commentable->title, $comment));
 
         // Mise à jour des commentaires dans le composant pour afficher celui qui vient d'être enregistré
