@@ -58,8 +58,10 @@ class PhotoController extends Controller
 
         $albumid = null;
         if ($request->has('album')) {
+            // Association à un album existant
             $albumid = $request->input('album');
         } elseif ($request->has('albumTitle') && isset($request->albumTitle)) {
+            // Si un titre est spécifié, création d'un nouvel album
             $album = new Album();
             $album->title = $request->input('albumTitle');
             $album->description = $request->input('albumDesc');
@@ -69,17 +71,24 @@ class PhotoController extends Controller
         }
 
         foreach ($request->file('files') as $file) {
+            // Pour chaque fichier enregistrement dans le stockage du site
             $path = $file->store('photos', 'public');
+            // Création d'une nouvelle photo dans la base de données
             $photo = Photo::create([
                 'title' => $file->getClientOriginalName(),
                 'path' =>  Storage::url($path),
                 'legend' => $request->legend,
                 'taken' => $request->taken,
             ]);
+            // Association de la photo à l'album si nécessaire
             if (isset($albumid)) {
                 $photo->album()->associate($albumid);
             }
+            // Création de la relation entre la photo et l'utilisateur, abonnement de l'utilisateur au fil de discussion
             $photo->user()->associate($request->user());
+            $photo->subscriptions()->create([
+                'user_id' => $request->user()->id,
+            ]);
             $photo->save();
         }
 
