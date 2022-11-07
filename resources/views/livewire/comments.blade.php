@@ -1,5 +1,8 @@
 <div class="w-full">
-    <h4 class="mb-5 text-lg">Commentaires</h4>
+    <div class="flex flex-col justify-between mb-6 sm:flex-row">
+        <h4 class="text-lg">Commentaires</h4>
+        <livewire:thread-subscribe-button key="{{ now() }}" :commentable="$commentable" />
+    </div>
     @foreach($comments as $comment)
     <div class="relative grid grid-cols-1 gap-3 p-4 mb-8 border rounded-lg bg-white shadow-lg">
         <div class="relative flex gap-4">

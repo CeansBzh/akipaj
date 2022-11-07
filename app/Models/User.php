@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Role;
 use App\Models\Photo;
+use App\Traits\Commentable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Prunable;
@@ -112,6 +113,19 @@ class User extends Authenticatable
         }
 
         return !!$role->intersect($this->roles)->count();
+    }
+
+    /**
+     * Check if user is subscribed to the specified commentable.
+     * 
+     * @param  \App\Traits\Commentable  $commentable
+     */
+    public function isSubscribedTo($commentable)
+    {
+        if (in_array(Commentable::class, class_uses_recursive($commentable::class))) {
+            return $this->threadSubscriptions->contains('subscribeable_id', $commentable->id);
+        }
+        return false;
     }
 
     /**
