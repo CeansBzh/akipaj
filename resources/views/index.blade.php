@@ -15,7 +15,7 @@
                 <div class="mt-8 flex flex-wrap gap-4 text-center">
                     <a href="{{ route('register') }}"
                         class="block w-full rounded bg-sky-800 px-12 py-3 font-medium text-white shadow hover:bg-sky-700 focus:outline-none focus:ring active:bg-sky-600 sm:w-auto">
-                        Me créer un compte
+                        Créer un compte
                     </a>
                     <a href="{{ route('login') }}"
                         class="block w-full rounded bg-white px-12 py-3 font-medium text-sky-900 shadow hover:text-sky-500 focus:outline-none focus:ring active:text-sky-400 sm:w-auto">
@@ -87,19 +87,14 @@
     <img class="w-screen max-h-72 object-cover" src="{{ Vite::asset('resources/images/index_2.jpg') }}" alt="">
 
     <section class="bg-white">
-        <div class="max-w-screen-xl mx-auto px-4 py-12 sm:px-6 md:py-24 lg:px-8">
+        <div class="max-w-screen-xl mx-auto py-12 sm:px-6 md:py-24 lg:px-8">
             <div class="text-center">
                 <h2 class="text-5xl mb-5">Photos</h2>
-                <div class="flex mx-auto w-fit">
-                    <svg class="h-16 mt-5 text-sky-500 md:h-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="feather feather-tool">
-                        <path
-                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-                        </path>
-                    </svg>
-                    <p class="ml-8 text-2xl font-bolder self-center underline">Section à venir</p>
-                </div>
+                <x-photo-carousel />
+                <a href="{{ route('photos.index') }}"
+                    class="block w-fit mx-auto rounded bg-sky-800 mt-8 px-12 py-3 font-medium text-white shadow hover:bg-sky-700 focus:outline-none focus:ring active:bg-sky-600">
+                    Voir toutes les photos
+                </a>
             </div>
         </div>
     </section>

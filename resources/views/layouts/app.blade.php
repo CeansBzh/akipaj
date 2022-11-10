@@ -19,7 +19,9 @@
     </style>
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
+
 <body class="font-sans antialiased">
     <div class="fixed inset-x-3 top-5 max-w-xl mx-auto z-50">
         @foreach (App\Enum\AlertLevelEnum::cases() as $alertLevel)
