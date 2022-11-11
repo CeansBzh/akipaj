@@ -29,6 +29,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+                merriweather: ['Merriweather', ...defaultTheme.fontFamily.serif],
             },
             backgroundImage: {
                 'hero': 'url(/resources/images/hero.jpg)',

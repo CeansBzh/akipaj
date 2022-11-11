@@ -5,8 +5,8 @@
         <div
             class="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-[calc(100vh-6rem)] lg:items-center lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
-                <h1 class="text-3xl font-extrabold">
-                    <strong class="block font-extrabold text-yellow-500 sm:text-5xl">
+                <h1 class="text-3xl">
+                    <strong class="block font-bold text-yellow-500 sm:text-5xl">
                         Akipaj
                     </strong>
                     Bienvenue à bord !
