@@ -25,23 +25,26 @@
 
                 {{-- Second set of navigation links --}}
                 <div class="hidden h-full w-full space-x-4 sm:-my-px sm:flex md:space-x-8 md:ml-10">
-                    <x-nav-dropdown class="w-1/3" :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
+                    <x-nav-dropdown class="w-1/3"
+                        :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
                         <x-slot name="name">Galerie</x-slot>
                         <x-slot name="children">
-                            <x-responsive-nav-link class="pr-16" :href="route('photos.index')" :active="request()->routeIs('photos.*')">
+                            <x-responsive-nav-link class="pr-16" :href="route('photos.index')"
+                                :active="request()->routeIs('photos.*')">
                                 {{ __('Voir les photos') }}
                             </x-responsive-nav-link>
-                            <x-responsive-nav-link :href="route('albums.index')" :active="request()->routeIs('albums.*')">
+                            <x-responsive-nav-link :href="route('albums.index')"
+                                :active="request()->routeIs('albums.*')">
                                 {{ __('Voir les albums') }}
                             </x-responsive-nav-link>
                         </x-slot>
-                    </x-nav-link-parent>
-                    <x-nav-link class="w-1/3" href="#" :active="false">
-                        {{ __('L\'asso') }}
-                    </x-nav-link>
-                    <x-nav-link class="w-1/3" href="#" :active="false">
-                        {{ __('L\'asso') }}
-                    </x-nav-link>
+                        </x-nav-link-parent>
+                        <x-nav-link class="w-1/3" href="#" :active="false">
+                            {{ __('L\'asso') }}
+                        </x-nav-link>
+                        <x-nav-link class="w-1/3" href="#" :active="false">
+                            {{ __('L\'asso') }}
+                        </x-nav-link>
                 </div>
             </div>
 
@@ -72,6 +75,11 @@
                         <x-dropdown-link :href="route('profile')">
                             {{ __('Mon profil') }}
                         </x-dropdown-link>
+                        @if(Auth::user()->hasRole('admin'))
+                        <x-dropdown-link :href="route('admin.index')">
+                            {{ __('Panneau admin') }}
+                        </x-dropdown-link>
+                        @endif
                         {{-- Authentication --}}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -117,7 +125,7 @@
                         {{ __('Voir les albums') }}
                     </x-responsive-nav-link>
                 </x-slot>
-            </x-responsive-nav-link-parent>
+                </x-responsive-nav-link-parent>
         </div>
 
         {{-- Responsive Settings Options --}}
@@ -132,6 +140,11 @@
                 <x-responsive-nav-link :href="route('profile')">
                     {{ __('Mon profil') }}
                 </x-responsive-nav-link>
+                @if(Auth::user()->hasRole('admin'))
+                <x-responsive-nav-link :href="route('admin.index')">
+                    {{ __('Panneau admin') }}
+                </x-responsive-nav-link>
+                @endif
                 {{-- Authentication --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
