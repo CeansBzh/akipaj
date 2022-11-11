@@ -8,9 +8,14 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto flex-col space-y-4 sm:px-6 lg:px-8">
             @if(auth()->user()->hasRole('guest'))
-            <div class="p-4 mb-6 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
-                role="alert">Votre inscription n'a pas encore été validée par un
-                administrateur. Vous ne pouvez pas encore accéder à toutes les pages du site.
+            <div x-data="{ animation: false }" class="px-1">
+                <div role="alert"
+                    class="p-4 mb-6 text-sm text-yellow-800 bg-yellow-200 rounded-lg duration-500 relative transition ease-in-out scale-90 md:scale-100"
+                    :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring ring-yellow-300' : ''"
+                    x-init="$nextTick(() => {animation = true; setTimeout(() => { animation = false; }, 500);})">
+                    Votre inscription n'a pas encore été validée par un administrateur. Vous ne pouvez pas encore
+                    accéder à toutes les pages du site.
+                </div>
             </div>
             @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
