@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\RegistrationValidated;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use App\Listeners\SendAccountCreatedNotification;
+use App\Listeners\SendRegistrationValidationNotification;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
             SendAccountCreatedNotification::class,
+        ],
+        RegistrationValidated::class => [
+            SendRegistrationValidationNotification::class,
         ],
     ];
 
