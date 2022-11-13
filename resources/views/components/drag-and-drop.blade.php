@@ -24,7 +24,11 @@
 
 @push('scripts')
 <script type="text/javascript">
-    const formData = new FormData();
+    const MAX_WIDTH = 2560;
+    const MAX_HEIGHT = 1600;
+    const MIME_TYPE = "image/jpeg";
+    const QUALITY = 0.8;
+
     const dataTransfer = new DataTransfer();
 
     var isAdvancedUpload = function () {
@@ -68,32 +72,54 @@
     function handleFiles(files) {
         if (!(files instanceof FileList)) { files = this.files }
         for (let i = 0; i < files.length; i++) {
+            // Pour chaque fichier on vérifie qu'il s'agit bien d'une image
             const file = files[i];
             if (!file.type.startsWith('image/')) { continue }
-
-            let formDataIncludes = false;
-            for (var value of formData.values()) {
-                if (value.name === file.name) {
-                    formDataIncludes = true;
-                    break;
+            // On verifie si le fichier n'est pas déjà dans la liste
+            if (dataTransfer.items.length > 0) {
+                let alreadyInList = false;
+                for (let i = 0; i < dataTransfer.items.length; i++) {
+                    if (dataTransfer.items[i].getAsFile().name == file.name) {
+                        alreadyInList = true;
+                        break;
+                    }
                 }
+                if (alreadyInList) { continue }
             }
-            if (!formDataIncludes) {
-                const img = document.createElement("img");
-                img.classList.add("max-w-xs", "mb-1", "mx-auto");
-                img.file = file;
-                preview.appendChild(img);
-
-                const reader = new FileReader();
-                reader.onload = (e) => { img.src = e.target.result; };
-                reader.readAsDataURL(file);
-                formData.append('files', file);
-                dataTransfer.items.add(file);
-            }
+            // Si le fichier est une image et n'est pas déjà dans la liste :
+            const blobURL = URL.createObjectURL(file);
+            const img = new Image();
+            img.src = blobURL;
+            img.onerror = function () {
+                URL.revokeObjectURL(this.src);
+                // Handle the failure properly
+                console.log("Cannot load image");
+            };
+            img.onload = function () {
+                URL.revokeObjectURL(this.src);
+                const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                const canvas = document.createElement("canvas");
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                canvas.toBlob(
+                    (blob) => {
+                        dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
+                        document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
+                        inputElement.files = dataTransfer.files;
+                    },
+                    MIME_TYPE,
+                    QUALITY
+                );
+                preview.appendChild(canvas);
+            };
         }
-        document.getElementById('fileNb').innerHTML = formData.getAll('files').length + ' fichiers sélectionnés';
-        document.querySelector('button[type="submit"]').classList.remove('hidden');
-        inputElement.files = dataTransfer.files;
+    }
+
+    function calculateSize(img, maxWidth, maxHeight) {
+        let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+        return [img.naturalWidth * ratio, img.naturalHeight * ratio];
     }
 </script>
 @endpush
