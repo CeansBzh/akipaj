@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
@@ -48,10 +47,9 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO Validation maxfilesize et compression photos
         $request->validate([
-            'files' => 'required|array',
-            'files.*' => 'required|image|mimes:png,jpg,jpeg,gif|max:10000',
+            'files' => 'required|array|max:50',
+            'files.*' => 'required|image|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
             'album' => 'integer|exists:albums,id|nullable',
             'albumTitle' => 'string|nullable',
             'albumDesc' => 'exclude_if:albumTitle,null|required|string',
@@ -73,19 +71,12 @@ class PhotoController extends Controller
         }
 
         foreach ($request->file('files') as $file) {
-            // Pour chaque image redimensionnement et compression, puis enregistrement dans le stockage du site
-            Image::make($file->getRealPath())
-                ->orientate()
-                ->resize(2560, 1600, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                })
-                ->encode('jpg', 75)
-                ->save(public_path('/storage/photos/' . $file->hashName()));
+            // Pour chaque fichier enregistrement dans le stockage du site
+            $path = $file->store('photos', 'public');
             // Création d'une nouvelle photo dans la base de données
             $photo = Photo::create([
                 'title' => $file->getClientOriginalName(),
-                'path' =>  Storage::url('photos/' . $file->hashName()),
+                'path' =>  Storage::url($path),
                 'legend' => $request->legend,
                 'taken' => $request->taken,
             ]);
