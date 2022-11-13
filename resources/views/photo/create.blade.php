@@ -302,16 +302,27 @@
 										<select id="month" name="albumMonth"
 											class="bg-gray-100 border-2 rounded-lg @error('albumMonth') border-red-500 @enderror">
 											@php
-											$format = new \IntlDateFormatter('fr_FR',
-											\IntlDateFormatter::NONE,\IntlDateFormatter::NONE, NULL, NULL, "MMMM");
-											$currentMonth = datefmt_format($format, now());
+                                            $months = [
+                                                'Janvier',
+                                                'Février',
+                                                'Mars',
+                                                'Avril',
+                                                'Mai',
+                                                'Juin',
+                                                'Juillet',
+                                                'Août',
+                                                'Septembre',
+                                                'Octobre',
+                                                'Novembre',
+                                                'Décembre'
+                                            ];
+											$currentMonth = date('m');
 											@endphp
-											@for ($m=1; $m<=12; $m++) @php $monthName=datefmt_format($format, mktime(0,
-												0, 0, $m)) @endphp <option value="{{ $m }}" {{ $currentMonth==$monthName
-												? 'selected' : '' }}>{{
-												ucfirst($monthName) }}
-												</option>
-												@endfor
+											@for ($i=0; $i<=11; $i++)
+                                            <option value="{{ $i + 1 }}" {{ $currentMonth == $i + 1 ? 'selected' : '' }}>
+                                                {{ $months[$i] }}
+											</option>
+											@endfor
 										</select>
 									</span>
 									<span>
@@ -398,7 +409,7 @@
 	<script type="text/javascript">
 		function app() {
 			return {
-				step: 1,
+				step: 2,
 				changeNextStepButton(event) {
 					const button = document.querySelectorAll('#next-step button')[1];
 					const albumList = document.getElementById('album');
