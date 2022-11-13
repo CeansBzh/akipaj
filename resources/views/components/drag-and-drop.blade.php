@@ -1,9 +1,9 @@
 <div id="dropbox" {{ $attributes->merge(['class' => 'flex justify-center items-center w-full']) }}>
     <label for="dropbox-file"
-        class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100/20 md:relative md:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
+        class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100/20 sm:relative sm:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
         <div id="loading-spinner" role="status"
             class="hidden absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)]">
-            <svg class="inline mr-2 w-10 h-10 text-gray-300 animate-spin fill-sky-500" viewBox="0 0 100 101" fill="none"
+            <svg class="inline mr-2 w-10 h-10 text-gray-300 motion-safe:animate-spin fill-sky-500" viewBox="0 0 100 101" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -13,6 +13,17 @@
                     fill="currentFill" />
             </svg>
             <span class="sr-only">Chargement...</span>
+        </div>
+        <div id="drag-over-icon" role="status"
+            class="hidden absolute bottom-[calc(50%-1.75rem)] left-[calc(50%-1.75rem)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="inline mr-2 w-14 h-14 text-sky-500 motion-safe:animate-bounce">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span class="sr-only">Relâcher pour déposer les fichiers</span>
         </div>
         <div id="dropbox-body" class="flex flex-row justify-center items-center text-sky-600 md:flex-col">
             <svg aria-hidden="true" class="mb-3 mr-3 w-10 h-10 text-sky-500" fill="none" stroke="currentColor"
@@ -82,6 +93,7 @@
     let dropbox = document.getElementById("dropbox");
     dropbox.addEventListener("dragenter", dragenter, false);
     dropbox.addEventListener("dragover", dragover, false);
+    dropbox.addEventListener("dragleave", dragleave, false);
     dropbox.addEventListener("drop", drop, false);
 
     let inputElement = document.getElementById("dropbox-file");
@@ -92,11 +104,20 @@
     function dragenter(e) {
         e.stopPropagation();
         e.preventDefault();
+        document.getElementById('dropbox-body').classList.add('invisible');
+        document.getElementById('drag-over-icon').classList.remove('hidden');
     }
 
     function dragover(e) {
         e.stopPropagation();
         e.preventDefault();
+    }
+
+    function dragleave(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        document.getElementById('dropbox-body').classList.remove('invisible');
+        document.getElementById('drag-over-icon').classList.add('hidden');
     }
 
     function drop(e) {
