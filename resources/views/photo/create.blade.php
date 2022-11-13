@@ -302,8 +302,8 @@
 										<select id="month" name="albumMonth"
 											class="bg-gray-100 border-2 rounded-lg @error('albumMonth') border-red-500 @enderror">
 											@php
-											$format = new IntlDateFormatter('fr_FR',
-											IntlDateFormatter::NONE,IntlDateFormatter::NONE, NULL, NULL, "MMMM");
+											$format = new \IntlDateFormatter('fr_FR',
+											\IntlDateFormatter::NONE,\IntlDateFormatter::NONE, NULL, NULL, "MMMM");
 											$currentMonth = datefmt_format($format, now());
 											@endphp
 											@for ($m=1; $m<=12; $m++) @php $monthName=datefmt_format($format, mktime(0,
