@@ -273,7 +273,7 @@
 							<div class="my-4">
 								<label for="albumTitle" class="sr-only">Titre</label>
 								<input type="text" name="albumTitle" id="albumTitle"
-									x-on:input.change.debounce="changeNextStepButton($event)"
+									x-on:input.change.throttle="changeNextStepButton($event)"
 									placeholder="Titre de l'album"
 									class="bg-gray-100 border-2 w-full p-4 rounded-lg @error('albumTitle') border-red-500 @enderror"
 									value="{{ old('albumTitle') }}">
