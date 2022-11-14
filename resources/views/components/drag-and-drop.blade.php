@@ -1,6 +1,6 @@
 <div id="dropbox" {{ $attributes->merge(['class' => 'flex justify-center items-center w-full']) }}>
     <label for="dropbox-file"
-        class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100/20 md:relative md:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
+        class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100 md:relative md:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
         <div id="loading-spinner" role="status"
             class="hidden absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)]">
             <svg class="inline mr-2 w-10 h-10 text-gray-300 motion-safe:animate-spin fill-sky-500" viewBox="0 0 100 101"
@@ -46,7 +46,7 @@
 <p id="fileNb" class="text-center"></p>
 <div id="previewContainer" class="mt-4 pb-3">
     <div id="info" class="px-5 sm:py-10">
-        <div class="mx-auto max-w-xs">
+        <div class="mx-auto max-w-xs text-sm text-gray-500">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="h-14 w-14 text-gray-400 mx-auto mb-5">
@@ -55,9 +55,9 @@
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
 
-            <p class="text-sm text-gray-500 mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
+            <p class="mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
                 poids.</p>
-            <p class="text-sm text-gray-500">Si vous souhaitez ranger vos photos dans un album n'importez que des photos
+            <p>Si vous souhaitez ranger vos photos dans un album n'importez que des photos
                 concernant un même sujet (ex: Corse 2022).</p>
         </div>
     </div>
@@ -90,6 +90,7 @@
 
 @push('scripts')
 <script type="text/javascript">
+    const MAX_FILES = 50;
     const MAX_WIDTH = 2560;
     const MAX_HEIGHT = 1600;
     const PREVIEW_SIZE = 70;
@@ -181,10 +182,21 @@
     function handleFiles(files) {
         if (!(files instanceof FileList)) { files = this.files }
         const promises = [];
+        const info = document.getElementById('info');
+        if (files.length > MAX_FILES || dataTransfer.files.length + files.length > MAX_FILES) {
+            let svg = info.querySelector('svg');
+            svg.classList.remove('text-gray-400');
+            svg.classList.add('text-red-500');
+            svg.innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>';
+            info.replaceChild(svg, info.firstChild);
+            let p = info.querySelectorAll('p');
+            p[0].innerHTML = 'Vous ne pouvez pas ajouter plus de ' + MAX_FILES + ' fichiers.';
+            p[1].remove();
+            return;
+        }
         document.getElementById('dropbox-body').classList.add('invisible');
         document.getElementById('loading-spinner').classList.remove('hidden');
-        const info = document.getElementById('info');
-        if(info) { info.remove(); }
+        if (info) { info.remove(); }
         for (let i = 0; i < files.length; i++) {
             // Pour chaque fichier on vérifie qu'il s'agit bien d'une image
             const file = files[i];
