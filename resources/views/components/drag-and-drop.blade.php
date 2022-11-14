@@ -1,10 +1,10 @@
 <div id="dropbox" {{ $attributes->merge(['class' => 'flex justify-center items-center w-full']) }}>
     <label for="dropbox-file"
-        class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100/20 sm:relative sm:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
+        class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100/20 md:relative md:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
         <div id="loading-spinner" role="status"
             class="hidden absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)]">
-            <svg class="inline mr-2 w-10 h-10 text-gray-300 motion-safe:animate-spin fill-sky-500" viewBox="0 0 100 101" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
+            <svg class="inline mr-2 w-10 h-10 text-gray-300 motion-safe:animate-spin fill-sky-500" viewBox="0 0 100 101"
+                fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                     fill="currentColor" />
@@ -45,6 +45,22 @@
 
 <p id="fileNb" class="text-center"></p>
 <div id="previewContainer" class="mt-4 pb-3">
+    <div id="info" class="px-5 sm:py-10">
+        <div class="mx-auto max-w-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="h-14 w-14 text-gray-400 mx-auto mb-5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+
+            <p class="text-sm text-gray-500 mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
+                poids.</p>
+            <p class="text-sm text-gray-500">Si vous souhaitez ranger vos photos dans un album n'importez que des photos
+                concernant un même sujet (ex: Corse 2022).</p>
+        </div>
+    </div>
 </div>
 
 <template id="previewElement">
@@ -167,6 +183,8 @@
         const promises = [];
         document.getElementById('dropbox-body').classList.add('invisible');
         document.getElementById('loading-spinner').classList.remove('hidden');
+        const info = document.getElementById('info');
+        if(info) { info.remove(); }
         for (let i = 0; i < files.length; i++) {
             // Pour chaque fichier on vérifie qu'il s'agit bien d'une image
             const file = files[i];

@@ -409,7 +409,7 @@
 	<script type="text/javascript">
 		function app() {
 			return {
-				step: 2,
+				step: 1,
 				changeNextStepButton(event) {
 					const button = document.querySelectorAll('#next-step button')[1];
 					const albumList = document.getElementById('album');
