@@ -72,7 +72,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')">
+                        <x-dropdown-link :href="route('profile.index')">
                             {{ __('Mon profil') }}
                         </x-dropdown-link>
                         @if(Auth::user()->hasRole('admin'))
@@ -137,7 +137,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile')">
+                <x-responsive-nav-link :href="route('profile.index')">
                     {{ __('Mon profil') }}
                 </x-responsive-nav-link>
                 @if(Auth::user()->hasRole('admin'))

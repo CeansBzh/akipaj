@@ -30,10 +30,6 @@
         @endif
         @endforeach
     </div>
-
-    @if (session()->has('alert'))
-    <x-alert :message="$alert->message" :level="$alert->level" />
-    @endif
     <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
 

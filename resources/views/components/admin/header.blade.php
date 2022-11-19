@@ -21,7 +21,7 @@
             </x-slot>
 
             <x-slot name="content">
-                <x-dropdown-link :href="route('profile')">
+                <x-dropdown-link :href="route('profile.index')">
                     Mon profil
                 </x-dropdown-link>
                 {{-- Authentication --}}
@@ -60,7 +60,7 @@
         <x-admin.responsive-header-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
             Utilisateurs
         </x-admin.responsive-header-link>
-        <x-admin.responsive-header-link :href="route('profile')" :active="request()->routeIs('profile')">
+        <x-admin.responsive-header-link :href="route('profile.index')" :active="request()->routeIs('profile.*')">
             Mon profil
         </x-admin.responsive-header-link>
         {{-- Authentication --}}

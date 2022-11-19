@@ -16,8 +16,9 @@ class PhotoController extends Controller
      */
     public function index()
     {
+        // TODO Remplacer modal par lightbox réutilisable (livewire ?)
         return view('photo.index', [
-            'photos' => Photo::select('id', 'path', 'legend')->simplePaginate(50),
+            'photos' => Photo::select('id', 'title', 'path', 'legend')->simplePaginate(50),
         ]);
     }
 
@@ -151,6 +152,7 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
+        // TODO Supprimer album lorsqu'il est vide
         $photo->delete();
 
         return redirect()->route('photos.index')->with('success', 'Photo supprimée avec succès !');

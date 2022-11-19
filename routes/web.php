@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\AlbumController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,12 +20,11 @@ Route::get('/', function () {
     return view('index');
 });
 
-require __DIR__ . '/auth.php';
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profil', function () {
-        return view('profile');
-    })->name('profile');
+Route::middleware('auth')->group(function () {
+    Route::get('/profil', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profil', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profil', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::middleware('role:member')->group(function () {
         Route::resources([
@@ -42,3 +42,5 @@ Route::middleware(['auth'])->group(function () {
         })->name('admin.users');
     });
 });
+
+require_once __DIR__ . '/auth.php';
