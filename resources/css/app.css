@@ -9,18 +9,21 @@
         font-weight: 400;
         src: url('fonts/Merriweather-Regular.ttf');
     }
+
     @font-face {
         font-family: 'Merriweather';
         font-style: normal;
         font-weight: 300;
         src: url('fonts/Merriweather-Light.ttf');
     }
+
     @font-face {
         font-family: 'Merriweather';
         font-style: normal;
         font-weight: 700;
         src: url('fonts/Merriweather-Bold.ttf');
     }
+
     @font-face {
         font-family: 'Merriweather';
         font-style: normal;
@@ -35,49 +38,52 @@
 
 @layer utilities {
 
-    *::-webkit-scrollbar {
-        display: block;
-        width: 13px;
-    }
+    @media screen and (min-width: 640px) {
 
-    *::-webkit-scrollbar-button {
-        display: none;
-    }
-
-    *::-webkit-scrollbar-track {
-        background-color: #00000000;
-    }
-
-    *::-webkit-scrollbar-track-piece {
-        background-color: #00000000;
-    }
-
-    @media (hover: hover) {
-        body {
-            overflow: overlay;
+        *::-webkit-scrollbar {
+            display: block;
+            width: 13px;
         }
-    }
 
-    * {
-        --scrollbar-color: theme(colors.sky.600 / 75%)
-    }
+        *::-webkit-scrollbar-button {
+            display: none;
+        }
 
-    *:hover,
-    *:focus,
-    *:focus-within {
-        --scrollbar-color: theme(colors.sky.600 / 40%) !important;
-    }
+        *::-webkit-scrollbar-track {
+            background-color: #00000000;
+        }
 
-    *::-webkit-scrollbar-thumb {
-        background-color: #00000000;
-        border: 3px solid transparent;
-        border-radius: 24px;
-        box-shadow: 4px 0px 0px 4px var(--scrollbar-color) inset;
-    }
+        *::-webkit-scrollbar-track-piece {
+            background-color: #00000000;
+        }
 
-    *::-webkit-scrollbar-thumb:hover {
-        background-color: var(--scrollbar-color);
-        border: 0px solid transparent;
-        box-shadow: none;
+        @media (hover: hover) {
+            body {
+                overflow: overlay;
+            }
+        }
+
+        * {
+            --scrollbar-color: theme(colors.sky.600 / 75%)
+        }
+
+        *:hover,
+        *:focus,
+        *:focus-within {
+            --scrollbar-color: theme(colors.sky.600 / 40%) !important;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #00000000;
+            border: 3px solid transparent;
+            border-radius: 24px;
+            box-shadow: 4px 0px 0px 4px var(--scrollbar-color) inset;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-color);
+            border: 0px solid transparent;
+            box-shadow: none;
+        }
     }
 }
