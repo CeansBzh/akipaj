@@ -16,9 +16,8 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        // TODO Remplacer modal par lightbox réutilisable (livewire ?)
         return view('photo.index', [
-            'photos' => Photo::select('id', 'title', 'path', 'legend')->simplePaginate(50),
+            'photos' => Photo::select('id', 'path', 'legend')->simplePaginate(50),
         ]);
     }
 
@@ -127,7 +126,7 @@ class PhotoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePhotoRequest  $request
+     * @param  \App\Http\Requests\Request  $request
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Http\Response
      */
