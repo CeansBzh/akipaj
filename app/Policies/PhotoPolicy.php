@@ -8,7 +8,20 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PhotoPolicy
 {
-    use HandlesAuthorization; // TODO Utiliser cette policy
+    use HandlesAuthorization;
+
+    /**
+     * Perform pre-authorization checks.
+     *
+     * @param  \App\Models\User  $user
+     * @param  string  $ability
+     * @return void|bool
+     */
+    public function before(User $user, $ability)
+    {
+        // On autorise l'admin à tout faire sur toutes les photos sauf modifier celles des autres utilisateurs
+        return $user->roles->contains('name', 'admin') && $ability != 'update' ? true : null;
+    }
 
     /**
      * Determine whether the user can view any models.
@@ -18,7 +31,7 @@ class PhotoPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->roles->contains('name', 'member');
     }
 
     /**
@@ -30,7 +43,7 @@ class PhotoPolicy
      */
     public function view(User $user, Photo $photo)
     {
-        //
+        return $user->id === $photo->user_id;
     }
 
     /**
@@ -41,7 +54,7 @@ class PhotoPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->roles->contains('name', 'member');
     }
 
     /**
@@ -53,7 +66,7 @@ class PhotoPolicy
      */
     public function update(User $user, Photo $photo)
     {
-        //
+        return $user->id === $photo->user_id;
     }
 
     /**
@@ -65,7 +78,7 @@ class PhotoPolicy
      */
     public function delete(User $user, Photo $photo)
     {
-        //
+        return $user->id === $photo->user_id;
     }
 
     /**
