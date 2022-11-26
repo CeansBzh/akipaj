@@ -3,125 +3,54 @@
 		@csrf
 		<div x-data="app()" x-init="changeNextStepButton(null)" x-cloak>
 			<div class="max-w-xl mx-auto px-4 py-8 flex items-center justify-center">
-				@if($errors->any())
-				<div id="modal" x-data="{ 
-					show: true,
-					hide() {
-						this.show = false;
-						let el = document.getElementById('modal').childNodes[1];
-						setTimeout(() => { el.scrollTop = 0; }, 160);
-					}
-				}" x-cloak x-show="show" x-transition:enter="transition ease-out duration-200"
-					x-transition:enter-start="opacity-0 transform"
-					x-transition:enter-end="opacity-100 transform scale-100"
-					x-transition:leave="transition ease-in duration-150"
-					x-transition:leave-start="opacity-100 transform scale-100"
-					x-transition:leave-end="opacity-0 transform" x-on:keydown.escape.window="hide()"
-					x-on:click.away="hide()"
-					class="p-2 fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center bg-black bg-opacity-75">
-					<div @click.away="hide()"
-						class="flex flex-col max-w-6xl max-h-full overflow-auto overscroll-none rounded-lg">
-						<div class="relative shadow bg-white">
-							<div class="flex flex-row-reverse justify-between items-center p-5 rounded-t border-b">
-								<button @click="hide()" type="button"
-									class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-									data-modal-toggle="large-modal">
-									<svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-										xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-											clip-rule="evenodd"></path>
-									</svg>
-									<span class="sr-only">Fermer la fenêtre</span>
-								</button>
-							</div>
-							<div class="bg-white rounded-lg p-10 flex items-center shadow justify-between text-center">
-								<div>
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="currentColor"
-										class="mb-4 h-16 w-16 text-red-500 mx-auto">
-										<g transform="matrix(.99999 0 0 .99999-58.37.882)">
-											<circle cx="82.37" cy="23.12" r="24" />
-											<path
-												d="m87.77 23.725l5.939-5.939c.377-.372.566-.835.566-1.373 0-.54-.189-.997-.566-1.374l-2.747-2.747c-.377-.372-.835-.564-1.373-.564-.539 0-.997.186-1.374.564l-5.939 5.939-5.939-5.939c-.377-.372-.835-.564-1.374-.564-.539 0-.997.186-1.374.564l-2.748 2.747c-.377.378-.566.835-.566 1.374 0 .54.188.997.566 1.373l5.939 5.939-5.939 5.94c-.377.372-.566.835-.566 1.373 0 .54.188.997.566 1.373l2.748 2.747c.377.378.835.564 1.374.564.539 0 .997-.186 1.374-.564l5.939-5.939 5.94 5.939c.377.378.835.564 1.374.564.539 0 .997-.186 1.373-.564l2.747-2.747c.377-.372.566-.835.566-1.373 0-.54-.188-.997-.566-1.373l-5.939-5.94"
-												fill="white" />
-										</g>
-									</svg>
+				{{-- Error modal --}}
+				<x-modal name="photo-create-errors" :show="$errors->storePhoto->isNotEmpty()">
+					<div class="p-10 flex text-center">
+						<div class="mx-auto">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="currentColor"
+								class="mb-4 h-16 w-16 text-red-500 mx-auto">
+								<g transform="matrix(.99999 0 0 .99999-58.37.882)">
+									<circle cx="82.37" cy="23.12" r="24" />
+									<path
+										d="m87.77 23.725l5.939-5.939c.377-.372.566-.835.566-1.373 0-.54-.189-.997-.566-1.374l-2.747-2.747c-.377-.372-.835-.564-1.373-.564-.539 0-.997.186-1.374.564l-5.939 5.939-5.939-5.939c-.377-.372-.835-.564-1.374-.564-.539 0-.997.186-1.374.564l-2.748 2.747c-.377.378-.566.835-.566 1.374 0 .54.188.997.566 1.373l5.939 5.939-5.939 5.94c-.377.372-.566.835-.566 1.373 0 .54.188.997.566 1.373l2.748 2.747c.377.378.835.564 1.374.564.539 0 .997-.186 1.374-.564l5.939-5.939 5.94 5.939c.377.378.835.564 1.374.564.539 0 .997-.186 1.373-.564l2.747-2.747c.377-.372.566-.835.566-1.373 0-.54-.188-.997-.566-1.373l-5.939-5.94"
+										fill="white" />
+								</g>
+							</svg>
 
-									<h2 class="text-2xl mb-4 text-gray-800 font-bold">Erreurs lors de
-										l'envoi</h2>
+							<h2 class="text-2xl mb-4 text-gray-800 font-bold">Erreurs lors de
+								l'envoi</h2>
 
-									<ul class="text-gray-600 text-sm mb-5 list-decimal">
-										@foreach ($errors->all() as $error)
-										<li>{{ $error }}</li>
-										@endforeach
-									</ul>
+							<ul class="text-gray-600 text-sm mb-5 list-decimal">
+								@foreach ($errors->storePhoto->all() as $error)
+								<li>{{ $error }}</li>
+								@endforeach
+							</ul>
+						</div>
+					</div>
+				</x-modal>
+				{{-- Success modal --}}
+				<x-modal name="photo-create-errors" :show="session('success')">
+					<div class="p-10 flex text-center">
+						<div class="mx-auto">
+							<svg class="mb-4 h-20 w-20 text-green-500 mx-auto" viewBox="0 0 20 20"
+								fill="currentColor">
+								<path fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+									clip-rule="evenodd" />
+							</svg>
 
-									<button type="button" @click="show = false"
-										class="w-max block mx-auto focus:outline-none py-2 px-5 rounded-lg shadow-sm text-gray-600 bg-white hover:bg-gray-100 font-medium border">Fermer
-										la fenêtre</button>
-								</div>
+
+							<h2 class="text-2xl mb-4 text-gray-800 font-bold">Succès de l'envoi</h2>
+
+
+							<div class="text-gray-600 mb-8">
+								Vous pouvez dès à présent retrouver vos photos sur la page <a
+									href="{{ route('photos.index') }}"
+									class="text-blue-500 hover:text-blue-700">photos</a>.
 							</div>
 						</div>
 					</div>
-				</div>
-				@elseif (session('success'))
-				<div id="modal" x-data="{ 
-					show: true,
-					hide() {
-						this.show = false;
-						let el = document.getElementById('modal').childNodes[1];
-						setTimeout(() => { el.scrollTop = 0; }, 160);
-					}
-				}" x-cloak x-show="show" x-transition:enter="transition ease-out duration-200"
-					x-transition:enter-start="opacity-0 transform"
-					x-transition:enter-end="opacity-100 transform scale-100"
-					x-transition:leave="transition ease-in duration-150"
-					x-transition:leave-start="opacity-100 transform scale-100"
-					x-transition:leave-end="opacity-0 transform" x-on:keydown.escape.window="hide()"
-					x-on:click.away="hide()"
-					class="p-2 fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center bg-black bg-opacity-75">
-					<div @click.away="hide()"
-						class="flex flex-col max-w-6xl max-h-full overflow-auto overscroll-none rounded-lg">
-						<div class="relative shadow bg-white">
-							<div class="flex flex-row-reverse justify-between items-center p-5 rounded-t border-b">
-								<button @click="hide()" type="button"
-									class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-									data-modal-toggle="large-modal">
-									<svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-										xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-											clip-rule="evenodd"></path>
-									</svg>
-									<span class="sr-only">Fermer la fenêtre</span>
-								</button>
-							</div>
-							<div class="bg-white rounded-lg p-10 flex items-center shadow justify-between text-center">
-								<div>
-									<svg class="mb-4 h-20 w-20 text-green-500 mx-auto" viewBox="0 0 20 20"
-										fill="currentColor">
-										<path fill-rule="evenodd"
-											d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-											clip-rule="evenodd" />
-									</svg>
-
-
-									<h2 class="text-2xl mb-4 text-gray-800 font-bold">Succès de l'envoi</h2>
-
-									
-									<div class="text-gray-600 mb-8">
-										Vous pouvez dès à présent retrouver vos photos sur la page <a href="{{ route('photos.index') }}" class="text-blue-500 hover:text-blue-700">photos</a>.
-									</div>
-
-									<button type="button" @click="show = false"
-										class="w-max block mx-auto focus:outline-none py-2 px-5 rounded-lg shadow-sm text-gray-600 bg-white hover:bg-gray-100 font-medium border">Fermer
-										la fenêtre</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				@endif
+				</x-modal>
 
 				<div x-show.transition="step != 'complete'" class="w-full md:min-w-[30vw]">
 					<!-- Top Navigation -->

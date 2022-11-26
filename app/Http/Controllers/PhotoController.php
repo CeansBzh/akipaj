@@ -48,7 +48,7 @@ class PhotoController extends Controller
     public function store(Request $request)
     {
         $request['albumDate'] = $request['albumYear'] . '-' . $request['albumMonth'];
-        $request->validate([
+        $request->validateWithBag('storePhoto', [
             'files' => 'required|array|max:50',
             'files.*' => 'required|image|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
             'album' => 'integer|exists:albums,id|nullable',
