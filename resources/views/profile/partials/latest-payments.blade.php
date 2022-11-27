@@ -3,11 +3,11 @@
         <div class="flex items-center mx-auto sm:mx-0">
             <h2 class="text-lg font-medium text-gray-900">Derniers virements</h2>
         </div>
-        <div class="mx-auto mt-2 sm:mx-0">
-            <x-primary-link class="mr-1" href="{{ route('payments.create') }}">
+        <div class="mx-auto mt-2 text-center sm:mx-0">
+            <x-primary-link class="xs:mr-2" href="{{ route('payments.create') }}">
                 Nouveau virement
             </x-primary-link>
-            <x-secondary-link href="{{ route('payments.index') }}">
+            <x-secondary-link class="mt-2 xs:mt-0" href="{{ route('payments.index') }}">
                 Historique
             </x-secondary-link>
         </div>
