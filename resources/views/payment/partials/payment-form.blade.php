@@ -52,7 +52,7 @@
                 <div class="w-full md:min-w-[30vw]">
                     {{-- Top nav --}}
                     <div class="border-b-2 py-2 flex">
-                        <div class="uppercase tracking-wide text-xs font-bold text-sky-600 mr-2 my-auto leading-tight"
+                        <div class="uppercase tracking-wide text-xs font-bold text-sky-500 mr-2 my-auto leading-tight"
                             x-text="`Étape ${step}`"></div>
                         <div x-show="step === 1">
                             <div class="text-lg font-bold text-gray-700 leading-tight">Choisir le montant</div>
@@ -140,6 +140,15 @@
                 <div class="max-w-3xl mx-auto h-20 p-5 bg-white rounded-t-xl drop-shadow-[0_-6px_6px_rgba(0,0,0,0.1)]">
                     <div class="flex justify-between">
                         <div class="mr-2">
+                            <x-secondary-button x-show="step == 1" @click="history.back()">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="sm:hidden h-4"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                <span class="hidden sm:block">Annuler</span>
+                            </x-secondary-button>
                             <x-secondary-button x-show="step > 1" @click="step--">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="sm:hidden h-4"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
