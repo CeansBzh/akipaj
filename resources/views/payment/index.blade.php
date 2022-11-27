@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Historique de mes virements</h2>
             <x-primary-link href="{{ route('payments.create') }}">
-                Envoyer un virement
+                Nouveau virement
             </x-primary-link>
         </div>
     </x-slot>
