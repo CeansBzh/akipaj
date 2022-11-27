@@ -1,5 +1,5 @@
 <section>
-    <form method="post" action="{{ route('payment.store') }}">
+    <form method="post" action="{{ route('payments.store') }}">
         @csrf
         <div x-data="app()" x-cloak>
             <div class="max-w-xl mx-auto px-4 py-2 flex items-center justify-center">

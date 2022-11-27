@@ -27,9 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profil', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profil', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/virements', [PaymentController::class, 'index'])->name('payment.index');
-    Route::get('/virements/create', [PaymentController::class, 'create'])->name('payment.create');
-    Route::post('/virements', [PaymentController::class, 'store'])->name('payment.store');
+    Route::get('/virements', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('/virements/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/virements', [PaymentController::class, 'store'])->name('payments.store');
 
     Route::middleware('role:member')->group(function () {
         Route::resources([

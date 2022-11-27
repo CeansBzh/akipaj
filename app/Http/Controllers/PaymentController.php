@@ -7,6 +7,7 @@ use Stripe\StripeClient;
 use App\Enum\AlertLevelEnum;
 use Stripe\Exception\CardException;
 use App\Http\Requests\PaymentRequest;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -26,7 +27,7 @@ class PaymentController extends Controller
     public function index()
     {
         return view('payment.index', [
-            'payments' => Auth::user()->payments->paginate(30),
+            'payments' => Payment::where('user_id', Auth::id())->paginate(30),
         ]);
     }
 
