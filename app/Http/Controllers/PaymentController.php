@@ -7,8 +7,9 @@ use Stripe\StripeClient;
 use App\Enum\AlertLevelEnum;
 use Stripe\Exception\CardException;
 use App\Http\Requests\PaymentRequest;
+use Illuminate\Support\Facades\Auth;
 
-class StripeController extends Controller
+class PaymentController extends Controller
 {
 
     private $stripe;
@@ -18,7 +19,21 @@ class StripeController extends Controller
     }
 
     /**
-     * payment view
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('payment.index', [
+            'payments' => Auth::user()->payments->paginate(30),
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -26,7 +41,10 @@ class StripeController extends Controller
     }
 
     /**
-     * handling payment with POST
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\PaymentRequest  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(PaymentRequest $request)
     {
@@ -49,7 +67,13 @@ class StripeController extends Controller
         return back()->with('success', true);
     }
 
-    private function createToken($cardData)
+    /**
+     * Create a Stripe token.
+     *
+     * @param  \App\Http\Requests\PaymentRequest  $request
+     * @return array<string, mixed>
+     */
+    private function createToken(PaymentRequest $cardData)
     {
         $token = null;
         try {
@@ -70,6 +94,14 @@ class StripeController extends Controller
         return $token;
     }
 
+    /**
+     * Create a Stripe charge.
+     *
+     * @param  string  $tokenId
+     * @param  int  $amount
+     * @param  string  $message
+     * @return array<string, mixed>
+     */
     private function createCharge($tokenId, $amount, $message)
     {
         $charge = null;

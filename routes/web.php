@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PhotoController;
-use App\Http\Controllers\StripeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -23,12 +23,13 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profil/modifier', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profil', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profil', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/virement', [StripeController::class, 'create']);
-    Route::post('/virement', [StripeController::class, 'store'])->name('payment.store');
+    Route::get('/virements', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/virements/create', [PaymentController::class, 'create'])->name('payment.create');
+    Route::post('/virements', [PaymentController::class, 'store'])->name('payment.store');
 
     Route::middleware('role:member')->group(function () {
         Route::resources([
