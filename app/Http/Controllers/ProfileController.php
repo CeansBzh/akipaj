@@ -18,7 +18,9 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('profile.index');
+        return view('profile.index')->with([
+            'latestPayments' => Auth::user()->payments()->latest()->take(5)->get(),
+        ]);
     }
 
     /**
