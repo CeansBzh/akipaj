@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
             'photos' => PhotoController::class,
         ]);
         Route::resource('albums', AlbumController::class)->only(['index', 'show']);
+        Route::resource('events', EventController::class);
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
