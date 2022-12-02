@@ -13,7 +13,7 @@
             <x-input-label for="name_input" value="Nom" />
             <x-text-input id="name_input" name="name" type="text" class="mt-1 block w-full" :value="$event->name"
                 placeholder="WK Boat Açores" maxlength="50" required autofocus />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <x-input-error class="mt-2" :messages="$errors->updateEvent->get('name')" />
         </div>
 
         <div class="flex space-x-5 w-full">
@@ -21,14 +21,14 @@
                 <x-input-label for="start_time_input" value="Date de début" />
                 <x-text-input id="start_time_input" name="start_time" type="date" class="mt-1 block w-full"
                     :value="$event->start_time->format('Y-m-d')" :min="date('Y-m-d')" required />
-                <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
+                <x-input-error class="mt-2" :messages="$errors->updateEvent->get('start_time')" />
             </div>
 
             <div>
                 <x-input-label for="end_time_input" value="Date de fin" />
                 <x-text-input id="end_time_input" name="end_time" type="date" class="mt-1 block w-full"
                     :value="$event->end_time->format('Y-m-d')" :min="date('Y-m-d')" required />
-                <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
+                <x-input-error class="mt-2" :messages="$errors->updateEvent->get('end_time')" />
             </div>
         </div>
 
@@ -38,26 +38,26 @@
                 placeholder="Description de l'événement" maxlength="140" required>
                 {{ $event->description }}
             </x-textarea-input>
-            <x-input-error class="mt-2" :messages="$errors->get('description')" />
+            <x-input-error class="mt-2" :messages="$errors->updateEvent->get('description')" />
         </div>
 
         <div>
             <x-input-label for="location_input" value="Adresse (facultatif)" />
             <x-text-input id="location_input" name="location" type="text" class="mt-1 block w-full"
                 :value="$event->location" placeholder="Port de plaisance de Horta, Portugal" maxlength="255" />
-            <x-input-error class="mt-2" :messages="$errors->get('location')" />
+            <x-input-error class="mt-2" :messages="$errors->updateEvent->get('location')" />
         </div>
 
         <div>
             <x-input-label for="image_input" value="Image de couverture (facultatif)" />
             <input id="image_input" name="image" type="file" class="mt-1 block w-full" accept="image/png, image/jpeg"
                 x-on:change="fileChanged">
-            <x-input-error class="mt-2" :messages="$errors->get('image')" />
+            <x-input-error class="mt-2" :messages="$errors->updateEvent->get('image')" />
         </div>
 
         <div>
             <input x-model="imageRemoved" name="remove_image" type="checkbox" class="hidden" aria-hidden="true">
-            <x-input-error class="mt-2" :messages="$errors->get('remove_image')" />
+            <x-input-error class="mt-2" :messages="$errors->updateEvent->get('remove_image')" />
         </div>
 
         <div id="image_display" class="relative" x-show="!imageRemoved">

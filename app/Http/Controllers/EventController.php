@@ -16,7 +16,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        return view('event.index')->with('events', Event::where('start_time', '>=', now())->orderBy('start_time')->get());
+        return view('event.index')->with('events', Event::where('start_time', '>=', date('Y-m-d'))->orderBy('start_time')->get());
     }
 
     /**
@@ -40,7 +40,7 @@ class EventController extends Controller
         $request->validate([
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:140',
-            'start_time' => 'required|date|after_or_equal:now',
+            'start_time' => 'required|date|after_or_equal:today',
             'end_time' => 'required|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
             'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
@@ -94,7 +94,7 @@ class EventController extends Controller
     public function update(Request $request, $id)
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
-        $request->validate([
+        $request->validateWithBag('updateEvent', [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:140',
             'start_time' => 'required|date|after_or_equal:now',
@@ -139,6 +139,15 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $event = Event::findOrFail($id);
+        if ($event->imagePath) {
+            $filePath = 'public/events/' . basename($event->imagePath);
+            Storage::delete($filePath);
+        }
+        $event->delete();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Événement supprimé avec succès.');
+
+        return redirect()->route('events.index');
     }
 }

@@ -11,6 +11,10 @@
                 @include('event.partials.edit-event-form')
             </div>
 
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                @include('event.partials.delete-event-form')
+            </div>
+
         </div>
     </div>
 
