@@ -39,8 +39,9 @@
                             </x-responsive-nav-link>
                         </x-slot>
                         </x-nav-link-parent>
-                        <x-nav-link class="w-1/3" href="#" :active="false">
-                            {{ __('L\'asso') }}
+                        <x-nav-link class="w-1/3" :href="route('events.index')"
+                            :active="request()->routeIs('events.*')">
+                            Événements
                         </x-nav-link>
                         <x-nav-link class="w-1/3" href="#" :active="false">
                             {{ __('L\'asso') }}
@@ -125,7 +126,10 @@
                         {{ __('Voir les albums') }}
                     </x-responsive-nav-link>
                 </x-slot>
-                </x-responsive-nav-link-parent>
+            </x-responsive-nav-dropdown>
+            <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
+                Événements
+            </x-responsive-nav-link>
         </div>
 
         {{-- Responsive Settings Options --}}
