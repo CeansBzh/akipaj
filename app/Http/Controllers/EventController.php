@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Storage;
 class EventController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Event::class, 'event');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -65,33 +75,33 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Event $event
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Event $event)
     {
-        return view('event.show')->with('event', Event::findOrFail($id));
+        return view('event.show')->with('event', Event::findOrFail($event->id));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Event $event
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Event $event)
     {
-        return view('event.edit')->with('event', Event::findOrFail($id));
+        return view('event.edit')->with('event', Event::findOrFail($event->id));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Event $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Event $event)
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request->validateWithBag('updateEvent', [
@@ -104,7 +114,7 @@ class EventController extends Controller
             'remove_image' => 'required|boolean',
         ]);
 
-        $event = Event::findOrFail($id);
+        $event = Event::findOrFail($event->id);
         $event->name = $request->name;
         $event->description = $request->description;
         $event->start_time = $request->start_time;
@@ -134,12 +144,12 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Event $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Event $event)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::findOrFail($event->id);
         if ($event->imagePath) {
             $filePath = 'public/events/' . basename($event->imagePath);
             Storage::delete($filePath);

@@ -50,9 +50,11 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            @can('update', $event)
                             <x-dropdown-link :href="route('events.edit', $event)">
                                 Modifier l'événement
                             </x-dropdown-link>
+                            @endcan
                             <x-dropdown-link href="#">
                                 Partager
                             </x-dropdown-link>
