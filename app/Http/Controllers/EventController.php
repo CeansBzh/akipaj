@@ -110,14 +110,19 @@ class EventController extends Controller
         $event->start_time = $request->start_time;
         $event->end_time = $request->end_time;
         $event->location = $request->location;
+
+        // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
+        if (($request->remove_image || $request->hasFile('image')) && $event->imagePath) {
+            $filePath = 'public/events/' . basename($event->imagePath);
+            if (Storage::delete($filePath)) {
+                $event->imagePath = null;
+            }
+        }
+        // Si une nouvelle image a été uploadée, on la sauvegarde
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $path = $request->file('image')->storeAs('public/events', $imageName);
             $event->imagePath = Storage::url($path);
-        } elseif ($request->remove_image && $event->imagePath) {
-            if (!Storage::exists($event->imagePath) || Storage::delete($event->imagePath)) {
-                $event->imagePath = null;
-            }
         }
         $event->save();
 
