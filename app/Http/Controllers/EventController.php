@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,7 +40,7 @@ class EventController extends Controller
         $request->validate([
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:140',
-            'start_time' => 'required|date',
+            'start_time' => 'required|date|after_or_equal:now',
             'end_time' => 'required|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
             'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
@@ -69,7 +70,7 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('event.show')->with('event', Event::findOrFail($id));
     }
 
     /**
@@ -80,7 +81,7 @@ class EventController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('event.edit')->with('event', Event::findOrFail($id));
     }
 
     /**
@@ -92,7 +93,37 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'description' => 'required|string|max:140',
+            'start_time' => 'required|date|after_or_equal:now',
+            'end_time' => 'required|date|after_or_equal:start_time',
+            'location' => 'nullable|string|max:255',
+            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
+            'remove_image' => 'required|boolean',
+        ]);
+
+        $event = Event::findOrFail($id);
+        $event->name = $request->name;
+        $event->description = $request->description;
+        $event->start_time = $request->start_time;
+        $event->end_time = $request->end_time;
+        $event->location = $request->location;
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->file('image')->storeAs('public/events', $imageName);
+            $event->imagePath = Storage::url($path);
+        } elseif ($request->remove_image && $event->imagePath) {
+            if (!Storage::exists($event->imagePath) || Storage::delete($event->imagePath)) {
+                $event->imagePath = null;
+            }
+        }
+        $event->save();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Événement modifié avec succès.');
+
+        return redirect()->route('events.show', $event);
     }
 
     /**
