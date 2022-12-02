@@ -151,8 +151,12 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        // TODO Supprimer album lorsqu'il est vide
-        $photo->delete();
+        $album = $photo->album;
+        if ($photo->delete()) {
+            if ($album->photos->count() == 0) {
+                $album->delete();
+            }
+        }
 
         return redirect()->route('photos.index')->with('success', 'Photo supprimée avec succès !');
     }
