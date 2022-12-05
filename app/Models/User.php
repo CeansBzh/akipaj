@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Role;
+use App\Models\Trip;
 use App\Models\Photo;
 use App\Models\Payment;
 use App\Traits\Commentable;
@@ -86,6 +87,14 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * Get the trips for the user.
+     */
+    public function trips()
+    {
+        return $this->belongsToMany(Trip::class);
     }
 
     /**
