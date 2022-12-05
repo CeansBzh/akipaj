@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Models\Album;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Photo>
@@ -22,8 +24,8 @@ class PhotoFactory extends Factory
         Storage::put('public/photos/' . $fileName, $image);
 
         return [
-            'album_id' => fake()->boolean(50) ? \App\Models\Album::inRandomOrder()->first()->id : null,
-            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
+            'album_id' => null,
+            'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
             'title' => fake()->sentence,
             'path' => Storage::url('public/photos/' . $fileName),
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,

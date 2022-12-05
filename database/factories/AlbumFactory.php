@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +11,26 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AlbumFactory extends Factory
 {
+
+    /**
+     * Configure the model factory.
+     *
+     * @return $this
+     */
+    public function configure()
+    {
+        return $this->afterCreating(function (Album $album) {
+            $photos = Photo::where('album_id', null)->inRandomOrder()->limit(5)->get();
+            if ($photos->count() > 1) {
+                $amount = rand(1, $photos->count());
+                $photos = $photos->take($amount);
+                $album->photos()->saveMany($photos);
+            } else {
+                $album->photos()->saveMany(\App\Models\Photo::factory(5)->create());
+            }
+        });
+    }
+
     /**
      * Define the model's default state.
      *

@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Trip;
+use App\Models\User;
+use App\Models\Album;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TripSeeder extends Seeder
 {
@@ -14,6 +17,15 @@ class TripSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Trip::factory(5)->create();
+        // Populate trips
+        Trip::factory(5)->create()->each(function ($trip) {
+            // Add users to trip
+            $users = User::inRandomOrder()->take(5)->get();
+            $trip->users()->saveMany($users);
+
+            // Add albums to trip
+            $albums = Album::inRandomOrder()->take(5)->get();
+            $trip->albums()->saveMany($albums);
+        });
     }
 }
