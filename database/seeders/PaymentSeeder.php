@@ -14,6 +14,6 @@ class PaymentSeeder extends Seeder
      */
     public function run()
     {
-        //
+        \App\Models\Payment::factory(10)->create();
     }
 }

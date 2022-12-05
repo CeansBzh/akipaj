@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,12 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            PaymentSeeder::class,
+            AlbumSeeder::class,
+            PhotoSeeder::class,
+            EventSeeder::class,
+            TripSeeder::class,
+            CommentSeeder::class,
         ]);
-
-        \App\Models\Album::factory(5)->create();
-        \App\Models\Photo::factory(10)->create();
-        \App\Models\Comment::factory(20)->create();
-        \App\Models\Payment::factory(10)->create();
-        \App\Models\Event::factory(5)->create();
     }
 }

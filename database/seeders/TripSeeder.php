@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PhotoSeeder extends Seeder
+class TripSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class PhotoSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Photo::factory(10)->create();
+        \App\Models\Trip::factory(5)->create();
     }
 }
