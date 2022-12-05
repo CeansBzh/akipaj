@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('imagePath')->nullable();
+            // $table->lineString('positions')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +33,7 @@ return new class extends Migration
      */
     public function down()
     {
+        File::cleanDirectory(storage_path('app/public/trips'));
         Schema::dropIfExists('trips');
     }
 };
