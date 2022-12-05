@@ -4,8 +4,9 @@
     </x-slot>
 
     <div class="p-2">
-        <img class="mx-auto" src="{{ $photo->path }}"
-            alt="{{ isset($photo->legend) ? substr($photo->legend, 0, 125) : 'Photo sans légende' }}">
+        <img class="mx-auto cursor-zoom-in" src="{{ $photo->path }}"
+            alt="{{ isset($photo->legend) ? substr($photo->legend, 0, 125) : 'Photo sans légende' }}" x-data=""
+            x-on:click.prevent="$dispatch('open-lightbox', 'photo-lightbox')">
         <div class="flex bg-white shadow-lg rounded-lg relative -mt-2 mx-auto max-w-md md:max-w-2xl ">
             <div class="flex items-start px-4 py-6 w-full">
                 <img class="w-12 h-12 rounded-full object-cover mr-4 shadow"
@@ -13,7 +14,9 @@
                     alt="Photo de profil">
                 <div class="grow">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-lg font-semibold text-gray-900 -mt-1 whitespace-nowrap truncate overflow-hidden">{{ $photo->user->name }}</h2>
+                        <h2
+                            class="text-lg font-semibold text-gray-900 -mt-1 whitespace-nowrap truncate overflow-hidden">
+                            {{ $photo->user->name }}</h2>
                         <small class="text-sm text-gray-700">Envoyée
                             {{ $photo->created_at->diffForHumans() }}</small>
                     </div>
@@ -52,5 +55,16 @@
 
         </div>
     </div>
+
+    <x-lightbox name="photo-lightbox" :photo="$photo">
+        <x-slot name="image">
+            <img class="max-h-screen block w-full object-contain" src="{{ $photo->path }}"
+                alt="{{ isset($photo->legend) ? substr($photo->legend, 0, 125) : 'Photo sans légende' }}">
+        </x-slot>
+
+        <p class="text-white text-center text-sm">Photo par - <span class="font-bold">{{ $photo->user->name }}</span>
+        </p>
+        <p class="text-white text-center text-sm">{{ $photo->title }}</p>
+    </x-lightbox>
 
 </x-app-layout>

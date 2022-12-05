@@ -7,15 +7,21 @@ use Livewire\Component;
 
 class Lightbox extends Component
 {
-    public $photo = null;
+    public $photo;
 
-    protected $listeners = ['openPhotoLightbox'];
+    protected $listeners = [
+        'openPhotoLightbox',
+    ];
 
-    public function openPhotoLightbox(Photo $photo)
+    public function mount()
     {
-        $this->photo = $photo;
-        $this->emit('commentsNeedUpdate', $photo->id, $photo::class);
-        $this->dispatchBrowserEvent('open-modal', 'photo-lightbox');
+        $this->photo = Photo::with('user:id,name')->first();
+    }
+
+    public function openPhotoLightbox($photoId)
+    {
+        $this->photo = Photo::with('user:id,name')->findOrFail($photoId, ['id', 'user_id', 'title', 'path', 'legend']);
+        $this->dispatchBrowserEvent('open-lightbox', 'photo-lightbox');
     }
 
     public function render()
