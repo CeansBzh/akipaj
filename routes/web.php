@@ -6,6 +6,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TripController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
         ]);
         Route::resource('albums', AlbumController::class)->only(['index', 'show']);
         Route::resource('events', EventController::class);
+        Route::resource('trips', TripController::class);
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {

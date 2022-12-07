@@ -8,13 +8,23 @@ use Illuminate\Http\Request;
 class TripController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Trip::class, 'trip');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return view('trip.index')->with('trips', Trip::orderBy('start_date')->get());
     }
 
     /**
