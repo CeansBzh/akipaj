@@ -14,11 +14,11 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto flex-col space-y-4 sm:px-6 lg:px-8">
 
-            <div class="pb-4">
+            <div class="p-4 sm:p-8">
                 @include('trip.partials.latest-trips')
             </div>
 
-            <div class="p-4 bg-white shadow sm:rounded-lg sm:px-8">
+            <div class="p-4 bg-white shadow sm:rounded-lg sm:p-8">
                 @include('trip.partials.trips-history')
             </div>
 

@@ -13,7 +13,7 @@
     <div
         class="relative rounded-3xl shadow-lg h-48 overflow-hidden w-full transform transition duration-300 ease-in-out hover:scale-105 sm:w-1/2 lg:w-1/3">
         <img src="{{ $trips[0]->imagePath ?? Vite::asset('resources/images/hero.jpg') }}"
-            alt="Image de couverture de la sortie {{ $trips[0]->title }}" class="object-cover w-full h-full">
+            alt="Image de couverture de la sortie {{ $trips[0]->title }}" class="object-cover w-full h-full select-none">
         <div class="absolute top-0 w-full h-full items-end justify-center">
             <a href="{{ route('trips.show', $trips[0]) }}"
                 class="text-white font-bold text-xl rounded-3xl absolute inset-0 p-4 focus:ring ring-sky-400 ring-inset">
@@ -26,7 +26,7 @@
     <div
         class="relative rounded-3xl shadow-lg h-48 w-1/2 overflow-hidden hidden transform transition duration-300 ease-in-out hover:scale-105 sm:block lg:w-1/3">
         <img src="{{ $trips[1]->imagePath ?? Vite::asset('resources/images/hero.jpg') }}"
-            alt="Image de couverture de la sortie {{ $trips[1]->title }}" class="object-cover w-full h-full">
+            alt="Image de couverture de la sortie {{ $trips[1]->title }}" class="object-cover w-full h-full select-none">
         <div class="absolute top-0 w-full h-full items-end justify-center">
             <a href="{{ route('trips.show', $trips[1]) }}"
                 class="text-white font-bold text-xl rounded-3xl absolute inset-0 p-4 focus:ring ring-sky-400 ring-inset">
@@ -39,7 +39,7 @@
     <div
         class="relative rounded-3xl shadow-lg h-48 w-1/3 overflow-hidden hidden transform transition duration-300 ease-in-out hover:scale-105 lg:block">
         <img src="{{ $trips[2]->imagePath ?? Vite::asset('resources/images/hero.jpg') }}"
-            alt="Image de couverture de la sortie {{ $trips[2]->title }}" class="object-cover w-full h-full">
+            alt="Image de couverture de la sortie {{ $trips[2]->title }}" class="object-cover w-full h-full select-none">
         <div class="absolute top-0 w-full h-full items-end justify-center">
             <a href="{{ route('trips.show', $trips[2]) }}"
                 class="text-white font-bold text-xl rounded-3xl absolute inset-0 p-4 focus:ring ring-sky-400 ring-inset">
