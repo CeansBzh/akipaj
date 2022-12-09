@@ -53,7 +53,12 @@
 
 @push('scripts')
 <script>
-    const YEAR_SPAN = range(@js(intval($trips[0] -> start_date -> format('Y'))), 2022);
+    let currentYear = new Date().getFullYear();
+    @if($trips->count() > 0)
+    const YEAR_SPAN = range(@js(intval($trips[0] -> start_date -> format('Y'))), currentYear);
+    @else
+    const YEAR_SPAN = range(currentYear, currentYear);
+    @endif
     const MONTH_NAMES = ['Jan', 'Fév', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
     const MONTH_YEAR = YEAR_SPAN.flatMap(d => range(0, 11).map(v => [v, d]));
 
@@ -92,7 +97,6 @@
         const x = e.pageX - slider.offsetLeft;
         const walk = (x - startX) * 1.5; //scroll-fast
         slider.scrollLeft = scrollLeft - walk;
-        console.log(walk);
     });
 </script>
 @endpush
