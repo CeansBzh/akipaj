@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TripController extends Controller
 {
@@ -34,7 +35,7 @@ class TripController extends Controller
      */
     public function create()
     {
-        //
+        return view('trip.create');
     }
 
     /**
@@ -45,7 +46,39 @@ class TripController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:50',
+            'description' => 'required|string|max:500',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'albums' => 'nullable|array',
+            'albums.*' => 'nullable|integer|distinct|exists:albums,id',
+            'users' => 'nullable|array',
+            'users.*' => 'nullable|integer|distinct|exists:users,id',
+            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
+        ]);
+
+        $trip = new Trip();
+        $trip->title = $request->title;
+        $trip->description = $request->description;
+        $trip->start_date = $request->start_date;
+        $trip->end_date = $request->end_date;
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->file('image')->storeAs('public/trips', $imageName);
+            $trip->imagePath = Storage::url($path);
+        }
+        $trip->save();
+
+        if ($request->has('albums')) {
+            $trip->albums()->attach($request->albums);
+        }
+
+        if ($request->has('users')) {
+            $trip->users()->attach($request->users);
+        }
+
+        return redirect()->route('trips.index');
     }
 
     /**
