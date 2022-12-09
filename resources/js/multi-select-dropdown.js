@@ -60,28 +60,38 @@ const MultiSelectDropdown = (params) => {
     multiSelect.loadOptions = () => {
       dropdownList.innerHTML = '';
 
-      Array.from(multiSelect.querySelectorAll('optgroup')).map((optgroup) => {
-        let optionGroup = newElement('div', { class: 'option-group', text: optgroup.label });
-        dropdownList.appendChild(optionGroup);
-        Array.from(optgroup.children).map((option) => {
-          let optionElement = newElement('div', { class: option.selected ? 'checked option' : 'option', srcElement: option });
-          let optionCheckbox = newElement('input', { type: 'checkbox', checked: option.selected });
-          optionElement.appendChild(optionCheckbox);
-          optionElement.appendChild(newElement('label', { text: option.text }));
-
-          optionElement.addEventListener('click', () => {
-            optionElement.classList.toggle('checked');
-            optionElement.querySelector('input').checked = !optionElement.querySelector('input').checked;
-            optionElement.srcElement.selected = !optionElement.srcElement.selected;
-            multiSelect.dispatchEvent(new Event('change'));
-          });
-          optionCheckbox.addEventListener('click', () => {
-            optionCheckbox.checked = !optionCheckbox.checked;
-          });
-          option.optionElement = optionElement;
-          dropdownList.appendChild(optionElement);
+      if (multiSelect.querySelectorAll('optgroup').length === 0) {
+        Array.from(multiSelect.options).map((option) => {
+          createOption(option);
         });
-      });
+      } else {
+        Array.from(multiSelect.querySelectorAll('optgroup')).map((optgroup) => {
+          let optionGroup = newElement('div', { class: 'option-group', text: optgroup.label });
+          dropdownList.appendChild(optionGroup);
+          Array.from(optgroup.children).map((option) => {
+            createOption(option);
+          });
+        });
+      }
+
+      function createOption(option) {
+        let optionElement = newElement('div', { class: option.selected ? 'checked option' : 'option', srcElement: option });
+        let optionCheckbox = newElement('input', { type: 'checkbox', checked: option.selected });
+        optionElement.appendChild(optionCheckbox);
+        optionElement.appendChild(newElement('label', { text: option.text }));
+
+        optionElement.addEventListener('click', () => {
+          optionElement.classList.toggle('checked');
+          optionElement.querySelector('input').checked = !optionElement.querySelector('input').checked;
+          optionElement.srcElement.selected = !optionElement.srcElement.selected;
+          multiSelect.dispatchEvent(new Event('change'));
+        });
+        optionCheckbox.addEventListener('click', () => {
+          optionCheckbox.checked = !optionCheckbox.checked;
+        });
+        option.optionElement = optionElement;
+        dropdownList.appendChild(optionElement);
+      }
 
       div.dropdownListWrapper = dropdownListWrapper;
 
@@ -271,7 +281,7 @@ const MultiSelectDropdown = (params) => {
       '.multiselect-dropdown-list .option-group': {
         'font-weight': 'bold',
       },
-      '.multiselect-dropdown-list .option': {
+      '.multiselect-dropdown-list .option-group ~ .option': {
         'margin-left': '20px',
       },
       '.multiselect-dropdown-list div': {
