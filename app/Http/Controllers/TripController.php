@@ -167,6 +167,21 @@ class TripController extends Controller
      */
     public function destroy(Trip $trip)
     {
-        //
+        $trip = Trip::findOrFail($trip->id);
+        // Remove image
+        if ($trip->imagePath) {
+            $filePath = 'public/trips/' . basename($trip->imagePath);
+            Storage::delete($filePath);
+        }
+        // Remove albums
+        $trip->albums()->detach();
+        // Remove users
+        $trip->users()->detach();
+        // Remove trip
+        $trip->delete();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Sortie supprimée avec succès.');
+
+        return redirect()->route('trips.index');
     }
 }
