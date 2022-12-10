@@ -69,6 +69,8 @@ class EventController extends Controller
         }
         $event->save();
 
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Événement créé avec succès.');
+
         return redirect()->route('events.index');
     }
 

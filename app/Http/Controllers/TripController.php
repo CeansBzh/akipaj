@@ -70,14 +70,16 @@ class TripController extends Controller
             $trip->imagePath = Storage::url($path);
         }
         $trip->save();
-
+        // Attach albums
         if ($request->has('albums')) {
             $trip->albums()->attach($request->albums);
         }
-
+        // Attach users
         if ($request->has('users')) {
             $trip->users()->attach($request->users);
         }
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Sortie créée avec succès.');
 
         return redirect()->route('trips.index');
     }
