@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trip;
+use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -100,7 +101,7 @@ class TripController extends Controller
      */
     public function edit(Trip $trip)
     {
-        //
+        return view('trip.edit')->with('trip', Trip::findOrFail($trip->id));
     }
 
     /**
@@ -112,7 +113,48 @@ class TripController extends Controller
      */
     public function update(Request $request, Trip $trip)
     {
-        //
+        $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
+        $request->validateWithBag('updateTrip', [
+            'title' => 'required|string|max:50',
+            'description' => 'required|string|max:500',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
+            'remove_image' => 'required|boolean',
+        ]);
+
+        $trip = Trip::findOrFail($trip->id);
+        $trip->title = $request->title;
+        $trip->description = $request->description;
+        $trip->start_date = $request->start_date;
+        $trip->end_date = $request->end_date;
+
+        // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
+        if (($request->remove_image || $request->hasFile('image')) && $trip->imagePath) {
+            $filePath = 'public/trips/' . basename($trip->imagePath);
+            if (Storage::delete($filePath)) {
+                $trip->imagePath = null;
+            }
+        }
+        // Si une nouvelle image a été uploadée, on la sauvegarde
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->file('image')->storeAs('public/trips', $imageName);
+            $trip->imagePath = Storage::url($path);
+        }
+        // Modification des albums
+        if ($request->has('albums')) {
+            $trip->albums()->sync($request->albums);
+        }
+        // Modification des utilisateurs
+        if ($request->has('users')) {
+            $trip->users()->sync($request->users);
+        }
+        $trip->save();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Sortie modifiée avec succès.');
+
+        return redirect()->route('trips.show', $trip);
     }
 
     /**

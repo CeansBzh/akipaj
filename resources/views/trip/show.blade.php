@@ -16,8 +16,35 @@
                 </h1>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="relative p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 @include('trip.partials.trip-details')
+
+                <div class="absolute top-4 right-3">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="group">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="h-6 text-gray-900">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            @can('update', $trip)
+                            <x-dropdown-link :href="route('trips.edit', $trip)">
+                                Modifier la sortie
+                            </x-dropdown-link>
+                            @endcan
+                            <x-dropdown-link href="#">
+                                Partager
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
             </div>
 
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
@@ -26,35 +53,5 @@
 
         </div>
     </div>
-
-    @push('scripts')
-    <script>function showTooltip(flag) {
-            switch (flag) {
-                case 1:
-                    document.getElementById("tooltip1").classList.remove("hidden");
-                    break;
-                case 2:
-                    document.getElementById("tooltip2").classList.remove("hidden");
-                    break;
-                case 3:
-                    document.getElementById("tooltip3").classList.remove("hidden");
-                    break;
-            }
-        }
-        function hideTooltip(flag) {
-            switch (flag) {
-                case 1:
-                    document.getElementById("tooltip1").classList.add("hidden");
-                    break;
-                case 2:
-                    document.getElementById("tooltip2").classList.add("hidden");
-                    break;
-                case 3:
-                    document.getElementById("tooltip3").classList.add("hidden");
-                    break;
-            }
-        }
-    </script>
-    @endpush
 
 </x-app-layout>
