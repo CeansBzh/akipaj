@@ -8,8 +8,8 @@
                     <x-nav-link class="w-1/3" :href="url('/')" :active="(url()->current() == url('/'))">
                         {{ __('Accueil') }}
                     </x-nav-link>
-                    <x-nav-link class="w-1/3" href="#" :active="false">
-                        {{ __('L\'asso') }}
+                    <x-nav-link class="w-1/3" :href="route('trips.index')" :active="request()->routeIs('trips.*')">
+                       Sorties
                     </x-nav-link>
                     <x-nav-link class="w-1/3" href="#" :active="false">
                         {{ __('Actualités') }}
@@ -127,6 +127,9 @@
                     </x-responsive-nav-link>
                 </x-slot>
             </x-responsive-nav-dropdown>
+            <x-responsive-nav-link :href="route('trips.index')" :active="request()->routeIs('trips.*')">
+                Sorties
+            </x-responsive-nav-link>            
             <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
                 Programme
             </x-responsive-nav-link>
