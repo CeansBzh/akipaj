@@ -75,7 +75,7 @@ const MultiSelectDropdown = (params) => {
       }
 
       function createOption(option) {
-        let optionElement = newElement('div', { class: option.selected ? 'checked option' : 'option', srcElement: option });
+        let optionElement = newElement('div', { class: option.selected ? ['checked','option'] : 'option', srcElement: option });
         let optionCheckbox = newElement('input', { type: 'checkbox', checked: option.selected });
         optionElement.appendChild(optionCheckbox);
         optionElement.appendChild(newElement('label', { text: option.text }));
