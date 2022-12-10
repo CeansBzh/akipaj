@@ -11,19 +11,6 @@ class TripPolicy
     use HandlesAuthorization;
 
     /**
-     * Perform pre-authorization checks.
-     *
-     * @param  \App\Models\User  $user
-     * @param  string  $ability
-     * @return void|bool
-     */
-    public function before(User $user, $ability)
-    {
-        // On autorise l'admin à tout faire sur toutes les photos sauf modifier celles des autres utilisateurs
-        return true; // TODO changer ça
-    }
-
-    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\User  $user
@@ -31,7 +18,7 @@ class TripPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->hasRole('member');
     }
 
     /**
@@ -43,7 +30,7 @@ class TripPolicy
      */
     public function view(User $user, Trip $trip)
     {
-        //
+        return $user->hasRole('member');
     }
 
     /**
@@ -54,7 +41,7 @@ class TripPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasRole('admin');
     }
 
     /**
@@ -66,7 +53,7 @@ class TripPolicy
      */
     public function update(User $user, Trip $trip)
     {
-        //
+        return $user->hasRole('admin');
     }
 
     /**
@@ -78,7 +65,7 @@ class TripPolicy
      */
     public function delete(User $user, Trip $trip)
     {
-        //
+        return $user->hasRole('admin');
     }
 
     /**
