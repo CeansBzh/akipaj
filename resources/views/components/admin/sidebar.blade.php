@@ -9,5 +9,8 @@
         <x-admin.sidebar-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
             Utilisateurs
         </x-admin.sidebar-link>
+        <x-admin.sidebar-link class="border-t-2 mt-2" :href="url('/')">
+            Retour au site
+        </x-admin.sidebar-link>
     </nav>
 </aside>

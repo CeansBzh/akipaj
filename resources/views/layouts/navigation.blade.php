@@ -9,7 +9,7 @@
                         {{ __('Accueil') }}
                     </x-nav-link>
                     <x-nav-link class="w-1/3" :href="route('trips.index')" :active="request()->routeIs('trips.*')">
-                       Sorties
+                        Sorties
                     </x-nav-link>
                     <x-nav-link class="w-1/3" href="#" :active="false">
                         {{ __('Actualités') }}
@@ -114,7 +114,7 @@
     <div :class="{'block': open, 'hidden': !open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="url('/')" :active="(url()->current() == url('/'))">
-                {{ __('Acceuil') }}
+                Accueil
             </x-responsive-nav-link>
             <x-responsive-nav-dropdown :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
                 <x-slot name="name">Galerie</x-slot>
@@ -129,7 +129,7 @@
             </x-responsive-nav-dropdown>
             <x-responsive-nav-link :href="route('trips.index')" :active="request()->routeIs('trips.*')">
                 Sorties
-            </x-responsive-nav-link>            
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
                 Programme
             </x-responsive-nav-link>
