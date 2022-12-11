@@ -54,7 +54,7 @@ class ProfileController extends Controller
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Modifications sauvegardées.');
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('status', $request->status());
     }
 
     /**

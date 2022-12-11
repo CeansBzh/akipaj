@@ -1,7 +1,7 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">Informations du compte</h2>
-        <p class="mt-1 text-sm text-gray-600">Modifiez le nom de votre compte et votre adresse mail.</p>
+        <p class="mt-1 text-sm text-gray-600">Nous utiliserons votre adresse mail pour tous les messages relatifs à l'activité du site.</p>
     </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
@@ -13,7 +13,7 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" value="Nom" />
+            <x-input-label for="name" value="Nom (visible pour les autres utilisateurs)" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)"
                 required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
