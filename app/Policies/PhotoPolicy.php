@@ -19,8 +19,7 @@ class PhotoPolicy
      */
     public function before(User $user, $ability)
     {
-        // On autorise l'admin à tout faire sur toutes les photos sauf modifier celles des autres utilisateurs
-        return $user->roles->contains('name', 'admin') && $ability != 'update' ? true : null;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -31,7 +30,7 @@ class PhotoPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->roles->contains('name', 'member');
+        return $user->hasRole('member');
     }
 
     /**
@@ -43,7 +42,7 @@ class PhotoPolicy
      */
     public function view(User $user, Photo $photo)
     {
-        return $user->id === $photo->user_id;
+        return $user->hasRole('member');
     }
 
     /**
@@ -54,7 +53,7 @@ class PhotoPolicy
      */
     public function create(User $user)
     {
-        return $user->roles->contains('name', 'member');
+        return $user->hasRole('member');
     }
 
     /**

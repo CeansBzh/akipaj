@@ -132,7 +132,7 @@ class PhotoController extends Controller
      */
     public function update(Request $request, Photo $photo)
     {
-        $request->validate([
+        $request->validateWithBag('updatePhoto', [
             'title' => 'required|max:255',
             'legend' => 'nullable|max:2048',
             'taken' => 'nullable|date',
