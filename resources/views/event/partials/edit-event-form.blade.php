@@ -1,4 +1,4 @@
-<section class="max-w-2xl mx-auto" x-data="app()" x-init="init()">
+<section class="max-w-2xl mx-auto" x-data="editEvent()" x-init="init()">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Modifier un événement</h2>
         <p class="mt-1 text-sm text-gray-600">L'événement sera mis à jour immédiatement.</p>
@@ -51,7 +51,7 @@
         <div>
             <x-input-label for="image_input" value="Image de couverture (facultatif)" />
             <input id="image_input" name="image" type="file" class="mt-1 block w-full" accept="image/png, image/jpeg"
-                x-on:change="fileChanged">
+                @change="resizeImage">
             <x-input-error class="mt-2" :messages="$errors->updateEvent->get('image')" />
         </div>
 
@@ -60,9 +60,9 @@
             <x-input-error class="mt-2" :messages="$errors->updateEvent->get('remove_image')" />
         </div>
 
-        <div id="image_display" class="relative" x-show="!imageRemoved">
-            <img src="{{ $event->imagePath }}" alt="Image de couverture de l'événement {{ $event->name }}"
-                class="h-64 w-full object-cover rounded-xl">
+        <div class="relative" x-show="!imageRemoved">
+            <img id="image_display" src="{{ $event->imagePath }}"
+                alt="Image de couverture de l'événement {{ $event->name }}" class="h-64 w-full object-cover rounded-xl">
             <button class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -78,23 +78,19 @@
     </form>
 </section>
 
+
 @push('scripts')
 <script>
-    function app() {
+    const MAX_WIDTH = 2560;
+    const MAX_HEIGHT = 1600;
+    const MIME_TYPE = "image/jpeg";
+    const QUALITY = 0.8;
+
+    function editEvent() {
         return {
-            init() {
-                this.imageRemoved = document.getElementById('image_display').getElementsByTagName('img')[0].getAttribute('src') == "";
-            },
             imageRemoved: false,
-            removeImage: function () {
-                this.imageRemoved = confirm('Supprimer l\'image de l\'événement ?');
-                if (this.imageRemoved) {
-                    document.getElementById('image_input').value = "";
-                }
-            },
-            fileChanged(event) {
-                this.fileToDataUrl(event, src => document.getElementById('image_display').getElementsByTagName('img')[0].src = src);
-                this.imageRemoved = false;
+            init() {
+                this.imageRemoved = document.getElementById('image_display').getAttribute('src') == '';
             },
             fileToDataUrl(event, callback) {
                 if (!event.target.files.length) return
@@ -105,6 +101,48 @@
                 reader.readAsDataURL(file)
                 reader.onload = e => callback(e.target.result)
             },
+            removeImage: function () {
+                this.imageRemoved = confirm('Supprimer l\'image de la sortie ?');
+                if (this.imageRemoved) {
+                    document.getElementById('image_input').value = '';
+                }
+            },
+            resizeImage(event) {
+                const file = event.target.files[0];
+                const blobURL = URL.createObjectURL(file);
+                const img = new Image();
+                const dataTransfer = new DataTransfer();
+                img.src = blobURL;
+                img.onerror = function () {
+                    URL.revokeObjectURL(this.src);
+                    // Handle the failure properly
+                    console.log("Cannot load image");
+                };
+                img.onload = () => {
+                    URL.revokeObjectURL(this.src);
+                    const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                    const canvas = document.createElement("canvas");
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                    canvas.toBlob(
+                        (blob) => {
+                            dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
+                            event.target.files = dataTransfer.files
+                            this.fileToDataUrl(event, src => document.getElementById('image_display').src = src);
+                            this.imageRemoved = false;
+                            return;
+                        },
+                        MIME_TYPE,
+                        QUALITY
+                    );
+                };
+            },
+            calculateSize(img, maxWidth, maxHeight) {
+                let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+                return [img.naturalWidth * ratio, img.naturalHeight * ratio];
+            }
         }
     }
 </script>
