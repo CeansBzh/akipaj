@@ -1,4 +1,4 @@
-<section class="max-w-2xl mx-auto" x-data="app()" x-init="init()">
+<section class="max-w-2xl mx-auto">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Modifier les détails</h2>
         <p class="mt-1 text-sm text-gray-600">Partagez aux autres membres une anecdote croustillante sur cette photo !</p>
