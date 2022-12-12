@@ -55,7 +55,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <img class="w-8 h-8 rounded-full"
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+                            src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                             alt="Photo de profil">
                         <button
                             class="flex items-center font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
@@ -138,9 +138,17 @@
         {{-- Responsive Settings Options --}}
         @if(Auth::user() != null)
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="px-4 flex space-x-3 items-center">
+                <div class="overflow-hidden">
+                    <img class="w-11 mb-1 rounded-full object-contain"
+                        src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
+                        alt="Photo de profil">
+                </div>
+
+                <div class="flex-grow">
+                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">

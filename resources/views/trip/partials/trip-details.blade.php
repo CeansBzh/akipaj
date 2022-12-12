@@ -14,9 +14,9 @@ $userCount = $trip->users->count();
                     <p class="text-sm text-gray-600">Du</p>
                     <p>{{ $trip->start_date->translatedFormat('d M Y') }}</p>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" class="feather feather-arrow-right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-arrow-right">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
@@ -32,10 +32,9 @@ $userCount = $trip->users->count();
                 @foreach($trip->users as $user)
                 <div class="group relative p-1">
                     <img class="w-11 h-11 rounded-full object-cover object-right"
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+                        src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                         alt="Photo de profil de {{ $user->name }}">
-                    <div
-                        class="absolute bottom-0 inset-x-0 flex-col items-center hidden mb-[100%] group-hover:flex">
+                    <div class="absolute bottom-0 inset-x-0 flex-col items-center hidden mb-[100%] group-hover:flex">
                         <span
                             class="relative z-10 w-max p-2 text-sm leading-none text-white whitespace-no-wrap bg-neutral-800 rounded-md shadow-lg">
                             {{ $user->name }}

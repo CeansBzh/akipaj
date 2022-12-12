@@ -10,7 +10,7 @@
         <div class="flex bg-white shadow-lg rounded-lg relative -mt-2 mx-auto max-w-md md:max-w-2xl ">
             <div class="flex items-start px-4 py-6 w-full">
                 <img class="w-12 h-12 rounded-full object-cover mr-4 shadow"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+                    src="{{ $photo->user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                     alt="Photo de profil">
                 <div class="grow">
                     <div class="flex items-center justify-between">

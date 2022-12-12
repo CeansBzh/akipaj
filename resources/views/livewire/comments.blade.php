@@ -6,7 +6,7 @@
     @foreach($comments as $comment)
     <div class="relative grid grid-cols-1 gap-3 p-4 mb-8 border rounded-lg bg-white shadow-lg">
         <div class="relative flex gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+            <img src="{{$comment->user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                 class="relative rounded-lg -top-8 -mb-4 bg-white border h-20 w-20"
                 alt="Photo de profil de {{ $comment->user->name }}" loading="lazy">
             <div class="flex flex-col w-full">

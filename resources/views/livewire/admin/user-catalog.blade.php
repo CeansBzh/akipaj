@@ -53,7 +53,7 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 w-10 h-10">
                                     <img class="w-full h-full rounded-full"
-                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+                                        src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                                         alt="Photo de profil de {{ $user->name }}" />
                                 </div>
                                 <div class="ml-3">

@@ -4,7 +4,7 @@
         <x-dropdown align="right" width="48">
             <x-slot name="trigger">
                 <img class="w-8 h-8 rounded-full"
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+                    src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                     alt="Photo de profil">
                 <button
                     class="flex items-center font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
@@ -40,7 +40,7 @@
 <!-- Mobile Header & Nav -->
 <header x-data="{ open: false }" class="w-full bg-sky-700 py-5 px-6 sm:hidden">
     <div class="flex items-center justify-between">
-        <a href="index.html" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">Akipaj</a>
+        <a href="{{ url('/') }}" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">Akipaj</a>
         <button @click="open = !open"
             class="p-1 rounded-md text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
             <svg class="h-8 w-8" stroke="currentColor" fill="none" viewBox="0 0 24 24">
