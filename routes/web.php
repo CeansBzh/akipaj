@@ -7,6 +7,7 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,7 @@ use App\Http\Controllers\TripController;
 */
 
 Route::get('/', function () {
-    if(auth()->check()) {
+    if (auth()->check()) {
         return view('homepage.index');
     } else {
         return view('index');
@@ -50,9 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', function () {
             return view('admin.index');
         })->name('admin.index');
-        Route::get('/utilisateurs', function () {
-            return view('admin.user.index');
-        })->name('admin.users');
+        Route::resource('utilisateurs', AdminUserController::class, ['as' => 'admin']);
     });
 });
 

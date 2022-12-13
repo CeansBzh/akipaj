@@ -6,7 +6,7 @@
         <x-admin.sidebar-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
             Panneau d'accueil
         </x-admin.sidebar-link>
-        <x-admin.sidebar-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
+        <x-admin.sidebar-link :href="route('admin.utilisateurs.index')" :active="request()->routeIs('admin.utilisateurs.index')">
             Utilisateurs
         </x-admin.sidebar-link>
         <x-admin.sidebar-link class="border-t-2 mt-2" :href="url('/')">
