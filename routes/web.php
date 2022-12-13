@@ -20,7 +20,11 @@ use App\Http\Controllers\TripController;
 */
 
 Route::get('/', function () {
-    return view('index');
+    if(auth()->check()) {
+        return view('homepage.index');
+    } else {
+        return view('index');
+    }
 });
 
 Route::middleware('auth')->group(function () {
