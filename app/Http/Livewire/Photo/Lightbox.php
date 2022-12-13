@@ -26,6 +26,6 @@ class Lightbox extends Component
 
     public function render()
     {
-        return view('livewire.photo.lightbox');
+        return view('photo.livewire.lightbox');
     }
 }

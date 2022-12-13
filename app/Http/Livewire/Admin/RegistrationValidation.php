@@ -20,6 +20,6 @@ class RegistrationValidation extends Component
 
     public function render()
     {
-        return view('livewire.admin.registration-validation');
+        return view('admin.livewire.registration-validation');
     }
 }
