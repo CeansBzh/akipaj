@@ -1,11 +1,11 @@
 <x-member-layout>
-    <section>
+    <div>
         @include('homepage.partials.hero')
-    </section>
+    </div>
 
     <div class="max-w-screen-xl mx-auto">
-        <section>
+        <div>
             @include('homepage.partials.tabs')
-        </section>
+        </div>
     </div>
 </x-member-layout>

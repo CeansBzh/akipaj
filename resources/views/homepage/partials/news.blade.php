@@ -24,7 +24,7 @@ collect([
 ]);
 @endphp
 
-<div
+<section
     class="flex flex-col space-y-3 max-w-md mx-auto md:grid md:grid-cols-[1.3fr_repeat(2,1fr)] md:gap-3 md:space-y-0 md:max-w-none">
     {{-- first article --}}
     <div class="relative shadow-sm overflow-hidden group/card">
@@ -82,4 +82,4 @@ collect([
         </div>
     </div>
     @endforeach
-</div>
+</section>

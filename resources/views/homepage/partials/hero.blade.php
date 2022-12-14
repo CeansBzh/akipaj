@@ -1,4 +1,4 @@
-<div class="md:bg-hero bg-cover bg-center bg-no-repeat">
+<section class="md:bg-hero bg-cover bg-center bg-no-repeat">
     <div class="max-w-screen-2xl mx-auto md:flex">
         {{-- Left/Top side --}}
         <div class="bg-hero bg-cover bg-center bg-no-repeat md:bg-none md:flex-grow">
@@ -40,4 +40,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>
