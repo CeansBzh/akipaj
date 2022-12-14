@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Modifier la sortie</h2>
     </x-slot>
@@ -18,4 +18,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-member-layout>

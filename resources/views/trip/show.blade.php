@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     @if($trip->imagePath)
     <div class="absolute w-screen">
         <div class="absolute inset-0 from-transparent via-gray-100/10 to-gray-100 sm:bg-gradient-to-b">
@@ -54,4 +54,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-member-layout>

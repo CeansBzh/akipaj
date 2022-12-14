@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     <div class="py-12">
         <div class="max-w-3xl mx-auto">
 
@@ -75,4 +75,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-member-layout>

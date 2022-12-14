@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $photo->title }}</h2>
     </x-slot>
@@ -67,4 +67,4 @@
         <p class="text-white text-center text-sm">{{ $photo->title }}</p>
     </x-lightbox>
 
-</x-app-layout>
+</x-member-layout>

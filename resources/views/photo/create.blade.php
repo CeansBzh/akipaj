@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
 	<form action="{{ route('photos.store') }}" method="POST" enctype="multipart/form-data">
 		@csrf
 		<div x-data="app()" x-init="changeNextStepButton(null)" x-cloak>
@@ -370,4 +370,4 @@
 	</script>
 	@endif
 	@endpush
-</x-app-layout>
+</x-member-layout>

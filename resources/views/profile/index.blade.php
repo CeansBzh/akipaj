@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Mon profil
@@ -41,4 +41,4 @@
             @endif
         </div>
     </div>
-</x-app-layout>
+</x-member-layout>

@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Toutes les photos</h2>
@@ -24,4 +24,4 @@
             {{ $photos->links() }}
         </div>
     </section>
-</x-app-layout>
+</x-member-layout>

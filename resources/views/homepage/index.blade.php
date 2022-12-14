@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-member-layout>
     <section>
         @include('homepage.partials.hero')
     </section>
@@ -8,4 +8,4 @@
             @include('homepage.partials.tabs')
         </section>
     </div>
-</x-app-layout>
+</x-member-layout>
