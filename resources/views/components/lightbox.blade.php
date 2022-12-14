@@ -62,6 +62,7 @@
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
+            @if(isset($photo))
             @can('update', $photo)
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
@@ -83,6 +84,7 @@
                 </x-slot>
             </x-dropdown>
             @endcan
+            @endif
         </div>
     </div>
 
