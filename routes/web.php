@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', function () {
             return view('admin.index');
         })->name('admin.index');
-        Route::resource('utilisateurs', AdminUserController::class, ['as' => 'admin']);
+        Route::resource('users', AdminUserController::class, ['as' => 'admin'])->except(['show']);
     });
 });
 

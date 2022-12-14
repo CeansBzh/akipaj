@@ -44,6 +44,10 @@
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Rôle
                         </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Actions
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,12 +79,15 @@
                                     $user->roles()->first()->display_name : 'Aucun rôle' }}</span>
                             </span>
                         </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="hover:underline">Modifier</a>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
             <div
-                class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
+                class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
                 {{ $users->links() }}
             </div>
         </div>
