@@ -1,6 +1,6 @@
 <div class="px-2">
 
-    <div class="my-2 mr-5">
+    <div class="my-2 sm:mr-5">
         <x-photos.gallery-search />
     </div>
 
