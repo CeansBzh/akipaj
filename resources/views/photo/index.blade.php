@@ -9,19 +9,6 @@
 
     <section class="overflow-hidden text-gray-700">
         <livewire:photo.lightbox />
-
-        <div class="px-5 py-2 mx-auto md:px-12 lg:pt-5 lg:px-24">
-            {{ $photos->links() }}
-            <div
-                class="columns-2 gap-1 [column-fill:_balance] box-border before:box-inherit after:box-inherit {{ $photos->count() >= 3 ? 'md:columns-3' : '' }} {{ $photos->count() >= 4 ? 'lg:columns-4' : ''}}">
-                @foreach ($photos as $photo)
-                <button onclick="Livewire.emit('openPhotoLightbox', '{{ $photo->id }}')" class="block cursor-pointer">
-                    <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
-                        class="h-full w-full mb-1" src="{{ $photo->path }}">
-                </button>
-                @endforeach
-            </div>
-            {{ $photos->links() }}
-        </div>
+        <livewire:photo.gallery />
     </section>
 </x-member-layout>
