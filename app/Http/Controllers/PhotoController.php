@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Photo\StorePhotoRequest;
 
 class PhotoController extends Controller
 {
@@ -45,18 +45,8 @@ class PhotoController extends Controller
      * @param  \App\Http\Requests\StorePhotoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePhotoRequest $request)
     {
-        $request['albumDate'] = $request['albumYear'] . '-' . $request['albumMonth'];
-        $request->validateWithBag('storePhoto', [
-            'files' => 'required|array|max:50',
-            'files.*' => 'required|image|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
-            'album' => 'integer|exists:albums,id|nullable',
-            'albumTitle' => 'string|nullable',
-            'albumDesc' => 'exclude_if:albumTitle,null|required|string',
-            'albumDate' => 'exclude_if:albumTitle,null|required|date',
-        ]);
-
         $albumid = null;
         if ($request->has('album')) {
             // Association à un album existant
@@ -72,25 +62,7 @@ class PhotoController extends Controller
         }
 
         foreach ($request->file('files') as $file) {
-            // Pour chaque fichier enregistrement dans le stockage du site
-            $path = $file->store('photos', 'public');
-            // Création d'une nouvelle photo dans la base de données
-            $photo = Photo::create([
-                'title' => $file->getClientOriginalName(),
-                'path' =>  Storage::url($path),
-                'legend' => $request->legend,
-                'taken' => $request->taken,
-            ]);
-            // Association de la photo à l'album si nécessaire
-            if (isset($albumid)) {
-                $photo->album()->associate($albumid);
-            }
-            // Création de la relation entre la photo et l'utilisateur, abonnement de l'utilisateur au fil de discussion
-            $photo->user()->associate($request->user());
-            $photo->subscriptions()->create([
-                'user_id' => $request->user()->id,
-            ]);
-            $photo->save();
+            $request->savePhoto($file, $albumid);
         }
 
         return back()->with('success', 'Photos mises en ligne avec succès !');
@@ -135,7 +107,7 @@ class PhotoController extends Controller
         $request->validateWithBag('updatePhoto', [
             'title' => 'required|max:255',
             'legend' => 'nullable|max:2048',
-            'taken' => 'nullable|date',
+            'taken_at' => 'nullable|date',
         ]);
 
         $photo->update($request->all());

@@ -1,7 +1,8 @@
 <section class="max-w-2xl mx-auto">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Modifier les détails</h2>
-        <p class="mt-1 text-sm text-gray-600">Partagez aux autres membres une anecdote croustillante sur cette photo !</p>
+        <p class="mt-1 text-sm text-gray-600">Partagez aux autres membres une anecdote croustillante sur cette photo !
+        </p>
     </header>
 
     <form method="post" action="{{ route('photos.update', $photo) }}" class="mt-6 space-y-6">
@@ -26,9 +27,10 @@
         </div>
 
         <div>
-            <x-input-label for="taken_input" value="Date (facultatif)" />
-            <x-text-input id="taken_input" name="taken" type="date" class="mt-1 block w-full" :value="$photo->taken" />
-            <x-input-error class="mt-2" :messages="$errors->updatePhoto->get('taken')" />
+            <x-input-label for="taken_at_input" value="Date (facultatif)" />
+            <x-text-input id="taken_at_input" name="taken_at" type="date" class="mt-1 block w-full"
+                :value="$photo->taken_at" />
+            <x-input-error class="mt-2" :messages="$errors->updatePhoto->get('taken_at')" />
         </div>
 
         <div class="flex items-center gap-4">

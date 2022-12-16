@@ -23,7 +23,9 @@ return new class extends Migration
             $table->string('title');
             $table->string('path');
             $table->text('legend')->nullable();
-            $table->date('taken')->nullable();
+            $table->double('latitude', )->nullable();
+            $table->double('longitude')->nullable();
+            $table->timestamp('taken_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -29,7 +29,7 @@ class PhotoFactory extends Factory
             'title' => fake()->sentence,
             'path' => Storage::url('public/photos/' . $fileName),
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,
-            'taken' => fake()->boolean(50) ? fake()->date : null,
+            'taken_at' => fake()->boolean(50) ? fake()->dateTime : null,
         ];
     }
 }

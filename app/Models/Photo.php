@@ -21,7 +21,11 @@ class Photo extends Model
         'title',
         'path',
         'legend',
-        'taken',
+        'taken_at',
+    ];
+
+    protected $casts = [
+        'taken_at' => 'datetime',
     ];
 
     /**

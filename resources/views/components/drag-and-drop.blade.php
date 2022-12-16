@@ -89,7 +89,9 @@
 </template>
 
 @push('scripts')
-<script type="text/javascript">
+<script type="module">
+    import copyExif from "{{ Vite::asset('resources/js/copy-exif.js') }}";
+
     const MAX_FILES = 50;
     const MAX_WIDTH = 2560;
     const MAX_HEIGHT = 1600;
@@ -153,12 +155,12 @@
             const img = new Image();
             img.src = blobURL;
             img.onerror = function () {
-                URL.revokeObjectURL(this.src);
+                URL.revokeObjectURL(img.src);
                 // Handle the failure properly
                 console.log("Cannot load image");
             };
             img.onload = () => {
-                URL.revokeObjectURL(this.src);
+                URL.revokeObjectURL(img.src);
                 const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
                 const canvas = document.createElement("canvas");
                 canvas.width = newWidth;
@@ -166,8 +168,8 @@
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0, newWidth, newHeight);
                 canvas.toBlob(
-                    (blob) => {
-                        dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
+                    async (blob) => {
+                        dataTransfer.items.add(new File([await copyExif(file, blob)], file.name, { type: MIME_TYPE }));
                         inputElement.files = dataTransfer.files;
                         addPreview(img, file.name);
                         resolve(true);
