@@ -15,6 +15,8 @@ class Gallery extends Component
     public $additionalLogic;
     public $paginate = 25;
 
+    protected $listeners = ['resetFilters'];
+
     public function resetFilters()
     {
         $this->usersFilter = null;

@@ -16,7 +16,7 @@ $users = \App\Models\User::all()
             Filtres
         </p>
 
-        <x-secondary-button class="w-min sm:w-auto" wire:click="resetFilters">
+        <x-secondary-button class="w-min sm:w-auto" wire:click="$emit('resetFilters')">
             Réinitialiser les filtres
         </x-secondary-button>
     </div>
@@ -24,8 +24,8 @@ $users = \App\Models\User::all()
     <div>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             <div wire:ignore>
-                <x-input-label for="users_input" value="Envoyées par" />
-                <x-multi-select-input id="users_input" name="users[]" search="true" wire:model="usersFilter">
+                <x-input-label for="users_filter" value="Envoyées par" />
+                <x-multi-select-input id="users_filter" name="users[]" search="true" wire:model="usersFilter">
                     @foreach ($users as $user)
                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
@@ -33,8 +33,8 @@ $users = \App\Models\User::all()
             </div>
 
             <div class="col-span-2" wire:ignore>
-                <x-input-label for="albums_input" value="Dans les albums" />
-                <x-multi-select-input id="albums_input" name="albums[]" search="true" wire:model="albumsFilter">
+                <x-input-label for="albums_filter" value="Dans les albums" />
+                <x-multi-select-input id="albums_filter" name="albums[]" search="true" wire:model="albumsFilter">
                     @foreach ($albums as $year => $albumPerYear)
                     <optgroup label="{{ $year }}">
                         @foreach ($albumPerYear as $album)
@@ -47,3 +47,16 @@ $users = \App\Models\User::all()
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        Livewire.on('resetFilters', () => {
+            document.querySelectorAll('select + div.multiselect-dropdown').forEach((el) => {
+                console.log(el);
+                el.dispatchEvent(new Event('reset', { bubbles: true }));
+            });
+        })
+    });
+</script>
+@endpush
