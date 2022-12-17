@@ -8,6 +8,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('albums', AlbumController::class)->only(['index', 'show']);
         Route::resource('events', EventController::class);
         Route::resource('trips', TripController::class);
+        Route::resource('articles', ArticleController::class);
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
