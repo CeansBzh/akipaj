@@ -22,7 +22,7 @@ switch ($width) {
 @endphp
 
 <div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-    <div class="flex items-center space-x-3 w-max" @click="open = ! open">
+    <div class="flex items-center space-x-3 w-max" @click="open = ! open" :aria-expanded="open">
         {{ $trigger }}
     </div>
 
