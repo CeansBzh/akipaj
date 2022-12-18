@@ -82,7 +82,11 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        if ($article->online || $this->authorize('update', auth()->user(), $article)) {
+            return view('article.show', ['article' => $article]);
+        } else {
+            abort(404);
+        }
     }
 
     /**
