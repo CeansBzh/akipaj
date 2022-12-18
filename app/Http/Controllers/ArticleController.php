@@ -97,7 +97,7 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
-        //
+        return view('article.edit')->with('article', $article);
     }
 
     /**
@@ -109,7 +109,27 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+        $request['online'] = filter_var($request['online'], FILTER_VALIDATE_BOOLEAN);
+        $request->validateWithBag('updateArticle', [
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
+            'online' => ['boolean'],
+            'summary' => ['nullable', 'string', 'max:350'],
+        ]);
+
+        $article->title = $request->title;
+        $article->body_md = $request->body;
+        $article->summary = $request->summary;
+        $article->online = $request->online;
+        // Generate slug for urls
+        $article->slug = Str::slug($article->title, '-') . '-' . now()->format('m-y');
+        // Generate html from markdown
+        $article->body_html = Str::markdown($article->body_md);
+        $article->save();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Article enregistré avec succès.');
+
+        return redirect()->route('articles.index');
     }
 
     /**
