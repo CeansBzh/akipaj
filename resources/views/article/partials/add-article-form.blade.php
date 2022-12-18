@@ -92,7 +92,7 @@
                 reader.onload = e => callback(e.target.result)
             },
             removeImage: function () {
-                this.showDisplay = !(confirm('Supprimer l\'image de la sortie ?'));
+                this.showDisplay = !(confirm('Supprimer l\'image de l\'article ?'));
                 if (!this.showDisplay) {
                     document.getElementById('image_input').value = '';
                 }
