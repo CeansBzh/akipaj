@@ -17,10 +17,24 @@ class Article extends Model
     protected $fillable = [
         'title',
         'slug',
+        'summary',
         'body_md',
-        'summary_md',
         'body_html',
-        'summary_html',
         'online',
+        'published_at',
     ];
+
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }
