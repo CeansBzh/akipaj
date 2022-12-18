@@ -29,7 +29,11 @@ class ArticleController extends Controller
     public function index()
     {
         return view('article.index', [
-            'articles' => Article::orderByDesc('updated_at')->where('online', true)->get(),
+            'articles' => Article::orderByDesc('updated_at')
+                ->when(!auth()->user()->hasRole('admin'), function ($query) {
+                    return $query->where('online', true);
+                })
+                ->get(),
         ]);
     }
 
