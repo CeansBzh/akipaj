@@ -140,6 +140,10 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $article->delete();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Article supprimé avec succès.');
+
+        return redirect()->route('articles.index');
     }
 }

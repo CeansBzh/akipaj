@@ -11,6 +11,10 @@
                 @include('article.partials.edit-article-form')
             </div>
 
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                @include('article.partials.delete-article-form')
+            </div>
+
         </div>
     </div>
 
