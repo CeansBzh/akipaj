@@ -19,6 +19,7 @@
             <div class="flex flex-col space-y-2">
                 <x-input-label for="editor" value="Contenu" />
                 <div id="editor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    {!! old('body') !!}
                 </div>
                 <x-input-error class="mt-2" :messages="$errors->get('body')" />
             </div>
@@ -29,7 +30,7 @@
             <x-input-label for="summary_input" value="Résumé" />
             <x-textarea-input id="summary_input" name="summary" class="mt-1 block w-full"
                 placeholder="Dans cet article nous parlerons de..." maxlength="350" rows="4">
-                {{ old('summary')}}
+                {{ old('summary') }}
             </x-textarea-input>
             <x-input-error class="mt-2" :messages="$errors->get('summary')" />
         </div>
@@ -38,8 +39,9 @@
             <x-primary-button>Enregistrer l'article</x-primary-button>
 
             <div class="flex space-x-2 items-center">
-                <x-input-label for="published_input" value="Publier l'article immédiatement" />
-                <input type="checkbox" name="online" class="rounded">
+                <x-input-label for="online_input" value="Publier l'article immédiatement" />
+                <input id="online_input" type="checkbox" name="online" class="rounded">
+                <x-input-error class="mt-2" :messages="$errors->get('online')" />
             </div>
         </div>
     </form>

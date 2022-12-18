@@ -51,8 +51,9 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $request['online'] = filter_var($request['online'], FILTER_VALIDATE_BOOLEAN);
         $request->validate([
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255', 'unique:articles'],
             'body' => ['required', 'string'],
             'online' => ['boolean'],
             'summary' => ['nullable', 'string', 'max:350'],
@@ -62,9 +63,11 @@ class ArticleController extends Controller
         $article->title = $request->title;
         $article->body_md = $request->body;
         $article->summary = $request->summary;
-        $article->online = $request->online ?? false;
+        $article->online = $request->online;
+        // Set published_at to now if online
+        $article->published_at = $request->online ? now() : null;
         // Generate slug for urls
-        $article->slug = Str::slug($article->title, '-') . '-' . now()->format('m-y');
+        $article->slug = Str::slug($article->title, '-');
         // Generate html from markdown
         $article->body_html = Str::markdown($article->body_md);
         $article->save();
@@ -82,11 +85,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        if ($article->online || $this->authorize('update', auth()->user(), $article)) {
-            return view('article.show', ['article' => $article]);
-        } else {
-            abort(404);
-        }
+        return view('article.show')->with('article', $article);
     }
 
     /**
@@ -121,8 +120,10 @@ class ArticleController extends Controller
         $article->body_md = $request->body;
         $article->summary = $request->summary;
         $article->online = $request->online;
+        // Set published_at to now if previously offline and now online
+        $article->published_at = !isset($article->published_at) && $request->online ? now() : $article->published_at;
         // Generate slug for urls
-        $article->slug = Str::slug($article->title, '-') . '-' . now()->format('m-y');
+        $article->slug = Str::slug($article->title, '-');
         // Generate html from markdown
         $article->body_html = Str::markdown($article->body_md);
         $article->save();

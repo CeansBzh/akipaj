@@ -30,7 +30,8 @@ class ArticlePolicy
      */
     public function view(User $user, Article $article)
     {
-        return $user->hasRole('member');
+        // Show the article if it's online or, if the article is offline, if the user is authorized to update it.
+        return $user->hasRole('member') && ($article->online || $this->update(auth()->user(), $article));
     }
 
     /**

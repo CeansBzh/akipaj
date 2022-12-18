@@ -41,8 +41,8 @@
             <x-primary-button>Enregistrer l'article</x-primary-button>
 
             <div class="flex space-x-2 items-center">
-                <x-input-label for="published_input" value="Publier l'article" />
-                <input type="checkbox" name="online" class="rounded" {{ $article->online ? 'checked' : '' }}>
+                <x-input-label for="online_input" value="Publier l'article" />
+                <input id="online_input" type="checkbox" name="online" class="rounded" {{ $article->online ? 'checked' : '' }}>
                 <x-input-error class="mt-2" :messages="$errors->updateArticle->get('online')" />
             </div>
         </div>
