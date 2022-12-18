@@ -43,6 +43,7 @@ class ArticleSeeder extends Seeder
             'body_html' => $body_html,
             'online' => true,
             'published_at' => now(),
+            'imagePath' => fake()->imageUrl(640, 480, 'cats'),
         ]);
     }
 }
