@@ -4,14 +4,14 @@
         <div class="absolute inset-0 bg-white/50 sm:bg-transparent sm:bg-gradient-to-r sm:from-white/60">
         </div>
         <div
-            class="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-[calc(100vh-6rem)] lg:items-center lg:px-8">
+            class="relative mx-auto max-w-screen-xl min-h-[27rem] h-[calc(100vh-6rem)] px-4 py-32 sm:px-6 flex items-center justify-center sm:justify-start lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
-                <h1 class="text-3xl">
-                    <strong class="block font-bold text-yellow-500 sm:text-5xl">
+                <div class="text-3xl">
+                    <h1 class="block font-bold text-yellow-500 sm:text-5xl">
                         Akipaj
-                    </strong>
+                    </h1>
                     Bienvenue à bord !
-                </h1>
+                </div>
 
                 <div class="mt-8 flex flex-wrap gap-4 text-center">
                     <a href="{{ route('register') }}"
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div
-            class="absolute -bottom-8 h-16 px-5 w-screen flex flex-nowrap z-10 space-x-1 justify-evenly text-lg text-white font-light md:px-40 xl:px-80">
+            class="absolute -bottom-8 h-16 px-5 w-screen flex flex-nowrap z-10 space-x-3 justify-evenly text-lg text-white font-light md:px-40 xl:px-80">
             <a href="#croisière"
                 class="w-1/3 h-full flex justify-center items-center text-center rounded-sm drop-shadow-md bg-sky-600 p-2 hover:bg-sky-500 hover:ring basis-1/3">
                 Croisière
@@ -43,11 +43,11 @@
     </section>
 
     {{-- About section --}}
-    <section class="min-h-screen">
+    <section class="max-w-screen-xl mx-auto">
         <div class="max-w-screen-xl mx-auto px-4 py-5 sm:px-6 md:py-24 lg:px-8">
             <div class="flex flex-wrap md:flex-nowrap">
                 <div class="self-center mb-3 md:mr-20">
-                    <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">
+                    <h2 class="text-4xl font-bold text-gray-900 sm:text-4xl">
                         L'association Akipaj
                     </h2>
                     <p class="my-8 text-gray-600 indent-5 text-justify">
@@ -72,7 +72,7 @@
     </section>
 
     {{-- Trips section --}}
-    <section id="croisière">
+    <section id="croisière" class="max-w-screen-2xl mx-auto">
         <div class="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:h-screen lg:grid-cols-2">
                 <div class="relative z-10 lg:py-16">
@@ -132,10 +132,11 @@
         <div class="max-w-screen-xl mx-auto py-12 sm:px-6 md:py-24 lg:px-8">
             <div class="text-center">
                 <h2 class="text-5xl mb-5">Photos</h2>
+                <p class="text-lg mb-5">Partagez vos photos avec les autres membres de l'association !</p>
                 <x-photo-carousel />
                 <a href="{{ route('photos.index') }}"
-                    class="block w-fit mx-auto rounded bg-sky-600 mt-8 px-12 py-3 font-medium text-white shadow hover:bg-sky-500 focus:outline-none focus:ring active:bg-sky-600">
-                    Voir toutes les photos
+                    class="mt-8 inline-block rounded border border-sky-600 bg-sky-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-sky-600 focus:outline-none focus:ring active:text-sky-500">
+                    Voir les photos
                 </a>
             </div>
         </div>

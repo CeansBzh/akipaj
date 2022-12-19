@@ -40,10 +40,6 @@
         height: 100%;
     }
 
-    #slider:hover .slide-track {
-        animation-play-state: paused;
-    }
-
     #slider .slide {
         height: auto;
     }
@@ -53,6 +49,7 @@
         height: 100%;
         width: 250px;
         margin: 0 30px;
+        user-select: none;
     }
 
     @media (min-width: 768px) {
