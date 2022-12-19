@@ -7,8 +7,6 @@ use Illuminate\Support\Str;
 use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\StoreArticleRequest;
-use App\Http\Requests\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
@@ -180,5 +178,27 @@ class ArticleController extends Controller
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Article supprimé avec succès.');
 
         return redirect()->route('articles.index');
+    }
+
+    /**
+     * Upload an image and return the url.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeImage(Request $request)
+    {
+        $request->validate([
+            'image' => ['required', 'mimes:png,jpg,jpeg,gif', 'max:10000', 'dimensions:max_width=800,max_height=800'],
+        ]);
+        $imageName = time() . '.' . $request->image->extension();
+        $path = $request->file('image')->storeAs('public/articles', $imageName);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'url' => Storage::url($path),
+            ],
+        ]);
     }
 }

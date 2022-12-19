@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
             return view('admin.index');
         })->name('admin.index');
         Route::resource('users', AdminUserController::class, ['as' => 'admin'])->except(['show']);
+        Route::post('/storeImage', [ArticleController::class, 'storeImage'])->prefix('articles');
     });
 });
 

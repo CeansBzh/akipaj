@@ -11,14 +11,4 @@ import.meta.glob([
     '../images/**',
 ]);
 
-import Editor from '@toast-ui/editor'
-import '@toast-ui/editor/dist/toastui-editor.css';
-
-if (document.querySelector('#editor')) {
-    window.editor = new Editor({
-        el: document.querySelector('#editor'),
-        height: '500px',
-        initialEditType: 'markdown',
-        previewStyle: 'vertical'
-    });
-}
+import './article-editor';

@@ -15,8 +15,8 @@
             <x-input-error class="mt-2" :messages="$errors->get('title')" />
         </div>
 
-        <div>
-            <div class="flex flex-col space-y-2">
+        <div class="w-screen relative left-[calc(-50vw+50%)] px-2">
+            <div class="max-w-screen-md mx-auto flex flex-col space-y-2">
                 <x-input-label for="editor" value="Contenu" />
                 <div id="editor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     {!! old('body') !!}
