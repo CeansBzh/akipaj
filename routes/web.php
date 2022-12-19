@@ -28,6 +28,9 @@ Route::get('/', function () {
         return view('index');
     }
 });
+Route::get('/mentions-legales', function () {
+    return view('legal');
+})->name('legal');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile.index');

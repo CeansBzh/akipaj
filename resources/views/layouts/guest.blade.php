@@ -9,7 +9,11 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Nunito:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Nunito:wght@200;300;400;500&display=swap"
+        rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -25,10 +29,8 @@
         <span class="text-sm text-gray-500 sm:text-center">{{ date('Y') }} Akipaj</span>
         <ul class="flex flex-wrap items-center mt-3 sm:mt-0">
             <li>
-                <a href="#" class="mr-4 text-sm text-gray-500 hover:underline md:mr-6">Politique de confidentialité</a>
-            </li>
-            <li>
-                <a href="#" class="text-sm text-gray-500 hover:underline">Contact</a>
+                <a href="{{ route('legal') }}" class="mr-4 text-sm text-gray-500 hover:underline md:mr-6">Mentions
+                    légales</a>
             </li>
         </ul>
     </footer>
