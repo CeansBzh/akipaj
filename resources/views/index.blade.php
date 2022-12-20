@@ -1,16 +1,46 @@
 <x-guest-layout>
     {{-- Hero section --}}
-    <section class="relative mb-10 bg-hero bg-cover bg-center bg-no-repeat">
-        <div class="absolute inset-0 bg-white/50 sm:bg-transparent sm:bg-gradient-to-r sm:from-white/60">
+    <section class="relative mb-10">
+        <div class="absolute inset-0">
+            <picture>
+                {{-- XL (1536px to infinite) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.avif') }}" media="(min-width: 1536px)"
+                    width="2600" height="1733" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.webp') }}" media="(min-width: 1536px)"
+                    width="2600" height="1733" type="image/webp">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.jpg') }}" media="(min-width: 1536px)"
+                    width="2600" height="1733" type="image/jpeg">
+                {{-- Large (1024px to 1535px) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.avif') }}"
+                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.webp') }}"
+                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/webp">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.jpg') }}"
+                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/jpeg">
+                {{-- Medium (768px to 1023px) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.avif') }}"
+                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.webp') }}"
+                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/webp">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.jpg') }}"
+                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/jpeg">
+                {{-- Small (to 767px) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero.avif') }}" media="(max-width: 767px)"
+                    width="767" height="511" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero.webp') }}" media="(max-width: 767px)"
+                    width="767" height="511" type="image/webp">
+                {{-- Fallback image = small JPG --}}
+                <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/images/hero/hero.jpg') }}"
+                    alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
+                    width="767" height="511" loading="lazy" decoding="async">
+            </picture>
         </div>
         <div
             class="relative mx-auto max-w-screen-xl min-h-[27rem] h-[calc(100vh-6rem)] px-4 py-32 sm:px-6 flex items-center justify-center sm:justify-start lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
                 <div class="text-3xl">
-                    <h1 class="block font-bold text-yellow-500 sm:text-5xl">
-                        Akipaj
-                    </h1>
-                    Bienvenue à bord !
+                    <h1 class="block font-bold text-yellow-500 shadow-gray-500 text-shadow sm:text-5xl">Akipaj</h1>
+                    <p class="shadow-gray-100 text-shadow">Bienvenue à bord !</p>
                 </div>
 
                 <div class="mt-8 flex flex-wrap gap-4 text-center">
@@ -62,9 +92,13 @@
                     </p>
                 </div>
                 <div class="mx-auto">
-                    <img class="ml-auto w-full max-w-xs h-auto md:max-w-sm lg:max-w-md md:w-auto"
-                        src="{{ Vite::asset('resources/images/index_1.jpg') }}"
-                        alt="Photo d'un bateau devant le coucher de soleil, photo prise aux Glénans en 2021.">
+                    <picture>
+                        <source srcset="{{ Vite::asset('resources/images/index_1.webp') }}" type="image/webp">
+                        <img class="ml-auto w-full max-w-xs h-auto md:max-w-sm lg:max-w-md md:w-auto"
+                            src="{{ Vite::asset('resources/images/index_1.jpg') }}"
+                            alt="Photo d'un bateau devant le coucher de soleil." width="448" height="672" loading="lazy"
+                            decoding="async">
+                    </picture>
                     <p class="w-fit ml-auto p-1 text-sm text-gray-500">Les Glénans - Juillet 2021</p>
                 </div>
             </div>
@@ -77,8 +111,13 @@
             <div class="grid grid-cols-1 lg:h-screen lg:grid-cols-2">
                 <div class="relative z-10 lg:py-16">
                     <div class="relative h-56 sm:h-80 lg:h-full">
-                        <img alt="House" src="{{ Vite::asset('resources/images/hero.bak.jpg') }}"
-                            class="absolute inset-0 h-full w-full object-cover" />
+                        <picture>
+                            <source srcset="{{ Vite::asset('resources/images/index_2.webp') }}" type="image/webp">
+                            <img class="absolute inset-0 h-full w-full object-cover"
+                                src="{{ Vite::asset('resources/images/index_2.jpg') }}"
+                                alt="Photo prise depuis le pont d'un bateau vers la proue, avec un couche de soleil sur la côte."
+                                width="631" height="420" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
 
@@ -126,7 +165,12 @@
         </div>
     </section>
 
-    <img class="w-screen max-h-72 object-cover" src="{{ Vite::asset('resources/images/index_2.jpg') }}" alt="">
+    <picture>
+        <source srcset="{{ Vite::asset('resources/images/index_3.webp') }}" type="image/webp">
+        <img class="w-screen max-h-72 object-cover" src="{{ Vite::asset('resources/images/index_3.jpg') }}"
+            alt="Photo artistique d'un noeud de cordage de bateau avec un ferry flou en arrière-plan." width="2600"
+            height="834" loading="lazy" decoding="async">
+    </picture>
 
     <section id="photos">
         <div class="max-w-screen-xl mx-auto py-12 sm:px-6 md:py-24 lg:px-8">

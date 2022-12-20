@@ -2,26 +2,26 @@
     <div class="absolute inset-0 overflow-hidden hidden md:block">
         <picture>
             {{-- XL (1536px to infinite) --}}
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.avif') }}" media="(min-width: 1536px)"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.avif') }}" media="(min-width: 1536px)"
                 width="2600" height="700" type="image/avif">
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.webp') }}" media="(min-width: 1536px)"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.webp') }}" media="(min-width: 1536px)"
                 width="2600" height="700" type="image/webp">
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.jpg') }}" media="(min-width: 1536px)"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.jpg') }}" media="(min-width: 1536px)"
                 width="2600" height="700" type="image/jpeg">
             {{-- Large (1024px to 1535px) --}}
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.avif') }}"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.avif') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/avif">
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.webp') }}"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.webp') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/webp">
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.jpg') }}"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.jpg') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/jpeg">
             {{-- Medium (768px to 1023px) --}}
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-md.avif') }}"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-md.avif') }}"
                 media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="575" type="image/avif">
-            <source srcset="{{ Vite::asset('resources/images/hero/hero-md.webp') }}"
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-md.webp') }}"
                 media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="575" type="image/webp">
             {{-- Fallback image = medium JPG --}}
-            <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/images/hero/hero-md.jpg') }}"
+            <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/views/homepage/images/hero-md.jpg') }}"
                 alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
                 width="1023" height="575" loading="lazy" decoding="async">
         </picture>
@@ -31,9 +31,9 @@
         <div class="relative md:flex-grow">
             <div class="absolute inset-0 overflow-hidden md:hidden">
                 <picture>
-                    <source srcset="{{ Vite::asset('resources/images/hero/hero.avif') }}" type="image/avif">
-                    <source srcset="{{ Vite::asset('resources/images/hero/hero.webp') }}" type="image/webp">
-                    <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/images/hero/hero.jpg') }}"
+                    <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.avif') }}" type="image/avif">
+                    <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.webp') }}" type="image/webp">
+                    <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/views/homepage/images/hero.jpg') }}"
                         alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
                         width="767" height="511" loading="lazy" decoding="async">
                 </picture>

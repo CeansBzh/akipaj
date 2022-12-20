@@ -80,20 +80,19 @@
         }
     }
 
-    @variants responsive {
-        .text-shadow-outline {
-            text-shadow: 1px 1px 0 var(--tw-shadow-color),
-                -1px 1px 0 var(--tw-shadow-color),
-                1px -1px 0 var(--tw-shadow-color),
-                -1px -1px 0 var(--tw-shadow-color);
-        }
-
-        .text-shadow {
-            text-shadow: 1px 1px 7px var(--tw-shadow-color);
-        }
-
-        .text-shadow-none {
-            text-shadow: none;
-        }
+    .text-shadow-outline {
+        text-shadow: 1px 1px 0 var(--tw-shadow-color),
+            -1px 1px 0 var(--tw-shadow-color),
+            1px -1px 0 var(--tw-shadow-color),
+            -1px -1px 0 var(--tw-shadow-color);
     }
+
+    .text-shadow {
+        text-shadow: 1px 1px 7px var(--tw-shadow-color);
+    }
+
+    .text-shadow-none {
+        text-shadow: none;
+    }
+
 }
