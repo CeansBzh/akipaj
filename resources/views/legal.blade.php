@@ -1,14 +1,46 @@
 <x-guest-layout>
     {{-- Hero section --}}
-    <section class="relative mb-10 bg-hero bg-cover bg-center bg-no-repeat">
-        <div class="absolute inset-0 bg-white/50 sm:bg-transparent sm:bg-gradient-to-r sm:from-white/60">
+    <section class="relative mb-10">
+        <div class="absolute inset-0">
+            <picture>
+                {{-- XL (1536px to infinite) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.avif') }}" media="(min-width: 1536px)"
+                    width="2600" height="1733" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.webp') }}" media="(min-width: 1536px)"
+                    width="2600" height="1733" type="image/webp">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.jpg') }}" media="(min-width: 1536px)"
+                    width="2600" height="1733" type="image/jpeg">
+                {{-- Large (1024px to 1535px) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.avif') }}"
+                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.webp') }}"
+                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/webp">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.jpg') }}"
+                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/jpeg">
+                {{-- Medium (768px to 1023px) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.avif') }}"
+                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.webp') }}"
+                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/webp">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.jpg') }}"
+                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/jpeg">
+                {{-- Small (to 767px) --}}
+                <source srcset="{{ Vite::asset('resources/images/hero/hero.avif') }}" media="(max-width: 767px)"
+                    width="767" height="511" type="image/avif">
+                <source srcset="{{ Vite::asset('resources/images/hero/hero.webp') }}" media="(max-width: 767px)"
+                    width="767" height="511" type="image/webp">
+                {{-- Fallback image = small JPG --}}
+                <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/images/hero/hero.jpg') }}"
+                    alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
+                    width="767" height="511" loading="lazy" decoding="async">
+            </picture>
         </div>
         <div
             class="relative mx-auto max-w-screen-xl h-96 px-4 py-32 sm:px-6 flex items-center justify-center sm:justify-start lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
                 <div class="text-3xl">
                     <a href="{{ url('/') }}" class="text-yellow-500 hover:underline">
-                        <h1 class="block font-bold sm:text-5xl">
+                        <h1 class="block font-bold shadow-gray-500 text-shadow sm:text-5xl">
                             Akipaj
                         </h1>
                     </a>
