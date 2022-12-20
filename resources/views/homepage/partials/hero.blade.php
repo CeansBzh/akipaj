@@ -1,5 +1,5 @@
 <section class="md:bg-hero bg-cover bg-center bg-no-repeat">
-    <div class="max-w-screen-2xl mx-auto md:flex">
+    <div class="max-w-screen-2xl mx-auto min-h-[27rem] md:flex">
         {{-- Left/Top side --}}
         <div class="bg-hero bg-cover bg-center bg-no-repeat md:bg-none md:flex-grow">
             <div class="relative mx-auto max-w-screen-xl min-h-[20rem] h-full">

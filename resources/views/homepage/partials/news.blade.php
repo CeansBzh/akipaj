@@ -5,6 +5,7 @@ $articles = \App\Models\Article::where('online', true)->orderBy('published_at', 
 <section
     class="flex flex-col space-y-3 max-w-md mx-auto md:grid md:grid-cols-[1.3fr_repeat(2,1fr)] md:gap-3 md:space-y-0 md:max-w-none">
     {{-- first article --}}
+    @if($articles->first())
     <div class="relative shadow-sm overflow-hidden group/card">
         <img src="{{ $articles->first()->imagePath }}"
             alt="Image de couverture de l'article {{ $articles->first()->title }}"
@@ -31,6 +32,11 @@ $articles = \App\Models\Article::where('online', true)->orderBy('published_at', 
             </a>
         </div>
     </div>
+    @else
+    <div class="w-full col-span-3 p-12">
+        <p class="text-gray-500 text-center">Aucun article publié</p>
+    </div>
+    @endif
 
     {{-- second and third articles --}}
     @foreach($articles->slice(1) as $article)

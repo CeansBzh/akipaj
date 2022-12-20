@@ -8,7 +8,7 @@ $trips = App\Models\Trip::where('end_date', '<=', now())
 <section class="mx-auto max-w-3xl">
     <div class="flex justify-evenly space-x-5">
         @if($trips->count() === 0)
-        <div class="text-center h-32 flex flex-col justify-center">
+        <div class="text-center p-12 flex flex-col justify-center">
             <p class="text-gray-500">Aucune sortie n'a encore été créée.</p>
             @can('create', App\Models\Trip::class)
             <a href="{{ route('trips.create') }}" class="text-sky-400 hover:underline">Créer une sortie</a>

@@ -42,7 +42,7 @@
             </div>
         </li>
         @empty
-        <li class="flex flex-col items-center justify-center">
+        <li class="flex flex-col items-center justify-center p-12">
             <p class="text-gray-500 text-center">Aucun événement à venir</p>
         </li>
         @endforelse
