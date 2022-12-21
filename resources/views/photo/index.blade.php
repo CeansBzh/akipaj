@@ -2,13 +2,23 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Toutes les photos</h2>
-            <a class="m-1 px-4 py-2 text-blue-100 no-underline bg-blue-500 rounded hover:bg-blue-600 hover:underline hover:text-blue-200"
-                href="{{ route('photos.create') }}">Ajouter mes photos</a>
+            <x-primary-link href="{{ route('photos.create') }}">
+                Ajouter mes photos
+            </x-primary-link>
         </div>
     </x-slot>
 
     <section class="overflow-hidden text-gray-700">
+        @if($photos->first())
         <livewire:photo.lightbox />
         <livewire:photo.gallery />
+        @else
+        <div class="flex flex-col items-center justify-center h-64">
+            <p class="text-xl mb-5">Aucune photo de publiée.</p>
+            <x-primary-link href="{{ route('photos.create') }}">
+                Ajouter mes photos
+            </x-primary-link>
+        </div>
+        @endif
     </section>
 </x-member-layout>
