@@ -8,7 +8,6 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/multi-select-dropdown.js',
-                'resources/js/copy-exif.js',
             ],
             refresh: true,
         }),
