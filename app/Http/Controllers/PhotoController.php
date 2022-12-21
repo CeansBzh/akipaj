@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Photo;
+use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
 use App\Http\Requests\Photo\StorePhotoRequest;
 
@@ -65,7 +66,9 @@ class PhotoController extends Controller
             $request->savePhoto($file, $albumid);
         }
 
-        return back()->with('success', 'Photos mises en ligne avec succès !');
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos mises en ligne avec succès !');
+
+        return back();
     }
 
     /**
@@ -112,7 +115,9 @@ class PhotoController extends Controller
 
         $photo->update($request->all());
 
-        return redirect()->route('photos.show', $photo)->with('success', 'Photo mise à jour avec succès !');
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo mise à jour avec succès !');
+
+        return redirect()->route('photos.show', $photo);
     }
 
     /**
@@ -125,11 +130,15 @@ class PhotoController extends Controller
     {
         $album = $photo->album;
         if ($photo->delete()) {
-            if ($album->photos->count() == 0) {
+            if (isset($album) && $album->photos->count() == 0) {
                 $album->delete();
             }
+        } else {
+            return back()->with('error', 'Erreur lors de la suppression de la photo !');
         }
 
-        return redirect()->route('photos.index')->with('success', 'Photo supprimée avec succès !');
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
+
+        return redirect()->route('photos.index');
     }
 }
