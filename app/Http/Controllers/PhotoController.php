@@ -66,9 +66,7 @@ class PhotoController extends Controller
             $request->savePhoto($file, $albumid);
         }
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos mises en ligne avec succès !');
-
-        return back();
+        return back()->with('success', 'Photos mises en ligne avec succès !');
     }
 
     /**
