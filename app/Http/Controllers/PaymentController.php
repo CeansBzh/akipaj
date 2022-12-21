@@ -60,9 +60,15 @@ class PaymentController extends Controller
         }
 
         $charge = $this->createCharge($token['id'], $request['amount'] * 100, $request['message']);
-        if (empty($charge) || $charge['status'] != 'succeeded') {
+        if (empty($charge) || (isset($charge['status']) && $charge['status'] != 'succeeded')) {
             session()->flash('alert-' . AlertLevelEnum::ERROR->name, 'Échec du paiement.');
             return back();
+        } else {
+            $payment = new Payment();
+            $payment->user_id = Auth::id();
+            $payment->amount = $request['amount'];
+            $payment->description = $request['message'];
+            $payment->save();
         }
 
         return back()->with('success', true);
