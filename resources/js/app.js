@@ -9,6 +9,7 @@ Alpine.start();
 
 import.meta.glob([
     '../images/**',
+    '../views/**/images/**',
 ]);
 
 import './article-editor';
