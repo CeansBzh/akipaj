@@ -39,7 +39,7 @@
             class="relative mx-auto max-w-screen-xl min-h-[27rem] h-[calc(100vh-6rem)] px-4 py-32 sm:px-6 flex items-center justify-center sm:justify-start lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
                 <div class="text-3xl">
-                    <h1 class="block font-bold text-yellow-500 shadow-gray-500 text-shadow sm:text-5xl">Akipaj</h1>
+                    <x-application-logo class="h-20" />
                     <p class="shadow-gray-100 text-shadow">Bienvenue à bord !</p>
                 </div>
 

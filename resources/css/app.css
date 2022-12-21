@@ -95,4 +95,10 @@
         text-shadow: none;
     }
 
+    .svg-shadow {
+        -webkit-filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
+        filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
+        -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
+    }
+
 }
