@@ -1,5 +1,5 @@
-<svg viewBox="0 0 178 79" fill="none" xmlns="http://www.w3.org/2000/svg" {{ $attributes->merge(['class' => 'mx-auto
-    overflow-visible sm:mx-0']) }}
+<svg viewBox="0 0 178 79" fill="none" xmlns="http://www.w3.org/2000/svg" {{ $attributes->merge(['class' =>
+    'overflow-visible']) }}
     aria-labelledby="logo-title logo-desc" role="img">
     <title id="logo-title">Logo du site Akipaj</title>
     <desc id="logo-desc">Le nom de l'association, Akipaj, est représenté au-dessus d'une vague et à

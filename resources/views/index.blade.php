@@ -39,7 +39,7 @@
             class="relative mx-auto max-w-screen-xl min-h-[27rem] h-[calc(100vh-6rem)] px-4 py-32 sm:px-6 flex items-center justify-center sm:justify-start lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
                 <div class="text-3xl">
-                    <x-application-logo class="h-20" />
+                    <x-application-logo class="h-20 mx-auto sm:h-28 sm:mx-0" />
                     <p class="shadow-gray-100 text-shadow">Bienvenue à bord !</p>
                 </div>
 

@@ -40,8 +40,8 @@
             </div>
             <div class="relative mx-auto max-w-screen-xl min-h-[20rem] h-full">
                 <div class="text-center pt-12 md:text-left md:ml-12 md:pt-40 lg:ml-24">
-                    <h1 class="text-7xl text-white mb-2 shadow-gray-800 text-shadow">Akipaj</h1>
-                    <p class="text-xl text-amber-300 mb-3 shadow-gray-800 text-shadow-outline">Bienvenue à bord !</p>
+                    <x-application-logo class="h-20 mx-auto md:h-28 md:mx-0" />
+                    <p class="text-2xl text-white mb-3 shadow-black text-shadow">Bienvenue à bord !</p>
                     <a href="{{ route('profile.index') }}"
                         class="inline-flex items-center px-4 py-2 border border-gray-100 text-gray-100 shadow-gray-800 text-shadow-outline rounded
                 font-semibold text-sm tracking-widest shadow-sm hover:border-white hover:text-white hover:bg-gray-100/10 focus:outline-none
