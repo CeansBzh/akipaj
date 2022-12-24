@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - production
+name: 🚀 Deploy website on push
+jobs:
+  FTP-Deploy-Action:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v2.1.0
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@master
+      with:
+        ftp-server: ${{ secrets.ftp_server }}
+        ftp-username: ${{ secrets.ftp_username }}
+        ftp-password: ${{ secrets.ftp_password }}
+        server-dir: www/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/database/**
+          **/storage/**
+          **/tests/**
+          .editorconfig
+          .env.example
+          .gitattributes
+          .gitignore
+          README.md
+          artisan
+          docker-compose.yml
+          phpunit.xml
+          postcss.config.js
+          tailwind.config.js
+          vite.config.js
