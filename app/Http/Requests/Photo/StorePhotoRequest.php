@@ -39,8 +39,6 @@ class StorePhotoRequest extends FormRequest
 
     public function savePhoto($file, $albumid)
     {
-        // Pour chaque fichier enregistrement dans le stockage du site
-        $path = $file->store('photos', 'public');
         // Lecture des données EXIF
         $exif = exif_read_data($file->getRealPath());
         // Si la date de prise de vue est présente dans les données EXIF, on l'utilise
@@ -54,10 +52,13 @@ class StorePhotoRequest extends FormRequest
                 'longitude' => $this->toGps($exif['GPSLongitude'], $exif['GPSLongitudeRef']),
             ]);
         }
+        // Pour chaque fichier enregistrement dans le stockage du site
+        $imageResource = imagecreatefromjpeg($file->getRealPath());
+        imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()), 100);
         // Création d'une nouvelle photo
         $photo = new Photo();
         $photo->title = $file->getClientOriginalName();
-        $photo->path = Storage::url($path);
+        $photo->path = Storage::url('photos/' . $file->hashName());
         $photo->legend = $this->legend;
         $photo->taken_at = $this->taken_at;
         $photo->latitude = $this->latitude;
