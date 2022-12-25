@@ -91,11 +91,11 @@
 @push('scripts')
 <script type="text/javascript">
     const MAX_FILES = 50;
-    const MAX_WIDTH = 2560;
-    const MAX_HEIGHT = 1600;
+    const MAX_WIDTH = 1920;
+    const MAX_HEIGHT = 1080;
     const PREVIEW_SIZE = 70;
     const MIME_TYPE = "image/jpeg";
-    const QUALITY = 0.8;
+    const QUALITY = 0.7;
 
     const dataTransfer = new DataTransfer();
 
