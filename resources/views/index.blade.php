@@ -57,16 +57,8 @@
         </div>
         <div
             class="absolute -bottom-8 h-16 px-5 w-screen flex flex-nowrap z-10 space-x-3 justify-evenly text-lg text-white font-light md:px-40 xl:px-80">
-            <a href="#croisière"
-                class="w-1/3 h-full flex justify-center items-center text-center rounded-sm drop-shadow-md bg-sky-600 p-2 hover:bg-sky-500 hover:ring basis-1/3">
-                Croisière
-            </a>
-            <a href="#régate"
-                class="w-1/3 h-full flex justify-center items-center text-center rounded-sm drop-shadow-md bg-sky-600 p-2 hover:bg-sky-500 hover:ring basis-1/3">
-                Régate
-            </a>
             <a href="#photos"
-                class="w-1/3 h-full flex justify-center items-center text-center rounded-sm drop-shadow-md bg-sky-600 p-2 hover:bg-sky-500 hover:ring basis-1/3">
+                class="h-full flex justify-center items-center text-center rounded-sm drop-shadow-md bg-sky-600 p-2 hover:bg-sky-500 hover:ring basis-1/2">
                 Photos
             </a>
         </div>
@@ -74,13 +66,13 @@
 
     {{-- About section --}}
     <section class="max-w-screen-xl mx-auto">
-        <div class="max-w-screen-xl mx-auto px-4 py-5 sm:px-6 md:py-24 lg:px-8">
-            <div class="flex flex-wrap md:flex-nowrap">
+        <div class="px-6 py-24 md:px-8">
+            <div class="flex flex-wrap lg:flex-nowrap">
                 <div class="self-center mb-3 md:mr-20">
-                    <h2 class="text-4xl font-bold text-gray-900 sm:text-4xl">
+                    <h2 class="text-4xl font-bold text-gray-900 sm:text-6xl">
                         L'association Akipaj
                     </h2>
-                    <p class="my-8 text-gray-600 indent-5 text-justify">
+                    <p class="my-8 text-gray-700 indent-5 text-justify">
                         Après de nombreuses croisières entre amis en Bretagne Nord, Sud et Atlantique, où plaisir et
                         bonne humeur étaient à chaque fois au rendez-vous, nous poursuivons dans cette voie bien sûr et
                         souhaitons y ajouter un nouveau challenge : Nous nous lançons maintenant dans l'aventure de la
@@ -100,66 +92,6 @@
                             decoding="async">
                     </picture>
                     <p class="w-fit ml-auto p-1 text-sm text-gray-500">Les Glénans - Juillet 2021</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- Trips section --}}
-    <section id="croisière" class="max-w-screen-2xl mx-auto">
-        <div class="mx-auto max-w-screen-2xl px-4 py-16 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:h-screen lg:grid-cols-2">
-                <div class="relative z-10 lg:py-16">
-                    <div class="relative h-56 sm:h-80 lg:h-full">
-                        <picture>
-                            <source srcset="{{ Vite::asset('resources/images/index_2.webp') }}" type="image/webp">
-                            <img class="absolute inset-0 h-full w-full object-cover"
-                                src="{{ Vite::asset('resources/images/index_2.jpg') }}"
-                                alt="Photo prise depuis le pont d'un bateau vers la proue, avec un couche de soleil sur la côte."
-                                width="631" height="420" loading="lazy" decoding="async">
-                        </picture>
-                    </div>
-                </div>
-
-                <div class="relative flex items-center bg-gray-100">
-                    <span class="hidden lg:absolute lg:inset-y-0 lg:-left-16 lg:block lg:w-16 lg:bg-gray-100"></span>
-
-                    <div class="p-8 sm:p-16 lg:p-24">
-                        <h2 class="text-3xl font-bold sm:text-4xl">Des croisières...</h2>
-
-                        <p class="mt-4 text-gray-600">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid,
-                            molestiae! Quidem est esse numquam odio deleniti, beatae, magni
-                            dolores provident quaerat totam eos, aperiam architecto eius quis
-                            quibusdam fugiat dicta.
-                        </p>
-
-                        <a href="{{ route('trips.index') }}"
-                            class="mt-8 inline-block rounded border border-sky-600 bg-sky-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-sky-600 focus:outline-none focus:ring active:text-sky-500">
-                            Voir les croisières
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- Regatta section --}}
-    <section id="régate">
-        <div class="max-w-screen-lg mx-auto px-4 py-5 sm:px-6 md:py-24 lg:px-8">
-            <div class="flex flex-wrap md:flex-nowrap">
-                <div class="self-center mb-3 md:mr-20">
-                    <h2 class="text-3xl text-right font-bold text-gray-900 sm:text-4xl">
-                        .. et des régates
-                    </h2>
-                    <p class="mt-8 text-gray-600 indent-5 text-justify">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis nam qui officia dolores
-                        maiores ullam sit vitae suscipit quos, cum esse quam, dolor magnam tenetur nesciunt debitis
-                        omnis facilis et! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis nam qui
-                        officia dolores
-                        maiores ullam sit vitae suscipit quos, cum esse quam, dolor magnam tenetur nesciunt debitis
-                        omnis facilis et!
-                    </p>
                 </div>
             </div>
         </div>
