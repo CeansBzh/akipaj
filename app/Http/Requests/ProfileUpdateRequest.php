@@ -19,8 +19,11 @@ class ProfileUpdateRequest extends FormRequest
         if ($this['clothing_size'] === '--') {
             $this['clothing_size'] = null;
         }
-        if ($this['phone'] != null) {
-            $this['phone'] = preg_replace('/\s/', '', $this['phone']);
+        if ($this['mobile_phone'] != null) {
+            $this['mobile_phone'] = preg_replace('/\s/', '', $this['mobile_phone']);
+        }
+        if ($this['home_phone'] != null) {
+            $this['home_phone'] = preg_replace('/\s/', '', $this['home_phone']);
         }
     }
 
@@ -38,7 +41,9 @@ class ProfileUpdateRequest extends FormRequest
             'remove_image' => ['required', 'boolean'],
             'firstname' => ['nullable', 'string', 'max:255'],
             'lastname' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:10'],
+            'birthdate' => ['nullable', 'date', 'before:today'],
+            'mobile_phone' => ['nullable', 'string', 'max:10'],
+            'home_phone' => ['nullable', 'string', 'max:10'],
             'address' => ['nullable', 'string', 'max:255'],
             'clothing_size' => ['nullable', 'string', 'in:XS,S,M,L,XL,XXL'],
         ];

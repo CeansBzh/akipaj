@@ -31,7 +31,9 @@ class User extends Authenticatable
         'password',
         'firstname',
         'lastname',
-        'phone',
+        'birthdate',
+        'mobile_phone',
+        'home_phone',
         'address',
         'clothing_size',
     ];
@@ -52,6 +54,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'birthdate' => 'datetime:Y-m-d',
         'email_verified_at' => 'datetime',
     ];
 
@@ -112,7 +115,7 @@ class User extends Authenticatable
 
     /**
      * Attach a role to the user.
-     * 
+     *
      * @param  \App\Models\Role|string  $role
      */
     public function attachRole($role)
@@ -126,7 +129,7 @@ class User extends Authenticatable
 
     /**
      * Check if user has a role.
-     * 
+     *
      * @param  \App\Models\Role|string  $role
      */
     public function hasRole($role)
@@ -140,7 +143,7 @@ class User extends Authenticatable
 
     /**
      * Check if user is subscribed to the specified commentable.
-     * 
+     *
      * @param  \App\Traits\Commentable  $commentable
      */
     public function isSubscribedTo($commentable)

@@ -22,7 +22,9 @@ return new class extends Migration
             $table->string('profile_picture_path')->nullable();
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
-            $table->string('phone')->nullable();
+            $table->date('birthdate')->nullable();
+            $table->string('mobile_phone')->nullable();
+            $table->string('home_phone')->nullable();
             $table->string('address')->nullable();
             $table->enum('clothing_size', ['XS', 'S', 'M', 'L', 'XL', 'XXL'])->nullable();
             $table->rememberToken();

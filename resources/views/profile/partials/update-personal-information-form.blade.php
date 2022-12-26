@@ -25,15 +25,34 @@
         </div>
 
         <div>
-            <x-input-label for="phone" value="N° de téléphone" />
+            <x-input-label for="birthdate" value="Date de naissance" />
+            <x-text-input id="birthdate" name="birthdate" type="date" class="mt-1 block w-full"
+                :value="old('birthdate', $user->birthdate) !== null ? Carbon\Carbon::parse(old('birthdate', $user->birthdate))->format('Y-m-d') : ''" max="{{ now()->format('Y-m-d') }}" autocomplete="bday" />
+            <x-input-error class="mt-2" :messages="$errors->get('birthdate')" />
+        </div>
+
+        <div>
+            <x-input-label for="mobile_phone" value="N° de téléphone portable" />
             <div class="relative">
                 <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
-                <x-text-input id="phone" name="phone" type="tel" class="mt-1 pl-11 block w-full"
-                    :value="chunk_split(old('phone', $user->phone), 2, ' ')" autocomplete="phone"
+                <x-text-input id="mobile_phone" name="mobile_phone" type="tel" class="mt-1 pl-11 block w-full"
+                    :value="chunk_split(old('mobile_phone', $user->mobile_phone), 2, ' ')" autocomplete="tel"
                     placeholder="06 01 02 03 04" pattern="0[1-9](?: [0-9]{2}){4}"
                     title="Numéro de téléphone en format français, 10 chiffres de long" />
             </div>
-            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+            <x-input-error class="mt-2" :messages="$errors->get('mobile_phone')" />
+        </div>
+
+        <div>
+            <x-input-label for="home_phone" value="N° de téléphone fixe" />
+            <div class="relative">
+                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
+                <x-text-input id="home_phone" name="home_phone" type="tel" class="mt-1 pl-11 block w-full"
+                    :value="chunk_split(old('home_phone', $user->home_phone), 2, ' ')" autocomplete="tel"
+                    placeholder="02 99 98 97 96" pattern="0[1-9](?: [0-9]{2}){4}"
+                    title="Numéro de téléphone en format français, 10 chiffres de long" />
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('home_phone')" />
         </div>
 
         <div>
@@ -84,7 +103,12 @@
     }
 
     onload = function () {
-        document.getElementById('phone').oninput = function () {
+        document.getElementById('mobile_phone').oninput = function () {
+            this.value = this.value.replace(/\D+/g, '');
+            this.value = phone_number_format(this.value);
+        }
+
+        document.getElementById('home_phone').oninput = function () {
             this.value = this.value.replace(/\D+/g, '');
             this.value = phone_number_format(this.value);
         }
