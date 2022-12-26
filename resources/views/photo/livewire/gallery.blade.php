@@ -4,16 +4,50 @@
         <x-photos.gallery-search />
     </div>
 
-    <div
-        class="columns-2 gap-1 [column-fill:_balance] box-border before:box-inherit after:box-inherit {{ $photos->count() >= 3 ? 'md:columns-3' : '' }} {{ $photos->count() >= 4 ? 'lg:columns-4' : ''}}">
+    <div class="grid grid-cols-1 gap-0.5 auto-rows-[20px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         @foreach ($photos as $photo)
-        <button onclick="Livewire.emit('openPhotoLightbox', '{{ $photo->id }}')" class="block cursor-pointer">
-            <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
-                class="h-full w-full mb-1" src="{{ $photo->path }}">
-        </button>
+        <div class="item h-full overflow-hidden">
+            <button onclick="Livewire.emit('openPhotoLightbox', '{{ $photo->id }}')" class="block cursor-pointer">
+                <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
+                    class="content object-cover h-fit w-full" src="{{ $photo->path }}">
+            </button>
+        </div>
         @endforeach
     </div>
     <div class="max-w-lg py-2 mx-auto md:px-0">
         {{ $photos->links() }}
     </div>
 </div>
+
+@push('scripts')
+<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.js"></script>
+<script>
+    function resizeGridItem(item) {
+        grid = document.getElementsByClassName("grid")[0];
+        rowSpan = Math.ceil((item.querySelector('.content').getBoundingClientRect().height + 2) / (20 + 2) - 1);
+        item.style.gridRowEnd = "span " + rowSpan;
+    }
+
+    function resizeAllGridItems() {
+        allItems = document.getElementsByClassName('item');
+        for (x = 0; x < allItems.length; x++) {
+            resizeGridItem(allItems[x]);
+        }
+    }
+
+    function resizeInstance(instance) {
+        item = instance.elements[0];
+        resizeGridItem(item);
+    }
+
+    window.onload = resizeAllGridItems();
+    window.addEventListener('resize', resizeAllGridItems);
+
+    allItems = document.getElementsByClassName('item');
+    Livewire.hook('message.processed', (message, component) => {
+        for (x = 0; x < allItems.length; x++) {
+            imagesLoaded(allItems[x], resizeInstance);
+        }
+    })
+</script>
+@endpush

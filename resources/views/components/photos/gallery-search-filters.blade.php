@@ -53,7 +53,6 @@ $users = \App\Models\User::all()
     document.addEventListener("DOMContentLoaded", () => {
         Livewire.on('resetFilters', () => {
             document.querySelectorAll('select + div.multiselect-dropdown').forEach((el) => {
-                console.log(el);
                 el.dispatchEvent(new Event('reset', { bubbles: true }));
             });
         })
