@@ -18,7 +18,7 @@ class PhotoController extends Controller
     public function index()
     {
         return view('photo.index', [
-            'photos' => Photo::select('id', 'path', 'legend')->simplePaginate(50),
+            'photos' => Photo::select('id')->simplePaginate(50),
         ]);
     }
 

@@ -2,12 +2,12 @@
 
 namespace App\Http\Livewire\Photo;
 
-use App\Models\Album;
 use App\Models\Photo;
 use Livewire\Component;
 
 class Gallery extends Component
 {
+    public $photoIds;
     public $searchTerm;
     public $sortTerm;
     public $usersFilter;
@@ -50,7 +50,15 @@ class Gallery extends Component
     {
         $sortBy = $this->getSorting($this->sortTerm);
         return view('photo.livewire.gallery', [
-            'photos' => Photo::whereLike(['title', 'legend'], $this->searchTerm ?? '')
+            'photos' => Photo::when($this->photoIds, function ($query) {
+                    return $query->whereIn('id', $this->photoIds);
+                })
+                ->when($this->searchTerm, function ($query) {
+                    return $query->whereLike(['title', 'legend'], $this->searchTerm);
+                })
+                ->when($this->searchTerm, function ($query) {
+                    return $query->whereLike(['title', 'legend'], $this->searchTerm);
+                })
                 ->when($this->usersFilter, function ($query) {
                     return $query->whereIn('user_id', $this->usersFilter);
                 })

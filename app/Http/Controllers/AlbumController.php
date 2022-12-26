@@ -29,9 +29,9 @@ class AlbumController extends Controller
      */
     public function show(Album $album)
     {
-        // TODO Refaire une page propre pour l'album
-        return view('photo.index', [
-            'photos' => $album->photos()->select('id', 'title', 'path', 'legend')->simplePaginate(50),
+        return view('album.show', [
+            'album' => $album,
+            'photos' => $album->photos()->select('id')->simplePaginate(50),
         ]);
     }
 }

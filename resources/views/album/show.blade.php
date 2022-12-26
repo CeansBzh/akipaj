@@ -1,7 +1,7 @@
 <x-member-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Toutes les photos</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $album->title }}</h2>
             <x-primary-link href="{{ route('photos.create') }}">
                 Ajouter mes photos
             </x-primary-link>
