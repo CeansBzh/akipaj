@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TripController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,15 @@ Route::middleware('auth')->group(function () {
         })->name('admin.index');
         Route::resource('users', AdminUserController::class, ['as' => 'admin'])->except(['show']);
         Route::post('/storeImage', [ArticleController::class, 'storeImage'])->prefix('articles');
+        Route::get('/reset', function () {
+            Artisan::call('route:clear');
+            Artisan::call('cache:clear');
+            Artisan::call('event:clear');
+            Artisan::call('view:clear');
+            Artisan::call('config:clear');
+            Artisan::call('config:cache');
+            return redirect()->route('admin.index');
+        });
     });
 });
 
