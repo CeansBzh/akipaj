@@ -33,8 +33,8 @@ class RegistrationSuccessful extends Notification
         return (new MailMessage)
             ->subject('Bienvenue chez ' . config('app.name') . ' !')
             ->line('Votre inscription sur le site ' . config('app.name') . ' a bien été prise en compte.')
-            ->line('Un administrateur va valider votre compte dans les plus brefs délais. Vous recevrez un email de confirmation.')
-            ->line('Merci et bon vent !');
+            ->line('Un administrateur va valider votre compte et vous recevrez par la suite un email de confirmation.')
+            ->line('Merci et bonne navigation !');
     }
 
     /**
