@@ -68,7 +68,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>Modifier</x-primary-button>
+            <x-primary-button>Mettre à jour</x-primary-button>
 
             @if (session('status') === 'profile-updated')
             <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"

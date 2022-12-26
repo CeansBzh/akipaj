@@ -112,7 +112,7 @@ $users = \App\Models\User::all()
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>Modifier</x-primary-button>
+            <x-primary-button>Mettre à jour</x-primary-button>
         </div>
     </form>
 </section>
