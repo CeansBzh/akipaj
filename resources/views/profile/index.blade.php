@@ -22,7 +22,7 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-3xl mx-auto">
                     <section class="flex flex-col justify-between items-center space-y-4 xs:space-y-0 xs:flex-row">
-                        <h2 class="text-lg font-medium text-gray-900">Modifier le profil</h2>
+                        <h2 class="text-lg font-medium text-gray-900">Gestion du compte</h2>
                         <x-primary-link class="" href="{{ route('profile.edit') }}">
                             Paramètres
                         </x-primary-link>
