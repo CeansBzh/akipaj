@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('mobile_phone')->nullable();
             $table->string('home_phone')->nullable();
             $table->string('address')->nullable();
+            $table->integer('postal_code')->nullable();
+            $table->string('city')->nullable();
             $table->enum('clothing_size', ['XS', 'S', 'M', 'L', 'XL', 'XXL'])->nullable();
             $table->rememberToken();
             $table->timestamps();

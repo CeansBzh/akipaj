@@ -45,6 +45,8 @@ class ProfileUpdateRequest extends FormRequest
             'mobile_phone' => ['nullable', 'string', 'max:10'],
             'home_phone' => ['nullable', 'string', 'max:10'],
             'address' => ['nullable', 'string', 'max:255'],
+            'postal_code' => ['nullable', 'integer', 'min:1000', 'max:99999'],
+            'city' => ['nullable', 'string', 'max:255'],
             'clothing_size' => ['nullable', 'string', 'in:XS,S,M,L,XL,XXL'],
         ];
     }

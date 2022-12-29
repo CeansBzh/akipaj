@@ -35,6 +35,8 @@ class User extends Authenticatable
         'mobile_phone',
         'home_phone',
         'address',
+        'postal_code',
+        'city',
         'clothing_size',
     ];
 

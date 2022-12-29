@@ -27,40 +27,11 @@
         <div>
             <x-input-label for="birthdate" value="Date de naissance" />
             <x-text-input id="birthdate" name="birthdate" type="date" class="mt-1 block w-full"
-                :value="old('birthdate', $user->birthdate) !== null ? Carbon\Carbon::parse(old('birthdate', $user->birthdate))->format('Y-m-d') : ''" max="{{ now()->format('Y-m-d') }}" autocomplete="bday" />
+                :value="old('birthdate', $user->birthdate) !== null ? Carbon\Carbon::parse(old('birthdate', $user->birthdate))->format('Y-m-d') : ''"
+                max="{{ now()->format('Y-m-d') }}" autocomplete="bday" />
             <x-input-error class="mt-2" :messages="$errors->get('birthdate')" />
         </div>
 
-        <div>
-            <x-input-label for="mobile_phone" value="N° de téléphone portable" />
-            <div class="relative">
-                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
-                <x-text-input id="mobile_phone" name="mobile_phone" type="tel" class="mt-1 pl-11 block w-full"
-                    :value="chunk_split(old('mobile_phone', $user->mobile_phone), 2, ' ')" autocomplete="tel"
-                    placeholder="06 01 02 03 04" pattern="0[1-9](?: [0-9]{2}){4}"
-                    title="Numéro de téléphone en format français, 10 chiffres de long" />
-            </div>
-            <x-input-error class="mt-2" :messages="$errors->get('mobile_phone')" />
-        </div>
-
-        <div>
-            <x-input-label for="home_phone" value="N° de téléphone fixe" />
-            <div class="relative">
-                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
-                <x-text-input id="home_phone" name="home_phone" type="tel" class="mt-1 pl-11 block w-full"
-                    :value="chunk_split(old('home_phone', $user->home_phone), 2, ' ')" autocomplete="tel"
-                    placeholder="02 99 98 97 96" pattern="0[1-9](?: [0-9]{2}){4}"
-                    title="Numéro de téléphone en format français, 10 chiffres de long" />
-            </div>
-            <x-input-error class="mt-2" :messages="$errors->get('home_phone')" />
-        </div>
-
-        <div>
-            <x-input-label for="address" value="Adresse" />
-            <x-text-input id="address" name="address" type="text" class="mt-1 block w-full"
-                :value="old('address', $user->address)" autocomplete="street-address" />
-            <x-input-error class="mt-2" :messages="$errors->get('address')" />
-        </div>
 
         <div>
             <x-input-label for="clothing_size" value="Taille de vétements" />
@@ -74,6 +45,66 @@
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
+        <div class="strike block text-center overflow-hidden whitespace-nowrap">
+            <span class="relative inline-block text-gray-800 text-sm">Contact</span>
+        </div>
+
+        <div>
+            <x-input-label for="secondary_email" value="Adresse mail secondaire" />
+            <x-text-input id="secondary_email" name="secondary_email" type="email" class="mt-1 block w-full"
+                :value="old('secondary_email', $user->secondary_email)" />
+            <x-input-error class="mt-2" :messages="$errors->get('secondary_email')" />
+        </div>
+
+        <div>
+            <x-input-label for="mobile_phone" value="N° de téléphone portable" />
+            <div class="relative">
+                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
+                <x-text-input id="mobile_phone" name="mobile_phone" type="tel" class="mt-1 pl-11 block w-full"
+                    :value="old('mobile_phone', chunk_split($user->mobile_phone, 2, ' '))" autocomplete="tel"
+                    pattern="0[1-9](?: [0-9]{2}){4}"
+                    title="Numéro de téléphone en format français, 10 chiffres de long" />
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('mobile_phone')" />
+        </div>
+
+        <div>
+            <x-input-label for="home_phone" value="N° de téléphone fixe" />
+            <div class="relative">
+                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
+                <x-text-input id="home_phone" name="home_phone" type="tel" class="mt-1 pl-11 block w-full"
+                    :value="old('home_phone', chunk_split($user->home_phone, 2, ' '))" autocomplete="tel"
+                    pattern="0[1-9](?: [0-9]{2}){4}"
+                    title="Numéro de téléphone en format français, 10 chiffres de long" />
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('home_phone')" />
+        </div>
+
+        <div class="strike block text-center overflow-hidden whitespace-nowrap">
+            <span class="relative inline-block text-gray-800 text-sm">Adresse</span>
+        </div>
+
+        <div>
+            <x-input-label for="address" value="Adresse" />
+            <x-text-input id="address" name="address" type="text" class="mt-1 block w-full"
+                :value="old('address', $user->address)" autocomplete="street-address" />
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
+        </div>
+
+        <div>
+            <x-input-label for="postal_code" value="Code postal_code" />
+            <x-text-input id="postal_code" name="postal_code" type="number" class="mt-1 block w-full" min="1000"
+                max="99999" :value="old('postal_code', $user->postal_code)" autocomplete="postal-code" />
+            <x-input-error class="mt-2" :messages="$errors->get('postal_code')" />
+        </div>
+
+        <div>
+            <x-input-label for="city" value="Ville" />
+            <x-text-input id="city" name="city" type="text" class="mt-1 block w-full" :value="old('city', $user->city)"
+                autocomplete="address-level2" />
+            <x-input-error class="mt-2" :messages="$errors->get('city')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>Mettre à jour</x-primary-button>
 
@@ -84,7 +115,29 @@
         </div>
     </form>
 </section>
+@push('styles')
+<style>
+    .strike>span:before,
+    .strike>span:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 9999px;
+        height: 1px;
+        background: rgb(209 213 219);
+    }
 
+    .strike>span:before {
+        right: 100%;
+        margin-right: 15px;
+    }
+
+    .strike>span:after {
+        left: 100%;
+        margin-left: 15px;
+    }
+</style>
+@endpush
 @push('scripts')
 <script>
     function phone_number_format(value) {
