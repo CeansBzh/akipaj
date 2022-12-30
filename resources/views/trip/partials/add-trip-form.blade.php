@@ -19,11 +19,20 @@ $users = \App\Models\User::all()
     <form method="post" action="{{ route('trips.store') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
 
-        <div>
-            <x-input-label for="title_input" value="Nom" />
-            <x-text-input id="title_input" name="title" type="text" class="mt-1 block w-full" :value="old('title')"
-                placeholder="WK Boat Açores" maxlength="50" required autofocus />
-            <x-input-error class="mt-2" :messages="$errors->get('title')" />
+        <div class="flex space-x-5 w-full">
+            <div class="flex-grow">
+                <x-input-label for="title_input" value="Nom de la sortie" />
+                <x-text-input id="title_input" name="title" type="text" class="mt-1 block w-full" :value="old('title')"
+                    placeholder="WK Boat Açores" maxlength="50" required autofocus />
+                <x-input-error class="mt-2" :messages="$errors->get('title')" />
+            </div>
+
+            <div class="w-28">
+                <x-input-label for="uuid_input" value="N° de la sortie" />
+                <x-text-input id="uuid_input" name="uuid" type="text" class="mt-1 block w-full" :value="old('uuid')"
+                    maxlength="50" />
+                <x-input-error class="mt-2" :messages="$errors->get('uuid')" />
+            </div>
         </div>
 
         <div class="flex space-x-5 w-full">
@@ -49,13 +58,6 @@ $users = \App\Models\User::all()
                 {{ old('description')}}
             </x-textarea-input>
             <x-input-error class="mt-2" :messages="$errors->get('description')" />
-        </div>
-
-        <div>
-            <x-input-label for="uuid_input" value="Identifiant" />
-            <x-text-input id="uuid_input" name="uuid" type="text" class="mt-1 block w-full" :value="old('uuid')"
-                maxlength="50" />
-            <x-input-error class="mt-2" :messages="$errors->get('uuid')" />
         </div>
 
         <hr>

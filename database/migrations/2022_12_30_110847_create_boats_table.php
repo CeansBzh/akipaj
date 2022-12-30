@@ -17,13 +17,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('type');
-            $table->year('year');
-            $table->string('builder');
-            $table->string('renter');
-            $table->string('navigation_area');
-            $table->string('city');
-            $table->integer('crew');
+            $table->string('type')->nullable();
+            $table->year('year')->nullable();
+            $table->string('builder')->nullable();
+            $table->string('renter')->nullable();
+            $table->string('city')->nullable();
+            $table->integer('crew')->nullable();
             $table->timestamps();
         });
     }

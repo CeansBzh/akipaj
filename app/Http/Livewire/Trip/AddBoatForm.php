@@ -12,7 +12,6 @@ class AddBoatForm extends Component
     public $year;
     public $builder;
     public $renter;
-    public $navigation_area;
     public $city;
     public $crew;
     public $boats = [];
@@ -20,13 +19,12 @@ class AddBoatForm extends Component
 
     protected $rules = [
         'name' => 'required|max:255',
-        'type' => 'required|max:255',
-        'year' => 'required|integer',
-        'builder' => 'required|max:255',
-        'renter' => 'required|max:255',
-        'navigation_area' => 'required|max:255',
-        'city' => 'required|max:255',
-        'crew' => 'required|integer',
+        'type' => 'nullable|max:255',
+        'year' => 'nullable|integer',
+        'builder' => 'nullable|max:255',
+        'renter' => 'nullable|max:255',
+        'city' => 'nullable|max:255',
+        'crew' => 'nullable|integer',
     ];
 
     public function addBoat()
@@ -41,7 +39,6 @@ class AddBoatForm extends Component
             'year' => $this->year,
             'builder' => $this->builder,
             'renter' => $this->renter,
-            'navigation_area' => $this->navigation_area,
             'city' => $this->city,
             'crew' => $this->crew,
         ]);
@@ -66,7 +63,6 @@ class AddBoatForm extends Component
         $this->year = '';
         $this->builder = '';
         $this->renter = '';
-        $this->navigation_area = '';
         $this->city = '';
         $this->crew = '';
     }

@@ -10,7 +10,7 @@
     <ul class="space-y-1">
         <template x-for="(boat, index) in boats">
             <div class="p-2 rounded border bg-sky-100 flex">
-                <p x-text="boat.name + ', ' + boat.renter + ', ' + boat.year" class="text-gray-700"></p>
+                <p class="text-sm" x-text="boat.name + ', ' + boat.type + ', ' + boat.year + ', ' + boat.builder + ', ' + boat.renter + ', ' + boat.city + ', ' + boat.crew" class="text-gray-700"></p>
                 <button type="button" class="ml-auto" x-on:click.prevent="boats.splice(index, 1)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -43,7 +43,7 @@
                 <div>
                     <x-input-label for="year_input" value="Année" />
                     <x-text-input id="year_input" name="year" type="number" wire:model="year" class="mt-1 block w-full"
-                        :value="old('year')" min="1900" max="9999" />
+                        :value="old('year')" min="1" max="9999" />
                     <x-input-error class="mt-2" :messages="$errors->get('year')" />
                 </div>
 
@@ -62,22 +62,14 @@
                 </div>
 
                 <div>
-                    <x-input-label for="navigation_area_input" value="Zone de navigation" />
-                    <x-text-input id="navigation_area_input" name="navigation_area" type="text"
-                        wire:model="navigation_area" class="mt-1 block w-full" :value="old('navigation_area')"
-                        maxlength="255" />
-                    <x-input-error class="mt-2" :messages="$errors->get('navigation_area')" />
-                </div>
-
-                <div>
-                    <x-input-label for="city_input" value="Ville" />
+                    <x-input-label for="city_input" value="Port d'attache" />
                     <x-text-input id="city_input" name="city" type="text" wire:model="city" class="mt-1 block w-full"
                         :value="old('city')" maxlength="255" />
                     <x-input-error class="mt-2" :messages="$errors->get('city')" />
                 </div>
 
                 <div>
-                    <x-input-label for="crew_input" value="Équipage (nombre)" />
+                    <x-input-label for="crew_input" value="Nombre d'équipiers" />
                     <x-text-input id="crew_input" name="crew" type="number" wire:model="crew" class="mt-1 block w-full"
                         :value="old('crew')" maxlength="255" />
                     <x-input-error class="mt-2" :messages="$errors->get('crew')" />

@@ -20,7 +20,6 @@ class Boat extends Model
         'year',
         'builder',
         'renter',
-        'navigation_area',
         'city',
         'crew',
     ];

@@ -39,13 +39,12 @@ class UpdateTripRequest extends FormRequest
             'remove_image' => 'required|boolean',
             'boats' => 'nullable|array',
             'boats.*.name' => 'required_with:boats|max:255',
-            'boats.*.type' => 'required_with:boats|max:255',
-            'boats.*.year' => 'required_with:boats|integer',
-            'boats.*.builder' => 'required_with:boats|max:255',
-            'boats.*.renter' => 'required_with:boats|max:255',
-            'boats.*.navigation_area' => 'required_with:boats|max:255',
-            'boats.*.city' => 'required_with:boats|max:255',
-            'boats.*.crew' => 'required_with:boats|integer',
+            'boats.*.type' => 'nullable|max:255',
+            'boats.*.year' => 'nullable|integer',
+            'boats.*.builder' => 'nullable|max:255',
+            'boats.*.renter' => 'nullable|max:255',
+            'boats.*.city' => 'nullable|max:255',
+            'boats.*.crew' => 'nullable|integer',
         ];
     }
 }
