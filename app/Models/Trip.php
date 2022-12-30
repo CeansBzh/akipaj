@@ -41,4 +41,12 @@ class Trip extends Model
     {
         return $this->belongsToMany(Album::class);
     }
+
+    /**
+     * Get the boats for the trip.
+     */
+    public function boats()
+    {
+        return $this->hasMany(Boat::class);
+    }
 }

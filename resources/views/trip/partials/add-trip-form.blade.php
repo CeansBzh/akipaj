@@ -102,7 +102,11 @@ $users = \App\Models\User::all()
             </button>
         </div>
 
-        <div class="flex items-center gap-4">
+        <hr>
+
+        <livewire:trip.add-boat-form />
+
+        <div class="flex items-center gap-4 mt-3">
             <x-primary-button>Ajouter</x-primary-button>
         </div>
     </form>
