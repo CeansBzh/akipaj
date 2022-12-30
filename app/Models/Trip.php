@@ -17,6 +17,7 @@ class Trip extends Model
         'location',
         'start_date',
         'end_date',
+        'uuid',
         'imagePath',
         'positions',
     ];

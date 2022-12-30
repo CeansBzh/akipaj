@@ -51,6 +51,13 @@ $users = \App\Models\User::all()
             <x-input-error class="mt-2" :messages="$errors->get('description')" />
         </div>
 
+        <div>
+            <x-input-label for="uuid_input" value="Identifiant" />
+            <x-text-input id="uuid_input" name="uuid" type="text" class="mt-1 block w-full" :value="old('uuid')"
+                maxlength="50" />
+            <x-input-error class="mt-2" :messages="$errors->get('uuid')" />
+        </div>
+
         <hr>
 
         <div>

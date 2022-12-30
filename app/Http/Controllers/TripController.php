@@ -55,6 +55,7 @@ class TripController extends Controller
         $trip->description = $request->description;
         $trip->start_date = $request->start_date;
         $trip->end_date = $request->end_date;
+        $trip->uuid = $request->uuid;
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $path = $request->file('image')->storeAs('public/trips', $imageName);
@@ -70,7 +71,7 @@ class TripController extends Controller
             $trip->users()->attach($request->users);
         }
         // Attach boats
-        if ($request->has('boats')) {
+        if ($request->has('boats') && is_array($request->boats)) {
             $trip->boats()->createMany($request->boats);
         }
 

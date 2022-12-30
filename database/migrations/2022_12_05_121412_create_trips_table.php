@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->date('start_date');
             $table->date('end_date');
+            $table->string('uuid')->nullable();
             $table->string('imagePath')->nullable();
             // $table->lineString('positions')->nullable();
             $table->timestamps();
