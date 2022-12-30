@@ -111,6 +111,10 @@ $users = \App\Models\User::all()
             </button>
         </div>
 
+        <hr>
+
+        <livewire:trip.add-boat-form :boats="$trip->boats->toArray()" />
+
         <div class="flex items-center gap-4">
             <x-primary-button>Mettre à jour</x-primary-button>
         </div>

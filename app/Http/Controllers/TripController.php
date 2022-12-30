@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Trip;
 use App\Enum\AlertLevelEnum;
 use App\Http\Requests\Trip\StoreTripRequest;
+use App\Http\Requests\Trip\UpdateTripRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -97,28 +98,18 @@ class TripController extends Controller
      */
     public function edit(Trip $trip)
     {
-        return view('trip.edit')->with('trip', Trip::findOrFail($trip->id));
+        return view('trip.edit')->with('trip', $trip->load('boats'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Trip\UpdateTripRequest  $request
      * @param  \App\Models\Trip  $trip
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Trip $trip)
+    public function update(UpdateTripRequest $request, Trip $trip)
     {
-        $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
-        $request->validateWithBag('updateTrip', [
-            'title' => 'required|string|max:50',
-            'description' => 'required|string|max:500',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
-            'remove_image' => 'required|boolean',
-        ]);
-
         $trip = Trip::findOrFail($trip->id);
         $trip->title = $request->title;
         $trip->description = $request->description;
@@ -146,6 +137,12 @@ class TripController extends Controller
         if ($request->has('users')) {
             $trip->users()->sync($request->users);
         }
+        // Modification des bateaux
+        if ($request->has('boats')) {
+            $trip->boats()->delete();
+            $trip->boats()->createMany($request->boats);
+        }
+
         $trip->save();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Sortie modifiée avec succès.');
