@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use App\Enum\AlertLevelEnum;
+use App\Http\Requests\Trip\StoreTripRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,29 +37,18 @@ class TripController extends Controller
      */
     public function create()
     {
+        // TODO import données depuis évenement programme existant (titre, dates, description ?)
         return view('trip.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Trip\StoreTripRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTripRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:50',
-            'description' => 'required|string|max:500',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'albums' => 'nullable|array',
-            'albums.*' => 'nullable|integer|distinct|exists:albums,id',
-            'users' => 'nullable|array',
-            'users.*' => 'nullable|integer|distinct|exists:users,id',
-            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
-        ]);
-
         $trip = new Trip();
         $trip->title = $request->title;
         $trip->description = $request->description;
@@ -77,6 +67,10 @@ class TripController extends Controller
         // Attach users
         if ($request->has('users')) {
             $trip->users()->attach($request->users);
+        }
+        // Attach boats
+        if ($request->has('boats')) {
+            $trip->boats()->createMany($request->boats);
         }
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Sortie créée avec succès.');
