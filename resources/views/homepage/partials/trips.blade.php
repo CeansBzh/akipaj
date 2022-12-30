@@ -18,7 +18,7 @@ $trips = App\Models\Trip::where('end_date', '<=', now())
         @if($trips->count() >= 1)
         <div
             class="relative rounded-3xl shadow-lg h-48 overflow-hidden w-full transform transition duration-300 ease-in-out hover:scale-105 sm:w-1/2 lg:w-1/3">
-            <img src="{{ $trips[0]->imagePath ?? Vite::asset('resources/images/hero.jpg') }}"
+            <img src="{{ $trips[0]->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}"
                 alt="Image de couverture de la sortie {{ $trips[0]->title }}"
                 class="object-cover w-full h-full select-none">
             <div class="absolute top-0 w-full h-full items-end justify-center">
@@ -32,7 +32,7 @@ $trips = App\Models\Trip::where('end_date', '<=', now())
         @if($trips->count() >= 2)
         <div
             class="relative rounded-3xl shadow-lg h-48 w-1/2 overflow-hidden hidden transform transition duration-300 ease-in-out hover:scale-105 sm:block lg:w-1/3">
-            <img src="{{ $trips[1]->imagePath ?? Vite::asset('resources/images/hero.jpg') }}"
+            <img src="{{ $trips[1]->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}"
                 alt="Image de couverture de la sortie {{ $trips[1]->title }}"
                 class="object-cover w-full h-full select-none">
             <div class="absolute top-0 w-full h-full items-end justify-center">
@@ -46,7 +46,7 @@ $trips = App\Models\Trip::where('end_date', '<=', now())
         @if($trips->count() >= 3)
         <div
             class="relative rounded-3xl shadow-lg h-48 w-1/3 overflow-hidden hidden transform transition duration-300 ease-in-out hover:scale-105 lg:block">
-            <img src="{{ $trips[2]->imagePath ?? Vite::asset('resources/images/hero.jpg') }}"
+            <img src="{{ $trips[2]->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}"
                 alt="Image de couverture de la sortie {{ $trips[2]->title }}"
                 class="object-cover w-full h-full select-none">
             <div class="absolute top-0 w-full h-full items-end justify-center">
