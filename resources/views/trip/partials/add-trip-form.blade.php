@@ -116,7 +116,7 @@ $users = \App\Models\User::all()
         <livewire:trip.add-boat-form />
 
         <div class="flex items-center gap-4 mt-3">
-            <x-primary-button>Ajouter</x-primary-button>
+            <x-primary-button>Ajouter la sortie</x-primary-button>
         </div>
     </form>
 </section>

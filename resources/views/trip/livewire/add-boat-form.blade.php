@@ -1,7 +1,7 @@
 <div x-data="{ boats: @entangle('boats') }">
     <div class="flex items-center gap-4">
         <x-secondary-button type="button" class="mx-auto sm:mx-0"
-            x-on:click.prevent="$dispatch('open-modal', 'add-boat')">Associer un bateau
+            x-on:click.prevent="$dispatch('open-modal', 'add-boat')">Associer un bateau à la sortie
         </x-secondary-button>
     </div>
 

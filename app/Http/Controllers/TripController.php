@@ -139,7 +139,7 @@ class TripController extends Controller
             $trip->users()->sync($request->users);
         }
         // Modification des bateaux
-        if ($request->has('boats')) {
+        if ($request->has('boats') && is_array($request->boats)) {
             $trip->boats()->delete();
             $trip->boats()->createMany($request->boats);
         }
