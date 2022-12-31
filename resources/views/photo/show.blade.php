@@ -4,7 +4,7 @@
     </x-slot>
 
     <div class="p-2">
-        <img class="mx-auto cursor-zoom-in" src="{{ $photo->path }}"
+        <img class="mx-auto cursor-zoom-in lg:max-h-[80vh]" src="{{ $photo->path }}"
             alt="{{ isset($photo->legend) ? substr($photo->legend, 0, 125) : 'Photo sans légende' }}" x-data=""
             x-on:click.prevent="$dispatch('open-lightbox', 'photo-lightbox')">
         <div class="flex bg-white shadow-lg rounded-lg relative -mt-2 mx-auto max-w-md md:max-w-2xl ">
@@ -20,11 +20,21 @@
                         <small class="text-sm text-gray-700">Envoyée
                             {{ $photo->created_at->diffForHumans() }}</small>
                     </div>
-                    @if (isset($photo->legend))
-                    <p class="mt-3 text-gray-700 text-sm">
-                        {{ $photo->legend }}
-                    </p>
-                    @endif
+                    <div class="text-gray-700 text-sm">
+                        @if (isset($photo->legend))
+                        <p class="mt-3">
+                            {{ $photo->legend }}
+                        </p>
+                        @endif
+                        @if (isset($photo->taken_at))
+                        <p class="mt-4">Prise le : {{ $photo->taken_at->format('d/m/Y') }}</p>
+                        @endif
+                        @if (isset($photo->album))
+                        <p class="mt-1">Album : <a href="{{ route('albums.show', $photo->album) }}"
+                                class="text-blue-500 hover:text-blue-700">{{ $photo->album->title }}</a>
+                        </p>
+                        @endif
+                    </div>
                     <div class="mt-4 flex items-center">
                         <div class="flex mr-4 text-gray-700 text-sm">
                             <svg fill="none" viewBox="0 0 24 24" class="w-4 h-4 mr-1" stroke="currentColor">
