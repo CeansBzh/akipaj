@@ -21,11 +21,20 @@ $users = \App\Models\User::all()
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="title_input" value="Nom" />
-            <x-text-input id="title_input" name="title" type="text" class="mt-1 block w-full" :value="$trip->title"
-                placeholder="WK Boat Açores" maxlength="50" required autofocus />
-            <x-input-error class="mt-2" :messages="$errors->updateTrip->get('title')" />
+        <div class="flex space-x-5 w-full">
+            <div class="flex-grow">
+                <x-input-label for="title_input" value="Nom" />
+                <x-text-input id="title_input" name="title" type="text" class="mt-1 block w-full" :value="$trip->title"
+                    placeholder="WK Boat Açores" maxlength="50" required autofocus />
+                <x-input-error class="mt-2" :messages="$errors->updateTrip->get('title')" />
+            </div>
+
+            <div class="w-28">
+                <x-input-label for="uuid_input" value="N° de la sortie" />
+                <x-text-input id="uuid_input" name="uuid" type="text" class="mt-1 block w-full" :value="$trip->uuid"
+                    maxlength="50" />
+                <x-input-error class="mt-2" :messages="$errors->updateTrip->get('uuid')" />
+            </div>
         </div>
 
         <div class="flex space-x-5 w-full">

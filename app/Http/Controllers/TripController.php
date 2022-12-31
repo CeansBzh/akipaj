@@ -116,7 +116,7 @@ class TripController extends Controller
         $trip->description = $request->description;
         $trip->start_date = $request->start_date;
         $trip->end_date = $request->end_date;
-
+        $trip->uuid = $request->uuid;
         // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
         if (($request->remove_image || $request->hasFile('image')) && $trip->imagePath) {
             $filePath = 'public/trips/' . basename($trip->imagePath);

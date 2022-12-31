@@ -14,6 +14,11 @@ class StoreTripRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this['boats'] = json_decode($this['boats'], true);
+        $this['boats'] = array_map(function ($boat) {
+            $boat['year'] = is_int($boat['year']) ? $boat['year'] : null;
+            $boat['crew'] = is_int($boat['crew']) ? $boat['crew'] : null;
+            return $boat;
+        }, $this['boats']);
     }
 
     /**
