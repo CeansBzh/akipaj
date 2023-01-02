@@ -118,11 +118,11 @@
                             <div class="rounded-md ring-1 ring-black ring-opacity-5 py-1 bg-white">
                                 <ul class="py-1" aria-labelledby="gallery-menu-button">
                                     <li>
-                                        <x-dropdown-link :href="route('photos.index')">
-                                            Photos
-                                        </x-dropdown-link>
                                         <x-dropdown-link :href="route('albums.index')">
                                             Albums
+                                        </x-dropdown-link>
+                                        <x-dropdown-link :href="route('photos.index')">
+                                            Toutes les photos
                                         </x-dropdown-link>
                                     </li>
                                 </ul>
