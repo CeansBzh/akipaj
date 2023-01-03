@@ -18,7 +18,7 @@ return new class extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Album::class)->nullable();
+            $table->foreignIdFor(Album::class);
             $table->foreignIdFor(User::class);
             $table->string('title');
             $table->string('path');

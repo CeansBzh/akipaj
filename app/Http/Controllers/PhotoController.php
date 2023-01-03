@@ -48,7 +48,7 @@ class PhotoController extends Controller
      */
     public function store(StorePhotoRequest $request)
     {
-        $albumid = null;
+        $albumid = null; // TODO refonte album
         if ($request->has('album')) {
             // Association à un album existant
             $albumid = $request->input('album');
@@ -126,7 +126,7 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        $album = $photo->album;
+        $album = $photo->album; // TODO refonte album
         if ($photo->delete()) {
             if (isset($album) && $album->photos->count() == 0) {
                 $album->delete();

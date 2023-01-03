@@ -29,7 +29,7 @@
                         @if (isset($photo->taken_at))
                         <p class="mt-4">Prise le : {{ $photo->taken_at->format('d/m/Y') }}</p>
                         @endif
-                        @if (isset($photo->album))
+                        @if (isset($photo->album)) // TODO refonte album
                         <p class="mt-1">Album : <a href="{{ route('albums.show', $photo->album) }}"
                                 class="text-blue-500 hover:text-blue-700">{{ $photo->album->title }}</a>
                         </p>

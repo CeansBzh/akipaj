@@ -75,7 +75,7 @@
                 <option {{$size==$user->clothing_size ? 'selected' : '' }}>{{ $size }}</option>
                 @endforeach
             </x-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('address')" />
+            <x-input-error class="mt-2" :messages="$errors->get('clothing_size')" />
         </div>
 
         <div class="strike block text-center overflow-hidden whitespace-nowrap">

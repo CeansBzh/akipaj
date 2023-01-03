@@ -4,8 +4,8 @@
             <h2 class="font-semibold text-gray-800 leading-tight text-2xl">
                 Albums
             </h2>
-            <x-primary-link href="{{ route('photos.create') }}">
-                Ajouter mes photos
+            <x-primary-link href="{{ route('albums.create') }}">
+                Créer un album
             </x-primary-link>
         </div>
     </x-slot>
@@ -34,8 +34,8 @@
                 @empty
                 <div class="flex flex-col items-center justify-center w-full h-64">
                     <p class="text-xl mb-5">Aucun album de publié.</p>
-                    <x-primary-link href="{{ route('photos.create') }}">
-                        Ajouter mes photos
+                    <x-primary-link href="{{ route('albums.create') }}">
+                        Créer un album
                     </x-primary-link>
                 </div>
                 @endforelse

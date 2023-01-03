@@ -65,7 +65,7 @@ class StorePhotoRequest extends FormRequest
         $photo->longitude = $this->longitude;
         // Association de la photo à l'album si nécessaire
         if (isset($albumid)) {
-            $photo->album()->associate($albumid);
+            $photo->album()->associate($albumid); // TODO refonte album
         }
         // Création de la relation entre la photo et l'utilisateur
         $photo->user()->associate($this->user());

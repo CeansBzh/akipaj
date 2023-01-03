@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::resources([
             'photos' => PhotoController::class,
         ]);
-        Route::resource('albums', AlbumController::class)->only(['index', 'show']);
+        Route::resource('albums', AlbumController::class);
         Route::resource('events', EventController::class);
         Route::resource('trips', TripController::class);
         Route::resource('articles', ArticleController::class);
