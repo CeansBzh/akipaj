@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Photo;
 use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Photo\StorePhotoRequest;
 
 class PhotoController extends Controller
@@ -27,17 +28,9 @@ class PhotoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Album $album)
     {
-        $albums = \App\Models\Album::all()
-            ->sortBy('date')
-            ->groupBy([
-                function ($val) {
-                    return $val->date->format('Y');
-                },
-            ]);
-
-        return view('photo.create')->with('albums', $albums);
+        return view('photo.create')->with('album', $album);
     }
 
     /**
@@ -48,25 +41,52 @@ class PhotoController extends Controller
      */
     public function store(StorePhotoRequest $request)
     {
-        $albumid = null; // TODO refonte album
-        if ($request->has('album')) {
-            // Association à un album existant
-            $albumid = $request->input('album');
-        } elseif ($request->has('albumTitle') && isset($request->albumTitle)) {
-            // Si un titre est spécifié, création d'un nouvel album
-            $album = new Album();
-            $album->title = $request->input('albumTitle');
-            $album->description = $request->input('albumDesc');
-            $album->date = \Carbon\Carbon::createFromFormat('Y-m', $request->input('albumDate'))->startOfMonth();
-            $album->save();
-            $albumid = $album->id;
-        }
-
+        $oldestPhotoDate = null;
+        $album = Album::find($request->album);
+        // Enregistrement des photos
         foreach ($request->file('files') as $file) {
-            $request->savePhoto($file, $albumid);
+            // Lecture des données EXIF
+            $exif = exif_read_data($file->getRealPath());
+            // Pour chaque fichier enregistrement dans le stockage du site
+            $imageResource = imagecreatefromjpeg($file->getRealPath());
+            imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()), 100);
+            // Création d'une nouvelle photo
+            $photo = new Photo();
+            $photo->title = $file->getClientOriginalName();
+            $photo->path = Storage::url('photos/' . $file->hashName());
+            // Si les données exif sont présentes
+            if (is_array($exif)) {
+                if (isset($exif['DateTimeOriginal'])) {
+                    $photo->taken_at = $exif['DateTimeOriginal'];
+                    if ($oldestPhotoDate === null || $oldestPhotoDate > $exif['DateTimeOriginal']) {
+                        $oldestPhotoDate = $exif['DateTimeOriginal'];
+                    }
+                }
+                if (isset($exif['GPSLatitude']) && isset($exif['GPSLatitudeRef']) && isset($exif['GPSLongitude']) && isset($exif['GPSLongitudeRef'])) {
+                    $photo->latitude = $request->toGps($exif['GPSLatitude'], $exif['GPSLatitudeRef']);
+                    $photo->longitude = $request->toGps($exif['GPSLongitude'], $exif['GPSLongitudeRef']);
+                }
+            }
+            // Association de la photo à l'album
+            $photo->album()->associate($album);
+            // Création de la relation entre la photo et l'utilisateur
+            $photo->user()->associate($request->user());
+            // Enregistrement de la photo dans la base de données
+            $photo->save();
+            // Abonnement de l'utilisateur au fil de discussion
+            $photo->subscriptions()->create([
+                'user_id' => $request->user()->id,
+            ]);
+        }
+        // Calcul de la nouvelle date de l'album en fonction des dates des photos (données exif)
+        if ($oldestPhotoDate !== null) {
+            $album->date = $oldestPhotoDate;
+            $album->save();
         }
 
-        return back()->with('success', 'Photos mises en ligne avec succès !');
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
+
+        return redirect()->route('albums.show', $album);
     }
 
     /**

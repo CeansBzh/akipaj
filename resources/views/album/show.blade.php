@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $album->title }}</h2>
-            <x-primary-link href="{{ route('photos.create') }}">
+            <x-primary-link href="{{ route('photos.create', $album) }}">
                 Ajouter mes photos
             </x-primary-link>
         </div>
@@ -15,7 +15,7 @@
         @else
         <div class="flex flex-col items-center justify-center h-64">
             <p class="text-xl mb-5">Aucune photo de publiée.</p>
-            <x-primary-link href="{{ route('photos.create') }}">
+            <x-primary-link href="{{ route('photos.create', $album) }}">
                 Ajouter mes photos
             </x-primary-link>
         </div>

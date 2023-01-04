@@ -45,12 +45,13 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:member')->group(function () {
         Route::resources([
-            'photos' => PhotoController::class,
+            'articles' => ArticleController::class,
+            'albums' => AlbumController::class,
+            'events' => EventController::class,
+            'trips' => TripController::class,
         ]);
-        Route::resource('albums', AlbumController::class);
-        Route::resource('events', EventController::class);
-        Route::resource('trips', TripController::class);
-        Route::resource('articles', ArticleController::class);
+        Route::resource('photos', PhotoController::class)->except(['create']);
+        Route::get('/photos/create/{album}', [PhotoController::class, 'create'])->name('photos.create');
     });
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {

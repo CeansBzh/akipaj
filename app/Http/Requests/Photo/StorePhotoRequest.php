@@ -8,18 +8,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StorePhotoRequest extends FormRequest
 {
-    protected $errorBag = 'storePhoto';
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation()
-    {
-        $this['albumDate'] = $this['albumYear'] . '-' . $this['albumMonth'];
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -30,51 +18,21 @@ class StorePhotoRequest extends FormRequest
         return [
             'files' => ['required', 'array', 'max:50'],
             'files.*' => ['required', 'image', 'mimes:png,jpg,jpeg,gif', 'max:10000', 'dimensions:max_width=2560,max_height=1600'],
-            'album' => ['integer', 'exists:albums,id', 'nullable'],
-            'albumTitle' => ['string', 'nullable'],
-            'albumDesc' => ['exclude_if:albumTitle,null', 'required', 'string'],
-            'albumDate' => ['exclude_if:albumTitle,null', 'required', 'date'],
+            'album' => ['required', 'exists:albums,id'],
         ];
     }
 
-    public function savePhoto($file, $albumid)
+    /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
+    public function messages()
     {
-        // Lecture des données EXIF
-        $exif = exif_read_data($file->getRealPath());
-        // Si la date de prise de vue est présente dans les données EXIF, on l'utilise
-        if (isset($exif['DateTimeOriginal'])) {
-            $this->merge(['taken_at' => $exif['DateTimeOriginal']]);
-        }
-        // Si les données GPS sont présentes dans les données EXIF, on les utilise
-        if (isset($exif['GPSLatitude']) && isset($exif['GPSLatitudeRef']) && isset($exif['GPSLongitude']) && isset($exif['GPSLongitudeRef'])) {
-            $this->merge([
-                'latitude' => $this->toGps($exif['GPSLatitude'], $exif['GPSLatitudeRef']),
-                'longitude' => $this->toGps($exif['GPSLongitude'], $exif['GPSLongitudeRef']),
-            ]);
-        }
-        // Pour chaque fichier enregistrement dans le stockage du site
-        $imageResource = imagecreatefromjpeg($file->getRealPath());
-        imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()), 100);
-        // Création d'une nouvelle photo
-        $photo = new Photo();
-        $photo->title = $file->getClientOriginalName();
-        $photo->path = Storage::url('photos/' . $file->hashName());
-        $photo->legend = $this->legend;
-        $photo->taken_at = $this->taken_at;
-        $photo->latitude = $this->latitude;
-        $photo->longitude = $this->longitude;
-        // Association de la photo à l'album si nécessaire
-        if (isset($albumid)) {
-            $photo->album()->associate($albumid); // TODO refonte album
-        }
-        // Création de la relation entre la photo et l'utilisateur
-        $photo->user()->associate($this->user());
-        // Enregistrement de la photo dans la base de données
-        $photo->save();
-        // Abonnement de l'utilisateur au fil de discussion
-        $photo->subscriptions()->create([
-            'user_id' => $this->user()->id,
-        ]);
+        return [
+            'files.required' => 'Veuillez sélectionner des photos à envoyer.',
+            'album.exists' => 'L\'album sélectionné n\'existe pas.'
+        ];
     }
 
     public function toGps($coordinate, $hemisphere)
