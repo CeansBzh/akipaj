@@ -8,7 +8,7 @@
         </div>
     </x-slot>
 
-    <section class="overflow-hidden text-gray-700">
+    <section class="text-gray-700">
         @if($photos->first())
         <livewire:photo.lightbox />
         <livewire:photo.gallery :photoIds="$photos->pluck('id')->toArray()" />
