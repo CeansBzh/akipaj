@@ -48,10 +48,19 @@ class Album extends Model
     }
 
     /**
-     * Get the albums's oldest photo.
+     * Get the albums's oldest uploaded photo (not necessarily the oldest photo realtime-wise).
      */
     public function oldestPhoto()
     {
         return $this->hasOne(Photo::class)->oldestOfMany();
+    }
+
+    /**
+     * Update the album's date using the date of the oldest photo (the oldest to have been taken, not uploaded).
+     */
+    public function updateAlbumDate()
+    {
+        $this->date = $this->photos->sortByDesc('taken_at')->first()->taken_at ?? now();
+        $this->save();
     }
 }

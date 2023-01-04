@@ -41,7 +41,6 @@ class PhotoController extends Controller
      */
     public function store(StorePhotoRequest $request)
     {
-        $oldestPhotoDate = null;
         $album = Album::find($request->album);
         // Enregistrement des photos
         foreach ($request->file('files') as $file) {
@@ -58,9 +57,6 @@ class PhotoController extends Controller
             if (is_array($exif)) {
                 if (isset($exif['DateTimeOriginal'])) {
                     $photo->taken_at = $exif['DateTimeOriginal'];
-                    if ($oldestPhotoDate === null || $oldestPhotoDate > $exif['DateTimeOriginal']) {
-                        $oldestPhotoDate = $exif['DateTimeOriginal'];
-                    }
                 }
                 if (isset($exif['GPSLatitude']) && isset($exif['GPSLatitudeRef']) && isset($exif['GPSLongitude']) && isset($exif['GPSLongitudeRef'])) {
                     $photo->latitude = $request->toGps($exif['GPSLatitude'], $exif['GPSLatitudeRef']);
@@ -79,10 +75,7 @@ class PhotoController extends Controller
             ]);
         }
         // Calcul de la nouvelle date de l'album en fonction des dates des photos (données exif)
-        if ($oldestPhotoDate !== null) {
-            $album->date = $oldestPhotoDate;
-            $album->save();
-        }
+        $album->updateAlbumDate();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
 
@@ -146,7 +139,11 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
+        $album = $photo->album;
+        // Suppression de la photo
         $photo->delete();
+        // Calcul de la nouvelle date de l'album
+        $album->updateAlbumDate();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
 
