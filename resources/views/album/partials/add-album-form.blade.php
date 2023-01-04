@@ -65,6 +65,7 @@ return $val->start_date->format('Y');
     </form>
 </section>
 
+@if(!$trips->isEmpty())
 @push('scripts')
 <script type="text/javascript">
     let select = document.getElementById('trip_input');
@@ -75,3 +76,4 @@ return $val->start_date->format('Y');
     });
 </script>
 @endpush
+@endif
