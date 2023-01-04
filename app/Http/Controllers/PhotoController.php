@@ -146,14 +146,7 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        $album = $photo->album; // TODO refonte album
-        if ($photo->delete()) {
-            if (isset($album) && $album->photos->count() == 0) {
-                $album->delete();
-            }
-        } else {
-            return back()->with('error', 'Erreur lors de la suppression de la photo !');
-        }
+        $photo->delete();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
 
