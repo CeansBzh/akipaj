@@ -39,12 +39,12 @@ class Gallery extends Component
             case 'title_desc':
                 return ['title', 'desc'];
                 break;
-            case 'created_asc':
-                return ['created_at', 'asc'];
+            case 'taken_asc':
+                return ['taken_at', 'asc'];
                 break;
-            case 'created_desc':
+            case 'taken_desc':
             default:
-                return ['created_at', 'desc'];
+                return ['taken_at', 'desc'];
         }
     }
 

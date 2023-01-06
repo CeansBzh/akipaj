@@ -27,8 +27,8 @@
         </x-secondary-button>
 
         <x-select-input wire:model="sortTerm" class="mb-2 ml-2 text-gray-500">
-            <option value="created_desc">Date (décroissant)</option>
-            <option value="created_asc">Date (croissant)</option>
+            <option value="taken_desc">Date (décroissant)</option>
+            <option value="taken_asc">Date (croissant)</option>
             <option value="title_desc">Titre (décroissant)</option>
             <option value="title_asc">Titre (croissant)</option>
             <option value="most_comments">Commentaires</option>
