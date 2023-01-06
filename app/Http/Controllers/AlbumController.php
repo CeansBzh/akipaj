@@ -81,6 +81,44 @@ class AlbumController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Album  $album
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Album $album)
+    {
+        return view('album.edit')->with('album', $album);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\Request  $request
+     * @param  \App\Models\Album  $album
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Album $album)
+    {
+        $request->validateWithBag('updateAlbum', [
+            'title' => 'required|string|max:63|unique:albums,title,' . $album->id,
+            'description' => 'required|string|max:255',
+            'trips' => 'nullable|array',
+            'trips.*' => 'nullable|integer|distinct|exists:trips,id',
+        ]);
+
+        $album->title = $request->title;
+        $album->description = $request->description;
+        $album->save();
+        // Modification des sorties associées à l'album.
+        $album->trips()->sync($request->trips);
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Album modifié avec succès.');
+
+        return redirect()->route('albums.show', $album);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Album  $album

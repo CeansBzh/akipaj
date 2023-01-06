@@ -5,16 +5,18 @@
                 <span class="font-semibold ">{{ $album->title }}</span> - <span class="text-lg">{{
                     $album->date->translatedFormat('F Y') }}</span>
             </h2>
-            <div class="flex">
-                <x-primary-link href="{{ route('photos.create', $album) }}">
+            <div class="flex flex-col space-y-2 w-full xs:w-auto sm:flex-row sm:space-x-2 sm:space-y-0">
+                <x-primary-link href="{{ route('photos.create', $album) }}" class="mx-auto">
                     Ajouter mes photos
                 </x-primary-link>
+                <x-secondary-link href="{{ route('albums.edit', $album) }}" class="mx-auto">
+                    Modifier l'album
+                </x-secondary-link>
                 @if($album->photos->count() === 0)
-                <form method="post" action="{{ route('albums.destroy', $album) }}">
+                <form method="post" action="{{ route('albums.destroy', $album) }}" class="mx-auto">
                     @csrf
                     @method('delete')
-
-                    <x-secondary-button type="submit" class="ml-3 border-red-600 text-red-600">
+                    <x-secondary-button type="submit" class="border-red-600 text-red-600 w-full">
                         Supprimer l'album
                     </x-secondary-button>
                 </form>

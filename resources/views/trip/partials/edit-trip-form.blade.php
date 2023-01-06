@@ -42,14 +42,14 @@ $users = \App\Models\User::all()
                 <x-input-label for="start_date_input" value="Date de début" />
                 <x-text-input id="start_date_input" name="start_date" type="date" class="mt-1 block w-full"
                     :value="$trip->start_date->format('Y-m-d')" :max="date('Y-m-d')" required />
-                <x-input-error class="mt-2" :messages="$errors->get('start_date')" />
+                <x-input-error class="mt-2" :messages="$errors->updateTrip->get('start_date')" />
             </div>
 
             <div>
                 <x-input-label for="end_date_input" value="Date de fin" />
                 <x-text-input id="end_date_input" name="end_date" type="date" class="mt-1 block w-full"
                     :value="$trip->end_date->format('Y-m-d')" :max="date('Y-m-d')" required />
-                <x-input-error class="mt-2" :messages="$errors->get('end_date')" />
+                <x-input-error class="mt-2" :messages="$errors->updateTrip->get('end_date')" />
             </div>
         </div>
 
