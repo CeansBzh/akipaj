@@ -45,7 +45,7 @@ class PhotoController extends Controller
         // Enregistrement des photos
         foreach ($request->file('files') as $file) {
             // Lecture des données EXIF
-            $exif = exif_read_data($file->getRealPath());
+            $exif = @exif_read_data($file->getRealPath());
             // Pour chaque fichier enregistrement dans le stockage du site
             $imageResource = imagecreatefromjpeg($file->getRealPath());
             imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()), 100);
