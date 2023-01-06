@@ -4,16 +4,19 @@ namespace App\Http\Livewire\Photo;
 
 use App\Models\Photo;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Gallery extends Component
 {
+    use WithPagination;
+
     public $photoIds;
     public $searchTerm;
     public $sortTerm;
     public $usersFilter;
     public $albumsFilter;
-    public $additionalLogic;
     public $paginate = 25;
+    public $withCount = null;
 
     protected $listeners = ['resetFilters'];
 
@@ -25,7 +28,6 @@ class Gallery extends Component
 
     public function getSorting($value)
     {
-        $this->withCount = null;
         switch ($value) {
             case 'most_comments':
                 $this->withCount = 'comments';
@@ -46,13 +48,20 @@ class Gallery extends Component
         }
     }
 
+    public function updated($field)
+    {
+        if (in_array($field, ['searchTerm', 'sortTerm', 'usersFilter', 'albumsFilter', 'paginate'])) {
+            $this->resetPage();
+        }
+    }
+
     public function render()
     {
         $sortBy = $this->getSorting($this->sortTerm);
         return view('photo.livewire.gallery', [
             'photos' => Photo::when($this->photoIds, function ($query) {
-                    return $query->whereIn('id', $this->photoIds);
-                })
+                return $query->whereIn('id', $this->photoIds);
+            })
                 ->when($this->searchTerm, function ($query) {
                     return $query->whereLike(['title', 'legend'], $this->searchTerm);
                 })
