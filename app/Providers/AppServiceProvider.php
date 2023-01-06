@@ -4,8 +4,11 @@ namespace App\Providers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Mailer\Transport\Dsn;
+use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,8 +37,18 @@ class AppServiceProvider extends ServiceProvider
                     $query->orWhere($attribute, 'LIKE', "%{$searchTerm}%");
                 }
             });
-        
+
             return $this;
+        });
+        // Source: doc officielle de Laravel
+        Mail::extend('sendinblue', function () {
+            return (new SendinblueTransportFactory)->create(
+                new Dsn(
+                    'sendinblue+api',
+                    'default',
+                    config('services.sendinblue.key')
+                )
+            );
         });
     }
 }
