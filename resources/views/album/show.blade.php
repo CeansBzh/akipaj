@@ -1,15 +1,29 @@
 <x-member-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-xl text-gray-800 leading-tight">
-                <span class="font-semibold ">{{ $album->title }}</span> - <span class="text-lg">{{ $album->date->translatedFormat('F Y') }}</span>
+        <div class="flex flex-wrap justify-between items-center">
+            <h2 class="text-xl text-gray-800 leading-tight mb-2 md:mb-0">
+                <span class="font-semibold ">{{ $album->title }}</span> - <span class="text-lg">{{
+                    $album->date->translatedFormat('F Y') }}</span>
             </h2>
-            <x-primary-link href="{{ route('photos.create', $album) }}">
-                Ajouter mes photos
-            </x-primary-link>
+            <div class="flex">
+                <x-primary-link href="{{ route('photos.create', $album) }}">
+                    Ajouter mes photos
+                </x-primary-link>
+                @if($album->photos->count() === 0)
+                <form method="post" action="{{ route('albums.destroy', $album) }}">
+                    @csrf
+                    @method('delete')
+
+                    <x-secondary-button type="submit" class="ml-3 border-red-600 text-red-600">
+                        Supprimer l'album
+                    </x-secondary-button>
+                </form>
+                @endif
+            </div>
         </div>
         <hr class="mt-2 mb-4">
-        <div class="flex flex-wrap {{ strlen($album->description) > 150 ? 'text-sm' : '' }} sm:space-x-5 md:flex-nowrap">
+        <div
+            class="flex flex-wrap {{ strlen($album->description) > 150 ? 'text-sm' : '' }} sm:space-x-5 md:flex-nowrap">
             <p class="font-bold min-w-fit">Description :</p>
             <p class="flex-grow">{{ $album->description }}</p>
         </div>

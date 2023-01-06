@@ -79,4 +79,19 @@ class AlbumController extends Controller
             'photos' => $album->photos()->select('id')->simplePaginate(50),
         ]);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Album  $album
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Album $album)
+    {
+        $album->delete();
+
+        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Album supprimé avec succès.');
+
+        return redirect()->route('albums.index');
+    }
 }
