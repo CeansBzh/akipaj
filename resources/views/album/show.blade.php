@@ -47,9 +47,13 @@
         </div>
         <hr class="mt-2 mb-4">
         <div
-            class="flex flex-wrap {{ strlen($album->description) > 150 ? 'text-sm' : '' }} sm:space-x-5 md:flex-nowrap">
+            class="flex flex-wrap {{ strlen($album->description) > 150 ? 'text-sm' : '' }} space-x-1 sm:space-x-5 md:flex-nowrap">
             <p class="font-bold min-w-fit">Description :</p>
             <p class="flex-grow">{{ $album->description }}</p>
+        </div>
+        <div class="flex flex-wrap space-x-1 sm:space-x-5 md:flex-nowrap">
+            <p class="font-bold min-w-fit">Nombre de photos :</p>
+            <p class="flex-grow">{{ $album->photos->count() }}</p>
         </div>
     </x-slot>
 

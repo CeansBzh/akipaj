@@ -22,15 +22,16 @@
                 <div class="flex flex-wrap w-1/2 md:w-1/3 lg:w-1/4">
                     <div class="w-full p-1 md:p-2">
                         <figure
-                            class="w-full h-full relative max-w-sm cursor-pointer transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl">
+                            class="w-full h-full relative max-w-sm cursor-pointer overflow-hidden transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl">
                             <a href="{{ route('albums.show', $album) }}">
                                 <img class="object-cover rounded-lg w-full h-full" src="{{ $album->oldestPhoto->path }}"
                                     alt="Image de couverture de l'album {{ $album->title }}">
                                 <div class="absolute rounded-lg inset-0 bg-gradient-to-t from-black/30 via-black/10">
                                 </div>
                                 <figcaption
-                                    class="absolute bottom-1 px-1 text-center text-ellipsis break-words text-sm text-white sm:text-lg sm:px-4 sm:bottom-6">
-                                    {{ $album->title }}
+                                    class="absolute bottom-1 px-1 text-ellipsis break-words text-white sm:px-4 sm:bottom-6">
+                                    <p>{{ $album->title }}</p>
+                                    <p class="text-sm">{{ $album->photos->count() }} photos</p>
                                 </figcaption>
                             </a>
                         </figure>
