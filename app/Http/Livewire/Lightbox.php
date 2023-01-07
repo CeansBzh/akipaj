@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Photo;
+namespace App\Http\Livewire;
 
 use App\Models\Photo;
 use Livewire\Component;
@@ -26,6 +26,6 @@ class Lightbox extends Component
 
     public function render()
     {
-        return view('photo.livewire.lightbox');
+        return view('livewire.lightbox');
     }
 }

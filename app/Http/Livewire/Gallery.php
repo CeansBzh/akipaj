@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Photo;
+namespace App\Http\Livewire;
 
 use App\Models\Photo;
 use Livewire\Component;
@@ -58,7 +58,7 @@ class Gallery extends Component
     public function render()
     {
         $sortBy = $this->getSorting($this->sortTerm);
-        return view('photo.livewire.gallery', [
+        return view('livewire.gallery', [
             'photos' => Photo::when($this->photoIds, function ($query) {
                 return $query->whereIn('id', $this->photoIds);
             })

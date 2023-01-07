@@ -55,8 +55,8 @@
 
     <section class="text-gray-700">
         @if($photos->first())
-        <livewire:photo.lightbox />
-        <livewire:photo.gallery :photoIds="$photos->pluck('id')->toArray()" />
+        <livewire:lightbox />
+        <livewire:gallery :photoIds="$photos->pluck('id')->toArray()" />
         @else
         <div class="flex flex-col items-center justify-center h-64">
             <p class="text-xl mb-5">Aucune photo de publiée.</p>
