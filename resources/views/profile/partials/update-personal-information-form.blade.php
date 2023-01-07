@@ -92,7 +92,7 @@
         </div>
 
         <div>
-            <x-input-label for="postal_code" value="Code postal_code" />
+            <x-input-label for="postal_code" value="Code" />
             <x-text-input id="postal_code" name="postal_code" type="number" class="mt-1 block w-full" min="1000"
                 max="99999" :value="old('postal_code', $user->postal_code)" autocomplete="postal-code" />
             <x-input-error class="mt-2" :messages="$errors->get('postal_code')" />
