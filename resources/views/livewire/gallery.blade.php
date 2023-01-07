@@ -1,7 +1,7 @@
 <div class="px-2">
 
     <div class="my-2 sm:mr-5">
-        <x-photos.gallery-search />
+        @include('livewire.partials.gallery-search-sort')
     </div>
 
     <div class="grid grid-cols-1 gap-0.5 auto-rows-[20px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

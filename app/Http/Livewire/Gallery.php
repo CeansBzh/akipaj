@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\User;
+use App\Models\Album;
 use App\Models\Photo;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -10,15 +12,52 @@ class Gallery extends Component
 {
     use WithPagination;
 
+    // List of photo ids to display. If null display all photos.
     public $photoIds;
+    public $paginate = 25;
+    // Values to filter with
     public $searchTerm;
     public $sortTerm;
     public $usersFilter;
     public $albumsFilter;
-    public $paginate = 25;
+    // Available values to filter with
+    public $users;
+    public $albums;
+    // With count term to add to the query
     public $withCount = null;
 
     protected $listeners = ['resetFilters'];
+
+    public function mount()
+    {
+        if ($this->photoIds) {
+            // Récupération des utilisateurs ayant des photos dans la liste
+            $usersIds = Photo::select('user_id')->whereIn('id', $this->photoIds)->distinct()->get();
+            $this->users = User::whereIn('id', $usersIds)->select(['id', 'name'])->get();
+            // Récupération des albums ayant des photos dans la liste
+            $albumsIds = Photo::select('album_id')->whereIn('id', $this->photoIds)->distinct()->get();
+            $this->albums = Album::whereIn('id', $albumsIds)
+                ->has('photos')
+                ->get()
+                ->groupBy([
+                    function ($val) {
+                        return $val->date->format('Y');
+                    },
+                ])->toBase();
+        } else {
+            // Récupération de tous les utilisateurs ayant des photos
+            $this->users = User::has('photos')->select(['id', 'name'])->get();
+            // Récupération de tous les albums ayant des photos
+            $this->albums = Album::has('photos')
+                ->select(['id', 'title', 'date'])
+                ->get()
+                ->groupBy([
+                    function ($val) {
+                        return $val->date->format('Y');
+                    }
+                ])->toBase();
+        }
+    }
 
     public function resetFilters()
     {
