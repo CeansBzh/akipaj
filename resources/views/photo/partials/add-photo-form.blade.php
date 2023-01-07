@@ -80,6 +80,7 @@
                         </svg>
                         <p class="mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
                             poids.</p>
+                        <p>Le nombre maximal de photos par envoi est de 20.</p>
                         @endif
                     </div>
                 </div>
@@ -135,10 +136,10 @@
 <script type="text/javascript">
     // Script to drag and drop, resize, rewrite exif data, and preview images
     // Assembled using different sources
-    // Version 0.1.0
-    // Speed for 100 images (average size 3.3MB): 22s
+    // Version 0.1.1
+    // Speed for 100 images (average size 3.3MB): 15.6s
 
-    const MAX_FILES = 999;
+    const MAX_FILES = 20;
     const MAX_WIDTH = 1920;
     const MAX_HEIGHT = 1080;
     const PREVIEW_SIZE = 70;
@@ -146,6 +147,7 @@
     const QUALITY = 0.7;
 
     const dataTransfer = new DataTransfer();
+    const loadedFileNames = [];
 
     var dragAndDropSupported = function () {
         var div = document.createElement('div');
@@ -212,6 +214,7 @@
                     async (blob) => {
                         dataTransfer.items.add(new File([await copyExif(file, blob)], file.name, { type: MIME_TYPE }));
                         inputElement.files = dataTransfer.files;
+                        loadedFileNames.push(file.name);
                         addPreview(img, file.name);
                         resolve(true);
                         return;
@@ -223,6 +226,7 @@
         });
 
     function handleFiles(files) {
+        var startTime = performance.now();
         if (!(files instanceof FileList)) { files = this.files }
         const promises = [];
         const info = document.getElementById('info');
@@ -241,26 +245,17 @@
         document.getElementById('loading-spinner').classList.remove('hidden');
         if (info) { info.remove(); }
         for (let i = 0; i < files.length; i++) {
-            // Pour chaque fichier on vérifie qu'il s'agit bien d'une image
+            // Pour chaque fichier on vérifie qu'il s'agit bien d'une image, et qu'il n'est pas déjà chargé
             const file = files[i];
-            if (!file.type.startsWith('image/')) { continue }
-            // On verifie si le fichier n'est pas déjà dans la liste
-            if (dataTransfer.items.length > 0) {
-                let alreadyInList = false;
-                for (let i = 0; i < dataTransfer.items.length; i++) {
-                    if (dataTransfer.items[i].getAsFile().name == file.name) {
-                        alreadyInList = true;
-                        break;
-                    }
-                }
-                if (alreadyInList) { continue }
-            }
+            if (loadedFileNames.includes(file.name) || !file.type.startsWith('image/')) { continue }
             // Si le fichier est une image et n'est pas déjà dans la liste :
             promises.push(loadImage(file));
         }
         Promise.all(promises).then(() => {
             document.getElementById('dropbox-body').classList.remove('invisible');
             document.getElementById('loading-spinner').classList.add('hidden');
+            var endTime = performance.now()
+            console.log(`Temps d'exécution : ${(endTime - startTime) / 1000} secondes`)
         });
     }
 
