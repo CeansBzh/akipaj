@@ -114,12 +114,14 @@
             <div class="fixed bottom-0 left-0 right-0">
                 <div class="max-w-3xl mx-auto h-20 p-5 bg-white rounded-t-xl shadow-2xl">
                     <div class="flex justify-between items-center">
-                        <p class="grow mr-2 text-left">Vos photos seront ajoutées à l'album "
+                        <p class="grow mr-2 text-left overflow-ellipsis whitespace-nowrap overflow-hidden">Vos photos
+                            seront ajoutées à l'album "
                             <span class="font-semibold">{{ $album->title }}</span>"
                         </p>
                         <div>
-                            <x-primary-button class="bg-sky-500 py-3 hover:bg-sky-700">Ajouter mes
-                                photos</x-primary-button>
+                            <x-primary-button class="bg-sky-500 py-3 w-max hover:bg-sky-700">
+                                Ajouter mes photos
+                            </x-primary-button>
                         </div>
                     </div>
                 </div>
@@ -131,7 +133,12 @@
 
 @push('scripts')
 <script type="text/javascript">
-    const MAX_FILES = 50;
+    // Script to drag and drop, resize, rewrite exif data, and preview images
+    // Assembled using different sources
+    // Version 0.1.0
+    // Speed for 100 images (average size 3.3MB): 22s
+
+    const MAX_FILES = 999;
     const MAX_WIDTH = 1920;
     const MAX_HEIGHT = 1080;
     const PREVIEW_SIZE = 70;
@@ -140,53 +147,48 @@
 
     const dataTransfer = new DataTransfer();
 
-    var isAdvancedUpload = function () {
+    var dragAndDropSupported = function () {
         var div = document.createElement('div');
         return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
     }();
-    if (isAdvancedUpload) {
+    if (dragAndDropSupported) {
         document.getElementById('draggableMsg').classList.remove('hidden');
-    }
 
-    let dropbox = document.getElementById("dropbox");
-    dropbox.addEventListener("dragenter", dragenter, false);
-    dropbox.addEventListener("dragover", dragover, false);
-    dropbox.addEventListener("dragleave", dragleave, false);
-    dropbox.addEventListener("drop", drop, false);
+        const dropbox = document.getElementById('dropbox');
+        dropbox.addEventListener('dragover', (e) => {
+            // prevent default to allow drop
+            e.preventDefault();
+        }, false);
+
+        dropbox.addEventListener('dragenter', (e) => {
+            // highlight potential drop target using svg icon
+            document.getElementById('dropbox-body').classList.add('invisible');
+            document.getElementById('drag-over-icon').classList.remove('hidden');
+        });
+
+        dropbox.addEventListener('dragleave', (e) => {
+            // remove highlight for potential drop target
+            document.getElementById('dropbox-body').classList.remove('invisible');
+            document.getElementById('drag-over-icon').classList.add('hidden');
+        });
+
+        dropbox.addEventListener('drop', (e) => {
+            // prevent default action
+            e.preventDefault();
+            // remove highlight for potential drop target
+            document.getElementById('dropbox-body').classList.remove('invisible');
+            document.getElementById('drag-over-icon').classList.add('hidden');
+            // add files to the list
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        });
+    }
 
     let inputElement = document.getElementById("dropbox-file");
     inputElement.addEventListener("change", handleFiles, false);
 
     let previewContainer = document.getElementById("previewContainer");
-
-    function dragenter(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        document.getElementById('dropbox-body').classList.add('invisible');
-        document.getElementById('drag-over-icon').classList.remove('hidden');
-    }
-
-    function dragover(e) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    function dragleave(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        document.getElementById('dropbox-body').classList.remove('invisible');
-        document.getElementById('drag-over-icon').classList.add('hidden');
-    }
-
-    function drop(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        const dt = e.dataTransfer;
-        const files = dt.files;
-
-        handleFiles(files);
-    }
 
     const loadImage = file =>
         new Promise((resolve, reject) => {
