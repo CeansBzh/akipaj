@@ -34,12 +34,37 @@ return $val->start_date->format('Y');
             <x-input-error class="mt-2" :messages="$errors->get('description')" />
         </div>
 
+        <div class="flex space-x-2">
+            <div>
+                <x-input-label for="month_input" value="Mois" />
+                <x-select-input id="month_input" name="month" class="mt-1 block w-full" required>
+                    <option value="1" {{ old('month')==1 ? 'selected' : '' }}>Janvier</option>
+                    <option value="2" {{ old('month')==2 ? 'selected' : '' }}>Février</option>
+                    <option value="3" {{ old('month')==3 ? 'selected' : '' }}>Mars</option>
+                    <option value="4" {{ old('month')==4 ? 'selected' : '' }}>Avril</option>
+                    <option value="5" {{ old('month')==5 ? 'selected' : '' }}>Mai</option>
+                    <option value="6" {{ old('month')==6 ? 'selected' : '' }}>Juin</option>
+                    <option value="7" {{ old('month')==7 ? 'selected' : '' }}>Juillet</option>
+                    <option value="8" {{ old('month')==8 ? 'selected' : '' }}>Août</option>
+                    <option value="9" {{ old('month')==9 ? 'selected' : '' }}>Septembre</option>
+                    <option value="10" {{ old('month')==10 ? 'selected' : '' }}>Octobre</option>
+                    <option value="11" {{ old('month')==11 ? 'selected' : '' }}>Novembre</option>
+                    <option value="12" {{ old('month')==12 ? 'selected' : '' }}>Décembre</option>
+                </x-select-input>
+                <x-input-error class="mt-2" :messages="$errors->get('month')" />
+            </div>
+            <div>
+                <x-input-label for="year_input" value="Année" />
+                <x-text-input id="year_input" name="year" type="number" class="mt-1 block w-full" :value="old('year')"
+                    min="1900" max="{{ date('Y') + 1 }}" required />
+                <x-input-error class="mt-2" :messages="$errors->get('year')" />
+            </div>
+        </div>
 
         @if(!$trips->isEmpty())
-        <div class="relative">
-            <x-input-label for="trip_input" value="Lier l'album à une sortie existante (facultatif)" />
-            <x-select-input id="trip_input" name="trip" class="mt-1 block w-full" :value="old('trip')">
-                <option hidden disabled selected>Liste des sorties</option>
+        <div>
+            <x-input-label for="trips_input" value="Lier l'album à une ou plusieurs sorties (facultatif)" />
+            <x-multi-select-input id="trips_input" name="trips[]" search="true">
                 @foreach ($trips as $year => $tripPerYear)
                 <optgroup label="{{ $year }}">
                     @foreach ($tripPerYear as $trip)
@@ -47,15 +72,11 @@ return $val->start_date->format('Y');
                     @endforeach
                 </optgroup>
                 @endforeach
-            </x-select-input>
-            <button type="button" id="clear_button" class="w-5 h-6 absolute top-8 right-9 text-slate-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="m-0">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            <x-input-error class="mt-2" :messages="$errors->get('trip')" />
+            </x-multi-select-input>
+            <x-input-error class="mt-2" :messages="$errors->get('trips')" />
+            @foreach($errors->get('trips.*') as $message)
+            <x-input-error class="mt-2" :messages="$message" />
+            @endforeach
         </div>
         @endif
 
@@ -64,16 +85,3 @@ return $val->start_date->format('Y');
         </div>
     </form>
 </section>
-
-@if(!$trips->isEmpty())
-@push('scripts')
-<script type="text/javascript">
-    let select = document.getElementById('trip_input');
-    let clearBtn = document.getElementById('clear_button');
-    clearBtn.addEventListener('click', function () {
-        select.selectedIndex = 0;
-        select.dispatchEvent(new Event('change'));
-    });
-</script>
-@endpush
-@endif

@@ -6,6 +6,8 @@ function ($val) {
 return $val->start_date->format('Y');
 },
 ]);
+
+$month = $album->date->format('m');
 @endphp
 
 <section class="max-w-2xl mx-auto">
@@ -34,6 +36,32 @@ return $val->start_date->format('Y');
             <x-input-error class="mt-2" :messages="$errors->updateAlbum->get('description')" />
         </div>
 
+        <div class="flex space-x-2">
+            <div>
+                <x-input-label for="month_input" value="Mois" />
+                <x-select-input id="month_input" name="month" class="mt-1 block w-full" required>
+                    <option value="1" {{ $month==1 ? 'selected' : '' }}>Janvier</option>
+                    <option value="2" {{ $month==2 ? 'selected' : '' }}>Février</option>
+                    <option value="3" {{ $month==3 ? 'selected' : '' }}>Mars</option>
+                    <option value="4" {{ $month==4 ? 'selected' : '' }}>Avril</option>
+                    <option value="5" {{ $month==5 ? 'selected' : '' }}>Mai</option>
+                    <option value="6" {{ $month==6 ? 'selected' : '' }}>Juin</option>
+                    <option value="7" {{ $month==7 ? 'selected' : '' }}>Juillet</option>
+                    <option value="8" {{ $month==8 ? 'selected' : '' }}>Août</option>
+                    <option value="9" {{ $month==9 ? 'selected' : '' }}>Septembre</option>
+                    <option value="10" {{ $month==10 ? 'selected' : '' }}>Octobre</option>
+                    <option value="11" {{ $month==11 ? 'selected' : '' }}>Novembre</option>
+                    <option value="12" {{ $month==12 ? 'selected' : '' }}>Décembre</option>
+                </x-select-input>
+                <x-input-error class="mt-2" :messages="$errors->get('month')" />
+            </div>
+            <div>
+                <x-input-label for="year_input" value="Année" />
+                <x-text-input id="year_input" name="year" type="number" class="mt-1 block w-full" :value="$album->date->format('Y')"
+                    min="1900" max="{{ date('Y') + 1 }}" required />
+                <x-input-error class="mt-2" :messages="$errors->get('year')" />
+            </div>
+        </div>
 
         @if(!$trips->isEmpty())
         <div>
@@ -60,16 +88,3 @@ return $val->start_date->format('Y');
         </div>
     </form>
 </section>
-
-@if(!$trips->isEmpty())
-@push('scripts')
-<script type="text/javascript">
-    let select = document.getElementById('trip_input');
-    let clearBtn = document.getElementById('clear_button');
-    clearBtn.addEventListener('click', function () {
-        select.selectedIndex = 0;
-        select.dispatchEvent(new Event('change'));
-    });
-</script>
-@endpush
-@endif

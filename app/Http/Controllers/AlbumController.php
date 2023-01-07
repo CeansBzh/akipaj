@@ -44,12 +44,14 @@ class AlbumController extends Controller
         $request->validate([
             'title' => ['required', 'string', 'max:63', 'unique:albums'],
             'description' => ['required', 'string', 'max:255'],
-            'trip' => ['sometimes', 'exists:trips,id'],
+            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'year' => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],
+            'trips' => ['nullable', 'array'],
+            'trips.*' => ['nullable', 'integer', 'distinct', 'exists:trips,id'],
         ]);
 
-        // Calcul de la date de l'album : la date est calculée automatiquement à partir de la date de la première photo.
-        // Si aucune photo n'est présente, la date est celle du jour, ou celle de la sortie si renseignée.
-        $date = $request->trip ? Trip::find($request->trip)->start_date : now();
+        // Calcul de la date de l'album à partir du mois et de l'année.
+        $date = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
         // Création de l'album.
         $album = new Album();
         $album->title = $request->title;
@@ -101,14 +103,20 @@ class AlbumController extends Controller
     public function update(Request $request, Album $album)
     {
         $request->validateWithBag('updateAlbum', [
-            'title' => 'required|string|max:63|unique:albums,title,' . $album->id,
-            'description' => 'required|string|max:255',
-            'trips' => 'nullable|array',
-            'trips.*' => 'nullable|integer|distinct|exists:trips,id',
+            'title' => ['required', 'string', 'max:63', 'unique:albums,title,' . $album->id],
+            'description' => ['required', 'string', 'max:255'],
+            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'year' => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],
+            'trips' => ['nullable', 'array'],
+            'trips.*' => ['nullable', 'integer', 'distinct', 'exists:trips,id'],
         ]);
 
+        // Calcul de la date de l'album à partir du mois et de l'année.
+        $date = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+        // Modification de l'album.
         $album->title = $request->title;
         $album->description = $request->description;
+        $album->date = $date;
         $album->save();
         // Modification des sorties associées à l'album.
         $album->trips()->sync($request->trips);

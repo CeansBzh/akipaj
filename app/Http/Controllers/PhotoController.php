@@ -74,8 +74,6 @@ class PhotoController extends Controller
                 'user_id' => $request->user()->id,
             ]);
         }
-        // Calcul de la nouvelle date de l'album en fonction des dates des photos (données exif)
-        $album->updateAlbumDate();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
 
@@ -139,11 +137,8 @@ class PhotoController extends Controller
      */
     public function destroy(Photo $photo)
     {
-        $album = $photo->album;
         // Suppression de la photo
         $photo->delete();
-        // Calcul de la nouvelle date de l'album
-        $album->updateAlbumDate();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
 
