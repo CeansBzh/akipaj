@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Trip;
 use App\Models\Album;
 use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
 
 class AlbumController extends Controller
 {
+    /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Album::class, 'album');
+    }
+
     /**
      * Display a listing of the resource.
      *
