@@ -30,6 +30,7 @@
             display: none !important
         }
     </style>
+    @livewireScripts
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
@@ -47,7 +48,6 @@
         {{ $slot }}
     </div>
 
-    @livewireScripts
     @stack('scripts')
 </body>
 

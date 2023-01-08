@@ -26,9 +26,14 @@ class Gallery extends Component
     // With count term to add to the query
     public $withCount = null;
 
-    protected $listeners = ['resetFilters'];
+    protected $listeners = ['resetFilters', 'deleteSelected'];
 
     public function mount()
+    {
+        $this->calculateFilterable();
+    }
+
+    public function calculateFilterable()
     {
         if ($this->photoIds) {
             // Récupération des utilisateurs ayant des photos dans la liste
@@ -85,6 +90,18 @@ class Gallery extends Component
             default:
                 return ['taken_at', 'desc'];
         }
+    }
+
+    public function deleteSelected($selectedIds)
+    {
+        $photos = Photo::whereIn('id', $selectedIds)->get();
+        foreach ($photos as $photo) {
+            if (auth()->user()->can('delete', $photo)) {
+                $photo->delete();
+            }
+        }
+        $this->calculateFilterable();
+        $this->resetPage();
     }
 
     public function updated($field)

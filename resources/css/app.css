@@ -33,6 +33,12 @@
     }
 }
 
+@layer components {
+    .selected {
+        @apply outline outline-sky-500 -outline-offset-8 outline-8 scale-[0.95] rounded;
+    }
+}
+
 @layer utilities {
 
     @media screen and (min-width: 640px) {
