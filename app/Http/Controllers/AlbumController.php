@@ -87,7 +87,7 @@ class AlbumController extends Controller
     {
         return view('album.show', [
             'album' => $album,
-            'photos' => $album->photos()->select('id')->simplePaginate(50),
+            'photoIds' => $album->photos()->select('id')->get()->pluck('id')->toArray(),
         ]);
     }
 
