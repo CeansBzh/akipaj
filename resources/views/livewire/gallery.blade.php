@@ -8,13 +8,14 @@
         @include('livewire.partials.gallery-mass-selection-menu')
     </div>
 
-    <div class="grid grid-cols-1 gap-0.5 auto-rows-[20px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-0.5 auto-rows-[20px] xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         @foreach ($photos as $photo)
         @can('delete', $photo)
         <div x-on:click="imageClicked" id="photo-{{ $photo->id }}" data-role="gallery-item"
             class="h-full overflow-hidden relative select-none group cursor-pointer">
             <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
-                class="content object-cover h-fit w-full transition ease-linear duration-75" src="{{ $photo->path }}"
+                class="content object-cover h-fit w-full transition ease-linear duration-75"
+                src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}" height="{{ $photo->thumb_height }}"
                 data-role="item-image">
             <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 opacity-0 group-hover:opacity-100"
                 data-role="item-top-gradient"></div>
@@ -31,7 +32,8 @@
             :class="selectedImages.length === 0 ? 'cursor-pointer' : 'cursor-default'"
             x-on:click="if(selectedImages.length === 0) {Livewire.emit('openPhotoLightbox', {{ $photo->id }})}">
             <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
-                class="content object-cover h-fit w-full transition ease-linear duration-75" src="{{ $photo->path }}">
+                class="content object-cover h-fit w-full transition ease-linear duration-75"
+                src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}" height="{{ $photo->thumb_height }}">
         </div>
         @endif
         @endforeach

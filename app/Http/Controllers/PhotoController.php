@@ -48,11 +48,23 @@ class PhotoController extends Controller
             $exif = @exif_read_data($file->getRealPath());
             // Pour chaque fichier enregistrement dans le stockage du site
             $imageResource = imagecreatefromjpeg($file->getRealPath());
-            imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()), 100);
+            imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()));
+            // Enregistrement de la miniature
+            $width = imagesx($imageResource);
+            $height = imagesy($imageResource);
+            // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
+            $ratio  = min(450 / $width, 450 / $height);
+            $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
+            imagejpeg($thumbResource, public_path('storage/photos/thumbs/thumb_' . $file->hashName()));
             // Création d'une nouvelle photo
             $photo = new Photo();
             $photo->title = $file->getClientOriginalName();
             $photo->path = Storage::url('photos/' . $file->hashName());
+            $photo->thumb_path = Storage::url('photos/thumbs/thumb_' . $file->hashName());
+            $photo->width = $width;
+            $photo->height = $height;
+            $photo->thumb_width = imagesx($thumbResource);
+            $photo->thumb_height = imagesy($thumbResource);
             // Si les données exif sont présentes
             if (is_array($exif)) {
                 if (isset($exif['DateTimeOriginal'])) {

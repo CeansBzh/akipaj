@@ -22,8 +22,13 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->string('title');
             $table->string('path');
+            $table->string('thumb_path');
+            $table->integer('width')->nullable();
+            $table->integer('height')->nullable();
+            $table->integer('thumb_width')->nullable();
+            $table->integer('thumb_height')->nullable();
             $table->text('legend')->nullable();
-            $table->double('latitude', )->nullable();
+            $table->double('latitude',)->nullable();
             $table->double('longitude')->nullable();
             $table->timestamp('taken_at')->nullable();
             $table->timestamps();
@@ -39,6 +44,7 @@ return new class extends Migration
     public function down()
     {
         File::cleanDirectory(storage_path('app/public/photos'));
+        File::makeDirectory(storage_path('app/public/photos/thumbs'));
         Schema::dropIfExists('photos');
     }
 };

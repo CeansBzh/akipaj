@@ -20,6 +20,7 @@ class Photo extends Model
     protected $fillable = [
         'title',
         'path',
+        'thumb_path',
         'legend',
         'taken_at',
     ];
