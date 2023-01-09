@@ -15,8 +15,8 @@
             class="h-full overflow-hidden relative select-none group cursor-pointer">
             <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
                 class="content object-cover h-fit w-full transition ease-linear duration-75"
-                src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}" height="{{ $photo->thumb_height }}"
-                data-role="item-image">
+                src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}"
+                height="{{ $photo->thumb_height }}" data-role="item-image">
             <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 opacity-0 group-hover:opacity-100"
                 data-role="item-top-gradient"></div>
             <svg x-on:click="checkboxClicked" role="checkbox" aria-checked="false" xmlns="http://www.w3.org/2000/svg"
@@ -30,10 +30,11 @@
         @else
         <div data-role="gallery-item" class="h-full overflow-hidden relative select-none"
             :class="selectedImages.length === 0 ? 'cursor-pointer' : 'cursor-default'"
-            x-on:click="if(selectedImages.length === 0) {Livewire.emit('openPhotoLightbox', {{ $photo->id }})}">
+            x-on:click="openPhotoLightbox({{ $photo->id }})">
             <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
                 class="content object-cover h-fit w-full transition ease-linear duration-75"
-                src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}" height="{{ $photo->thumb_height }}">
+                src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}"
+                height="{{ $photo->thumb_height }}">
         </div>
         @endif
         @endforeach
@@ -48,6 +49,7 @@
     function gallery() {
         return {
             selectedImages: [],
+            lightboxPhotoId: null,
             checkboxes: document.querySelectorAll('svg[role=checkbox]'),
             init() {
                 resizeAllGridItems();
@@ -59,6 +61,11 @@
                         imagesLoaded(items[x], resizeInstance);
                     }
                 })
+                // Listen for keyboard arrows navigation
+                document.addEventListener('keyup', (e) => {
+                    if (e.code === "ArrowLeft") this.lightboxGoLeft()
+                    else if (e.code === "ArrowRight") this.lightboxGoRight()
+                });
             },
             checkboxClicked: function (e) {
                 e.stopPropagation();
@@ -74,7 +81,7 @@
                 } else {
                     // If we don't have selected images, we open the lightbox
                     let id = item.id.split('-')[1];
-                    Livewire.emit('openPhotoLightbox', id);
+                    this.openPhotoLightbox(id);
                 }
             },
             toggleSelection: function (item) {
@@ -132,7 +139,33 @@
                     item.classList.add('selected');
                     gradient.classList.add('hidden');
                 }
-            }
+            },
+            openPhotoLightbox: function (photoId) {
+                if (this.selectedImages.length === 0) {
+                    this.lightboxPhotoId = photoId;
+                    Livewire.emit('openPhotoLightbox', photoId);
+                }
+            },
+            lightboxGoLeft: function () {
+                if (this.lightboxPhotoId === null) return;
+                let currentItemDisplayed = document.getElementById('photo-' + this.lightboxPhotoId);
+                let previous = currentItemDisplayed.previousElementSibling;
+                if (previous !== null) {
+                    let id = previous.id.split('-')[1];
+                    this.lightboxPhotoId = id;
+                    Livewire.emit('loadPhoto', id);
+                }
+            },
+            lightboxGoRight: function () {
+                if (this.lightboxPhotoId === null) return;
+                let currentItemDisplayed = document.getElementById('photo-' + this.lightboxPhotoId);
+                let next = currentItemDisplayed.nextElementSibling;
+                if (next !== null) {
+                    let id = next.id.split('-')[1];
+                    this.lightboxPhotoId = id;
+                    Livewire.emit('loadPhoto', id);
+                }
+            },
         }
     }
 
