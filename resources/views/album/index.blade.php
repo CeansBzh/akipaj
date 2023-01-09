@@ -24,7 +24,7 @@
                         <figure
                             class="w-full h-full relative max-w-sm cursor-pointer overflow-hidden transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl">
                             <a href="{{ route('albums.show', $album) }}">
-                                <img class="object-cover rounded-lg w-full h-full" src="{{ $album->oldestPhoto->path }}"
+                                <img class="object-cover rounded-lg w-full h-full" src="{{ $album->imagePath ?? $album->oldestPhoto->path }}"
                                     alt="Image de couverture de l'album {{ $album->title }}">
                                 <div class="absolute rounded-lg inset-0 bg-gradient-to-t from-black/30 via-black/10">
                                 </div>

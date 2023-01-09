@@ -20,6 +20,7 @@ class Album extends Model
         'title',
         'description',
         'date',
+        'imagePath',
     ];
 
     /**

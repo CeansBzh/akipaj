@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
@@ -27,6 +28,10 @@ class AlbumController extends Controller
     {
         // Gets all albums with for each the oldest photo they contain.
         // Gets only the id, album_id and path fields of each photo.
+
+        // TODO Ajouter choisir image de couverture et si lier à une sortie alors prendre celle là
+        // TODO Ajouter tri
+        // TODO Changer relation albums - sortie => 1 sortie a plusieurs albums, 1 album a 1 sortie
         return view('album.index', [
             'albums' => Album::with('oldestPhoto:id,photos.album_id,path')->simplePaginate(25),
         ]);
@@ -55,6 +60,7 @@ class AlbumController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'month' => ['required', 'integer', 'min:1', 'max:12'],
             'year' => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],
+            'image' => ['nullable', 'mimes:png,jpg,jpeg,gif', 'max:2000'],
             'trips' => ['nullable', 'array'],
             'trips.*' => ['nullable', 'integer', 'distinct', 'exists:trips,id'],
         ]);
@@ -66,6 +72,12 @@ class AlbumController extends Controller
         $album->title = $request->title;
         $album->description = $request->description;
         $album->date = $date;
+        // Enregistrement de l'image de couverture si elle est renseignée.
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->file('image')->storeAs('public/albums', $imageName);
+            $album->imagePath = Storage::url($path);
+        }
         $album->save();
         // Association de la sortie avec l'album si elle est renseignée.
         if ($request->trip) {
@@ -116,6 +128,7 @@ class AlbumController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'month' => ['required', 'integer', 'min:1', 'max:12'],
             'year' => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],
+            'image' => ['nullable', 'mimes:png,jpg,jpeg,gif', 'max:2000'],
             'trips' => ['nullable', 'array'],
             'trips.*' => ['nullable', 'integer', 'distinct', 'exists:trips,id'],
         ]);
@@ -126,6 +139,19 @@ class AlbumController extends Controller
         $album->title = $request->title;
         $album->description = $request->description;
         $album->date = $date;
+        // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
+        if (($request->remove_image || $request->hasFile('image')) && $album->imagePath) {
+            $filePath = 'public/trips/' . basename($album->imagePath);
+            if (Storage::delete($filePath)) {
+                $album->imagePath = null;
+            }
+        }
+        // Si une nouvelle image a été uploadée, on la sauvegarde
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $path = $request->file('image')->storeAs('public/trips', $imageName);
+            $album->imagePath = Storage::url($path);
+        }
         $album->save();
         // Modification des sorties associées à l'album.
         $album->trips()->sync($request->trips);

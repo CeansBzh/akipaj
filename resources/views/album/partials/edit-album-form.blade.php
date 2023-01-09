@@ -10,13 +10,14 @@ return $val->start_date->format('Y');
 $month = $album->date->format('m');
 @endphp
 
-<section class="max-w-2xl mx-auto">
+<section class="max-w-2xl mx-auto" x-data="editAlbum()" x-init="init()">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Modifier l'album</h2>
         <p class="mt-1 text-sm text-gray-600">L'album sera mis à jour immédiatement.</p>
     </header>
 
-    <form method="post" action="{{ route('albums.update', $album) }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('albums.update', $album) }}" enctype="multipart/form-data"
+        class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
@@ -53,14 +54,39 @@ $month = $album->date->format('m');
                     <option value="11" {{ $month==11 ? 'selected' : '' }}>Novembre</option>
                     <option value="12" {{ $month==12 ? 'selected' : '' }}>Décembre</option>
                 </x-select-input>
-                <x-input-error class="mt-2" :messages="$errors->get('month')" />
+                <x-input-error class="mt-2" :messages="$errors->updateAlbum->get('month')" />
             </div>
             <div>
                 <x-input-label for="year_input" value="Année" />
-                <x-text-input id="year_input" name="year" type="number" class="mt-1 block w-full" :value="$album->date->format('Y')"
-                    min="1900" max="{{ date('Y') + 1 }}" required />
-                <x-input-error class="mt-2" :messages="$errors->get('year')" />
+                <x-text-input id="year_input" name="year" type="number" class="mt-1 block w-full"
+                    :value="$album->date->format('Y')" min="1900" max="{{ date('Y') + 1 }}" required />
+                <x-input-error class="mt-2" :messages="$errors->updateAlbum->get('year')" />
             </div>
+        </div>
+
+        <div>
+            <x-input-label for="image_input" value="Image de couverture (facultatif)" />
+            <input id="image_input" name="image" type="file" class="mt-1 block w-full" accept="image/png, image/jpeg"
+                @change="resizeImage">
+            <x-input-error class="mt-2" :messages="$errors->updateAlbum->get('image')" />
+        </div>
+
+        <div>
+            <input x-model="imageRemoved" name="remove_image" type="checkbox" class="hidden" aria-hidden="true">
+            <x-input-error class="mt-2" :messages="$errors->updateAlbum->get('remove_image')" />
+        </div>
+
+        <div class="relative w-fit" x-show="!imageRemoved">
+            <img id="image_display" src="{{ $album->imagePath }}"
+                alt="Image de couverture de l'événement {{ $album->title }}"
+                class="h-[250px] w-[250px] object-cover rounded-xl">
+            <button type="button" class="group" x-on:click.prevent="removeImage">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="h-6 drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 group-focus:motion-safe:animate-pulse text-white absolute top-3 right-3">
+                    <path d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
 
         @if(!$trips->isEmpty())
@@ -88,3 +114,71 @@ $month = $album->date->format('m');
         </div>
     </form>
 </section>
+@push('scripts')
+<script>
+    const MAX_WIDTH = 250;
+    const MAX_HEIGHT = 250;
+    const MIME_TYPE = "image/jpeg";
+    const QUALITY = 0.7;
+
+    function editAlbum() {
+        return {
+            imageRemoved: false,
+            init() {
+                this.imageRemoved = document.getElementById('image_display').getAttribute('src') == '';
+            },
+            fileToDataUrl(event, callback) {
+                if (!event.target.files.length) return
+
+                let file = event.target.files[0],
+                    reader = new FileReader()
+
+                reader.readAsDataURL(file)
+                reader.onload = e => callback(e.target.result)
+            },
+            removeImage: function () {
+                this.imageRemoved = confirm('Supprimer la couverture de l\'album ?');
+                if (this.imageRemoved) {
+                    document.getElementById('image_input').value = '';
+                }
+            },
+            resizeImage(event) {
+                const file = event.target.files[0];
+                const blobURL = URL.createObjectURL(file);
+                const img = new Image();
+                const dataTransfer = new DataTransfer();
+                img.src = blobURL;
+                img.onerror = function () {
+                    URL.revokeObjectURL(this.src);
+                    // Handle the failure properly
+                    console.log("Cannot load image");
+                };
+                img.onload = () => {
+                    URL.revokeObjectURL(this.src);
+                    const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                    const canvas = document.createElement("canvas");
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                    canvas.toBlob(
+                        (blob) => {
+                            dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
+                            event.target.files = dataTransfer.files
+                            this.fileToDataUrl(event, src => document.getElementById('image_display').src = src);
+                            this.imageRemoved = false;
+                            return;
+                        },
+                        MIME_TYPE,
+                        QUALITY
+                    );
+                };
+            },
+            calculateSize(img, maxWidth, maxHeight) {
+                let ratio = Math.max(maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+                return [img.naturalWidth * ratio, img.naturalHeight * ratio];
+            }
+        }
+    }
+</script>
+@endpush
