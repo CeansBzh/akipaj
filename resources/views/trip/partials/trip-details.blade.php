@@ -26,6 +26,7 @@ $userCount = $trip->users->count();
                 </div>
             </div>
         </div>
+        @if($userCount > 0)
         <div class="mb-4 {{ $userCount > 6 ? '' : 'md:flex-1' }}">
             <p class="font-bold text-lg text-center">Matelots</p>
             <div class="flex flex-wrap items-center justify-center py-3">
@@ -45,9 +46,87 @@ $userCount = $trip->users->count();
                 @endforeach
             </div>
         </div>
+        @endif
     </div>
     <div>
         <p class="font-bold text-lg">À propos</p>
         <p class="text-gray-800 indent-2 text-justify">{{ $trip->description }}</p>
     </div>
+    @if($trip->boats->count() > 0)
+    <div class="mt-3">
+        <p class="font-bold text-lg text-center mb-2">{{ $trip->boats->count() === 1 ? 'Le bateau' : 'Les bateaux' }}
+        </p>
+        <div class="justify-center m-0 hidden md:flex">
+            <table class="w-full text-sm text-center shrink-0 text-gray-700 rounded-lg shadow-md bg-white">
+                <tr class="border-b border-gray-200">
+                    <th class="bg-gray-50"></th>
+                    <th scope="col" class="text-xs uppercase px-6 py-3 bg-gray-50">Type</th>
+                    <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Année</th>
+                    <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Constructeur</th>
+                    <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Loueur</th>
+                    <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Port</th>
+                    <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Équipage</th>
+                </tr>
+                @foreach($trip->boats as $boat)
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-md text-gray-800 px-6 py-3 bg-gray-50 whitespace-nowrap">{{ $boat->name
+                        }}</th>
+                    <td class="px-4 py-2">{{ $boat->type }}</td>
+                    <td class="px-4 py-2">{{ $boat->year }}</td>
+                    <td class="px-4 py-2">{{ $boat->builder }}</td>
+                    <td class="px-4 py-2">{{ $boat->renter }}</td>
+                    <td class="px-4 py-2">{{ $boat->city }}</td>
+                    <td class="px-4 py-2">{{ $boat->crew }}</td>
+                </tr>
+                @endforeach
+            </table>
+        </div>
+        <div class="relative overflow-x-auto shadow-md border rounded md:hidden">
+            <table class="w-full text-sm text-left text-gray-700">
+                <tr class="border-b border-gray-200">
+                    <th class="bg-gray-50"></th>
+                    @foreach($trip->boats as $boat)
+                    <th scope="col" class="text-xs text-center text-gray-800 uppercase px-6 py-3">{{ $boat->name }}</th>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Type</th>
+                    @foreach($trip->boats as $boat)
+                    <td class="text-center">{{ $boat->type }}</td>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Année</th>
+                    @foreach($trip->boats as $boat)
+                    <td class="text-center">{{ $boat->year }}</td>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Constructeur</th>
+                    @foreach($trip->boats as $boat)
+                    <td class="text-center">{{ $boat->builder }}</td>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Loueur</th>
+                    @foreach($trip->boats as $boat)
+                    <td class="text-center">{{ $boat->renter }}</td>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Port</th>
+                    @foreach($trip->boats as $boat)
+                    <td class="text-center">{{ $boat->city }}</td>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Équipage</th>
+                    @foreach($trip->boats as $boat)
+                    <td class="text-center">{{ $boat->crew }}</td>
+                    @endforeach
+                </tr>
+            </table>
+        </div>
+    </div>
+    @endif
 </section>
