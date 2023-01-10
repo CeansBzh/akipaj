@@ -169,6 +169,14 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
+        // Vérification que l'album ne contient pas de photos appartenant à d'autres utilisateurs.
+        if ($album->has('photos') && $album->photos()->where('user_id', '!=', auth()->id())->exists()) {
+            session()->flash('alert-' . AlertLevelEnum::WARNING->name, 'L\'album contient des photos ne vous appartenant pas. Suppression interdite.');
+            return redirect()->back();
+        }
+        // Suppression des photos de l'album.
+        $album->photos()->delete();
+        // Suppression de l'album.
         $album->delete();
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Album supprimé avec succès.');

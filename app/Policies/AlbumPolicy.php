@@ -65,7 +65,7 @@ class AlbumPolicy
      */
     public function delete(User $user, Album $album)
     {
-        return $user->hasRole('member') && $album->photos->count() === 0;
+        return $user->hasRole('member') && !$album->photos()->where('user_id', '!=', auth()->id())->exists();
     }
 
     /**
