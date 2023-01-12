@@ -1,5 +1,5 @@
 <h3 class="font-bold text-3xl mb-4">Historique</h3>
-
+{{-- // TODO Refaire la frise + belle, afficher par année au lieu de par mois, scroll à la souris --}}
 <div id="slider" class="overflow-x-auto whitespace-nowrap w-screen -ml-4 sm:w-full" x-data="app()">
     <table class="w-full table-auto border-separate border-spacing-4">
         <thead>

@@ -131,6 +131,8 @@
                     </div>
                 </li>
             </ul>
+
+            {{-- // TODO Barre de recherche sorties/albums/photos --}}
         </div>
     </div>
 </nav>
