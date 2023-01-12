@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@alpinejs/collapse": "^3.10.5",
+        "@alpinejs/intersect": "^3.10.5",
         "@toast-ui/editor": "^3.2.1",
         "flowbite": "^1.5.3",
         "imagesloaded": "^5.0.0"
