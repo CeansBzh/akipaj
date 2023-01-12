@@ -16,14 +16,6 @@ class UpdateTripRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this['remove_image'] = filter_var($this['remove_image'], FILTER_VALIDATE_BOOLEAN);
-        $this['boats'] = json_decode($this['boats'], true);
-        if (is_array($this['boats'])) {
-            $this['boats'] = array_map(function ($boat) {
-                $boat['year'] = is_int($boat['year']) ? $boat['year'] : null;
-                $boat['crew'] = is_int($boat['crew']) ? $boat['crew'] : null;
-                return $boat;
-            }, $this['boats']);
-        }
     }
 
     /**
@@ -45,6 +37,7 @@ class UpdateTripRequest extends FormRequest
             'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
             'remove_image' => 'required|boolean',
             'boats' => 'nullable|array',
+            'boats.*.id' => 'nullable|integer|distinct|exists:boats,id',
             'boats.*.name' => 'required_with:boats|max:255',
             'boats.*.type' => 'nullable|max:255',
             'boats.*.year' => 'nullable|integer',

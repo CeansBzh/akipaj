@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use App\Enum\AlertLevelEnum;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Trip\StoreTripRequest;
 use App\Http\Requests\Trip\UpdateTripRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class TripController extends Controller
 {
@@ -139,9 +138,23 @@ class TripController extends Controller
             $trip->users()->sync($request->users);
         }
         // Modification des bateaux
-        if ($request->has('boats') && is_array($request->boats)) {
+        if ($request->has('boats')) {
+            // Mise à jour des bateaux existants et création des nouveaux
+            foreach ($request->boats as $boat) {
+                if (isset($boat['id'])) {
+                    $boat['id'] = (int) $boat['id'];
+                }
+
+                $trip->boats()->updateOrCreate(
+                    ['id' => $boat['id']],
+                    ['name' => $boat['name'], 'type' => $boat['type'], 'year' => $boat['year'], 'builder' => $boat['builder'], 'renter' => $boat['renter'], 'city' => $boat['city'], 'crew' => $boat['crew']]
+                );
+            }
+            // Suppression des bateaux supprimés
+            $trip->boats()->whereNotIn('id', array_column($request->boats, 'id'))->delete();
+        } else if ($trip->boats()->count() > 0) {
+            // Si aucun bateau n'a été envoyé, on supprime tous les bateaux de la sortie
             $trip->boats()->delete();
-            $trip->boats()->createMany($request->boats);
         }
 
         $trip->save();

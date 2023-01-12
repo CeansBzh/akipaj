@@ -1,13 +1,13 @@
 @php
-$albums = \App\Models\Album::all()
-->sortBy('date')
-->groupBy([
-function ($val) {
-return $val->date->format('Y');
-},
-]);
+    $albums = \App\Models\Album::all()
+        ->sortBy('date')
+        ->groupBy([
+            function ($val) {
+                return $val->date->format('Y');
+            },
+        ]);
 
-$users = \App\Models\User::all()
+    $users = \App\Models\User::all();
 @endphp
 
 <section class="max-w-2xl mx-auto" x-data="addTrip()">
@@ -39,7 +39,12 @@ $users = \App\Models\User::all()
             <div>
                 <x-input-label for="start_date_input" value="Date de début" />
                 <x-text-input id="start_date_input" name="start_date" type="date" class="mt-1 block w-full"
-                    :value="old('start_date', now()->subDays(10)->format('Y-m-d'))" :max="date('Y-m-d')" required />
+                    :value="old(
+                        'start_date',
+                        now()
+                            ->subDays(10)
+                            ->format('Y-m-d'),
+                    )" :max="date('Y-m-d')" required />
                 <x-input-error class="mt-2" :messages="$errors->get('start_date')" />
             </div>
 
@@ -55,7 +60,7 @@ $users = \App\Models\User::all()
             <x-input-label for="description_input" value="Description" />
             <x-textarea-input id="description_input" name="description" class="mt-1 block w-full"
                 placeholder="Description de la sortie" maxlength="500" required>
-                {{ old('description')}}
+                {{ old('description') }}
             </x-textarea-input>
             <x-input-error class="mt-2" :messages="$errors->get('description')" />
         </div>
@@ -66,16 +71,16 @@ $users = \App\Models\User::all()
             <x-input-label for="albums_input" value="Lier un ou plusieurs albums (facultatif)" />
             <x-multi-select-input id="albums_input" name="albums[]" search="true">
                 @foreach ($albums as $year => $albumPerYear)
-                <optgroup label="{{ $year }}">
-                    @foreach ($albumPerYear as $album)
-                    <option value="{{ $album->id }}">{{ $album->title }}</option>
-                    @endforeach
-                </optgroup>
+                    <optgroup label="{{ $year }}">
+                        @foreach ($albumPerYear as $album)
+                            <option value="{{ $album->id }}">{{ $album->title }}</option>
+                        @endforeach
+                    </optgroup>
                 @endforeach
             </x-multi-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('albums')" />
-            @foreach($errors->get('albums.*') as $message)
-            <x-input-error class="mt-2" :messages="$message" />
+            @foreach ($errors->get('albums.*') as $message)
+                <x-input-error class="mt-2" :messages="$message" />
             @endforeach
         </div>
 
@@ -83,19 +88,19 @@ $users = \App\Models\User::all()
             <x-input-label for="users_input" value="Associer des utilisateurs (facultatif)" />
             <x-multi-select-input id="users_input" name="users[]" search="true">
                 @foreach ($users as $user)
-                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                 @endforeach
             </x-multi-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('users')" />
-            @foreach($errors->get('users.*') as $message)
-            <x-input-error class="mt-2" :messages="$message" />
+            @foreach ($errors->get('users.*') as $message)
+                <x-input-error class="mt-2" :messages="$message" />
             @endforeach
         </div>
 
         <div>
             <x-input-label for="image_input" value="Image de couverture (facultatif)" />
-            <input type="file" id="image_input" name="image" class="mt-1 block w-full" accept="image/png, image/jpeg"
-                @change="resizeImage">
+            <input type="file" id="image_input" name="image" class="mt-1 block w-full"
+                accept="image/png, image/jpeg" @change="resizeImage">
             <x-input-error class="mt-2" :messages="$errors->get('image')" />
         </div>
 
@@ -113,7 +118,7 @@ $users = \App\Models\User::all()
 
         <hr>
 
-        <livewire:trip.add-boat-form />
+        <livewire:trip.boats />
 
         <div class="flex items-center gap-4 mt-3">
             <x-primary-button>Ajouter la sortie</x-primary-button>
@@ -122,67 +127,70 @@ $users = \App\Models\User::all()
 </section>
 
 @push('scripts')
-<script>
-    const MAX_WIDTH = 2560;
-    const MAX_HEIGHT = 1600;
-    const MIME_TYPE = "image/jpeg";
-    const QUALITY = 0.8;
+    <script>
+        const MAX_WIDTH = 2560;
+        const MAX_HEIGHT = 1600;
+        const MIME_TYPE = "image/jpeg";
+        const QUALITY = 0.8;
 
-    function addTrip() {
-        return {
-            showDisplay: false,
-            fileToDataUrl(event, callback) {
-                if (!event.target.files.length) return
+        function addTrip() {
+            return {
+                showDisplay: false,
+                fileToDataUrl(event, callback) {
+                    if (!event.target.files.length) return
 
-                let file = event.target.files[0],
-                    reader = new FileReader()
+                    let file = event.target.files[0],
+                        reader = new FileReader()
 
-                reader.readAsDataURL(file)
-                reader.onload = e => callback(e.target.result)
-            },
-            removeImage: function () {
-                this.showDisplay = !(confirm('Supprimer l\'image de la sortie ?'));
-                if (!this.showDisplay) {
-                    document.getElementById('image_input').value = '';
+                    reader.readAsDataURL(file)
+                    reader.onload = e => callback(e.target.result)
+                },
+                removeImage: function() {
+                    this.showDisplay = !(confirm('Supprimer l\'image de la sortie ?'));
+                    if (!this.showDisplay) {
+                        document.getElementById('image_input').value = '';
+                    }
+                },
+                resizeImage(event) {
+                    const file = event.target.files[0];
+                    const blobURL = URL.createObjectURL(file);
+                    const img = new Image();
+                    const dataTransfer = new DataTransfer();
+                    img.src = blobURL;
+                    img.onerror = function() {
+                        URL.revokeObjectURL(this.src);
+                        // Handle the failure properly
+                        console.log("Cannot load image");
+                    };
+                    img.onload = () => {
+                        URL.revokeObjectURL(this.src);
+                        const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                        const canvas = document.createElement("canvas");
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                        canvas.toBlob(
+                            (blob) => {
+                                dataTransfer.items.add(new File([blob], file.name, {
+                                    type: MIME_TYPE
+                                }));
+                                event.target.files = dataTransfer.files
+                                this.fileToDataUrl(event, src => document.getElementById('image_display').src =
+                                src);
+                                this.showDisplay = true;
+                                return;
+                            },
+                            MIME_TYPE,
+                            QUALITY
+                        );
+                    };
+                },
+                calculateSize(img, maxWidth, maxHeight) {
+                    let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+                    return [img.naturalWidth * ratio, img.naturalHeight * ratio];
                 }
-            },
-            resizeImage(event) {
-                const file = event.target.files[0];
-                const blobURL = URL.createObjectURL(file);
-                const img = new Image();
-                const dataTransfer = new DataTransfer();
-                img.src = blobURL;
-                img.onerror = function () {
-                    URL.revokeObjectURL(this.src);
-                    // Handle the failure properly
-                    console.log("Cannot load image");
-                };
-                img.onload = () => {
-                    URL.revokeObjectURL(this.src);
-                    const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
-                    const canvas = document.createElement("canvas");
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
-                    canvas.toBlob(
-                        (blob) => {
-                            dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
-                            event.target.files = dataTransfer.files
-                            this.fileToDataUrl(event, src => document.getElementById('image_display').src = src);
-                            this.showDisplay = true;
-                            return;
-                        },
-                        MIME_TYPE,
-                        QUALITY
-                    );
-                };
-            },
-            calculateSize(img, maxWidth, maxHeight) {
-                let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-                return [img.naturalWidth * ratio, img.naturalHeight * ratio];
             }
         }
-    }
-</script>
+    </script>
 @endpush
