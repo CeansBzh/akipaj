@@ -27,7 +27,15 @@ class TripController extends Controller
      */
     public function index()
     {
-        return view('trip.index')->with('trips', Trip::orderBy('start_date')->get());
+        return view('trip.index')->with(
+            'tripsByYear',
+            Trip::orderBy('start_date')->get()
+                ->groupBy([
+                    function ($val) {
+                        return $val->start_date->format('Y');
+                    },
+                ])
+        );
     }
 
     /**

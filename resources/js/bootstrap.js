@@ -35,3 +35,7 @@
 
 import imagesLoaded from 'imagesloaded';
 window.imagesLoaded = imagesLoaded;
+
+import Flickity from 'flickity';
+import 'flickity/dist/flickity.min.css';
+window.Flickity = Flickity;
