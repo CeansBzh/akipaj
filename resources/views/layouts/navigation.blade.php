@@ -11,12 +11,14 @@
                     fill="#0ea5e9" />
             </svg>
         </a>
-        <div class="flex items-center md:order-2">
+        <div class="flex items-center space-x-5 md:order-2">
+            {{-- Search bar --}}
+            <livewire:search-input />
             {{-- User dropdown --}}
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button type="button" id="user-menu-button"
-                        class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-sky-200">
+                        class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-sky-200">
                         <span class="sr-only">Ouvrir le menu utilisateur</span>
                         <img class="w-8 h-8 rounded-full"
                             src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
@@ -56,12 +58,12 @@
             </x-dropdown>
             {{-- Main menu burger button --}}
             <button type="button" @click="open = !open"
-                class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                class="inline-flex items-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
                 aria-controls="mobile-menu" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22 22" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                    class="w-6 h-6">
+                    class="h-6">
                     <line x1="3" y1="12" x2="19" y2="12"></line>
                     <line x1="3" y1="6" x2="19" y2="6"></line>
                     <line x1="3" y1="18" x2="19" y2="18"></line>
