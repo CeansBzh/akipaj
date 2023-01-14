@@ -9,7 +9,7 @@
     @endif
 
     <div class="relative w-full py-12">
-        <div class="max-w-7xl mx-auto flex flex-col space-y-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto flex flex-col space-y-4 sm:px-6 lg:px-8">
             <div class="mb-5 p-3 rounded-lg bg-gray-100/80 w-fit mx-auto sm:p-5 sm:mt-12 sm:mb-16">
                 <h1 class="text-2xl font-bold text-gray-900 text-center sm:text-5xl lg:text-6xl">
                     {{ $trip->title }}
