@@ -10,6 +10,7 @@
                     d="M38.5289 0.354818C44.427 7.43984 46.3765 41.5354 37.0222 48.995C31.5835 53.332 24.0237 55.319 16.158 55.4921C28.364 39.3951 36.0946 20.3191 38.5289 0.354818Z"
                     fill="#0ea5e9" />
             </svg>
+            <span class="sr-only">Retour à l'accueil</span>
         </a>
         <div class="flex items-center space-x-5 md:order-2">
             {{-- Search bar --}}
@@ -32,22 +33,23 @@
                     </div>
                     <ul class="py-1" aria-labelledby="user-menu-button">
                         <li>
-                            <x-dropdown-link :href="route('profile.index')">
+                            <x-dropdown-link :href="route('profile.index')" :aria-current="request()->routeIs('profile.index') ? 'page' : ''">
                                 {{ __('Mon profil') }}
                             </x-dropdown-link>
                         </li>
-                        @if(Auth::user()->hasRole('admin'))
-                        <li>
-                            <x-dropdown-link :href="route('admin.index')">
-                                {{ __('Panneau admin') }}
-                            </x-dropdown-link>
-                        </li>
+                        @if (Auth::user()->hasRole('admin'))
+                            <li>
+                                <x-dropdown-link :href="route('admin.index')">
+                                    {{ __('Panneau admin') }}
+                                </x-dropdown-link>
+                            </li>
                         @endif
                         {{-- Authentication --}}
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
+                                <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
                                             this.closest('form').submit();">
                                     {{ __('Déconnexion') }}
                                 </x-dropdown-link>
@@ -71,12 +73,12 @@
             </button>
         </div>
         {{-- Main menu links --}}
-        <div :class="{'block': open, 'hidden': !open}"
+        <div :class="{ 'block': open, 'hidden': !open }"
             class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu">
             <ul
                 class="flex flex-col p-4 mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-12 md:mt-0 md:text-[0.95rem] md:font-medium md:border-0 md:bg-white">
                 <li>
-                    <x-nav-link :href="url('/')" :active="(url()->current() == url('/'))">
+                    <x-nav-link :href="url('/')" :active="url()->current() == url('/')">
                         <span>Accueil</span>
                     </x-nav-link>
                 </li>
@@ -99,7 +101,7 @@
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false"
                         @close.stop="open = false">
                         <div class="flex items-center space-x-3" @click="open = ! open" :aria-expanded="open">
-                            <x-nav-link id="gallery-menu-button" class="flex items-center w-full justify-between"
+                            <x-nav-button id="gallery-menu-button" class="flex items-center w-full justify-between"
                                 :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
                                 <span>Galerie</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -107,7 +109,7 @@
                                     stroke-linejoin="round" class="ml-1 h-4 w-4">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
-                            </x-nav-link>
+                            </x-nav-button>
                         </div>
                         <div x-show="open" x-transition:enter="transition ease-out duration-200"
                             x-transition:enter-start="transform opacity-0 scale-95"
@@ -120,10 +122,10 @@
                             <div class="rounded-md ring-1 ring-black ring-opacity-5 py-1 bg-white">
                                 <ul class="py-1" aria-labelledby="gallery-menu-button">
                                     <li>
-                                        <x-dropdown-link :href="route('albums.index')">
+                                        <x-dropdown-link :href="route('albums.index')" :aria-current="request()->routeIs('albums.index') ? 'page' : ''">
                                             Albums
                                         </x-dropdown-link>
-                                        <x-dropdown-link :href="route('photos.index')">
+                                        <x-dropdown-link :href="route('photos.index')" :aria-current="request()->routeIs('photos.index') ? 'page' : ''">
                                             Toutes les photos
                                         </x-dropdown-link>
                                     </li>
@@ -133,8 +135,6 @@
                     </div>
                 </li>
             </ul>
-
-            {{-- // TODO Barre de recherche sorties/albums/photos --}}
         </div>
     </div>
 </nav>

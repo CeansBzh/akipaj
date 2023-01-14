@@ -1,7 +1,7 @@
 <div>
     <div class="flex">
         <button type="button"
-            class="w-full sm:py-1.5 sm:pl-2 sm:pr-3 sm:flex items-center text-sm leading-6 text-gray-500 sm:text-slate-400 rounded-md sm:ring-1 sm:ring-slate-900/10 sm:shadow-sm sm:hover:ring-slate-400/80"
+            class="w-full sm:py-1.5 sm:pl-2 sm:pr-3 sm:flex items-center text-sm leading-6 text-gray-500 sm:text-slate-600 rounded-md sm:ring-1 sm:ring-slate-900/10 sm:shadow-sm sm:hover:ring-slate-400/80"
             x-data="" x-on:click.prevent="$dispatch('open-modal', 'search-input')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" class="h-7 sm:h-5">
