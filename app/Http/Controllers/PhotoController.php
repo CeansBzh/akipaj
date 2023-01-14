@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Photo;
 use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Photo\StorePhotoRequest;
 
@@ -66,7 +67,7 @@ class PhotoController extends Controller
             $photo->thumb_height = imagesy($thumbResource);
             // Si les données exif sont présentes
             if (is_array($exif)) {
-                if (isset($exif['DateTimeOriginal'])) {
+                if (isset($exif['DateTimeOriginal']) && $exif['DateTimeOriginal'] != '0000:00:00 00:00:00') {
                     $photo->taken_at = $exif['DateTimeOriginal'];
                 }
                 if (isset($exif['GPSLatitude']) && isset($exif['GPSLatitudeRef']) && isset($exif['GPSLongitude']) && isset($exif['GPSLongitudeRef'])) {
