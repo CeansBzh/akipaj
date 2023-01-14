@@ -8,17 +8,19 @@
         </div>
     </x-slot>
 
-    <section class="text-gray-700">
-        @if($photos->first())
-        <livewire:lightbox />
-        <livewire:gallery />
+    <div>
+        @if (\App\Models\Photo::count() > 0)
+            <livewire:lightbox />
+            <div class="max-w-screen-2xl mx-auto">
+                <livewire:gallery />
+            </div>
         @else
-        <div class="flex flex-col items-center justify-center h-64">
-            <p class="text-xl mb-5">Aucune photo de publiée.</p>
-            <x-primary-link href="{{ route('albums.create') }}">
-                Créer un album
-            </x-primary-link>
-        </div>
+            <div class="flex flex-col items-center justify-center h-64">
+                <p class="text-xl mb-5">Aucune photo de publiée.</p>
+                <x-primary-link href="{{ route('albums.create') }}">
+                    Créer un album
+                </x-primary-link>
+            </div>
         @endif
-    </section>
+    </div>
 </x-member-layout>

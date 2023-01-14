@@ -1,6 +1,6 @@
 <div x-data="gallery()" class="px-2">
 
-    <div class="my-2 sm:mr-5">
+    <div class="p-2">
         @include('livewire.partials.gallery-search-sort')
     </div>
 
@@ -8,7 +8,7 @@
         @include('livewire.partials.gallery-mass-selection-menu')
     </div>
 
-    <div class="grid grid-cols-1 gap-0.5 auto-rows-[20px] xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="px-3 grid grid-cols-1 gap-0.5 auto-rows-[20px] xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         @foreach ($photos as $photo)
         @can('delete', $photo)
         <div x-on:click="imageClicked" id="photo-{{ $photo->id }}" data-role="gallery-item"
@@ -39,8 +39,8 @@
         @endif
         @endforeach
     </div>
-    <div class="max-w-lg py-2 mx-auto md:px-0">
-        {{ $photos->links() }}
+    <div class="max-w-5xl mx-auto mt-4 py-5 px-3">
+        {{ $photos->onEachSide(2)->links('pagination::gallery-tailwind') }}
     </div>
 </div>
 @push('scripts')
