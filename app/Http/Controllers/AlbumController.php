@@ -26,14 +26,8 @@ class AlbumController extends Controller
      */
     public function index()
     {
-        // Gets all albums with for each the oldest photo they contain.
-        // Gets only the id, album_id and path fields of each photo.
-
-        // TODO Ajouter tri
-        // TODO Changer relation albums - sortie => 1 sortie a plusieurs albums, 1 album a 1 sortie et si changement utilisation automatique image sortie pour cover
-        return view('album.index', [
-            'albums' => Album::with('oldestPhoto:id,photos.album_id,path')->simplePaginate(25),
-        ]);
+        // Gets all emptys albums (without photos). The listing of the albums is done in the view using Livewire.
+        return view('album.index', ['emptyAlbums' => Album::doesntHave('photos')->get()]);
     }
 
     /**
