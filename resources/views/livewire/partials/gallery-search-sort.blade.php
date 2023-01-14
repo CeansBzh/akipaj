@@ -28,6 +28,9 @@
         <x-select-input wire:model="sortTerm" class="mb-2 ml-2 text-gray-500">
             <option value="taken_desc">Date (décroissant)</option>
             <option value="taken_asc">Date (croissant)</option>
+            <option value="title_desc">Titre (décroissant)</option>
+            <option value="title_asc">Titre (croissant)</option>
+            <option value="most_comments">Commentaires</option>
         </x-select-input>
     </div>
     <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-200"

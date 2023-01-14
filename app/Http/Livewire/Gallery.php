@@ -6,16 +6,15 @@ use App\Models\User;
 use App\Models\Album;
 use App\Models\Photo;
 use Livewire\Component;
-use Illuminate\Pagination\Cursor;
-use Illuminate\Database\Eloquent\Collection;
+use Livewire\WithPagination;
 
 class Gallery extends Component
 {
+    use WithPagination;
+
     // List of photo ids to display. If null display all photos.
     public $photoIds;
-    public $photos = null;
-    public $nextCursor = null;
-    public $hasMorePages = null;
+    public $paginate = 25;
     // Values to filter with
     public $searchTerm;
     public $sortTerm;
@@ -24,13 +23,14 @@ class Gallery extends Component
     // Available values to filter with
     public $users;
     public $albums;
+    // With count term to add to the query
+    public $withCount = null;
 
     protected $listeners = ['resetFilters', 'deleteSelected'];
 
     public function mount()
     {
         $this->calculateFilterable();
-        $this->loadPhotos();
     }
 
     public function calculateFilterable()
@@ -64,41 +64,6 @@ class Gallery extends Component
         }
     }
 
-    public function loadPhotos()
-    {
-        // If we already have all the pages, don't load anything
-        if ($this->hasMorePages !== null && !$this->hasMorePages) {
-            return;
-        }
-        // Get the sorting term
-        $sortBy = $this->getSorting($this->sortTerm);
-        // Get the photos. Apply the filters if they are present. Using the pagination cursor we are not loading previously loaded items.
-        $photos = Photo::when($this->photoIds, function ($query) {
-            return $query->whereIn('id', $this->photoIds);
-        })
-            ->when($this->searchTerm, function ($query) {
-                return $query->whereLike(['title', 'legend'], $this->searchTerm);
-            })
-            ->when($this->usersFilter, function ($query) {
-                return $query->whereIn('user_id', $this->usersFilter);
-            })
-            ->when($this->albumsFilter, function ($query) {
-                return $query->whereIn('album_id', $this->albumsFilter);
-            })
-            ->orderBy($sortBy[0], $sortBy[1])
-            ->cursorPaginate(30, ['*'], 'cursor', Cursor::fromEncoded($this->nextCursor));
-        // Push the newly loaded photos to the existing collection
-        if ($this->photos === null) {
-            $this->photos = new Collection();
-        }
-        $this->photos->push(...$photos->items());
-        // Set the next cursor if there are more pages to load
-        $this->hasMorePages = $photos->hasMorePages();
-        if ($this->hasMorePages) {
-            $this->nextCursor = $photos->nextCursor()->encode();
-        }
-    }
-
     public function resetFilters()
     {
         $this->usersFilter = null;
@@ -108,6 +73,16 @@ class Gallery extends Component
     public function getSorting($value)
     {
         switch ($value) {
+            case 'most_comments':
+                $this->withCount = 'comments';
+                return ['comments_count', 'desc'];
+                break;
+            case 'title_asc':
+                return ['title', 'asc'];
+                break;
+            case 'title_desc':
+                return ['title', 'desc'];
+                break;
             case 'taken_asc':
                 return ['taken_at', 'asc'];
                 break;
@@ -126,19 +101,40 @@ class Gallery extends Component
             }
         }
         $this->calculateFilterable();
-        $this->loadPhotos();
+        $this->resetPage();
     }
 
     public function updated($field)
     {
-        if (in_array($field, ['searchTerm', 'sortTerm', 'usersFilter', 'albumsFilter'])) {
-            $this->reset(['photos', 'nextCursor', 'hasMorePages']);
-            $this->loadPhotos();
+        if (in_array($field, ['searchTerm', 'sortTerm', 'usersFilter', 'albumsFilter', 'paginate'])) {
+            $this->resetPage();
         }
     }
 
     public function render()
     {
-        return view('livewire.gallery');
+        $sortBy = $this->getSorting($this->sortTerm);
+        return view('livewire.gallery', [
+            'photos' => Photo::when($this->photoIds, function ($query) {
+                return $query->whereIn('id', $this->photoIds);
+            })
+                ->when($this->searchTerm, function ($query) {
+                    return $query->whereLike(['title', 'legend'], $this->searchTerm);
+                })
+                ->when($this->searchTerm, function ($query) {
+                    return $query->whereLike(['title', 'legend'], $this->searchTerm);
+                })
+                ->when($this->usersFilter, function ($query) {
+                    return $query->whereIn('user_id', $this->usersFilter);
+                })
+                ->when($this->albumsFilter, function ($query) {
+                    return $query->whereIn('album_id', $this->albumsFilter);
+                })
+                ->when($this->withCount, function ($query) {
+                    return $query->withCount($this->withCount);
+                })
+                ->orderBy($sortBy[0], $sortBy[1])
+                ->paginate($this->paginate)
+        ]);
     }
 }
