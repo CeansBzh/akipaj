@@ -35,7 +35,7 @@
                                 @if ($trip->imagePath)
                                     <img src="{{ $trip->imagePath }}"
                                         alt="Image de couverture de la sortie {{ $trip->title }}"
-                                        class="h-64 w-full object-cover rounded-xl">
+                                        class="w-full h-[22rem] object-cover rounded-xl">
                                 @endif
                                 <div
                                     class="bg-white flex flex-row justify-between space-x-4 py-3 px-3 w-full {{ $trip->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur bg-opacity-75 rounded-md' : 'rounded-xl' }} sm:px-8">
@@ -74,7 +74,7 @@
                                                 </line>
                                             </svg>
                                             <p class="text-gray-800 text-sm">
-                                                {{ date_diff($trip->start_date, $trip->end_date)->days }} jours</p>
+                                                {{ date_diff($trip->start_date, $trip->end_date)->days + 1 }} jours</p>
                                         </div>
                                     </div>
                                 </div>
