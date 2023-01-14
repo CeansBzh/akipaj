@@ -8,6 +8,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      *
@@ -15,7 +17,10 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-         $admin = User::factory()->create([
+        // If the roles are not created yet, we create them.
+        $this->call([RoleSeeder::class]);
+
+        $admin = User::factory()->create([
             'name' => 'Michel',
             'email' => 'michel@test.com',
         ]);
