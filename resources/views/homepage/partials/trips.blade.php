@@ -1,6 +1,6 @@
 @php
 $trips = App\Models\Trip::where('end_date', '<=', now())
-->orderBy('end_date')
+->orderByDesc('end_date')
 ->limit(3)
 ->get();
 @endphp
