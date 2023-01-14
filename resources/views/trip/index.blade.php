@@ -18,8 +18,8 @@
                         <div class="w-1/4 h-32 mr-8 rounded flex flex-col justify-center items-center">
                             <p class="text-4xl font-bold text-white font-merriweather cursor-pointer"
                                 x-on:click="flkty.selectCell({{ $loop->index }})">{{ $year }}</p>
-                            <p class="mt-2 text-gray-200 text-sm text-center">{{ $trips->count() }}
-                                événement{{ $trips->count() > 1 ? 's' : '' }}</p>
+                            <p class="mt-2 text-gray-200 text-lg text-center">{{ $trips->count() }}
+                                sortie{{ $trips->count() > 1 ? 's' : '' }}</p>
                         </div>
                     @endforeach
                 </div>

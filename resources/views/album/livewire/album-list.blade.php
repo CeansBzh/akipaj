@@ -8,15 +8,15 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-2 items-stretch mb-5 gap-3 sm:grid-cols-3 md:grid-cols-4">
+    <div class="grid grid-cols-2 items-stretch mb-5 gap-5 sm:grid-cols-3 md:grid-cols-4">
         @forelse($albums as $album)
             <figure
-                class="h-[12rem] w-full relative max-w-sm cursor-pointer overflow-hidden transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl">
+                class="h-[12rem] w-full relative max-w-sm cursor-pointer overflow-hidden rounded-xl transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl">
                 <a href="{{ route('albums.show', $album) }}">
-                    <img class="object-cover rounded w-full h-full"
+                    <img class="object-cover w-full h-full"
                         src="{{ $album->imagePath ?? $album->oldestPhoto->path }}"
                         alt="Image de couverture de l'album {{ $album->title }}">
-                    <div class="absolute rounded inset-0 bg-gradient-to-t from-black/30 via-black/10">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10">
                     </div>
                     <figcaption
                         class="absolute bottom-1 px-1 text-ellipsis break-words mt-auto text-white sm:px-4 sm:bottom-6">
