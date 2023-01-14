@@ -14,7 +14,7 @@ class Gallery extends Component
 
     // List of photo ids to display. If null display all photos.
     public $photoIds;
-    public $paginate = 25;
+    public $paginate = 100;
     // Values to filter with
     public $searchTerm;
     public $sortTerm;
@@ -77,12 +77,6 @@ class Gallery extends Component
                 $this->withCount = 'comments';
                 return ['comments_count', 'desc'];
                 break;
-            case 'title_asc':
-                return ['title', 'asc'];
-                break;
-            case 'title_desc':
-                return ['title', 'desc'];
-                break;
             case 'taken_asc':
                 return ['taken_at', 'asc'];
                 break;
@@ -118,9 +112,6 @@ class Gallery extends Component
             'photos' => Photo::when($this->photoIds, function ($query) {
                 return $query->whereIn('id', $this->photoIds);
             })
-                ->when($this->searchTerm, function ($query) {
-                    return $query->whereLike(['title', 'legend'], $this->searchTerm);
-                })
                 ->when($this->searchTerm, function ($query) {
                     return $query->whereLike(['title', 'legend'], $this->searchTerm);
                 })
