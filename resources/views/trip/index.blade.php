@@ -31,6 +31,11 @@
                     <p class="font-bold mb-3">Sorties en {{ $year }}</p>
                     <ul class="flex flex-col space-y-3 max-w-full">
                         @forelse ($tripsByYear[$year] as $trip)
+                            @php
+                                $photoCount = $trip->albums->sum(function ($album) {
+                                    return $album->photos->count();
+                                });
+                            @endphp
                             <li class="trip_item shadow-lg relative cursor-pointer">
                                 @if ($trip->imagePath)
                                     <img src="{{ $trip->imagePath }}"
@@ -49,6 +54,17 @@
                                         </p>
                                     </div>
                                     <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
+                                        <div class="flex space-x-2 items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" class="h-6 text-gray-600">
+                                                <path
+                                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                                </path>
+                                                <circle cx="12" cy="13" r="4"></circle>
+                                            </svg>
+                                            <p class="text-gray-800 text-sm">{{ $photoCount }} photos</p>
+                                        </div>
                                         <div class="flex space-x-2 items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -116,6 +132,7 @@
             clickableElements.forEach((ele) =>
                 ele.addEventListener('click', (e) => e.stopPropagation())
             );
+
             function handleClick(event) {
                 const noTextSelected = !window.getSelection().toString();
                 if (noTextSelected && event.target.nodeName !== 'BUTTON') {
