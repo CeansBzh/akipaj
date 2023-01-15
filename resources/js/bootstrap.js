@@ -39,3 +39,8 @@ window.imagesLoaded = imagesLoaded;
 import Flickity from 'flickity';
 import 'flickity/dist/flickity.min.css';
 window.Flickity = Flickity;
+
+import { atcb_action, atcb_init } from 'add-to-calendar-button';
+import 'add-to-calendar-button/assets/css/atcb.css';
+window.atcb_action = atcb_action;
+window.atcb_init = atcb_init;
