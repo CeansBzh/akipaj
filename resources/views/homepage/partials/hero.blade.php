@@ -55,8 +55,7 @@
         {{-- Events section --}}
         <div class="relative w-full px-2 mb-5 md:w-fit md:p-6 md:m-0">
             <div class="p-5 -mt-24 mx-auto max-w-sm bg-white rounded shadow-lg md:mt-0">
-                <h2 class="text-2xl font-extrabold">Programme</h2>
-                <p>Dernières actualités sur les prochains événements de l'association</p>
+                <h2 class="text-2xl font-extrabold">Prochaines sorties</h2>
                 <hr class="my-5">
                 <ul class="list-disc px-5">
                     @forelse(\App\Models\Event::where('start_time', '>=',
