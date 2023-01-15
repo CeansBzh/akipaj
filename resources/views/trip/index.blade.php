@@ -15,7 +15,7 @@
             <div class="max-w-5xl mx-auto grid grid-cols-1 grid-rows-1">
                 <div class="carousel col-start-1 row-start-1" x-ref="carousel">
                     @foreach ($tripsByYear as $year => $trips)
-                        <div class="w-1/4 h-32 mr-8 rounded flex flex-col justify-center items-center">
+                        <div class="w-1/4 h-32 mr-8 rounded flex flex-col justify-center items-center sm:w-1/6">
                             <p class="text-4xl font-bold text-white font-merriweather cursor-pointer"
                                 x-on:click="flkty.selectCell({{ $loop->index }})">{{ $year }}</p>
                             <p class="mt-2 text-gray-200 text-lg text-center">{{ $trips->count() }}
@@ -112,14 +112,10 @@
                 return {
                     active: 0,
                     init() {
-                        let lastCellIndex = this.active = this.$refs.carousel.children.length - 1;
+                        this.active = this.$refs.carousel.children.length - 1;
                         this.flkty = new Flickity(this.$refs.carousel, {
                             wrapAround: false,
-                            on: {
-                                ready: function() {
-                                    this.selectCell(lastCellIndex, false, true)
-                                }
-                            }
+                            initialIndex: this.active,
                         });
                         this.flkty.on('change', i => this.active = i);
                     }
