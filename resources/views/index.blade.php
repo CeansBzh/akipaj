@@ -172,8 +172,8 @@
                 </a>
             </div>
             <div class="">
-                <img class="rounded-md mx-auto" src="{{ Vite::asset('resources/images/trip.webp') }}" width="590" height="270" loading="lazy"
-                    alt="" />
+                <img class="rounded-md mx-auto" src="{{ Vite::asset('resources/images/trip.webp') }}" width="590"
+                    height="270" loading="lazy" alt="Capture d'écran de la sortie Akipaj Corse 2022" />
             </div>
         </div>
     </section>
