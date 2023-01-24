@@ -18,18 +18,25 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
+    <style>
+        #wave-svg {
+            background-image: url({{ Vite::asset('resources/images/waves.svg') }});
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-100/50">
     <div class="font-sans text-gray-900 antialiased">
         {{ $slot }}
     </div>
 
-    <footer class="p-4 bg-white border-t md:flex md:items-center md:justify-between md:p-6">
-        <span class="text-sm text-gray-500 sm:text-center">{{ date('Y') }} Akipaj</span>
+    <footer id="wave-svg" class="h-64 p-4 text-white flex items-end justify-between md:p-6">
+        <span class="text-sm sm:text-center">{{ date('Y') }} Akipaj</span>
         <ul class="flex flex-wrap items-center mt-3 sm:mt-0">
             <li>
-                <a href="{{ route('legal') }}" class="mr-4 text-sm text-gray-500 hover:underline md:mr-6">Mentions
+                <a href="{{ route('legal') }}" class="mr-4 text-sm hover:underline md:mr-6">Mentions
                     légales</a>
             </li>
         </ul>
