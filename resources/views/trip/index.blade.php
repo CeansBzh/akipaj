@@ -12,7 +12,7 @@
 
     <div x-data="trips()">
         <div class="bg-sky-500/90 mb-8">
-            <div class="max-w-5xl mx-auto grid grid-cols-1 grid-rows-1">
+            <div class="relative max-w-5xl mx-auto grid grid-cols-1 grid-rows-1">
                 <div class="carousel col-start-1 row-start-1" x-ref="carousel">
                     @foreach ($tripsByYear as $year => $trips)
                         <div class="w-1/4 h-32 mr-8 rounded flex flex-col justify-center items-center sm:w-1/6">
@@ -22,6 +22,9 @@
                                 sortie{{ $trips->count() > 1 ? 's' : '' }}</p>
                         </div>
                     @endforeach
+                </div>
+                <div class="absolute pointer-events-none inset-0 flex justify-center items-center">
+                    <span class="w-28 h-28 border-white border-2 rounded-lg"></span>
                 </div>
             </div>
         </div>
