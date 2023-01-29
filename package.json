@@ -3,7 +3,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "prettier": "prettier --write **/*.blade.php **/*.js **/*.css **/*.json **/*.php"
+        "prettier": "prettier --write **/*.blade.php **/*.js **/*.css **/*.json **/*.php",
+        "deploy": "npm run build && git stash && git checkout production && git merge master && git push && git checkout master && git stash pop"
     },
     "devDependencies": {
         "@prettier/plugin-php": "^0.19.3",
