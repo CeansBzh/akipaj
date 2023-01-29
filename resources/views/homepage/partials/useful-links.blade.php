@@ -1,10 +1,10 @@
 <section>
-    <div class="text-center rounded-md bg-white shadow-lg sm:m-5">
-        <h3 class="py-2 px-4 text-sky-500 font-semibold font-sans">
+    <div class="rounded-md bg-white text-center shadow-lg sm:m-5">
+        <h3 class="py-2 px-4 font-sans font-semibold text-sky-500">
             Liens utiles
         </h3>
     </div>
-    <div class="flex flex-wrap justify-around mt-10">
+    <div class="mt-10 flex flex-wrap justify-around">
         <a href="https://www.windy.com/" target="_blank" rel="noreferrer" class="mx-1 mb-5 sm:mx-3">
             <img src="{{ Vite::asset('resources/views/homepage/images/links/windy.webp') }}" alt="Logo du site Windy"
                 class="h-6 lg:h-8">
@@ -29,8 +29,7 @@
             <img src="{{ Vite::asset('resources/views/homepage/images/links/windguru.webp') }}"
                 alt="Logo du site Windguru" class="h-6 lg:h-8">
         </a>
-        <a href="https://voilesetvoiliers.ouest-france.fr/" target="_blank" rel="noreferrer"
-            class="mx-1 mb-5 sm:mx-3">
+        <a href="https://voilesetvoiliers.ouest-france.fr/" target="_blank" rel="noreferrer" class="mx-1 mb-5 sm:mx-3">
             <img src="{{ Vite::asset('resources/views/homepage/images/links/voiles-et-voiliers.webp') }}"
                 alt="Logo du site Voiles et voiliers" class="h-6 lg:h-8">
         </a>

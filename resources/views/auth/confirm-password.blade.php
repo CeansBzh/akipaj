@@ -2,7 +2,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                <x-application-logo class="h-28 bg-sky-700 p-3 rounded-xl" />
+                <x-application-logo class="h-28 rounded-xl bg-sky-700 p-3" />
             </a>
         </x-slot>
 
@@ -17,15 +17,13 @@
             <div>
                 <x-input-label for="password" :value="__('Password')" />
 
-                <x-text-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
+                <x-text-input id="password" class="mt-1 block w-full" type="password" name="password" required
+                    autocomplete="current-password" />
 
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
-            <div class="flex justify-end mt-4">
+            <div class="mt-4 flex justify-end">
                 <x-primary-button>
                     {{ __('Confirm') }}
                 </x-primary-button>

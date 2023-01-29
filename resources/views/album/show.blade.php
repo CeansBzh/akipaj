@@ -1,8 +1,8 @@
 <x-member-layout>
     <x-slot name="header">
-        <div class="flex flex-wrap justify-between items-center">
-            <h2 class="text-xl text-gray-800 leading-tight mb-2 md:mb-0">
-                <span class="font-semibold ">{{ $album->title }}</span> - <span
+        <div class="flex flex-wrap items-center justify-between">
+            <h2 class="mb-2 text-xl leading-tight text-gray-800 md:mb-0">
+                <span class="font-semibold">{{ $album->title }}</span> - <span
                     class="text-lg">{{ $album->date->translatedFormat('F Y') }}</span>
             </h2>
             <div class="flex w-full justify-between xs:w-auto sm:space-x-3">
@@ -47,12 +47,12 @@
         </div>
         <hr class="mt-2 mb-4">
         <div
-            class="flex flex-wrap {{ strlen($album->description) > 150 ? 'text-sm' : '' }} space-x-1 sm:space-x-5 md:flex-nowrap">
-            <p class="font-bold min-w-fit">Description :</p>
+            class="{{ strlen($album->description) > 150 ? 'text-sm' : '' }} flex flex-wrap space-x-1 sm:space-x-5 md:flex-nowrap">
+            <p class="min-w-fit font-bold">Description :</p>
             <p class="flex-grow">{{ $album->description }}</p>
         </div>
         <div class="flex flex-wrap space-x-1 sm:space-x-5 md:flex-nowrap">
-            <p class="font-bold min-w-fit">Nombre de photos :</p>
+            <p class="min-w-fit font-bold">Nombre de photos :</p>
             <p class="flex-grow">{{ $album->photos->count() }}</p>
         </div>
     </x-slot>
@@ -60,12 +60,12 @@
     <section class="text-gray-700">
         @if (count($photoIds) > 0)
             <livewire:lightbox />
-            <div class="max-w-screen-2xl mx-auto">
+            <div class="mx-auto max-w-screen-2xl">
                 <livewire:gallery :photoIds="$photoIds" />
             </div>
         @else
-            <div class="flex flex-col items-center justify-center h-64">
-                <p class="text-xl mb-5">Aucune photo de publiée.</p>
+            <div class="flex h-64 flex-col items-center justify-center">
+                <p class="mb-5 text-xl">Aucune photo de publiée.</p>
                 <x-primary-link href="{{ route('photos.create', $album) }}">
                     Ajouter mes photos
                 </x-primary-link>

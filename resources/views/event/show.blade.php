@@ -1,20 +1,20 @@
 <x-member-layout>
     <div class="py-12">
-        <div id="event-item-{{ $event->id }}" class="max-w-3xl mx-auto">
+        <div id="event-item-{{ $event->id }}" class="mx-auto max-w-3xl">
             <x-event-to-agenda :event="$event" />
             @if ($event->imagePath)
                 <img src="{{ $event->imagePath }}" alt="Image de couverture de l'événement {{ $event->name }}"
-                    class="max-h-80 w-full object-cover {{ $event->imagePath ? 'sm:rounded-t-lg' : '' }}">
+                    class="{{ $event->imagePath ? 'sm:rounded-t-lg' : '' }} max-h-80 w-full object-cover">
             @endif
-            <div class="p-4 sm:p-8 bg-white shadow {{ $event->imagePath ? 'sm:rounded-b-lg' : 'sm:rounded-lg' }}">
+            <div class="{{ $event->imagePath ? 'sm:rounded-b-lg' : 'sm:rounded-lg' }} bg-white p-4 shadow sm:p-8">
                 <div class="flex flex-row justify-between">
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900 mb-1">{{ $event->name }}</h1>
+                        <h1 class="mb-1 text-xl font-bold text-gray-900">{{ $event->name }}</h1>
                         <div class="flex flex-col space-y-1">
-                            <div class="flex flex-row text-gray-500 items-center">
+                            <div class="flex flex-row items-center text-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="h-5 mr-2">
+                                    stroke-linejoin="round" class="mr-2 h-5">
                                     <rect x="3" y="4" width="18" height="18" rx="2"
                                         ry="2"></rect>
                                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -25,10 +25,10 @@
                                     {{ $event->end_time->translatedFormat('d M Y') }}</p>
                             </div>
                             @if ($event->location)
-                                <div class="flex flex-row text-gray-500 items-center">
+                                <div class="flex flex-row items-center text-gray-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="h-5 mr-2">
+                                        stroke-linejoin="round" class="mr-2 h-5">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                         <circle cx="12" cy="10" r="3"></circle>
                                     </svg>
@@ -64,9 +64,9 @@
                 </div>
                 <div>
                     <div>
-                        <p class="text-gray-600 mt-4">{{ $event->description }}</p>
+                        <p class="mt-4 text-gray-600">{{ $event->description }}</p>
                     </div>
-                    <div class="text-center mt-5">
+                    <div class="mt-5 text-center">
                         <x-primary-button type="button" class="add-to-agenda mb-2 sm:mb-0 sm:mr-2">
                             + Ajouter à l'agenda
                         </x-primary-button>

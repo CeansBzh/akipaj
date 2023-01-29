@@ -1,9 +1,9 @@
 <x-app-layout>
-    <div class="bg-gray-200 flex">
+    <div class="flex bg-gray-200">
         <x-admin.sidebar />
-        <div class="w-full flex flex-col h-screen overflow-y-hidden">
+        <div class="flex h-screen w-full flex-col overflow-y-hidden">
             <x-admin.header />
-            <div class="w-full h-full overflow-x-hidden border-t flex flex-col">
+            <div class="flex h-full w-full flex-col overflow-x-hidden border-t">
                 <main class="w-full flex-grow p-6">
                     {{ $slot }}
                 </main>

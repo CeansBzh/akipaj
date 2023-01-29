@@ -2,14 +2,14 @@
     $userCount = $trip->users->count();
 @endphp
 
-<section class="max-w-2xl mx-auto">
-    <h2 class="mb-5 font-semibold text-gray-800 leading-tight text-center text-2xl">
+<section class="mx-auto max-w-2xl">
+    <h2 class="mb-5 text-center text-2xl font-semibold leading-tight text-gray-800">
         Informations
     </h2>
     <div class="{{ $userCount > 6 ? '' : 'md:flex md:flex-row md:justify-around md:divide-x' }}">
-        <div class="mb-4 max-w-sm mx-auto {{ $userCount > 6 ? '' : 'md:mx-0 md:flex-grow' }}">
-            <h4 class="font-bold text-lg text-center">Dates</h4>
-            <div class="flex flex-row justify-evenly items-center">
+        <div class="{{ $userCount > 6 ? '' : 'md:mx-0 md:flex-grow' }} mx-auto mb-4 max-w-sm">
+            <h4 class="text-center text-lg font-bold">Dates</h4>
+            <div class="flex flex-row items-center justify-evenly">
                 <div>
                     <p class="text-sm text-gray-600">Du</p>
                     <p>{{ $trip->start_date->translatedFormat('d M Y') }}</p>
@@ -27,21 +27,21 @@
             </div>
         </div>
         @if ($userCount > 0)
-            <div class="mb-4 {{ $userCount > 6 ? '' : 'md:flex-1' }}">
-                <h4 class="font-bold text-lg text-center">Matelots</h4>
+            <div class="{{ $userCount > 6 ? '' : 'md:flex-1' }} mb-4">
+                <h4 class="text-center text-lg font-bold">Matelots</h4>
                 <div class="flex flex-wrap items-center justify-center py-3">
                     @foreach ($trip->users as $user)
                         <div class="group relative p-1">
-                            <img class="w-11 h-11 rounded-full object-cover object-right"
+                            <img class="h-11 w-11 rounded-full object-cover object-right"
                                 src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                                 alt="Photo de profil de {{ $user->name }}">
                             <div
-                                class="absolute bottom-0 inset-x-0 flex-col items-center hidden mb-[100%] group-hover:flex">
+                                class="absolute inset-x-0 bottom-0 mb-[100%] hidden flex-col items-center group-hover:flex">
                                 <span
-                                    class="relative z-10 w-max p-2 text-sm leading-none text-white whitespace-no-wrap bg-neutral-800 rounded-md shadow-lg">
+                                    class="whitespace-no-wrap relative z-10 w-max rounded-md bg-neutral-800 p-2 text-sm leading-none text-white shadow-lg">
                                     {{ $user->name }}
                                 </span>
-                                <div class="w-3 h-3 -mt-2 rotate-45 bg-neutral-800"></div>
+                                <div class="-mt-2 h-3 w-3 rotate-45 bg-neutral-800"></div>
                             </div>
                         </div>
                     @endforeach
@@ -50,88 +50,88 @@
         @endif
     </div>
     <div>
-        <h4 class="font-bold text-lg">À propos</h4>
-        <p class="text-gray-800 indent-2 text-justify">{{ $trip->description }}</p>
+        <h4 class="text-lg font-bold">À propos</h4>
+        <p class="text-justify indent-2 text-gray-800">{{ $trip->description }}</p>
     </div>
 </section>
-<section class="max-w-5xl mx-auto">
+<section class="mx-auto max-w-5xl">
     @if ($trip->boats->count() > 0)
         <div class="mt-3">
-            <h4 class="font-bold text-lg text-center mb-2">
+            <h4 class="mb-2 text-center text-lg font-bold">
                 {{ $trip->boats->count() === 1 ? 'Le bateau' : 'Les bateaux' }}
             </h4>
             {{-- Desktop Table --}}
-            <div class="justify-center p-2 m-0 hidden overflow-auto md:flex">
+            <div class="m-0 hidden justify-center overflow-auto p-2 md:flex">
                 <table
-                    class="w-full max-w-min text-sm text-center shrink-0 text-gray-700 rounded-lg shadow-md bg-white">
+                    class="w-full max-w-min shrink-0 rounded-lg bg-white text-center text-sm text-gray-700 shadow-md">
                     <tr class="border-b border-gray-200">
                         <th class="bg-gray-50"></th>
-                        <th scope="col" class="text-xs uppercase px-6 py-3 bg-gray-50">Type</th>
-                        <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Année</th>
-                        <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Constructeur
+                        <th scope="col" class="bg-gray-50 px-6 py-3 text-xs uppercase">Type</th>
+                        <th scope="col" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-700">Année</th>
+                        <th scope="col" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-700">Constructeur
                         </th>
-                        <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Loueur</th>
-                        <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Port</th>
-                        <th scope="col" class="text-xs text-gray-700 uppercase px-6 py-3 bg-gray-50">Équipage</th>
+                        <th scope="col" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-700">Loueur</th>
+                        <th scope="col" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-700">Port</th>
+                        <th scope="col" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-700">Équipage</th>
                     </tr>
                     @foreach ($trip->boats as $boat)
                         <tr class="border-b border-gray-200">
                             <th scope="row"
-                                class="text-md text-gray-700 px-6 py-3 font-semibold uppercase whitespace-nowrap">
+                                class="text-md whitespace-nowrap px-6 py-3 font-semibold uppercase text-gray-700">
                                 {{ $boat->name }}</th>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $boat->type ?? '/' }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $boat->year ?? '/' }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $boat->builder ?? '/' }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $boat->renter ?? '/' }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $boat->city ?? '/' }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap ">{{ $boat->crew ?? '/' }}</td>
+                            <td class="whitespace-nowrap px-4 py-2">{{ $boat->type ?? '/' }}</td>
+                            <td class="whitespace-nowrap px-4 py-2">{{ $boat->year ?? '/' }}</td>
+                            <td class="whitespace-nowrap px-4 py-2">{{ $boat->builder ?? '/' }}</td>
+                            <td class="whitespace-nowrap px-4 py-2">{{ $boat->renter ?? '/' }}</td>
+                            <td class="whitespace-nowrap px-4 py-2">{{ $boat->city ?? '/' }}</td>
+                            <td class="whitespace-nowrap px-4 py-2">{{ $boat->crew ?? '/' }}</td>
                         </tr>
                     @endforeach
                 </table>
             </div>
             {{-- Mobile Table --}}
-            <div class="relative overflow-x-auto shadow-md border rounded md:hidden">
-                <table class="w-full text-sm text-left text-gray-700">
+            <div class="relative overflow-x-auto rounded border shadow-md md:hidden">
+                <table class="w-full text-left text-sm text-gray-700">
                     <tr class="border-b border-gray-200">
                         <th class="bg-gray-50"></th>
                         @foreach ($trip->boats as $boat)
-                            <th scope="col" class="text-xs text-center text-gray-800 uppercase px-6 py-3">
+                            <th scope="col" class="px-6 py-3 text-center text-xs uppercase text-gray-800">
                                 {{ $boat->name }}</th>
                         @endforeach
                     </tr>
                     <tr class="border-b border-gray-200">
-                        <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Type</th>
+                        <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Type</th>
                         @foreach ($trip->boats as $boat)
                             <td class="text-center">{{ $boat->type ?? '/' }}</td>
                         @endforeach
                     </tr>
                     <tr class="border-b border-gray-200">
-                        <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Année</th>
+                        <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Année</th>
                         @foreach ($trip->boats as $boat)
                             <td class="text-center">{{ $boat->year ?? '/' }}</td>
                         @endforeach
                     </tr>
                     <tr class="border-b border-gray-200">
-                        <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Constructeur
+                        <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Constructeur
                         </th>
                         @foreach ($trip->boats as $boat)
                             <td class="text-center">{{ $boat->builder ?? '/' }}</td>
                         @endforeach
                     </tr>
                     <tr class="border-b border-gray-200">
-                        <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Loueur</th>
+                        <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Loueur</th>
                         @foreach ($trip->boats as $boat)
                             <td class="text-center">{{ $boat->renter ?? '/' }}</td>
                         @endforeach
                     </tr>
                     <tr class="border-b border-gray-200">
-                        <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Port</th>
+                        <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Port</th>
                         @foreach ($trip->boats as $boat)
                             <td class="text-center">{{ $boat->city ?? '/' }}</td>
                         @endforeach
                     </tr>
                     <tr class="border-b border-gray-200">
-                        <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Équipage</th>
+                        <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Équipage</th>
                         @foreach ($trip->boats as $boat)
                             <td class="text-center">{{ $boat->crew ?? '/' }}</td>
                         @endforeach

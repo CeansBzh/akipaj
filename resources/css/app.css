@@ -3,17 +3,14 @@
 @tailwind utilities;
 
 @layer base {
-
     /* Webfont: Guttie-Regular */
     @font-face {
-        font-family: 'Guttie';
-        src: url('fonts/Guttie.eot');
+        font-family: "Guttie";
+        src: url("fonts/Guttie.eot");
         /* IE9 Compat Modes */
-        src: url('fonts/Guttie.eot?#iefix') format('embedded-opentype'),
-            /* IE6-IE8 */
-            url('fonts/Guttie.woff') format('woff'),
-            /* Modern Browsers */
-            url('fonts/Guttie.ttf') format('truetype');
+        src: url("fonts/Guttie.eot?#iefix") format("embedded-opentype"),
+            /* IE6-IE8 */ url("fonts/Guttie.woff") format("woff"),
+            /* Modern Browsers */ url("fonts/Guttie.ttf") format("truetype");
         /* Safari, Android, iOS */
         font-style: normal;
         font-weight: normal;
@@ -29,20 +26,18 @@
     h4,
     h5,
     h6 {
-        font-family: 'Merriweather', serif;
+        font-family: "Merriweather", serif;
     }
 }
 
 @layer components {
     .selected {
-        @apply outline outline-sky-500 -outline-offset-8 outline-8 scale-[0.95] rounded;
+        @apply scale-[0.95] rounded outline outline-8 -outline-offset-8 outline-sky-500;
     }
 }
 
 @layer utilities {
-
     @media screen and (min-width: 640px) {
-
         body {
             overflow: overlay;
         }
@@ -88,8 +83,7 @@
 
     .text-shadow-outline {
         text-shadow: 1px 1px 0 var(--tw-shadow-color),
-            -1px 1px 0 var(--tw-shadow-color),
-            1px -1px 0 var(--tw-shadow-color),
+            -1px 1px 0 var(--tw-shadow-color), 1px -1px 0 var(--tw-shadow-color),
             -1px -1px 0 var(--tw-shadow-color);
     }
 
@@ -106,5 +100,4 @@
         filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
         -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
     }
-
 }

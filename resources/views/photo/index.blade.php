@@ -1,7 +1,7 @@
 <x-member-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Toutes les photos</h2>
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">Toutes les photos</h2>
             <x-primary-link href="{{ route('albums.create') }}">
                 Créer un album
             </x-primary-link>
@@ -11,12 +11,12 @@
     <div>
         @if (\App\Models\Photo::count() > 0)
             <livewire:lightbox />
-            <div class="max-w-screen-2xl mx-auto">
+            <div class="mx-auto max-w-screen-2xl">
                 <livewire:gallery />
             </div>
         @else
-            <div class="flex flex-col items-center justify-center h-64">
-                <p class="text-xl mb-5">Aucune photo de publiée.</p>
+            <div class="flex h-64 flex-col items-center justify-center">
+                <p class="mb-5 text-xl">Aucune photo de publiée.</p>
                 <x-primary-link href="{{ route('albums.create') }}">
                     Créer un album
                 </x-primary-link>

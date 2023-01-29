@@ -2,7 +2,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                <x-application-logo class="h-28 bg-sky-700 p-3 rounded-xl" />
+                <x-application-logo class="h-28 rounded-xl bg-sky-700 p-3" />
             </a>
         </x-slot>
 
@@ -16,7 +16,7 @@
             <div>
                 <x-input-label for="email" :value="__('Email')" />
 
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
+                <x-text-input id="email" class="mt-1 block w-full" type="email" name="email" :value="old('email')"
                     required autofocus />
 
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -26,14 +26,14 @@
             <div class="mt-4">
                 <x-input-label for="password" :value="__('Password')" />
 
-                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
+                <x-text-input id="password" class="mt-1 block w-full" type="password" name="password" required
                     autocomplete="current-password" />
 
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <!-- Remember Me -->
-            <div class="block mt-4">
+            <div class="mt-4 block">
                 <label for="remember_me" class="inline-flex items-center">
                     <input id="remember_me" type="checkbox"
                         class="rounded border-gray-300 text-sky-600 shadow-sm focus:ring-sky-500" name="remember">
@@ -41,17 +41,17 @@
                 </label>
             </div>
 
-            <div class="flex flex-col space-y-3 items-center justify-end mt-4">
+            <div class="mt-4 flex flex-col items-center justify-end space-y-3">
                 <div>
-                    <a class="mr-5 underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+                    <a class="mr-5 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                         href="{{ route('register') }}">
                         {{ __('Créer un compte') }}
                     </a>
                     @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
-                        href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
+                        <a class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+                            href="{{ route('password.request') }}">
+                            {{ __('Forgot your password?') }}
+                        </a>
                     @endif
                 </div>
 

@@ -1,28 +1,29 @@
 <div>
-    <div class="mb-5 flex justify-between items-center">
+    <div class="mb-5 flex items-center justify-between">
         <h3>Associer des bateaux</h3>
         <x-secondary-button wire:click.prevent="addBoat">Nouveau bateau</x-secondary-button>
     </div>
 
     @if (!empty($boats))
-        <div class="relative overflow-x-auto shadow-md border rounded">
-            <table class="w-full text-sm text-left text-gray-700">
+        <div class="relative overflow-x-auto rounded border shadow-md">
+            <table class="w-full text-left text-sm text-gray-700">
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Nom</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Nom</th>
                     @foreach ($boats as $index => $boat)
                         <th scope="col">
                             <x-input-label for="name_input_{{ $index }}" value="Nom" class="sr-only" />
                             <input id="name_input_{{ $index }}" name="boats[{{ $index }}][name]"
                                 type="text" wire:model="boats.{{ $index }}.name"
-                                class="w-full font-medium border-gray-300 focus:border-sky-500 focus:ring-sky-500"
+                                class="w-full border-gray-300 font-medium focus:border-sky-500 focus:ring-sky-500"
                                 maxlength="255" required>
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                            <input type="hidden" name="boats[{{ $index }}][id]" wire:model="boats.{{ $index }}.id" aria-hidden="true">
+                            <input type="hidden" name="boats[{{ $index }}][id]"
+                                wire:model="boats.{{ $index }}.id" aria-hidden="true">
                         </th>
                     @endforeach
                 </tr>
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Type</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Type</th>
                     @foreach ($boats as $index => $boat)
                         <td>
                             <x-input-label for="type_input_{{ $index }}" value="Type" class="sr-only" />
@@ -34,7 +35,7 @@
                     @endforeach
                 </tr>
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Année</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Année</th>
                     @foreach ($boats as $index => $boat)
                         <td>
                             <x-input-label for="year_input_{{ $index }}" value="Année" class="sr-only" />
@@ -47,7 +48,7 @@
                     @endforeach
                 </tr>
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Constructeur</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Constructeur</th>
                     @foreach ($boats as $index => $boat)
                         <td>
                             <x-input-label for="builder_input_{{ $index }}" value="Constructeur"
@@ -60,7 +61,7 @@
                     @endforeach
                 </tr>
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Loueur</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Loueur</th>
                     @foreach ($boats as $index => $boat)
                         <td>
                             <x-input-label for="renter_input_{{ $index }}" value="Loueur" class="sr-only" />
@@ -72,7 +73,7 @@
                     @endforeach
                 </tr>
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Port</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Port</th>
                     @foreach ($boats as $index => $boat)
                         <td>
                             <x-input-label for="city_input_{{ $index }}" value="Loueur" class="sr-only" />
@@ -84,7 +85,7 @@
                     @endforeach
                 </tr>
                 <tr class="border-b border-gray-200">
-                    <th scope="row" class="text-xs text-gray-800 uppercase px-6 py-3 bg-gray-50">Équipage</th>
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Équipage</th>
                     @foreach ($boats as $index => $boat)
                         <td scope="row">
                             <x-input-label for="crew_input_{{ $index }}" value="Nombre d'équipiers"

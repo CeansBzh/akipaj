@@ -1,27 +1,28 @@
 <x-member-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800">
             Mon profil
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto flex-col space-y-4 sm:px-6 lg:px-8">
-            @if(auth()->user()->hasRole('guest'))
-            <div x-data="{ animation: false }" class="px-1">
-                <div role="alert"
-                    class="p-4 mb-6 text-sm text-yellow-800 bg-yellow-200 rounded-lg duration-500 relative transition ease-in-out scale-90 md:scale-100"
-                    :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring ring-yellow-300' : ''"
-                    x-init="$nextTick(() => {animation = true; setTimeout(() => { animation = false; }, 500);})">
-                    Votre inscription n'a pas encore été validée par un administrateur. Vous ne pouvez pas encore
-                    accéder à toutes les pages du site.
+        <div class="mx-auto max-w-7xl flex-col space-y-4 sm:px-6 lg:px-8">
+            @if (auth()->user()->hasRole('guest'))
+                <div x-data="{ animation: false }" class="px-1">
+                    <div role="alert"
+                        class="relative mb-6 scale-90 rounded-lg bg-yellow-200 p-4 text-sm text-yellow-800 transition duration-500 ease-in-out md:scale-100"
+                        :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring ring-yellow-300' : ''"
+                        x-init="$nextTick(() => { animation = true;
+                            setTimeout(() => { animation = false; }, 500); })">
+                        Votre inscription n'a pas encore été validée par un administrateur. Vous ne pouvez pas encore
+                        accéder à toutes les pages du site.
+                    </div>
                 </div>
-            </div>
             @endif
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-3xl mx-auto">
-                    <section class="flex flex-col justify-between items-center space-y-4 xs:space-y-0 xs:flex-row">
+            <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                <div class="mx-auto max-w-3xl">
+                    <section class="flex flex-col items-center justify-between space-y-4 xs:flex-row xs:space-y-0">
                         <h2 class="text-lg font-medium text-gray-900">Gestion du compte</h2>
                         <x-primary-link class="" href="{{ route('profile.edit') }}">
                             Paramètres
@@ -30,14 +31,14 @@
                 </div>
             </div>
 
-            @if(isset($latestPayments))
-            <hr>
+            @if (isset($latestPayments))
+                <hr>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-3xl mx-auto">
-                    @include('profile.partials.latest-payments')
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div class="mx-auto max-w-3xl">
+                        @include('profile.partials.latest-payments')
+                    </div>
                 </div>
-            </div>
             @endif
         </div>
     </div>

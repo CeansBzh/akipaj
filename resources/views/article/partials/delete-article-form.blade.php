@@ -1,5 +1,5 @@
-<section class="flex flex-col justify-around space-y-4 xs:space-y-0 xs:flex-row">
-    <header class="flex items-center mx-auto sm:mx-0">
+<section class="flex flex-col justify-around space-y-4 xs:flex-row xs:space-y-0">
+    <header class="mx-auto flex items-center sm:mx-0">
         <h2 class="text-lg font-medium text-gray-900">Supprimer l'article</h2>
     </header>
 

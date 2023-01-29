@@ -4,10 +4,10 @@
         @csrf
         @method('patch')
 
-        <div class="flex space-x-2 items-center sm:space-x-5">
+        <div class="flex items-center space-x-2 sm:space-x-5">
             <div class="overflow-hidden">
-                <img id="profile_picture_preview" :src="imageUrl" class="w-16 mb-1 rounded-full object-contain">
-                <button type="button" class="text-sm text-gray-500 w-full underline underline-offset-2"
+                <img id="profile_picture_preview" :src="imageUrl" class="mb-1 w-16 rounded-full object-contain">
+                <button type="button" class="w-full text-sm text-gray-500 underline underline-offset-2"
                     @click="removeImage">Retirer</button>
             </div>
 
@@ -33,53 +33,52 @@
 
         <div>
             <x-input-label for="email" value="Adresse mail" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
-                :value="old('email', $user->email)" required autocomplete="email" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)"
+                required autocomplete="email" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
         </div>
 
-        <div class="strike block text-center overflow-hidden whitespace-nowrap">
-            <span class="relative inline-block text-gray-800 text-sm">Informations personelles</span>
+        <div class="strike block overflow-hidden whitespace-nowrap text-center">
+            <span class="relative inline-block text-sm text-gray-800">Informations personelles</span>
         </div>
 
-        <div class="flex flex-col space-y-6 w-full sm:flex-row sm:space-y-0 sm:space-x-3">
+        <div class="flex w-full flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-3">
             <div class="sm:w-1/2">
                 <x-input-label for="lastname" value="Nom" />
-                <x-text-input id="lastname" name="lastname" type="text" class="mt-1 block w-full"
-                    :value="old('lastname', $user->lastname)" autocomplete="family-name" />
+                <x-text-input id="lastname" name="lastname" type="text" class="mt-1 block w-full" :value="old('lastname', $user->lastname)"
+                    autocomplete="family-name" />
                 <x-input-error class="mt-2" :messages="$errors->get('lastname')" />
             </div>
             <div class="sm:w-1/2">
                 <x-input-label for="firstname" value="Prénom" />
-                <x-text-input id="firstname" name="firstname" type="text" class="mt-1 block w-full"
-                    :value="old('firstname', $user->firstname)" autocomplete="given-name" />
+                <x-text-input id="firstname" name="firstname" type="text" class="mt-1 block w-full" :value="old('firstname', $user->firstname)"
+                    autocomplete="given-name" />
                 <x-input-error class="mt-2" :messages="$errors->get('firstname')" />
             </div>
         </div>
 
         <div>
             <x-input-label for="birthdate" value="Date de naissance" />
-            <x-text-input id="birthdate" name="birthdate" type="date" class="mt-1 block w-full"
-                :value="old('birthdate', $user->birthdate) !== null ? Carbon\Carbon::parse(old('birthdate', $user->birthdate))->format('Y-m-d') : ''"
+            <x-text-input id="birthdate" name="birthdate" type="date" class="mt-1 block w-full" :value="old('birthdate', $user->birthdate) !== null
+                ? Carbon\Carbon::parse(old('birthdate', $user->birthdate))->format('Y-m-d')
+                : ''"
                 max="{{ now()->format('Y-m-d') }}" autocomplete="bday" />
             <x-input-error class="mt-2" :messages="$errors->get('birthdate')" />
         </div>
 
-
         <div>
             <x-input-label for="clothing_size" value="Taille de vétements" />
-            <x-select-input id="clothing_size" name="clothing_size" class="mt-1 block w-full"
-                :value="old('clothing_size', $user->clothing_size)">
+            <x-select-input id="clothing_size" name="clothing_size" class="mt-1 block w-full" :value="old('clothing_size', $user->clothing_size)">
                 <option {{ $user->clothing_size ? '' : 'selected' }}>--</option>
-                @foreach(['XS','S','M','L','XL','XXL'] as $size)
-                <option {{$size==$user->clothing_size ? 'selected' : '' }}>{{ $size }}</option>
+                @foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $size)
+                    <option {{ $size == $user->clothing_size ? 'selected' : '' }}>{{ $size }}</option>
                 @endforeach
             </x-select-input>
             <x-input-error class="mt-2" :messages="$errors->get('clothing_size')" />
         </div>
 
-        <div class="strike block text-center overflow-hidden whitespace-nowrap">
-            <span class="relative inline-block text-gray-800 text-sm">Contact</span>
+        <div class="strike block overflow-hidden whitespace-nowrap text-center">
+            <span class="relative inline-block text-sm text-gray-800">Contact</span>
         </div>
 
         <div>
@@ -93,9 +92,8 @@
             <x-input-label for="mobile_phone" value="N° de téléphone portable" />
             <div class="relative">
                 <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
-                <x-text-input id="mobile_phone" name="mobile_phone" type="tel" class="mt-1 pl-11 block w-full"
-                    :value="old('mobile_phone', chunk_split($user->mobile_phone, 2, ' '))" autocomplete="tel"
-                    pattern="0[1-9](?: [0-9]{2}){4}"
+                <x-text-input id="mobile_phone" name="mobile_phone" type="tel" class="mt-1 block w-full pl-11"
+                    :value="old('mobile_phone', chunk_split($user->mobile_phone, 2, ' '))" autocomplete="tel" pattern="0[1-9](?: [0-9]{2}){4}"
                     title="Numéro de téléphone en format français, 10 chiffres de long" />
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('mobile_phone')" />
@@ -105,29 +103,28 @@
             <x-input-label for="home_phone" value="N° de téléphone fixe" />
             <div class="relative">
                 <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
-                <x-text-input id="home_phone" name="home_phone" type="tel" class="mt-1 pl-11 block w-full"
-                    :value="old('home_phone', chunk_split($user->home_phone, 2, ' '))" autocomplete="tel"
-                    pattern="0[1-9](?: [0-9]{2}){4}"
+                <x-text-input id="home_phone" name="home_phone" type="tel" class="mt-1 block w-full pl-11"
+                    :value="old('home_phone', chunk_split($user->home_phone, 2, ' '))" autocomplete="tel" pattern="0[1-9](?: [0-9]{2}){4}"
                     title="Numéro de téléphone en format français, 10 chiffres de long" />
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('home_phone')" />
         </div>
 
-        <div class="strike block text-center overflow-hidden whitespace-nowrap">
-            <span class="relative inline-block text-gray-800 text-sm">Adresse</span>
+        <div class="strike block overflow-hidden whitespace-nowrap text-center">
+            <span class="relative inline-block text-sm text-gray-800">Adresse</span>
         </div>
 
         <div>
             <x-input-label for="address" value="Adresse" />
-            <x-text-input id="address" name="address" type="text" class="mt-1 block w-full"
-                :value="old('address', $user->address)" autocomplete="street-address" />
+            <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address', $user->address)"
+                autocomplete="street-address" />
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <div>
             <x-input-label for="postal_code" value="Code" />
-            <x-text-input id="postal_code" name="postal_code" type="number" class="mt-1 block w-full" min="1000"
-                max="99999" :value="old('postal_code', $user->postal_code)" autocomplete="postal-code" />
+            <x-text-input id="postal_code" name="postal_code" type="number" class="mt-1 block w-full"
+                min="1000" max="99999" :value="old('postal_code', $user->postal_code)" autocomplete="postal-code" />
             <x-input-error class="mt-2" :messages="$errors->get('postal_code')" />
         </div>
 
@@ -142,131 +139,133 @@
             <x-primary-button>Mettre à jour</x-primary-button>
 
             @if (session('status') === 'user-updated')
-            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                class="text-sm text-gray-600">Enregistré.</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600">Enregistré.</p>
             @endif
         </div>
     </form>
 </section>
 @push('styles')
-<style>
-    .strike>span:before,
-    .strike>span:after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        width: 9999px;
-        height: 1px;
-        background: rgb(209 213 219);
-    }
+    <style>
+        .strike>span:before,
+        .strike>span:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 9999px;
+            height: 1px;
+            background: rgb(209 213 219);
+        }
 
-    .strike>span:before {
-        right: 100%;
-        margin-right: 15px;
-    }
+        .strike>span:before {
+            right: 100%;
+            margin-right: 15px;
+        }
 
-    .strike>span:after {
-        left: 100%;
-        margin-left: 15px;
-    }
-</style>
+        .strike>span:after {
+            left: 100%;
+            margin-left: 15px;
+        }
+    </style>
 @endpush
 @push('scripts')
-<script>
-    const MAX_WIDTH = 100;
-    const MAX_HEIGHT = 100;
-    const MIME_TYPE = "image/jpeg";
-    const QUALITY = 0.8;
+    <script>
+        const MAX_WIDTH = 100;
+        const MAX_HEIGHT = 100;
+        const MIME_TYPE = "image/jpeg";
+        const QUALITY = 0.8;
 
-    function updateProfile() {
-        return {
-            imageUrl: @js($user -> profile_picture_path ?? Vite:: asset('resources/images/default-pfp.png')),
-        imageRemoved: false,
-            init() {
-            this.imageRemoved = document.getElementById('profile_picture_preview').getAttribute('src') == '';
-        },
-        removeImage: function () {
-            this.imageRemoved = confirm('Supprimer votre image de profil ?');
-            if (this.imageRemoved) {
-                this.imageUrl = @js(Vite:: asset('resources/images/default-pfp.png'));
-                document.getElementById('profile_picture_input').value = '';
+        function updateProfile() {
+            return {
+                imageUrl: @js($user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png')),
+                imageRemoved: false,
+                init() {
+                    this.imageRemoved = document.getElementById('profile_picture_preview').getAttribute('src') == '';
+                },
+                removeImage: function() {
+                    this.imageRemoved = confirm('Supprimer votre image de profil ?');
+                    if (this.imageRemoved) {
+                        this.imageUrl = @js(Vite::asset('resources/images/default-pfp.png'));
+                        document.getElementById('profile_picture_input').value = '';
+                    }
+                },
+                fileChosen(event) {
+                    this.resizeImage(event);
+                    this.fileToDataUrl(event, (src) => (this.imageUrl = src));
+                },
+                fileToDataUrl(event, callback) {
+                    if (!event.target.files.length) return;
+
+                    let file = event.target.files[0],
+                        reader = new FileReader();
+
+                    reader.readAsDataURL(file);
+                    reader.onload = (e) => callback(e.target.result);
+                },
+                resizeImage(event) {
+                    const file = event.target.files[0];
+                    const blobURL = URL.createObjectURL(file);
+                    const img = new Image();
+                    const dataTransfer = new DataTransfer();
+                    img.src = blobURL;
+                    img.onerror = function() {
+                        URL.revokeObjectURL(this.src);
+                        // Handle the failure properly
+                        console.log("Cannot load image");
+                    };
+                    img.onload = () => {
+                        URL.revokeObjectURL(this.src);
+                        const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                        const canvas = document.createElement("canvas");
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                        canvas.toBlob(
+                            (blob) => {
+                                dataTransfer.items.add(new File([blob], file.name, {
+                                    type: MIME_TYPE
+                                }));
+                                event.target.files = dataTransfer.files
+                                return;
+                            },
+                            MIME_TYPE,
+                            QUALITY
+                        );
+                    };
+                },
+                calculateSize(img, maxWidth, maxHeight) {
+                    let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+                    return [img.naturalWidth * ratio, img.naturalHeight * ratio];
+                }
+            };
+        }
+
+        function phone_number_format(value) {
+            var v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+            var matches = v.match(/\d{2,10}/g);
+            var match = matches && matches[0] || ''
+            var parts = []
+            for (i = 0, len = match.length; i < len; i += 2) {
+                parts.push(match.substring(i, i + 2))
             }
-        },
-        fileChosen(event) {
-            this.resizeImage(event);
-            this.fileToDataUrl(event, (src) => (this.imageUrl = src));
-        },
-        fileToDataUrl(event, callback) {
-            if (!event.target.files.length) return;
-
-            let file = event.target.files[0],
-                reader = new FileReader();
-
-            reader.readAsDataURL(file);
-            reader.onload = (e) => callback(e.target.result);
-        },
-        resizeImage(event) {
-            const file = event.target.files[0];
-            const blobURL = URL.createObjectURL(file);
-            const img = new Image();
-            const dataTransfer = new DataTransfer();
-            img.src = blobURL;
-            img.onerror = function () {
-                URL.revokeObjectURL(this.src);
-                // Handle the failure properly
-                console.log("Cannot load image");
-            };
-            img.onload = () => {
-                URL.revokeObjectURL(this.src);
-                const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
-                const canvas = document.createElement("canvas");
-                canvas.width = newWidth;
-                canvas.height = newHeight;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, newWidth, newHeight);
-                canvas.toBlob(
-                    (blob) => {
-                        dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
-                        event.target.files = dataTransfer.files
-                        return;
-                    },
-                    MIME_TYPE,
-                    QUALITY
-                );
-            };
-        },
-        calculateSize(img, maxWidth, maxHeight) {
-            let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-            return [img.naturalWidth * ratio, img.naturalHeight * ratio];
-        }
-    };
-    }
-
-    function phone_number_format(value) {
-        var v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
-        var matches = v.match(/\d{2,10}/g);
-        var match = matches && matches[0] || ''
-        var parts = []
-        for (i = 0, len = match.length; i < len; i += 2) {
-            parts.push(match.substring(i, i + 2))
-        }
-        if (parts.length) {
-            return parts.join(' ')
-        } else {
-            return value
-        }
-    }
-
-    onload = function () {
-        document.getElementById('mobile_phone').oninput = function () {
-            this.value = this.value.replace(/\D+/g, '');
-            this.value = phone_number_format(this.value);
+            if (parts.length) {
+                return parts.join(' ')
+            } else {
+                return value
+            }
         }
 
-        document.getElementById('home_phone').oninput = function () {
-            this.value = this.value.replace(/\D+/g, '');
-            this.value = phone_number_format(this.value);
+        onload = function() {
+            document.getElementById('mobile_phone').oninput = function() {
+                this.value = this.value.replace(/\D+/g, '');
+                this.value = phone_number_format(this.value);
+            }
+
+            document.getElementById('home_phone').oninput = function() {
+                this.value = this.value.replace(/\D+/g, '');
+                this.value = phone_number_format(this.value);
+            }
         }
-    }
-</script>
+    </script>
 @endpush

@@ -1,14 +1,14 @@
 @php
-$trips = \App\Models\Trip::all()
-->sortByDesc('start_date')
-->groupBy([
-function ($val) {
-return $val->start_date->format('Y');
-},
-]);
+    $trips = \App\Models\Trip::all()
+        ->sortByDesc('start_date')
+        ->groupBy([
+            function ($val) {
+                return $val->start_date->format('Y');
+            },
+        ]);
 @endphp
 
-<section class="max-w-2xl mx-auto" x-data="addAlbum()">
+<section class="mx-auto max-w-2xl" x-data="addAlbum()">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Ajouter un album</h2>
         <p class="mt-1 text-sm text-gray-600">L'album sera visible pour tous les membres, et chacun pourra y ajouter ses
@@ -29,7 +29,7 @@ return $val->start_date->format('Y');
             <x-input-label for="description_input" value="Description" />
             <x-textarea-input id="description_input" name="description" class="mt-1 block w-full"
                 placeholder="Description de l'album" maxlength="255" required>
-                {{ old('description')}}
+                {{ old('description') }}
             </x-textarea-input>
             <x-input-error class="mt-2" :messages="$errors->get('description')" />
         </div>
@@ -38,18 +38,18 @@ return $val->start_date->format('Y');
             <div>
                 <x-input-label for="month_input" value="Mois" />
                 <x-select-input id="month_input" name="month" class="mt-1 block w-full" required>
-                    <option value="1" {{ old('month')==1 ? 'selected' : '' }}>Janvier</option>
-                    <option value="2" {{ old('month')==2 ? 'selected' : '' }}>Février</option>
-                    <option value="3" {{ old('month')==3 ? 'selected' : '' }}>Mars</option>
-                    <option value="4" {{ old('month')==4 ? 'selected' : '' }}>Avril</option>
-                    <option value="5" {{ old('month')==5 ? 'selected' : '' }}>Mai</option>
-                    <option value="6" {{ old('month')==6 ? 'selected' : '' }}>Juin</option>
-                    <option value="7" {{ old('month')==7 ? 'selected' : '' }}>Juillet</option>
-                    <option value="8" {{ old('month')==8 ? 'selected' : '' }}>Août</option>
-                    <option value="9" {{ old('month')==9 ? 'selected' : '' }}>Septembre</option>
-                    <option value="10" {{ old('month')==10 ? 'selected' : '' }}>Octobre</option>
-                    <option value="11" {{ old('month')==11 ? 'selected' : '' }}>Novembre</option>
-                    <option value="12" {{ old('month')==12 ? 'selected' : '' }}>Décembre</option>
+                    <option value="1" {{ old('month') == 1 ? 'selected' : '' }}>Janvier</option>
+                    <option value="2" {{ old('month') == 2 ? 'selected' : '' }}>Février</option>
+                    <option value="3" {{ old('month') == 3 ? 'selected' : '' }}>Mars</option>
+                    <option value="4" {{ old('month') == 4 ? 'selected' : '' }}>Avril</option>
+                    <option value="5" {{ old('month') == 5 ? 'selected' : '' }}>Mai</option>
+                    <option value="6" {{ old('month') == 6 ? 'selected' : '' }}>Juin</option>
+                    <option value="7" {{ old('month') == 7 ? 'selected' : '' }}>Juillet</option>
+                    <option value="8" {{ old('month') == 8 ? 'selected' : '' }}>Août</option>
+                    <option value="9" {{ old('month') == 9 ? 'selected' : '' }}>Septembre</option>
+                    <option value="10" {{ old('month') == 10 ? 'selected' : '' }}>Octobre</option>
+                    <option value="11" {{ old('month') == 11 ? 'selected' : '' }}>Novembre</option>
+                    <option value="12" {{ old('month') == 12 ? 'selected' : '' }}>Décembre</option>
                 </x-select-input>
                 <x-input-error class="mt-2" :messages="$errors->get('month')" />
             </div>
@@ -63,40 +63,40 @@ return $val->start_date->format('Y');
 
         <div>
             <x-input-label for="image_input" value="Image de couverture (facultatif)" />
-            <input type="file" id="image_input" name="image" class="mt-1 block w-full" accept="image/png, image/jpeg"
-                @change="resizeImage">
+            <input type="file" id="image_input" name="image" class="mt-1 block w-full"
+                accept="image/png, image/jpeg" @change="resizeImage">
             <x-input-error class="mt-2" :messages="$errors->get('image')" />
         </div>
 
         <div class="relative w-fit" x-show="showDisplay">
             <img id="image_display" src="" alt="Image de couverture de la sortie"
-                class="h-[250px] w-[250px] object-cover rounded-xl">
+                class="h-[250px] w-[250px] rounded-xl object-cover">
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="h-6 drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 group-focus:motion-safe:animate-pulse text-white absolute top-3 right-3">
+                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 group-focus:motion-safe:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
 
-        @if(!$trips->isEmpty())
-        <div>
-            <x-input-label for="trips_input" value="Lier l'album à une ou plusieurs sorties (facultatif)" />
-            <x-multi-select-input id="trips_input" name="trips[]" search="true">
-                @foreach ($trips as $year => $tripPerYear)
-                <optgroup label="{{ $year }}">
-                    @foreach ($tripPerYear as $trip)
-                    <option value="{{ $trip->id }}">{{ $trip->title }}</option>
+        @if (!$trips->isEmpty())
+            <div>
+                <x-input-label for="trips_input" value="Lier l'album à une ou plusieurs sorties (facultatif)" />
+                <x-multi-select-input id="trips_input" name="trips[]" search="true">
+                    @foreach ($trips as $year => $tripPerYear)
+                        <optgroup label="{{ $year }}">
+                            @foreach ($tripPerYear as $trip)
+                                <option value="{{ $trip->id }}">{{ $trip->title }}</option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
-                </optgroup>
+                </x-multi-select-input>
+                <x-input-error class="mt-2" :messages="$errors->get('trips')" />
+                @foreach ($errors->get('trips.*') as $message)
+                    <x-input-error class="mt-2" :messages="$message" />
                 @endforeach
-            </x-multi-select-input>
-            <x-input-error class="mt-2" :messages="$errors->get('trips')" />
-            @foreach($errors->get('trips.*') as $message)
-            <x-input-error class="mt-2" :messages="$message" />
-            @endforeach
-        </div>
+            </div>
         @endif
 
         <div class="flex items-center gap-4">
@@ -106,67 +106,70 @@ return $val->start_date->format('Y');
 </section>
 
 @push('scripts')
-<script>
-    const MAX_WIDTH = 250;
-    const MAX_HEIGHT = 250;
-    const MIME_TYPE = "image/jpeg";
-    const QUALITY = 0.7;
+    <script>
+        const MAX_WIDTH = 250;
+        const MAX_HEIGHT = 250;
+        const MIME_TYPE = "image/jpeg";
+        const QUALITY = 0.7;
 
-    function addAlbum() {
-        return {
-            showDisplay: false,
-            fileToDataUrl(event, callback) {
-                if (!event.target.files.length) return
+        function addAlbum() {
+            return {
+                showDisplay: false,
+                fileToDataUrl(event, callback) {
+                    if (!event.target.files.length) return
 
-                let file = event.target.files[0],
-                    reader = new FileReader()
+                    let file = event.target.files[0],
+                        reader = new FileReader()
 
-                reader.readAsDataURL(file)
-                reader.onload = e => callback(e.target.result)
-            },
-            removeImage: function () {
-                this.showDisplay = !(confirm('Supprimer la couverture de l\'album ?'));
-                if (!this.showDisplay) {
-                    document.getElementById('image_input').value = '';
+                    reader.readAsDataURL(file)
+                    reader.onload = e => callback(e.target.result)
+                },
+                removeImage: function() {
+                    this.showDisplay = !(confirm('Supprimer la couverture de l\'album ?'));
+                    if (!this.showDisplay) {
+                        document.getElementById('image_input').value = '';
+                    }
+                },
+                resizeImage(event) {
+                    const file = event.target.files[0];
+                    const blobURL = URL.createObjectURL(file);
+                    const img = new Image();
+                    const dataTransfer = new DataTransfer();
+                    img.src = blobURL;
+                    img.onerror = function() {
+                        URL.revokeObjectURL(this.src);
+                        // Handle the failure properly
+                        console.log("Cannot load image");
+                    };
+                    img.onload = () => {
+                        URL.revokeObjectURL(this.src);
+                        const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                        const canvas = document.createElement("canvas");
+                        canvas.width = newWidth;
+                        canvas.height = newHeight;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                        canvas.toBlob(
+                            (blob) => {
+                                dataTransfer.items.add(new File([blob], file.name, {
+                                    type: MIME_TYPE
+                                }));
+                                event.target.files = dataTransfer.files
+                                this.fileToDataUrl(event, src => document.getElementById('image_display').src =
+                                src);
+                                this.showDisplay = true;
+                                return;
+                            },
+                            MIME_TYPE,
+                            QUALITY
+                        );
+                    };
+                },
+                calculateSize(img, maxWidth, maxHeight) {
+                    let ratio = Math.max(maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+                    return [img.naturalWidth * ratio, img.naturalHeight * ratio];
                 }
-            },
-            resizeImage(event) {
-                const file = event.target.files[0];
-                const blobURL = URL.createObjectURL(file);
-                const img = new Image();
-                const dataTransfer = new DataTransfer();
-                img.src = blobURL;
-                img.onerror = function () {
-                    URL.revokeObjectURL(this.src);
-                    // Handle the failure properly
-                    console.log("Cannot load image");
-                };
-                img.onload = () => {
-                    URL.revokeObjectURL(this.src);
-                    const [newWidth, newHeight] = this.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
-                    const canvas = document.createElement("canvas");
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
-                    canvas.toBlob(
-                        (blob) => {
-                            dataTransfer.items.add(new File([blob], file.name, { type: MIME_TYPE }));
-                            event.target.files = dataTransfer.files
-                            this.fileToDataUrl(event, src => document.getElementById('image_display').src = src);
-                            this.showDisplay = true;
-                            return;
-                        },
-                        MIME_TYPE,
-                        QUALITY
-                    );
-                };
-            },
-            calculateSize(img, maxWidth, maxHeight) {
-                let ratio = Math.max(maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-                return [img.naturalWidth * ratio, img.naturalHeight * ratio];
             }
         }
-    }
-</script>
+    </script>
 @endpush

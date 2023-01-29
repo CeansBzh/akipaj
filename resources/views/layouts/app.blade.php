@@ -38,11 +38,11 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="fixed inset-x-3 top-5 max-w-xl mx-auto z-50">
+    <div class="fixed inset-x-3 top-5 z-50 mx-auto max-w-xl">
         @foreach (App\Enum\AlertLevelEnum::cases() as $alertLevel)
-        @if(Session::has('alert-' . $alertLevel->name))
-        <x-alert :message="Session::get('alert-' . $alertLevel->name)" :level="$alertLevel" />
-        @endif
+            @if (Session::has('alert-' . $alertLevel->name))
+                <x-alert :message="Session::get('alert-' . $alertLevel->name)" :level="$alertLevel" />
+            @endif
         @endforeach
     </div>
     <div class="min-h-screen bg-gray-100">

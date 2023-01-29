@@ -6,11 +6,11 @@
                 return $val->date->format('Y');
             },
         ]);
-
+    
     $users = \App\Models\User::all();
 @endphp
 
-<section class="max-w-2xl mx-auto" x-data="editTrip()" x-init="init()">
+<section class="mx-auto max-w-2xl" x-data="editTrip()" x-init="init()">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Modifier une sortie</h2>
         <p class="mt-1 text-sm text-gray-600">La sortie sera mise à jour immédiatement.</p>
@@ -20,7 +20,7 @@
         @csrf
         @method('patch')
 
-        <div class="flex space-x-5 w-full">
+        <div class="flex w-full space-x-5">
             <div class="flex-grow">
                 <x-input-label for="title_input" value="Nom" />
                 <x-text-input id="title_input" name="title" type="text" class="mt-1 block w-full" :value="$trip->title"
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div class="flex space-x-5 w-full">
+        <div class="flex w-full space-x-5">
             <div>
                 <x-input-label for="start_date_input" value="Date de début" />
                 <x-text-input id="start_date_input" name="start_date" type="date" class="mt-1 block w-full"
@@ -110,11 +110,11 @@
         <div class="relative" x-show="!imageRemoved">
             <img id="image_display" src="{{ $trip->imagePath }}"
                 alt="Image de couverture de l'événement {{ $trip->name }}"
-                class="h-64 w-full object-cover rounded-xl">
+                class="h-64 w-full rounded-xl object-cover">
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="h-6 drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 group-focus:motion-safe:animate-pulse text-white absolute top-3 right-3">
+                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 group-focus:motion-safe:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

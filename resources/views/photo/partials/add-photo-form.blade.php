@@ -1,14 +1,14 @@
-<section class="max-w-2xl mx-auto">
+<section class="mx-auto max-w-2xl">
     <div class="mb-5 text-center">
         <form action="{{ route('photos.store', ['album' => $album]) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div id="dropbox" class="flex justify-center items-center w-full">
+            <div id="dropbox" class="flex w-full items-center justify-center">
                 <label for="dropbox-file"
-                    class="fixed bottom-[calc(5rem+25px)] bg-white p-3 rounded-lg border-2 border-sky-300 cursor-pointer hover:bg-sky-100 md:relative md:bottom-0 md:w-full md:h-56 md:flex md:justify-center md:items-center md:border-dashed md:p-8">
+                    class="fixed bottom-[calc(5rem+25px)] cursor-pointer rounded-lg border-2 border-sky-300 bg-white p-3 hover:bg-sky-100 md:relative md:bottom-0 md:flex md:h-56 md:w-full md:items-center md:justify-center md:border-dashed md:p-8">
                     <div id="loading-spinner" role="status"
-                        class="hidden absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)]">
-                        <svg class="inline mr-2 w-10 h-10 text-gray-300 motion-safe:animate-spin fill-sky-500"
+                        class="absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)] hidden">
+                        <svg class="mr-2 inline h-10 w-10 fill-sky-500 text-gray-300 motion-safe:animate-spin"
                             viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -20,25 +20,26 @@
                         <span class="sr-only">Chargement...</span>
                     </div>
                     <div id="drag-over-icon" role="status"
-                        class="hidden absolute bottom-[calc(50%-1.75rem)] left-[calc(50%-1.75rem)]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="inline mr-2 w-14 h-14 text-sky-500 motion-safe:animate-bounce">
+                        class="absolute bottom-[calc(50%-1.75rem)] left-[calc(50%-1.75rem)] hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="mr-2 inline h-14 w-14 text-sky-500 motion-safe:animate-bounce">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
                         <span class="sr-only">Relâcher pour déposer les fichiers</span>
                     </div>
-                    <div id="dropbox-body" class="flex flex-row justify-center items-center text-sky-600 md:flex-col">
-                        <svg aria-hidden="true" class="mb-3 mr-3 w-10 h-10 text-sky-500" fill="none"
+                    <div id="dropbox-body" class="flex flex-row items-center justify-center text-sky-600 md:flex-col">
+                        <svg aria-hidden="true" class="mb-3 mr-3 h-10 w-10 text-sky-500" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
                             </path>
                         </svg>
                         <div class="flex flex-col">
-                            <p class="hidden mb-2 text-sm text-gray-500 md:block"><span class="font-semibold">Cliquez
+                            <p class="mb-2 hidden text-sm text-gray-500 md:block"><span class="font-semibold">Cliquez
                                     pour choisir
                                     des
                                     images</span><span id="draggableMsg" class="hidden"> ou faites-les glisser</span>
@@ -56,31 +57,31 @@
                 <div id="info" class="px-5 sm:py-10">
                     <div class="mx-auto max-w-xs text-sm text-gray-500">
                         @if ($errors->any())
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="h-14 w-14 mx-auto mb-5 text-red-500">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <div class="text-red-500">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                <li class="mb-2">{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="mx-auto mb-5 h-14 w-14 text-red-500">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <div class="text-red-500">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li class="mb-2">{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @else
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="h-14 w-14 mx-auto mb-5 text-gray-400">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <p class="mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
-                            poids.</p>
-                        <p>Le nombre maximal de photos par envoi est de 20.</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="mx-auto mb-5 h-14 w-14 text-gray-400">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <p class="mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
+                                poids.</p>
+                            <p>Le nombre maximal de photos par envoi est de 20.</p>
                         @endif
                     </div>
                 </div>
@@ -92,11 +93,11 @@
                         <canvas class="rounded" width="25" height="25">
                             Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
                         </canvas>
-                        <div class="flex flex-row bg-white w-full justify-end py-2 px-4 rounded-r shadow-sm">
+                        <div class="flex w-full flex-row justify-end rounded-r bg-white py-2 px-4 shadow-sm">
                             <span class="truncate px-3 text-base font-medium text-[#07074D]">
                                 fichier.png
                             </span>
-                            <button class="text-[#07074D] ml-4">
+                            <button class="ml-4 text-[#07074D]">
                                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -113,14 +114,14 @@
             </template>
 
             <div class="fixed bottom-0 left-0 right-0">
-                <div class="max-w-3xl mx-auto h-20 p-5 bg-white rounded-t-xl shadow-2xl">
-                    <div class="flex justify-between items-center">
-                        <p class="grow mr-2 text-left overflow-ellipsis whitespace-nowrap overflow-hidden">Vos photos
+                <div class="mx-auto h-20 max-w-3xl rounded-t-xl bg-white p-5 shadow-2xl">
+                    <div class="flex items-center justify-between">
+                        <p class="mr-2 grow overflow-hidden overflow-ellipsis whitespace-nowrap text-left">Vos photos
                             seront ajoutées à l'album "
                             <span class="font-semibold">{{ $album->title }}</span>"
                         </p>
                         <div>
-                            <x-primary-button class="bg-sky-500 py-3 w-max hover:bg-sky-700">
+                            <x-primary-button class="w-max bg-sky-500 py-3 hover:bg-sky-700">
                                 Ajouter mes photos
                             </x-primary-button>
                         </div>
@@ -131,195 +132,208 @@
     </div>
 </section>
 
-
 @push('scripts')
-<script type="text/javascript">
-    // Script to drag and drop, resize, rewrite exif data, and preview images
-    // Assembled using different sources
-    // Version 0.1.1
-    // Speed for 100 images (average size 3.3MB): 15.6s
+    <script type="text/javascript">
+        // Script to drag and drop, resize, rewrite exif data, and preview images
+        // Assembled using different sources
+        // Version 0.1.1
+        // Speed for 100 images (average size 3.3MB): 15.6s
 
-    const MAX_FILES = 20;
-    const MAX_WIDTH = 1920;
-    const MAX_HEIGHT = 1080;
-    const PREVIEW_SIZE = 70;
-    const MIME_TYPE = "image/jpeg";
-    const QUALITY = 0.7;
+        const MAX_FILES = 20;
+        const MAX_WIDTH = 1920;
+        const MAX_HEIGHT = 1080;
+        const PREVIEW_SIZE = 70;
+        const MIME_TYPE = "image/jpeg";
+        const QUALITY = 0.7;
 
-    const dataTransfer = new DataTransfer();
-    const loadedFileNames = [];
+        const dataTransfer = new DataTransfer();
+        const loadedFileNames = [];
 
-    var dragAndDropSupported = function () {
-        var div = document.createElement('div');
-        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
-    }();
-    if (dragAndDropSupported) {
-        document.getElementById('draggableMsg').classList.remove('hidden');
+        var dragAndDropSupported = function() {
+            var div = document.createElement('div');
+            return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window &&
+                'FileReader' in window;
+        }();
+        if (dragAndDropSupported) {
+            document.getElementById('draggableMsg').classList.remove('hidden');
 
-        const dropbox = document.getElementById('dropbox');
-        dropbox.addEventListener('dragover', (e) => {
-            // prevent default to allow drop
-            e.preventDefault();
-        }, false);
+            const dropbox = document.getElementById('dropbox');
+            dropbox.addEventListener('dragover', (e) => {
+                // prevent default to allow drop
+                e.preventDefault();
+            }, false);
 
-        dropbox.addEventListener('dragenter', (e) => {
-            // highlight potential drop target using svg icon
-            document.getElementById('dropbox-body').classList.add('invisible');
-            document.getElementById('drag-over-icon').classList.remove('hidden');
-        });
+            dropbox.addEventListener('dragenter', (e) => {
+                // highlight potential drop target using svg icon
+                document.getElementById('dropbox-body').classList.add('invisible');
+                document.getElementById('drag-over-icon').classList.remove('hidden');
+            });
 
-        dropbox.addEventListener('dragleave', (e) => {
-            // remove highlight for potential drop target
-            document.getElementById('dropbox-body').classList.remove('invisible');
-            document.getElementById('drag-over-icon').classList.add('hidden');
-        });
+            dropbox.addEventListener('dragleave', (e) => {
+                // remove highlight for potential drop target
+                document.getElementById('dropbox-body').classList.remove('invisible');
+                document.getElementById('drag-over-icon').classList.add('hidden');
+            });
 
-        dropbox.addEventListener('drop', (e) => {
-            // prevent default action
-            e.preventDefault();
-            // remove highlight for potential drop target
-            document.getElementById('dropbox-body').classList.remove('invisible');
-            document.getElementById('drag-over-icon').classList.add('hidden');
-            // add files to the list
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
-        });
-    }
-
-    let inputElement = document.getElementById("dropbox-file");
-    inputElement.addEventListener("change", handleFiles, false);
-
-    let previewContainer = document.getElementById("previewContainer");
-
-    const loadImage = file =>
-        new Promise((resolve, reject) => {
-            const blobURL = URL.createObjectURL(file);
-            const img = new Image();
-            img.src = blobURL;
-            img.onerror = function () {
-                URL.revokeObjectURL(img.src);
-                // Handle the failure properly
-                console.log("Cannot load image");
-            };
-            img.onload = () => {
-                URL.revokeObjectURL(img.src);
-                const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
-                const canvas = document.createElement("canvas");
-                canvas.width = newWidth;
-                canvas.height = newHeight;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, newWidth, newHeight);
-                canvas.toBlob(
-                    async (blob) => {
-                        dataTransfer.items.add(new File([await copyExif(file, blob)], file.name, { type: MIME_TYPE }));
-                        inputElement.files = dataTransfer.files;
-                        loadedFileNames.push(file.name);
-                        addPreview(img, file.name);
-                        resolve(true);
-                        return;
-                    },
-                    MIME_TYPE,
-                    QUALITY
-                );
-            };
-        });
-
-    function handleFiles(files) {
-        var startTime = performance.now();
-        if (!(files instanceof FileList)) { files = this.files }
-        const promises = [];
-        const info = document.getElementById('info');
-        if (files.length > MAX_FILES || dataTransfer.files.length + files.length > MAX_FILES) {
-            let svg = info.querySelector('svg');
-            svg.classList.remove('text-gray-400');
-            svg.classList.add('text-red-500');
-            svg.innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>';
-            info.replaceChild(svg, info.firstChild);
-            let p = info.querySelectorAll('p');
-            p[0].innerHTML = 'Vous ne pouvez pas ajouter plus de ' + MAX_FILES + ' fichiers.';
-            p[1].remove();
-            return;
+            dropbox.addEventListener('drop', (e) => {
+                // prevent default action
+                e.preventDefault();
+                // remove highlight for potential drop target
+                document.getElementById('dropbox-body').classList.remove('invisible');
+                document.getElementById('drag-over-icon').classList.add('hidden');
+                // add files to the list
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            });
         }
-        document.getElementById('dropbox-body').classList.add('invisible');
-        document.getElementById('loading-spinner').classList.remove('hidden');
-        if (info) { info.remove(); }
-        for (let i = 0; i < files.length; i++) {
-            // Pour chaque fichier on vérifie qu'il s'agit bien d'une image, et qu'il n'est pas déjà chargé
-            const file = files[i];
-            if (loadedFileNames.includes(file.name) || !file.type.startsWith('image/')) { continue }
-            // Si le fichier est une image et n'est pas déjà dans la liste :
-            promises.push(loadImage(file));
-        }
-        Promise.all(promises).then(() => {
-            document.getElementById('dropbox-body').classList.remove('invisible');
-            document.getElementById('loading-spinner').classList.add('hidden');
-            var endTime = performance.now()
-            console.log(`Temps d'exécution : ${(endTime - startTime) / 1000} secondes`)
-        });
-    }
 
-    function calculateSize(img, maxWidth, maxHeight) {
-        let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-        return [img.naturalWidth * ratio, img.naturalHeight * ratio];
-    }
+        let inputElement = document.getElementById("dropbox-file");
+        inputElement.addEventListener("change", handleFiles, false);
 
-    function removeFile(e) {
-        const canvas = e.target.closest('div').previousElementSibling;
-        const filename = canvas.getAttribute('data-filename');
-        for (let i = 0; i < dataTransfer.items.length; i++) {
-            if (dataTransfer.items[i].getAsFile().name == filename) {
-                dataTransfer.items.remove(i);
-                break;
+        let previewContainer = document.getElementById("previewContainer");
+
+        const loadImage = file =>
+            new Promise((resolve, reject) => {
+                const blobURL = URL.createObjectURL(file);
+                const img = new Image();
+                img.src = blobURL;
+                img.onerror = function() {
+                    URL.revokeObjectURL(img.src);
+                    // Handle the failure properly
+                    console.log("Cannot load image");
+                };
+                img.onload = () => {
+                    URL.revokeObjectURL(img.src);
+                    const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+                    const canvas = document.createElement("canvas");
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                    canvas.toBlob(
+                        async (blob) => {
+                                dataTransfer.items.add(new File([await copyExif(file, blob)], file.name, {
+                                    type: MIME_TYPE
+                                }));
+                                inputElement.files = dataTransfer.files;
+                                loadedFileNames.push(file.name);
+                                addPreview(img, file.name);
+                                resolve(true);
+                                return;
+                            },
+                            MIME_TYPE,
+                            QUALITY
+                    );
+                };
+            });
+
+        function handleFiles(files) {
+            var startTime = performance.now();
+            if (!(files instanceof FileList)) {
+                files = this.files
             }
+            const promises = [];
+            const info = document.getElementById('info');
+            if (files.length > MAX_FILES || dataTransfer.files.length + files.length > MAX_FILES) {
+                let svg = info.querySelector('svg');
+                svg.classList.remove('text-gray-400');
+                svg.classList.add('text-red-500');
+                svg.innerHTML =
+                    '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>';
+                info.replaceChild(svg, info.firstChild);
+                let p = info.querySelectorAll('p');
+                p[0].innerHTML = 'Vous ne pouvez pas ajouter plus de ' + MAX_FILES + ' fichiers.';
+                p[1].remove();
+                return;
+            }
+            document.getElementById('dropbox-body').classList.add('invisible');
+            document.getElementById('loading-spinner').classList.remove('hidden');
+            if (info) {
+                info.remove();
+            }
+            for (let i = 0; i < files.length; i++) {
+                // Pour chaque fichier on vérifie qu'il s'agit bien d'une image, et qu'il n'est pas déjà chargé
+                const file = files[i];
+                if (loadedFileNames.includes(file.name) || !file.type.startsWith('image/')) {
+                    continue
+                }
+                // Si le fichier est une image et n'est pas déjà dans la liste :
+                promises.push(loadImage(file));
+            }
+            Promise.all(promises).then(() => {
+                document.getElementById('dropbox-body').classList.remove('invisible');
+                document.getElementById('loading-spinner').classList.add('hidden');
+                var endTime = performance.now()
+                console.log(`Temps d'exécution : ${(endTime - startTime) / 1000} secondes`)
+            });
         }
-        document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
-        inputElement.files = dataTransfer.files;
-        canvas.closest('div').remove();
-    }
 
-    function addPreview(img, fileName) {
-        if ('content' in document.createElement('template')) {
-            // Si le navigateur supporte les templates
-            const template = document.getElementById('previewElement');
-            const clone = template.content.cloneNode(true);
-            const canvas = clone.querySelector('canvas');
-            canvas.width = PREVIEW_SIZE;
-            canvas.height = PREVIEW_SIZE;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
-            clone.querySelector('span').innerHTML = fileName;
-            canvas.setAttribute('data-filename', fileName);
-            clone.querySelector('button').addEventListener('click', removeFile);
-            previewContainer.appendChild(clone);
-        } else {
-            // Si le navigateur ne supporte pas les templates
-            const previewElem = document.createElement("p");
-            previewElem.innerHTML = fileName;
-            previewContainer.appendChild(previewElem);
+        function calculateSize(img, maxWidth, maxHeight) {
+            let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
+            return [img.naturalWidth * ratio, img.naturalHeight * ratio];
         }
-        document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
-    }
 
-    async function copyExif(srcBlob, destBlob) {
-        const exif = await getApp1Segment(srcBlob);
-        return new Blob([destBlob.slice(0, 2), exif, destBlob.slice(2)], {
-            type: "image/jpeg",
-        });
-    };
+        function removeFile(e) {
+            const canvas = e.target.closest('div').previousElementSibling;
+            const filename = canvas.getAttribute('data-filename');
+            for (let i = 0; i < dataTransfer.items.length; i++) {
+                if (dataTransfer.items[i].getAsFile().name == filename) {
+                    dataTransfer.items.remove(i);
+                    break;
+                }
+            }
+            document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
+            inputElement.files = dataTransfer.files;
+            canvas.closest('div').remove();
+        }
 
-    const SOI = 0xffd8,
-        SOS = 0xffda,
-        APP1 = 0xffe1,
-        EXIF = 0x45786966,
-        LITTLE_ENDIAN = 0x4949,
-        BIG_ENDIAN = 0x4d4d,
-        TAG_ID_ORIENTATION = 0x0112,
-        TAG_TYPE_SHORT = 3,
-        getApp1Segment = (blob) =>
+        function addPreview(img, fileName) {
+            if ('content' in document.createElement('template')) {
+                // Si le navigateur supporte les templates
+                const template = document.getElementById('previewElement');
+                const clone = template.content.cloneNode(true);
+                const canvas = clone.querySelector('canvas');
+                canvas.width = PREVIEW_SIZE;
+                canvas.height = PREVIEW_SIZE;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
+                clone.querySelector('span').innerHTML = fileName;
+                canvas.setAttribute('data-filename', fileName);
+                clone.querySelector('button').addEventListener('click', removeFile);
+                previewContainer.appendChild(clone);
+            } else {
+                // Si le navigateur ne supporte pas les templates
+                const previewElem = document.createElement("p");
+                previewElem.innerHTML = fileName;
+                previewContainer.appendChild(previewElem);
+            }
+            document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
+        }
+
+        async function copyExif(srcBlob, destBlob) {
+            const exif = await getApp1Segment(srcBlob);
+            return new Blob([destBlob.slice(0, 2), exif, destBlob.slice(2)], {
+                type: "image/jpeg",
+            });
+        };
+
+        const SOI = 0xffd8,
+            SOS = 0xffda,
+            APP1 = 0xffe1,
+            EXIF = 0x45786966,
+            LITTLE_ENDIAN = 0x4949,
+            BIG_ENDIAN = 0x4d4d,
+            TAG_ID_ORIENTATION = 0x0112,
+            TAG_TYPE_SHORT = 3,
+            getApp1Segment = (blob) =>
             new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.addEventListener("load", ({ target: { result: buffer } }) => {
+                reader.addEventListener("load", ({
+                    target: {
+                        result: buffer
+                    }
+                }) => {
                     const view = new DataView(buffer);
                     let offset = 0;
                     if (view.getUint16(offset) !== SOI) return reject("not a valid JPEG");
@@ -353,9 +367,7 @@
                                 2 +
                                 view.getUint16(tiffOffset + ifd0Offset, littleEndian) * 12;
                             for (
-                                let i = tiffOffset + ifd0Offset + 2;
-                                i < endOfTagsOffset;
-                                i += 12
+                                let i = tiffOffset + ifd0Offset + 2; i < endOfTagsOffset; i += 12
                             ) {
                                 const tagId = view.getUint16(i);
                                 if (tagId == TAG_ID_ORIENTATION) {
@@ -377,5 +389,5 @@
                 });
                 reader.readAsArrayBuffer(blob);
             });
-</script>
+    </script>
 @endpush

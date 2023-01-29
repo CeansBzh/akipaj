@@ -11,50 +11,79 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
-    Route::get('inscription', [RegisteredUserController::class, 'create'])
-                ->name('register');
+Route::middleware("guest")->group(function () {
+    Route::get("inscription", [
+        RegisteredUserController::class,
+        "create",
+    ])->name("register");
 
-    Route::post('inscription', [RegisteredUserController::class, 'store']);
+    Route::post("inscription", [RegisteredUserController::class, "store"]);
 
-    Route::get('connexion', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
+    Route::get("connexion", [
+        AuthenticatedSessionController::class,
+        "create",
+    ])->name("login");
 
-    Route::post('connexion', [AuthenticatedSessionController::class, 'store']);
+    Route::post("connexion", [AuthenticatedSessionController::class, "store"]);
 
-    Route::get('mot-de-passe-oublie', [PasswordResetLinkController::class, 'create'])
-                ->name('password.request');
+    Route::get("mot-de-passe-oublie", [
+        PasswordResetLinkController::class,
+        "create",
+    ])->name("password.request");
 
-    Route::post('mot-de-passe-oublie', [PasswordResetLinkController::class, 'store'])
-                ->name('password.email');
+    Route::post("mot-de-passe-oublie", [
+        PasswordResetLinkController::class,
+        "store",
+    ])->name("password.email");
 
-    Route::get('reinitialisation-mot-de-passe/{token}', [NewPasswordController::class, 'create'])
-                ->name('password.reset');
+    Route::get("reinitialisation-mot-de-passe/{token}", [
+        NewPasswordController::class,
+        "create",
+    ])->name("password.reset");
 
-    Route::post('reinitialisation-mot-de-passe', [NewPasswordController::class, 'store'])
-                ->name('password.store');
+    Route::post("reinitialisation-mot-de-passe", [
+        NewPasswordController::class,
+        "store",
+    ])->name("password.store");
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('verification-email', [EmailVerificationPromptController::class, '__invoke'])
-                ->name('verification.notice');
+Route::middleware("auth")->group(function () {
+    Route::get("verification-email", [
+        EmailVerificationPromptController::class,
+        "__invoke",
+    ])->name("verification.notice");
 
-    Route::get('verification-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-                ->middleware(['signed', 'throttle:6,1'])
-                ->name('verification.verify');
+    Route::get("verification-email/{id}/{hash}", [
+        VerifyEmailController::class,
+        "__invoke",
+    ])
+        ->middleware(["signed", "throttle:6,1"])
+        ->name("verification.verify");
 
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware('throttle:6,1')
-                ->name('verification.send');
+    Route::post("email/verification-notification", [
+        EmailVerificationNotificationController::class,
+        "store",
+    ])
+        ->middleware("throttle:6,1")
+        ->name("verification.send");
 
-    Route::get('confirmation-mot-de-passe', [ConfirmablePasswordController::class, 'show'])
-                ->name('password.confirm');
+    Route::get("confirmation-mot-de-passe", [
+        ConfirmablePasswordController::class,
+        "show",
+    ])->name("password.confirm");
 
-    Route::post('confirmation-mot-de-passe', [ConfirmablePasswordController::class, 'store']);
+    Route::post("confirmation-mot-de-passe", [
+        ConfirmablePasswordController::class,
+        "store",
+    ]);
 
-    Route::put('changement-mot-de-passe', [PasswordController::class, 'update'])
-                ->name('password.update');
+    Route::put("changement-mot-de-passe", [
+        PasswordController::class,
+        "update",
+    ])->name("password.update");
 
-    Route::post('deconnexion', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+    Route::post("deconnexion", [
+        AuthenticatedSessionController::class,
+        "destroy",
+    ])->name("logout");
 });

@@ -1,6 +1,6 @@
-<div class="fixed top-0 left-0 right-0 bg-gray-100 z-50 shadow-lg">
+<div class="fixed top-0 left-0 right-0 z-50 bg-gray-100 shadow-lg">
     <div class="flex justify-between p-6">
-        <div class="flex space-x-8 items-center text-gray-700">
+        <div class="flex items-center space-x-8 text-gray-700">
             <svg x-on:click="stopSelection" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="h-6 cursor-pointer">

@@ -1,22 +1,22 @@
 <x-member-layout>
-    @if($trip->imagePath)
-    <div class="absolute w-screen">
-        <div class="absolute inset-0 from-transparent via-gray-100/10 to-gray-100 sm:bg-gradient-to-b">
+    @if ($trip->imagePath)
+        <div class="absolute w-screen">
+            <div class="absolute inset-0 from-transparent via-gray-100/10 to-gray-100 sm:bg-gradient-to-b">
+            </div>
+            <img src="{{ $trip->imagePath }}" alt="Image de couverture de l'événement {{ $trip->name }}"
+                class="min-h-[150px] w-full object-cover">
         </div>
-        <img src="{{ $trip->imagePath }}" alt="Image de couverture de l'événement {{ $trip->name }}"
-            class="w-full object-cover min-h-[150px]">
-    </div>
     @endif
 
     <div class="relative w-full py-12">
-        <div class="max-w-5xl mx-auto flex flex-col space-y-4 sm:px-6 lg:px-8">
-            <div class="mb-5 p-3 rounded-lg bg-gray-100/80 w-fit mx-auto sm:p-5 sm:mt-12 sm:mb-16">
-                <h1 class="text-2xl font-bold text-gray-900 text-center sm:text-5xl lg:text-6xl">
+        <div class="mx-auto flex max-w-5xl flex-col space-y-4 sm:px-6 lg:px-8">
+            <div class="mx-auto mb-5 w-fit rounded-lg bg-gray-100/80 p-3 sm:mt-12 sm:mb-16 sm:p-5">
+                <h1 class="text-center text-2xl font-bold text-gray-900 sm:text-5xl lg:text-6xl">
                     {{ $trip->title }}
                 </h1>
             </div>
 
-            <div class="relative p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="relative bg-white p-4 shadow sm:rounded-lg sm:p-8">
                 @include('trip.partials.trip-details')
 
                 <div class="absolute top-4 right-3">
@@ -35,9 +35,9 @@
 
                         <x-slot name="content">
                             @can('update', $trip)
-                            <x-dropdown-link :href="route('trips.edit', $trip)">
-                                Modifier la sortie
-                            </x-dropdown-link>
+                                <x-dropdown-link :href="route('trips.edit', $trip)">
+                                    Modifier la sortie
+                                </x-dropdown-link>
                             @endcan
                             <x-dropdown-link href="#">
                                 Partager
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                 @include('trip.partials.trip-related-albums')
             </div>
 

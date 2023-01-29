@@ -32,9 +32,9 @@
         {{ $slot }}
     </div>
 
-    <footer id="wave-svg" class="h-64 p-4 text-white flex items-end justify-between md:p-6">
+    <footer id="wave-svg" class="flex h-64 items-end justify-between p-4 text-white md:p-6">
         <span class="text-sm sm:text-center">{{ date('Y') }} Akipaj</span>
-        <ul class="flex flex-wrap items-center mt-3 sm:mt-0">
+        <ul class="mt-3 flex flex-wrap items-center sm:mt-0">
             <li>
                 <a href="{{ route('legal') }}" class="mr-4 text-sm hover:underline md:mr-6">Mentions
                     légales</a>

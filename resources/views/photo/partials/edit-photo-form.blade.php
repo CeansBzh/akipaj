@@ -1,4 +1,4 @@
-<section class="max-w-2xl mx-auto">
+<section class="mx-auto max-w-2xl">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Modifier les détails</h2>
         <p class="mt-1 text-sm text-gray-600">Partagez aux autres membres une anecdote croustillante sur cette photo !
@@ -20,7 +20,8 @@
 
         <div>
             <x-input-label for="legend_input" value="Légende (facultatif)" />
-            <x-textarea-input id="legend_input" name="legend" class="mt-1 block w-full" maxlength="2048" rows="5">
+            <x-textarea-input id="legend_input" name="legend" class="mt-1 block w-full" maxlength="2048"
+                rows="5">
                 {{ $photo->legend }}
             </x-textarea-input>
             <x-input-error class="mt-2" :messages="$errors->updatePhoto->get('legend')" />
