@@ -8,29 +8,31 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v2.1.0
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@master
-      with:
-        server: ${{ secrets.ftp_server }}
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_password }}
-        server-dir: www/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/database/**
-          **/storage/**
-          **/tests/**
-          .editorconfig
-          .env.example
-          .gitattributes
-          .gitignore
-          README.md
-          artisan
-          docker-compose.yml
-          phpunit.xml
-          postcss.config.js
-          tailwind.config.js
-          vite.config.js
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2.1.0
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@master
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          server-dir: www/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/database/**
+            **/storage/**
+            **/tests/**
+            .editorconfig
+            .env.example
+            .gitattributes
+            .gitignore
+            .prettierignore
+            .prettierrc.json
+            README.md
+            artisan
+            docker-compose.yml
+            phpunit.xml
+            postcss.config.js
+            tailwind.config.js
+            vite.config.js
