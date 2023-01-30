@@ -138,9 +138,11 @@ class ArticleController extends Controller
         $article->title = $request->title;
         $article->body_md = $request->body;
         $article->summary = $request->summary;
-        $article->online = $request->online;
-        // Set published_at to now if previously offline and now online
-        $article->published_at = !isset($article->published_at) && $request->online ? now() : $article->published_at;
+        // Change published_at if online status changed
+        if ($article->online != $request->online) {
+            $article->published_at = $request->online ? now() : null;
+            $article->online = $request->online;
+        }
         // Generate slug for urls
         $article->slug = Str::slug($article->title, '-');
         // Generate html from markdown

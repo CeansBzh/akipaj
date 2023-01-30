@@ -15,12 +15,14 @@
                             {{ $article->online ? '' : ' (brouillon)' }}
                         </a>
                     </h2>
-                    <p class="mt-3 text-center text-sm leading-5 text-gray-700">Publié le
-                        {{ \Carbon\Carbon::parse($article->published_at)->format('d/m/Y') }}
-                        {{ $article->updated_at > $article->published_at->addDay()
-                            ? ' - Mis à jour le ' . $article->updated_at->format('d/m/Y')
-                            : '' }}
-                    </p>
+                    @if ($article->published_at)
+                        <p class="mt-3 text-center text-sm leading-5 text-gray-700">Publié le
+                            {{ \Carbon\Carbon::parse($article->published_at)->format('d/m/Y') }}
+                            {{ $article->updated_at > $article->published_at->addDay()
+                                ? ' - Mis à jour le ' . $article->updated_at->format('d/m/Y')
+                                : '' }}
+                        </p>
+                    @endif
                     <div class="p-4">
                         <p class="mb-1">{{ $article->summary }}</p>
                         <div class="text-right">
