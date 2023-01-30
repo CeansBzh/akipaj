@@ -43,8 +43,12 @@
                         <div class="mb-4 w-full rounded-lg border border-gray-200 bg-gray-50">
                             <div class="rounded-t-lg bg-white py-2 px-4">
                                 <label for="newContent" class="sr-only">Votre commentaire</label>
-                                <textarea id="newContent" wire:model.defer="newContent" x-data="{ resize: () => { $el.style.height = '5px';
-                                        $el.style.height = $el.scrollHeight + 'px' } }" x-init="resize()"
+                                <textarea id="newContent" wire:model.defer="newContent" x-data="{
+                                    resize: () => {
+                                        $el.style.height = '5px';
+                                        $el.style.height = $el.scrollHeight + 'px'
+                                    }
+                                }" x-init="resize()"
                                     @input="resize()" name="newContent"
                                     class="min-h-[36px] w-full border-0 bg-white px-0 text-sm text-gray-900 focus:ring-0"
                                     placeholder="Écrivez votre commentaire..." required></textarea>
@@ -73,8 +77,12 @@
         <div class="mb-4 w-full rounded-lg border border-gray-200 bg-gray-50">
             <div class="rounded-t-lg bg-white py-2 px-4">
                 <label for="content" class="sr-only">Votre commentaire</label>
-                <textarea id="content" wire:model.defer="content" x-data="{ resize: () => { $el.style.height = '5px';
-                        $el.style.height = $el.scrollHeight + 'px' } }" x-init="resize()" @input="resize()"
+                <textarea id="content" wire:model.defer="content" x-data="{
+                    resize: () => {
+                        $el.style.height = '5px';
+                        $el.style.height = $el.scrollHeight + 'px'
+                    }
+                }" x-init="resize()" @input="resize()"
                     name="content" rows="1" class="min-h-[36px] w-full border-0 bg-white px-0 text-sm text-gray-900 focus:ring-0"
                     placeholder="Écrivez votre commentaire..." required></textarea>
             </div>

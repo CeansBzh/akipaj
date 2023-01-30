@@ -6,7 +6,7 @@
                 return $val->date->format('Y');
             },
         ]);
-
+    
     $users = \App\Models\User::all();
 @endphp
 

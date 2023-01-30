@@ -132,7 +132,7 @@
                                 }));
                                 event.target.files = dataTransfer.files
                                 this.fileToDataUrl(event, src => document.getElementById('image_display').src =
-                                src);
+                                    src);
                                 this.imageRemoved = false;
                                 return;
                             },
