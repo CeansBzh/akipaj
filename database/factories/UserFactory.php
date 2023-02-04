@@ -2,8 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Provider\Address;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -32,7 +33,7 @@ class UserFactory extends Factory
             'mobile_phone' => $hasFilledProfile ? fake()->phoneNumber() : null,
             'home_phone' => $hasFilledProfile ? fake()->phoneNumber() : null,
             'address' => $hasFilledProfile ? fake()->address() : null,
-            'postal_code' => $hasFilledProfile ? fake()->postcode() : null,
+            'postal_code' => $hasFilledProfile ? Address::postcode() : null,
             'city' => $hasFilledProfile ? fake()->city() : null,
             'clothing_size' => $hasFilledProfile ? fake()->randomElement(['XS', 'S', 'M', 'L', 'XL', 'XXL']) : null,
             'remember_token' => Str::random(10),
