@@ -17,6 +17,7 @@
         "symfony/sendinblue-mailer": "^6.2"
     },
     "require-dev": {
+        "davidbadura/faker-markdown-generator": "^1.1",
         "fakerphp/faker": "^1.9.1",
         "laravel-lang/attributes": "^2.0",
         "laravel-lang/lang": "^12.1",
