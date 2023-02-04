@@ -17,7 +17,7 @@ class PaymentFactory extends Factory
      */
     public function definition()
     {
-        $user = User::inRandomOrder()->first();
+        $user = User::inRandomOrder()->first() ?? User::factory();
         return [
             'user_id' => $user->id,
             'amount' => fake()->randomFloat(2, 0, 1000),
