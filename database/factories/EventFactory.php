@@ -22,10 +22,34 @@ class EventFactory extends Factory
         return [
             'name' => fake()->sentence,
             'description' => fake()->paragraph,
-            'location' => fake()->boolean(50) ? fake()->address : null,
+            'location' => fake()->address,
             'start_time' => $start,
             'end_time' => fake()->boolean(20) ? $start : $end,
             'imagePath' => fake()->boolean(50) ? fake()->imageUrl(640, 480, 'cats') : null,
         ];
+    }
+
+    /**
+     * Indicate that the model's location should be left empty.
+     *
+     * @return static
+     */
+    public function noLocation()
+    {
+        return $this->state(fn (array $attributes) => [
+            'location' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the model's imagePath should be left empty.
+     *
+     * @return static
+     */
+    public function noImage()
+    {
+        return $this->state(fn (array $attributes) => [
+            'imagePath' => null,
+        ]);
     }
 }

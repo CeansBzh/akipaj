@@ -18,8 +18,6 @@ class CommentFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::inRandomOrder()->first()->id,
-            'commentable_id' => \App\Models\Photo::inRandomOrder()->first()->id,
-            'commentable_type' => \App\Models\Photo::class,
             'content' => fake()->paragraph,
         ];
     }

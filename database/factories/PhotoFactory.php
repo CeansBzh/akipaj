@@ -50,5 +50,7 @@ class PhotoFactory extends Factory
             'longitude' => $hasCoordinates ? fake()->longitude : null,
             'taken_at' => fake()->boolean(50) ? fake()->dateTime : null,
         ];
+
+        // TODO thread subscriptions
     }
 }

@@ -15,16 +15,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            ArticleSeeder::class,
-            RoleSeeder::class,
-            UserSeeder::class,
-            PaymentSeeder::class,
-            PhotoSeeder::class,
-            AlbumSeeder::class,
-            EventSeeder::class,
-            TripSeeder::class,
-            CommentSeeder::class,
-        ]);
+        if (app()->environment('local')) {
+            $this->call(LocalEnvironmentSeeder::class);
+        }
+
+        // $this->call([
+        //     ArticleSeeder::class,
+        //     RoleSeeder::class,
+        //     UserSeeder::class,
+        //     PaymentSeeder::class,
+        //     PhotoSeeder::class,
+        //     AlbumSeeder::class,
+        //     EventSeeder::class,
+        //     TripSeeder::class,
+        //     CommentSeeder::class,
+        // ]);
     }
 }
