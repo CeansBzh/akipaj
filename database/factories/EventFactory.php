@@ -16,7 +16,7 @@ class EventFactory extends Factory
      */
     public function definition()
     {
-        $start = fake()->dateTimeBetween('-1 year', '+1 year');
+        $start = fake()->dateTimeBetween('today', '+2 year');
         $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
 
         return [
@@ -50,6 +50,22 @@ class EventFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'imagePath' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the model's start_time should be in the past.
+     *
+     * @return static
+     */
+    public function passed()
+    {
+        $start = fake()->dateTimeBetween('-2 year', '-1 month');
+        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
+
+        return $this->state(fn (array $attributes) => [
+            'start_time' => $start,
+            'end_time' => $end,
         ]);
     }
 }

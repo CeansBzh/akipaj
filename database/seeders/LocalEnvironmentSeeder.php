@@ -44,6 +44,7 @@ class LocalEnvironmentSeeder extends Seeder
 
         // Events
         $this->createEvents();
+        $this->createPassedEvents();
         $this->createEventsWithoutImageOrLocation();
     }
 
@@ -166,6 +167,13 @@ class LocalEnvironmentSeeder extends Seeder
     protected function createEvents(): self
     {
         Event::factory(2)->create();
+
+        return $this;
+    }
+
+    protected function createPassedEvents(): self
+    {
+        Event::factory(2)->passed()->create();
 
         return $this;
     }
