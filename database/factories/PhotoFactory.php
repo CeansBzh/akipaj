@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -12,6 +13,22 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PhotoFactory extends Factory
 {
+
+    /**
+     * Configure the model factory.
+     *
+     * @return $this
+     */
+    public function configure()
+    {
+        return $this->afterCreating(function (Photo $photo) {
+            // Création d'un abonnement aux commentaires de la photo pour l'utilisateur qui l'a créée
+            $photo->subscriptions()->create([
+                'user_id' => $photo->user_id,
+            ]);
+        });
+    }
+
     /**
      * Define the model's default state.
      *
@@ -50,7 +67,5 @@ class PhotoFactory extends Factory
             'longitude' => $hasCoordinates ? fake()->longitude : null,
             'taken_at' => fake()->boolean(50) ? fake()->dateTime : null,
         ];
-
-        // TODO thread subscriptions
     }
 }
