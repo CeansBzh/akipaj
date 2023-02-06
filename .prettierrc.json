@@ -8,5 +8,9 @@
             }
         }
     ],
-    "sortTailwindcssClasses": true
+    "sortTailwindcssClasses": true,
+    "singleQuote": true,
+    "phpVersion": "8.1",
+    "braceStyle": "per-cs",
+    "printWidth": 120
 }
