@@ -68,4 +68,16 @@ class UserFactory extends Factory
             'clothing_size' => null,
         ]);
     }
+
+    /**
+     * Indicate that the model's profile picture should be left empty.
+     *
+     * @return static
+     */
+    public function noProfilePicture()
+    {
+        return $this->state(fn (array $attributes) => [
+            'profile_picture_path' => null,
+        ]);
+    }
 }

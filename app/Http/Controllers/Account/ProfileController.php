@@ -34,7 +34,7 @@ class ProfileController extends Controller
     public function show(Request $request, User $user = null)
     {
         // If the user is logged in and not a guest, or if the requested user is the current user, show the profile
-        if ($user && (!$request->user()->hasRole('guest') || $user == $request->user())) {
+        if ($user && ($user == $request->user() || !$request->user()->hasRole('guest'))) {
             $user->loadCount('photos');
             return view('profile.show', compact('user'));
         }

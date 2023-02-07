@@ -87,6 +87,12 @@ class LocalEnvironmentSeeder extends Seeder
         ]);
         $member->attachRole('member');
 
+        $member = User::factory()->noProfilePicture()->create([
+            'name' => 'Lucien',
+            'email' => 'lucien@test.com',
+        ]);
+        $member->attachRole('guest');
+
         return $this;
     }
 
