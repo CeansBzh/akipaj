@@ -42,7 +42,7 @@
                             <h2 class="mb-4 text-2xl font-bold text-gray-800">Paiement envoyé avec succès</h2>
                             <div class="mb-8 text-gray-600">
                                 Vous pouvez retrouvez l'historique de vos paiements sur votre <a
-                                    href="{{ route('profile.index') }}"
+                                    href="{{ route('profile.show', Auth::user()->name) }}"
                                     class="text-blue-500 hover:text-blue-700">profil</a>.
                             </div>
                         </div>

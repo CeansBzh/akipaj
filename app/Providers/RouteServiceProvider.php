@@ -28,6 +28,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
+        require base_path('routes/bindings.php');
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

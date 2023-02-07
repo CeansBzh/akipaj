@@ -1,29 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Account;
 
-use App\Models\User;
-use App\Models\Payment;
 use App\Enum\AlertLevelEnum;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 
-class ProfileController extends Controller
+class SettingsController extends Controller
 {
-
-    /**
-     * Display the user profile.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
+    public function __construct()
     {
-        return view('profile.index')->with([
-            'latestPayments' => Payment::where('user_id', Auth::user()->id)->latest()->take(5)->get(),
-        ]);
+        $this->middleware(Authenticate::class);
     }
 
     /**
@@ -34,7 +26,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request)
     {
-        return view('profile.edit', [
+        return view('settings.edit', [
             'user' => $request->user(),
         ]);
     }
@@ -50,7 +42,10 @@ class ProfileController extends Controller
         $request->user()->fill($request->validated());
 
         // Suppression de la photo de profil actuelle si demandée, ou si une autre photo de profil a été uploadée
-        if (($request->remove_image || $request->hasFile('profile_picture')) && $request->user()->profile_picture_path) {
+        if (
+            ($request->remove_image || $request->hasFile('profile_picture')) &&
+            $request->user()->profile_picture_path
+        ) {
             $filePath = 'public/profile_pictures/' . basename($request->user()->profile_picture_path);
             if (Storage::delete($filePath)) {
                 $request->user()->profile_picture_path = null;
@@ -71,7 +66,7 @@ class ProfileController extends Controller
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Modifications sauvegardées.');
 
-        return Redirect::route('profile.edit')->with('status', $request->status());
+        return Redirect::route('settings.edit')->with('status', $request->status());
     }
 
     /**

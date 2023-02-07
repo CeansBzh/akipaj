@@ -48,7 +48,7 @@
                         <div class="mx-auto w-fit md:m-0">
                             <x-application-logo class="mx-auto mb-3 h-20 md:mx-0 md:h-28" />
                             <p class="text-shadow mb-3 text-2xl text-white shadow-gray-800">Bienvenue à bord !</p>
-                            <a href="{{ route('profile.index') }}"
+                            <a href="{{ route('profile.show', Auth::user()->name) }}"
                                 class="text-shadow-outline inline-flex items-center rounded border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-sm shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-25">
                                 Mon profil
                             </a>

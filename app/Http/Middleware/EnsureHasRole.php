@@ -24,7 +24,7 @@ class EnsureHasRole
 
         // If the user doesn't have any of the required roles AND is a guest, then redirect to the profile page to show a message about account validation by the admin
         if ($request->user()->hasRole('guest'))
-            return redirect()->route('profile.index');
+            return redirect()->route('profile.show', $request->user()->name);
 
         abort(403);
     }

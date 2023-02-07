@@ -45,10 +45,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * The attributes that should be cast.
@@ -113,6 +110,11 @@ class User extends Authenticatable
     public function threadSubscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    public static function findByUsername(string $username): self
+    {
+        return static::where('name', $username)->firstOrFail();
     }
 
     /**

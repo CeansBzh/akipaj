@@ -33,7 +33,7 @@
                     </div>
                     <ul class="py-1" aria-labelledby="user-menu-button">
                         <li>
-                            <x-dropdown-link :href="route('profile.index')" :aria-current="request()->routeIs('profile.index') ? 'page' : ''">
+                            <x-dropdown-link :href="route('profile.show', Auth::user()->name)" :aria-current="request()->routeIs('profile.show') ? 'page' : ''">
                                 {{ __('Mon profil') }}
                             </x-dropdown-link>
                         </li>
@@ -133,6 +133,11 @@
                             </div>
                         </div>
                     </div>
+                </li>
+                <li>
+                    <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
+                        Matelots
+                    </x-nav-link>
                 </li>
             </ul>
         </div>

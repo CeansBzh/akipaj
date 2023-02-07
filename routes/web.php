@@ -8,7 +8,9 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Account\ProfileController;
+use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 /*
@@ -22,6 +24,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 |
 */
 
+// Home
 Route::get("/", function () {
     if (auth()->check()) {
         return view("homepage.index");
@@ -29,24 +32,18 @@ Route::get("/", function () {
         return view("index");
     }
 });
-Route::get("/mentions-legales", function () {
-    return view("legal");
-})->name("legal");
+Route::view('mentions-legales', 'legal')->name('legal');
+
+// Users
+Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
+Route::get('profil/{username?}', [ProfileController::class, 'show'])->name('profile.show');
+
+// Settings
+Route::get('compte', [SettingsController::class, 'edit'])->name('settings.edit');
+Route::put('compte', [SettingsController::class, 'update'])->name('settings.update');
+Route::delete('compte', [SettingsController::class, 'destroy'])->name('settings.destroy');
 
 Route::middleware("auth")->group(function () {
-    Route::get("/profil", [ProfileController::class, "index"])->name(
-        "profile.index"
-    );
-    Route::get("/profil/modifier", [ProfileController::class, "edit"])->name(
-        "profile.edit"
-    );
-    Route::patch("/profil", [ProfileController::class, "update"])->name(
-        "profile.update"
-    );
-    Route::delete("/profil", [ProfileController::class, "destroy"])->name(
-        "profile.destroy"
-    );
-
     Route::get("/virements", [PaymentController::class, "index"])->name(
         "payments.index"
     );
