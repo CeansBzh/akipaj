@@ -36,7 +36,17 @@ class ProfileController extends Controller
         // If the user is logged in and not a guest, or if the requested user is the current user, show the profile
         if ($user && ($user == $request->user() || !$request->user()->hasRole('guest'))) {
             $user->loadCount('photos');
-            return view('profile.show', compact('user'));
+            $tripsByYear = $user
+                ->trips()
+                ->orderBy('start_date')
+                ->get()
+                ->groupBy([
+                    function ($val) {
+                        return $val->start_date->format('Y');
+                    },
+                ]);
+
+            return view('profile.show', compact('user', 'tripsByYear'));
         }
 
         if ($request->user()) {

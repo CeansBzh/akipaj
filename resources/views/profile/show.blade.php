@@ -61,52 +61,95 @@
                     </div>
                 </div>
             </div>
-            <div class="rounded-lg bg-yellow-200">
-                Infos
+            <div class="rounded-lg bg-white p-5">
+                <h2 class="mb-5 text-center text-xl">Sorties</h2>
+                <ul class="mx-auto max-w-xl">
+                    @forelse ($tripsByYear->keys() as $year)
+                        <li class="mb-2">
+                            <p class="my-2 text-center font-bold">{{ $year }}</p>
+                            <ul>
+                                @foreach ($tripsByYear[$year] as $trip)
+                                    <li>
+                                        <a href="{{ route('trips.show', $trip) }}">{{ $trip->title }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @empty
+                        <li class="text-center">
+                            <p class="text-gray-500">Aucune sortie</p>
+                        </li>
+                    @endforelse
+                </ul>
             </div>
-            <div class="rounded-lg bg-green-200">
-                Sorties
-            </div>
-            <div class="rounded-lg bg-red-200">
-                Photos
-            </div>
-            @if (isset($latestPayments))
-                <hr>
+            <div class="rounded-lg bg-white p-5">
+                <h2 class="mb-5 text-center text-xl">Photos</h2>
+                <ul class="mx-auto max-w-xl columns-4 gap-2">
+                    @forelse ($user->photos as $index => $photo)
+                        @if ($index > 2 && $user->photos_count > 3)
+                            <li class="relative mb-2 overflow-hidden rounded-lg">
+                                <img class="aspect-square h-32 w-full object-cover" src="{{ $photo->thumb_path }}"
+                                    alt="Photo">
+                                <div class="absolute inset-0 flex h-full items-center bg-gray-600/75 px-2 py-1">
+                                    <p class="w-full text-center text-2xl text-white">
+                                        +{{ $user->photos_count - 3 }}</p>
+                                </div>
+                            </li>
+                        @break
 
-                <div class="rounded-lg bg-white p-4 shadow sm:p-8">
-                    <div class="mx-auto max-w-3xl">
-                        @include('profile.partials.latest-payments')
-                    </div>
-                </div>
-            @endif
+                    @else
+                        <li class="mb-2">
+                            <a href="{{ route('photos.show', $photo) }}">
+                                <img class="aspect-square h-32 w-full rounded-lg object-cover"
+                                    src="{{ $photo->thumb_path }}" alt="Photo">
+                            </a>
+                        </li>
+                    @endif
+                @empty
+                    <li class="text-center">
+                        <p class="text-gray-500">Aucune photo</p>
+                    </li>
+                @endforelse
+            </ul>
         </div>
-        {{-- Sidebar --}}
-        <div class="space-y-4 sm:w-1/4">
-            @if (auth()->user()->hasRole('guest'))
-                <div x-data="{ animation: false }" class="px-1">
-                    <div role="alert"
-                        class="relative mb-6 scale-90 rounded-lg bg-yellow-200 p-4 text-sm text-yellow-800 transition duration-500 ease-in-out md:scale-100"
-                        :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring ring-yellow-300' : ''"
-                        x-init="$nextTick(() => {
-                            animation = true;
-                            setTimeout(() => { animation = false; }, 500);
-                        })">
-                        Votre inscription n'a pas encore été validée par un administrateur. Vous ne pouvez pas encore
-                        accéder à toutes les pages du site.
-                    </div>
-                </div>
-            @endif
+        @if (isset($latestPayments))
+            <hr>
 
             <div class="rounded-lg bg-white p-4 shadow sm:p-8">
                 <div class="mx-auto max-w-3xl">
-                    <section class="flex flex-col items-center justify-between space-y-4 xs:space-y-0 lg:flex-row">
-                        <h2 class="text-lg font-medium text-gray-900">Gestion du compte</h2>
-                        <x-primary-link class="" href="{{ route('settings.edit') }}">
-                            Paramètres
-                        </x-primary-link>
-                    </section>
+                    @include('profile.partials.latest-payments')
                 </div>
+            </div>
+        @endif
+    </div>
+    {{-- Sidebar --}}
+    <div class="space-y-4 sm:w-1/4">
+        @if (auth()->user()->hasRole('guest'))
+            <div x-data="{ animation: false }" class="px-1">
+                <div role="alert"
+                    class="relative mb-6 scale-90 rounded-lg bg-yellow-200 p-4 text-sm text-yellow-800 transition duration-500 ease-in-out md:scale-100"
+                    :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring ring-yellow-300' : ''"
+                    x-init="$nextTick(() => {
+                        animation = true;
+                        setTimeout(() => { animation = false; }, 500);
+                    })">
+                    Votre inscription n'a pas encore été validée par un administrateur. Vous ne pouvez pas
+                    encore
+                    accéder à toutes les pages du site.
+                </div>
+            </div>
+        @endif
+
+        <div class="rounded-lg bg-white p-4 shadow sm:p-8">
+            <div class="mx-auto max-w-3xl">
+                <section class="flex flex-col items-center justify-between space-y-4 xs:space-y-0 lg:flex-row">
+                    <h2 class="text-lg font-medium text-gray-900">Gestion du compte</h2>
+                    <x-primary-link class="" href="{{ route('settings.edit') }}">
+                        Paramètres
+                    </x-primary-link>
+                </section>
             </div>
         </div>
     </div>
+</div>
 </x-member-layout>
