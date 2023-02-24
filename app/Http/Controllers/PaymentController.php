@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Stripe\StripeClient;
-use App\Enum\AlertLevelEnum;
+use App\Enums\AlertLevelEnum;
 use Stripe\Exception\CardException;
 use App\Http\Requests\PaymentRequest;
 use App\Models\Payment;

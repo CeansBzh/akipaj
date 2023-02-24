@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trip;
-use App\Enum\AlertLevelEnum;
+use App\Enums\AlertLevelEnum;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Trip\StoreTripRequest;
 use App\Http\Requests\Trip\UpdateTripRequest;

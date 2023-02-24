@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Support\Str;
-use App\Enum\AlertLevelEnum;
+use App\Enums\AlertLevelEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 

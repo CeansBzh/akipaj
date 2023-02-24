@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Enum\AlertLevelEnum;
+use App\Enums\AlertLevelEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 

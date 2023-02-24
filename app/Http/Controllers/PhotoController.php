@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Photo;
-use App\Enum\AlertLevelEnum;
+use App\Enums\AlertLevelEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;

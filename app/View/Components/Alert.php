@@ -2,7 +2,7 @@
 
 namespace App\View\Components;
 
-use App\Enum\AlertLevelEnum;
+use App\Enums\AlertLevelEnum;
 use Illuminate\View\Component;
 
 class Alert extends Component
@@ -23,7 +23,7 @@ class Alert extends Component
 
     /**
      * Unique identifier for the alert.
-     * 
+     *
      * @var string
      */
     public $id;
