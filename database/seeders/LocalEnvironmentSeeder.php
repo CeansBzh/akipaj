@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserLevelEnum;
 use App\Models\Role;
 use App\Models\Trip;
 use App\Models\User;
@@ -21,7 +22,6 @@ class LocalEnvironmentSeeder extends Seeder
      */
     public function run()
     {
-        $this->createDefaultRoles();
         $this->createDefaultUser();
 
         // Users
@@ -48,71 +48,74 @@ class LocalEnvironmentSeeder extends Seeder
         $this->createEventsWithoutImageOrLocation();
     }
 
-    protected function createDefaultRoles(): self
-    {
-        $roles = [
-            'admin' => [
-                'display_name' => 'Administrateur',
-                'description' => 'Le rôle le plus élevé, est autorisé à tout faire.',
-            ],
-            'member' => [
-                'display_name' => 'Membre',
-                'description' => 'Est autorisé à consulter le site de manière complète (photos, commentaires, etc.).',
-            ],
-            'guest' => [
-                'display_name' => 'Visiteur',
-                'description' => 'Utilisateur n\'ayant pas un compte validé par l\'administrateur. Ne peut pas utiliser le site comme un membre.',
-            ],
-        ];
-
-        foreach ($roles as $name => $attributes) {
-            Role::create(array_merge($attributes, ['name' => $name]));
-        }
-
-        return $this;
-    }
-
     protected function createDefaultUser(): self
     {
-        $admin = User::factory()->create([
-            'name' => 'Michel',
-            'email' => 'michel@test.com',
-        ]);
-        $admin->attachRole('admin');
-        $admin->attachRole('member');
+        // The admin user
+        User::factory()
+            ->withLevel(UserLevelEnum::ADMINISTRATOR)
+            ->create([
+                'name' => 'Michel',
+                'email' => 'michel@test.com',
+            ]);
 
-        $member = User::factory()->create([
-            'name' => 'Henry',
-            'email' => 'henry@test.com',
-        ]);
-        $member->attachRole('member');
+        // A member user
+        User::factory()
+            ->withLevel(UserLevelEnum::MEMBER)
+            ->create([
+                'name' => 'Henry',
+                'email' => 'henry@test.com',
+            ]);
 
-        $member = User::factory()->noProfilePicture()->create([
-            'name' => 'Lucien',
-            'email' => 'lucien@test.com',
-        ]);
-        $member->attachRole('guest');
+        // A guest user
+        User::factory()
+            ->noProfilePicture()
+            ->create([
+                'name' => 'Lucien',
+                'email' => 'lucien@test.com',
+            ]);
 
         return $this;
     }
 
     protected function createUsers(): self
     {
-        User::factory(10)->create();
+        User::factory(8)
+            ->withLevel(UserLevelEnum::MEMBER)
+            ->create();
+
+        User::factory(2)
+            ->withLevel(UserLevelEnum::GUEST)
+            ->create();
 
         return $this;
     }
 
     protected function createUsersWithEmailUnverified(): self
     {
-        User::factory(5)->unverified()->create();
+        User::factory(2)
+            ->withLevel(UserLevelEnum::MEMBER)
+            ->unverified()
+            ->create();
+
+        User::factory(3)
+            ->withLevel(UserLevelEnum::GUEST)
+            ->unverified()
+            ->create();
 
         return $this;
     }
 
     protected function createUsersWithoutPersonalInformation(): self
     {
-        User::factory(5)->noPersonalInformation()->create();
+        User::factory(3)
+            ->withLevel(UserLevelEnum::MEMBER)
+            ->noPersonalInformation()
+            ->create();
+
+        User::factory(2)
+            ->withLevel(UserLevelEnum::GUEST)
+            ->noPersonalInformation()
+            ->create();
 
         return $this;
     }
@@ -126,7 +129,9 @@ class LocalEnvironmentSeeder extends Seeder
 
     protected function createDraftArticles(): self
     {
-        Article::factory(2)->draft()->create();
+        Article::factory(2)
+            ->draft()
+            ->create();
 
         return $this;
     }
@@ -140,18 +145,18 @@ class LocalEnvironmentSeeder extends Seeder
 
     protected function createAlbumsWithPhotos(): self
     {
-        Album::factory(4)->withPhotos(4)->create();
+        Album::factory(4)
+            ->withPhotos(4)
+            ->create();
 
         return $this;
     }
 
     protected function createAlbumsWithCommentedPhotos(): self
     {
-        Album::factory(2)->has(
-            Photo::factory(3)->has(
-                Comment::factory()->count(3)
-            )
-        )->create();
+        Album::factory(2)
+            ->has(Photo::factory(3)->has(Comment::factory()->count(3)))
+            ->create();
 
         return $this;
     }
@@ -165,7 +170,11 @@ class LocalEnvironmentSeeder extends Seeder
 
     protected function createTripsWithAllRelations(): self
     {
-        Trip::factory(5)->withBoats(2)->withAlbums(2)->withUsers(3)->create();
+        Trip::factory(5)
+            ->withBoats(2)
+            ->withAlbums(2)
+            ->withUsers(3)
+            ->create();
 
         return $this;
     }
@@ -179,14 +188,19 @@ class LocalEnvironmentSeeder extends Seeder
 
     protected function createPassedEvents(): self
     {
-        Event::factory(2)->passed()->create();
+        Event::factory(2)
+            ->passed()
+            ->create();
 
         return $this;
     }
 
     protected function createEventsWithoutImageOrLocation(): self
     {
-        Event::factory(2)->noImage()->noLocation()->create();
+        Event::factory(2)
+            ->noImage()
+            ->noLocation()
+            ->create();
 
         return $this;
     }

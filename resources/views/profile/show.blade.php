@@ -124,7 +124,7 @@
     </div>
     {{-- Sidebar --}}
     <div class="space-y-4 sm:w-1/4">
-        @if (auth()->user()->hasRole('guest'))
+        @if (auth()->user()->isGuest())
             <div x-data="{ animation: false }" class="px-1">
                 <div role="alert"
                     class="relative mb-6 scale-90 rounded-lg bg-yellow-200 p-4 text-sm text-yellow-800 transition duration-500 ease-in-out md:scale-100"

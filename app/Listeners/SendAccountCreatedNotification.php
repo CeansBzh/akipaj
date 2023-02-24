@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Models\Role;
+use App\Enums\UserLevelEnum;
 use App\Models\User;
 use App\Notifications\AccountCreated;
 use App\Notifications\RegistrationSuccessful;
@@ -21,9 +21,7 @@ class SendAccountCreatedNotification
     public function handle(Registered $event)
     {
         // Information des admins de la création d'un compte
-        $adminRole = Role::where('name', 'admin')->first();
-        $admins = $adminRole->users;
-        $admins->each(function (User $user) use ($event) {
+        User::where('level', UserLevelEnum::ADMINISTRATOR)->each(function (User $user) use ($event) {
             $user->notify(new AccountCreated($event->user));
         });
         // Information de l'utilisateur de la création de son compte

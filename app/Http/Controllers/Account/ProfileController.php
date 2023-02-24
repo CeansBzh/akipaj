@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Account;
 
+use App\Enums\UserLevelEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,7 +12,7 @@ class ProfileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware([Authenticate::class, 'role:member'], ['only' => ['index']]);
+        $this->middleware([Authenticate::class, 'level:' . UserLevelEnum::MEMBER->value], ['only' => ['index']]);
     }
 
     /**
@@ -21,7 +22,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        return view('profile.index')->with('users', User::whereRelation('roles', 'name', 'member')->get());
+        return view('profile.index')->with('users', User::where('level', '>=', UserLevelEnum::MEMBER)->get());
     }
 
     /**
@@ -34,7 +35,7 @@ class ProfileController extends Controller
     public function show(Request $request, User $user = null)
     {
         // If the user is logged in and not a guest, or if the requested user is the current user, show the profile
-        if ($user && ($user == $request->user() || !$request->user()->hasRole('guest'))) {
+        if ($user && ($user == $request->user() || !$request->user()->isGuest())) {
             $user->loadCount('photos');
             $tripsByYear = $user
                 ->trips()

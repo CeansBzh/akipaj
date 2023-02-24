@@ -18,7 +18,7 @@ class ArticlePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -31,7 +31,7 @@ class ArticlePolicy
     public function view(User $user, Article $article)
     {
         // Show the article if it's online or, if the article is offline, if the user is authorized to update it.
-        return $user->hasRole('member') && ($article->online || $this->update(auth()->user(), $article));
+        return $user->isMemberOrAbove() && ($article->online || $this->update(auth()->user(), $article));
     }
 
     /**
@@ -42,7 +42,7 @@ class ArticlePolicy
      */
     public function create(User $user)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**
@@ -54,7 +54,7 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**
@@ -66,7 +66,7 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**

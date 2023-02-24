@@ -20,7 +20,9 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()
+                ->unique()
+                ->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'profile_picture_path' => fake()->imageUrl(),
@@ -44,9 +46,11 @@ class UserFactory extends Factory
      */
     public function unverified()
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'email_verified_at' => null,
+            ],
+        );
     }
 
     /**
@@ -56,17 +60,19 @@ class UserFactory extends Factory
      */
     public function noPersonalInformation()
     {
-        return $this->state(fn (array $attributes) => [
-            'firstname' => null,
-            'lastname' => null,
-            'birthdate' => null,
-            'mobile_phone' => null,
-            'home_phone' => null,
-            'address' => null,
-            'postal_code' => null,
-            'city' => null,
-            'clothing_size' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'firstname' => null,
+                'lastname' => null,
+                'birthdate' => null,
+                'mobile_phone' => null,
+                'home_phone' => null,
+                'address' => null,
+                'postal_code' => null,
+                'city' => null,
+                'clothing_size' => null,
+            ],
+        );
     }
 
     /**
@@ -76,8 +82,25 @@ class UserFactory extends Factory
      */
     public function noProfilePicture()
     {
-        return $this->state(fn (array $attributes) => [
-            'profile_picture_path' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'profile_picture_path' => null,
+            ],
+        );
+    }
+
+    /**
+     * Indicate that the model's level should be set to the given value.
+     *
+     * @param int $level The level to set. Use the UserLevelEnum.
+     * @return static
+     */
+    public function withLevel($level)
+    {
+        return $this->state(
+            fn(array $attributes) => [
+                'level' => $level,
+            ],
+        );
     }
 }

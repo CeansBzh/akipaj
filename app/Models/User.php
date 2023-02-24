@@ -3,7 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Role;
+
+use App\Enums\UserLevelEnum;
 use App\Models\Trip;
 use App\Models\Photo;
 use App\Models\Payment;
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'level',
         'firstname',
         'lastname',
         'birthdate',
@@ -55,6 +57,7 @@ class User extends Authenticatable
     protected $casts = [
         'birthdate' => 'datetime:Y-m-d',
         'email_verified_at' => 'datetime',
+        'level' => UserLevelEnum::class,
     ];
 
     /**
@@ -89,14 +92,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the roles for the user.
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
-    /**
      * Get the trips for the user.
      */
     public function trips()
@@ -117,32 +112,19 @@ class User extends Authenticatable
         return static::where('name', $username)->firstOrFail();
     }
 
-    /**
-     * Attach a role to the user.
-     *
-     * @param  \App\Models\Role|string  $role
-     */
-    public function attachRole($role)
+    public function isGuest(): bool
     {
-        if (is_string($role)) {
-            $role = Role::whereName($role)->firstOrFail();
-        }
-
-        $this->roles()->attach($role);
+        return $this->level->value === UserLevelEnum::GUEST->value;
     }
 
-    /**
-     * Check if user has a role.
-     *
-     * @param  \App\Models\Role|string  $role
-     */
-    public function hasRole($role)
+    public function isMemberOrAbove(): bool
     {
-        if (is_string($role)) {
-            return $this->roles->contains('name', $role);
-        }
+        return $this->level->value >= UserLevelEnum::MEMBER->value;
+    }
 
-        return !!$role->intersect($this->roles)->count();
+    public function isAdmin(): bool
+    {
+        return $this->level->value === UserLevelEnum::ADMINISTRATOR->value;
     }
 
     /**

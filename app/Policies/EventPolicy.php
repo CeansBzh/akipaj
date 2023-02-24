@@ -18,7 +18,7 @@ class EventPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -30,7 +30,7 @@ class EventPolicy
      */
     public function view(User $user, Event $event)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -41,7 +41,7 @@ class EventPolicy
      */
     public function create(User $user)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**
@@ -53,7 +53,7 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**
@@ -65,7 +65,7 @@ class EventPolicy
      */
     public function delete(User $user, Event $event)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**

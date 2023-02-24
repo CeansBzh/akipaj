@@ -37,7 +37,7 @@
                                 {{ __('Mon profil') }}
                             </x-dropdown-link>
                         </li>
-                        @if (Auth::user()->hasRole('admin'))
+                        @if (Auth::user()->isAdmin())
                             <li>
                                 <x-dropdown-link :href="route('admin.index')">
                                     {{ __('Panneau admin') }}

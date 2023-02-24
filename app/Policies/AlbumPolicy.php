@@ -18,7 +18,7 @@ class AlbumPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -30,7 +30,7 @@ class AlbumPolicy
      */
     public function view(User $user, Album $album)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -41,7 +41,7 @@ class AlbumPolicy
      */
     public function create(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -53,7 +53,7 @@ class AlbumPolicy
      */
     public function update(User $user, Album $album)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -65,7 +65,7 @@ class AlbumPolicy
      */
     public function delete(User $user, Album $album)
     {
-        return $user->hasRole('member') && !$album->photos()->where('user_id', '!=', auth()->id())->exists();
+        return $user->isMemberOrAbove() && !$album->photos()->where('user_id', '!=', auth()->id())->exists();
     }
 
     /**

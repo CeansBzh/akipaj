@@ -19,7 +19,7 @@ class PhotoPolicy
      */
     public function before(User $user, $ability)
     {
-        return $user->hasRole('admin') ? true : null;
+        return $user->isAdmin() ? true : null;
     }
 
     /**
@@ -30,7 +30,7 @@ class PhotoPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -42,7 +42,7 @@ class PhotoPolicy
      */
     public function view(User $user, Photo $photo)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -53,7 +53,7 @@ class PhotoPolicy
      */
     public function create(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**

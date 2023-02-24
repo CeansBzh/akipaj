@@ -18,7 +18,7 @@ class TripPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -30,7 +30,7 @@ class TripPolicy
      */
     public function view(User $user, Trip $trip)
     {
-        return $user->hasRole('member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -41,7 +41,7 @@ class TripPolicy
      */
     public function create(User $user)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**
@@ -53,7 +53,7 @@ class TripPolicy
      */
     public function update(User $user, Trip $trip)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**
@@ -65,7 +65,7 @@ class TripPolicy
      */
     public function delete(User $user, Trip $trip)
     {
-        return $user->hasRole('admin');
+        return $user->isAdmin();
     }
 
     /**

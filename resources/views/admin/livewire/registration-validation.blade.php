@@ -22,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (\App\Models\User::whereRelation('roles', 'name', 'guest')->get() as $user)
+                @foreach (\App\Models\User::where('level', \App\Enums\UserLevelEnum::class::GUEST)->get() as $user)
                     <tr>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="ml-3">

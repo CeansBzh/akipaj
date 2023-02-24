@@ -19,8 +19,8 @@ class CommentPolicy
      */
     public function before(User $user, $ability)
     {
-        // On autorise l'admin à tout faire sur tous les commentaitaires sauf modifier ceux des autres utilisateurs
-        return $user->roles->contains('name', 'admin') && $ability != 'update' ? true : null;
+        // On autorise l'admin à tout faire sur tous les commentaires sauf modifier ceux des autres utilisateurs
+        return $user->isAdmin() && $ability != 'update' ? true : null;
     }
 
     /**
@@ -31,7 +31,7 @@ class CommentPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->roles->contains('name', 'member');
+        return $user->isMemberOrAbove();
     }
 
     /**
@@ -54,7 +54,7 @@ class CommentPolicy
      */
     public function create(User $user)
     {
-        return $user->roles->contains('name', 'member');
+        return $user->isMemberOrAbove();
     }
 
     /**

@@ -7,11 +7,11 @@
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
             </select>
-            <select wire:model="role"
+            <select wire:model="level"
                 class="block h-full w-full appearance-none rounded-r border-t border-r border-b border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-l focus:border-r focus:border-gray-500 focus:bg-white focus:outline-none sm:rounded-r-none sm:border-r-0">
-                <option value="0">Tous</option>
-                @foreach (\App\Models\Role::all() as $role)
-                    <option value="{{ $role->id }}">{{ ucfirst($role->display_name) }}</option>
+                <option value="-1">Tous</option>
+                @foreach (\App\Enums\UserLevelEnum::class::cases() as $level)
+                    <option value="{{ $level->value }}">{{ $level->label() }}</option>
                 @endforeach
             </select>
         </div>
@@ -78,7 +78,7 @@
                                     <span aria-hidden
                                         class="absolute inset-0 rounded-full bg-green-200 opacity-50"></span>
                                     <span
-                                        class="relative">{{ $user->roles()->count() > 0 ? $user->roles()->first()->display_name : 'Aucun rôle' }}</span>
+                                        class="relative">{{ $user->level->label() ?? 'Rôle inconnu' }}</span>
                                 </span>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">

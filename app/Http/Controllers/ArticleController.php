@@ -29,7 +29,7 @@ class ArticleController extends Controller
     {
         return view('article.index', [
             'articles' => Article::orderByDesc('published_at')
-                ->when(!auth()->user()->hasRole('admin'), function ($query) {
+                ->when(!auth()->user()->isAdmin(), function ($query) {
                     return $query->where('online', true);
                 })
                 ->paginate(),

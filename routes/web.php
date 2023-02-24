@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserLevelEnum;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\TripController;
@@ -54,7 +55,7 @@ Route::middleware("auth")->group(function () {
         "payments.store"
     );
 
-    Route::middleware("role:member")->group(function () {
+    Route::middleware("level:" . UserLevelEnum::MEMBER->value)->group(function () {
         Route::resources([
             "articles" => ArticleController::class,
             "albums" => AlbumController::class,
@@ -68,7 +69,7 @@ Route::middleware("auth")->group(function () {
         ])->name("photos.create");
     });
 
-    Route::middleware("role:admin")
+    Route::middleware("level:" . UserLevelEnum::ADMINISTRATOR->value)
         ->prefix("admin")
         ->group(function () {
             Route::get("/", function () {
