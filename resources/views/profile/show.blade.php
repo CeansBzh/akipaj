@@ -62,6 +62,18 @@
                 </div>
             </div>
             <div class="rounded-lg bg-white p-5">
+                <h2 class="mb-5 text-md">Laisser un message</h2>
+                <div class="py-6">
+                    <div class="mx-auto max-w-7xl flex-col space-y-4 sm:px-6 lg:px-8">
+
+                        <div class="mx-auto max-w-3xl bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                            <livewire:comments :comments="$user->comments" :commentable="$user" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="rounded-lg bg-white p-5">
                 <h2 class="mb-5 text-center text-xl">Sorties</h2>
                 <ul class="mx-auto max-w-xl">
                     @forelse ($tripsByYear->keys() as $year)
@@ -106,7 +118,7 @@
                         </li>
                     @endif
                 @empty
-                    <li class="text-center">
+                    <li class="text-center col-span-4">
                         <p class="text-gray-500">Aucune photo</p>
                     </li>
                 @endforelse

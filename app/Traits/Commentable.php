@@ -6,18 +6,22 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\ThreadSubscription;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 trait Commentable
 {
     use CascadeSoftDeletes;
 
     /**
-     * The relationships that should be deleted on soft delete.
-     *
-     * @var array<int, string>
+     * Initialize the commentable trait for a model. Add the cascadeDeletes property if it doesn't already exist.
      */
-    protected $cascadeDeletes = ['comments'];
+    public function initializeCommentable()
+    {
+        if (property_exists($this, 'cascadeDeletes')) {
+            $this->cascadeDeletes = array_unique(array_merge($this->cascadeDeletes, ['comments']));
+        } else {
+            $this->cascadeDeletes = ['comments'];
+        }
+    }
 
     /**
      * Get all of the model's comments.
@@ -40,7 +44,9 @@ trait Commentable
      */
     public function subscribers()
     {
-        return $this->belongsToMany(User::class, ThreadSubscription::class, 'subscribeable_id', 'user_id')
-            ->where('subscribeable_type', static::class);
+        return $this->belongsToMany(User::class, ThreadSubscription::class, 'subscribeable_id', 'user_id')->where(
+            'subscribeable_type',
+            static::class,
+        );
     }
 }

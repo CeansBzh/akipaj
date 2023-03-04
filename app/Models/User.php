@@ -19,7 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes, Prunable, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes, Prunable, Notifiable, Commentable;
 
     /**
      * The attributes that are mass assignable.
@@ -76,9 +76,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the comments for the user.
+     * Get the comments sent by the user.
      */
-    public function comments()
+    public function commentsSent()
     {
         return $this->hasMany(Comment::class);
     }
@@ -158,7 +158,7 @@ class User extends Authenticatable
     protected function pruning()
     {
         $this->photos()->forceDelete();
-        $this->comments()->forceDelete();
+        $this->commentsSent()->forceDelete();
         $this->roles()->detach();
     }
 }
