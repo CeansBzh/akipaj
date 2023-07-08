@@ -29,6 +29,8 @@ class Photo extends Model
         'taken_at' => 'datetime',
     ];
 
+    protected $cascadeDeletes = [];
+
     /**
      * Get the album that owns the photo.
      */
