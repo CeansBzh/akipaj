@@ -16,9 +16,6 @@
             <div class="absolute inset-0 bg-gradient-to-tr from-neutral-800/75">
             </div>
             <div class="relative top-0 flex h-full w-full max-w-sm flex-col justify-end p-5">
-                <p class="mb-2 font-semibold text-sky-300">
-                    {{ $articles->first()->published_at->translatedFormat('d M Y') }}
-                </p>
                 <a href="{{ route('articles.show', $articles->first()) }}">
                     <h5 class="mb-4 text-2xl font-bold tracking-tight text-white">{{ $articles->first()->title }}</h5>
                 </a>
@@ -51,23 +48,25 @@
                         src="{{ $article->imagePath }}" alt="Image de couverture de l'article {{ $article->title }}" />
                 </a>
             </div>
-            <div class="p-5">
-                <p class="mb-2 font-semibold text-sky-600">{{ $article->published_at->translatedFormat('d M Y') }}</p>
+            <div class="p-5 flex flex-col h-full">
                 <a href="{{ route('articles.show', $article) }}">
                     <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900">{{ $article->title }}</h5>
                 </a>
-                <p class="mb-3 font-normal text-gray-700">{{ $article->summary }}</p>
-                <a href="{{ route('articles.show', $article) }}"
-                    class="group/read-more inline-flex items-center text-center text-sm font-medium text-gray-600">
-                    Lire la suite
-                    <svg aria-hidden="true"
-                        class="ml-2 h-4 w-4 transform transition duration-300 ease-in-out group-hover/read-more:translate-x-1"
-                        fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                </a>
+                <p class="mb-3 font-normal text-gray-700 flex-grow">{{ $article->summary }}</p>
+                <div class="flex justify-between items-center">
+                    <p class="mb-2 font-semibold text-sky-600">{{ $article->published_at->translatedFormat('d M Y') }}</p>
+                    <a href="{{ route('articles.show', $article) }}"
+                        class="group/read-more inline-flex items-center text-center text-sm font-medium text-gray-600">
+                        Lire la suite
+                        <svg aria-hidden="true"
+                            class="ml-2 h-4 w-4 transform transition duration-300 ease-in-out group-hover/read-more:translate-x-1"
+                            fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     @endforeach
