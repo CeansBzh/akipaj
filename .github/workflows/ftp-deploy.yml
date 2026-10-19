@@ -34,6 +34,7 @@ jobs:
             docker-compose.yml
             phpunit.xml
             phpstan.neon
+            pint.json
             postcss.config.js
             tailwind.config.js
             vite.config.js

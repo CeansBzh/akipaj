@@ -1,6 +1,5 @@
 {
     "plugins": [
-        "@prettier/plugin-php",
         "@shufo/prettier-plugin-blade",
         "prettier-plugin-tailwindcss"
     ],
@@ -17,7 +16,5 @@
     ],
     "sortTailwindcssClasses": true,
     "singleQuote": true,
-    "phpVersion": "8.1",
-    "braceStyle": "per-cs",
     "printWidth": 120
 }

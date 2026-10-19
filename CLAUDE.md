@@ -29,6 +29,7 @@ ne pas l'éditer à la main, et ne jamais écrire le nom de sa balise ailleurs d
 vendor/bin/sail up -d                 # PHP 8.4, MySQL 8.4, Redis, Mailpit (:8025), phpMyAdmin (:8081)
 vendor/bin/sail composer test         # PHPUnit (ajouter -- --filter=PhotoTest pour cibler)
 vendor/bin/sail composer analyse      # PHPStan + Larastan
+vendor/bin/sail composer lint         # Pint (style du code PHP, preset laravel)
 vendor/bin/sail npm run build         # assets Vite (requis pour naviguer, pas pour les tests)
 vendor/bin/sail artisan migrate:fresh --seed   # données de démo (APP_ENV=local)
 ```
@@ -39,11 +40,12 @@ vendor/bin/sail artisan migrate:fresh --seed   # données de démo (APP_ENV=loca
 - Comptes de démo (mot de passe `password`) : `michel@test.com` (admin), `henry@test.com` (membre),
   `lucien@test.com` (GUEST).
 - `composer test:coverage` : couverture (pcov est inclus dans l'image Sail).
-- `npm run prettier` : formatage (Prettier pour PHP, Blade, JS). **Pint n'est pas utilisé.**
-- CI : `.github/workflows/tests.yml` (PHP 8.3 et 8.4 : build Vite, tests, PHPStan). Déploiement : `ftp-deploy.yml`
+- Formatage : **Pint** pour tout le PHP (`pint.json`, preset `laravel` ; vérifié en CI avec `composer lint:test`).
+  Prettier (`npm run prettier`) ne sert plus qu'au Blade, au JS et au CSS ; il n'a plus de plugin PHP.
+- CI : `.github/workflows/tests.yml` (PHP 8.3 et 8.4 : Pint, build Vite, tests, PHPStan). Déploiement : `ftp-deploy.yml`
   sur push de la branche `production`.
 
-**Avant de rendre la main : `composer test` et `composer analyse` doivent passer.** Ne pas ajouter de baseline
+**Avant de rendre la main : `composer lint`, `composer test` et `composer analyse` doivent passer.** Ne pas ajouter de baseline
 PHPStan pour masquer une erreur : corriger le code, ou documenter l'exception (`@phpstan-ignore <identifiant>` + raison).
 
 ## Carte du code
@@ -297,6 +299,13 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Livewire allows you to build dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
+
+=== pint/core rules ===
+
+# Laravel Pint Code Formatter
+
+- If you have modified any PHP files, you must run `vendor/bin/sail bin pint --dirty --format agent` before finalizing changes to ensure your code matches the project's expected style.
+- Do not run `vendor/bin/sail bin pint --test --format agent`, simply run `vendor/bin/sail bin pint --format agent` to fix any formatting issues.
 
 === phpunit/core rules ===
 

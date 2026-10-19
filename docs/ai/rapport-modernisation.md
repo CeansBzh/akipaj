@@ -31,9 +31,11 @@ Commits de la branche `modernisation`, du plus ancien au plus récent :
 | Met à jour l'outillage front (Vite 8, Prettier 3) | `package.json` en ESM, dépendances inutilisées retirées |
 | Passe l'environnement Docker sur Laravel Sail (PHP 8.4) | `compose.yaml`, Mailpit, phpMyAdmin conservé |
 | Corrige le script « Ajouter à l'agenda » des événements | Bug n° 21 |
-| Installe Laravel Boost 2 | Guidelines, skills, serveur MCP ; Pint retiré |
+| Installe Laravel Boost 2 | Guidelines, skills, serveur MCP |
 | Force DOMPurify 3 sous Toast UI Editor | Override npm (alerte XSS) |
-| (suivant) CI et documentation | CI PHP 8.3/8.4 + build Vite, documentation à jour |
+| Met à jour la CI et la documentation | CI PHP 8.3/8.4 + build Vite, documentation à jour |
+| Adopte Laravel Pint pour le PHP | Pint remplace Prettier pour le PHP (Prettier garde Blade, JS, CSS), vérifié en CI |
+| Formate le code PHP avec Pint | Reformatage mécanique (preset `laravel`), sans changement de comportement |
 
 ### 2.1 Décisions de la montée de version
 
@@ -56,8 +58,10 @@ Commits de la branche `modernisation`, du plus ancien au plus récent :
   et `sendinblue` utilisent le même transport, et `BREVO_API_KEY` se rabat sur `SENDINBLUE_API_KEY` : le `.env`
   de production existant reste valable.
 - **Retirés** : `laravel/breeze` (installateur, déjà publié), `spatie/laravel-ignition` (remplacé par la page
-  d'erreur de Laravel), `laravel/pint` (le projet formate avec Prettier ; la guideline Boost « lancer Pint »
-  entrait en conflit), et côté npm : `alpinejs`, `@alpinejs/collapse`, `flowbite`, `axios`, `lodash`.
+  d'erreur de Laravel), et côté npm : `alpinejs`, `@alpinejs/collapse`, `flowbite`, `axios`, `lodash`.
+- **Formatage** : Laravel **Pint** (preset `laravel`) pour tout le PHP, conformément aux guidelines Boost ;
+  Prettier ne formate plus que Blade, JS et CSS (`@prettier/plugin-php` retiré). Le passage de Prettier à
+  Pint a fait l'objet d'un commit de reformatage isolé.
 - **Tailwind 3.4 conservé** : la v4 renomme des classes et change des valeurs par défaut ; elle demande une
   revue visuelle page par page.
 - **Boost** : guidelines dans `CLAUDE.md`, skills dans `.claude/skills` (le skill Laravel Cloud est désactivé

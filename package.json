@@ -5,11 +5,10 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "prettier": "prettier --write **/*.blade.php **/*.js **/*.css **/*.json **/*.php",
+        "prettier": "prettier --write \"resources/**/*.{blade.php,js,css}\" \"*.{js,json}\"",
         "deploy": "npm run build && git stash && git checkout production && git merge master && git push && git checkout master && git stash pop"
     },
     "devDependencies": {
-        "@prettier/plugin-php": "^0.25.0",
         "@shufo/prettier-plugin-blade": "^1.16.2",
         "@tailwindcss/forms": "^0.5.11",
         "autoprefixer": "^10.4.21",
