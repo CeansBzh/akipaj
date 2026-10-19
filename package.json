@@ -25,5 +25,8 @@
         "add-to-calendar-button": "^1.18.8",
         "flickity": "^3.0.0",
         "imagesloaded": "^5.0.0"
+    },
+    "overrides": {
+        "dompurify": "^3.4.17"
     }
 }
