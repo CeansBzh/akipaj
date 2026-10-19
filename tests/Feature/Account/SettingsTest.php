@@ -126,12 +126,12 @@ class SettingsTest extends TestCase
 
         $path = $user->refresh()->profile_picture_path;
         $this->assertNotNull($path);
-        Storage::disk('local')->assertExists('public/profile_pictures/' . basename($path));
+        Storage::disk('local')->assertExists('public/profile_pictures/'.basename($path));
 
         $this->patch(route('settings.update'), ['remove_image' => 'true'])->assertSessionHasNoErrors();
 
         $this->assertNull($user->refresh()->profile_picture_path);
-        Storage::disk('local')->assertMissing('public/profile_pictures/' . basename($path));
+        Storage::disk('local')->assertMissing('public/profile_pictures/'.basename($path));
     }
 
     public function test_profile_picture_must_be_small(): void

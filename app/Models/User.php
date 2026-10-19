@@ -2,27 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Enums\UserLevelEnum;
+use App\Traits\Commentable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Enums\UserLevelEnum;
-use App\Models\Trip;
-use App\Models\Photo;
-use App\Models\Payment;
-use App\Traits\Commentable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Dyrynda\Database\Support\CascadeSoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes, Prunable, Notifiable, Commentable;
+    use CascadeSoftDeletes, Commentable, HasApiTokens, HasFactory, Notifiable, Notifiable, Prunable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -143,7 +141,7 @@ class User extends Authenticatable
     /**
      * Check if user is subscribed to the specified commentable.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $commentable  A model using the Commentable trait
+     * @param  Model  $commentable  A model using the Commentable trait
      */
     public function isSubscribedTo(Model $commentable): bool
     {
@@ -153,13 +151,14 @@ class User extends Authenticatable
                     && $subscription->subscribeable_type === $commentable->getMorphClass(),
             );
         }
+
         return false;
     }
 
     /**
      * Get the users deleted for more than 30 days.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function prunable()
     {

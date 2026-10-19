@@ -7,15 +7,16 @@ use App\Enums\UserLevelEnum;
 use App\Http\Middleware\EnsureHasLevel;
 use App\Models\Photo;
 use App\View\Components\Alert;
+use Database\Seeders\LocalEnvironmentSeeder;
 use Illuminate\Console\Scheduling\Event as ScheduledEvent;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
-use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoApiTransport;
 use Stripe\StripeClient;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoApiTransport;
 use Tests\TestCase;
 
 class InfrastructureTest extends TestCase
@@ -37,7 +38,7 @@ class InfrastructureTest extends TestCase
         $request = Request::create('/');
         $request->setUserResolver(fn () => $user);
 
-        $response = (new EnsureHasLevel())->handle($request, fn () => new Response('ok'), 42);
+        $response = (new EnsureHasLevel)->handle($request, fn () => new Response('ok'), 42);
 
         $this->assertSame('ok', $response->getContent());
     }
@@ -49,7 +50,7 @@ class InfrastructureTest extends TestCase
         $request->setUserResolver(fn () => $user);
 
         $this->expectException(HttpException::class);
-        (new EnsureHasLevel())->handle($request, fn () => new Response('ok'), UserLevelEnum::ADMINISTRATOR->value);
+        (new EnsureHasLevel)->handle($request, fn () => new Response('ok'), UserLevelEnum::ADMINISTRATOR->value);
     }
 
     public function test_alert_component_maps_its_level_to_a_color(): void
@@ -59,14 +60,14 @@ class InfrastructureTest extends TestCase
         $this->assertSame('red', $alert->color);
         $this->assertSame('Oups', $alert->message);
         $this->assertNotEmpty($alert->id);
-        $this->assertSame('blue', (new Alert())->color);
+        $this->assertSame('blue', (new Alert)->color);
     }
 
     public function test_flashed_alerts_are_displayed(): void
     {
         $this->actingAsMember();
 
-        $this->withSession(['alert-' . AlertLevelEnum::SUCCESS->name => 'Tout est OK'])
+        $this->withSession(['alert-'.AlertLevelEnum::SUCCESS->name => 'Tout est OK'])
             ->get(route('photos.index'))
             ->assertSee('Tout est OK');
     }
@@ -91,13 +92,13 @@ class InfrastructureTest extends TestCase
     {
         $photo = Photo::factory()->create();
 
-        $this->assertFileExists($this->publicPath . '/storage/photos/' . basename($photo->path));
-        $this->assertFileExists($this->publicPath . '/storage/photos/thumbs/' . basename($photo->thumb_path));
+        $this->assertFileExists($this->publicPath.'/storage/photos/'.basename($photo->path));
+        $this->assertFileExists($this->publicPath.'/storage/photos/thumbs/'.basename($photo->thumb_path));
     }
 
     public function test_local_environment_seeder_runs(): void
     {
-        $this->seed(\Database\Seeders\LocalEnvironmentSeeder::class);
+        $this->seed(LocalEnvironmentSeeder::class);
 
         $this->assertDatabaseHas('users', ['email' => 'michel@test.com', 'level' => UserLevelEnum::ADMINISTRATOR->value]);
         $this->assertDatabaseHas('users', ['email' => 'henry@test.com', 'level' => UserLevelEnum::MEMBER->value]);

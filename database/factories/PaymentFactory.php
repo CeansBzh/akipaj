@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Payment>
+ * @extends Factory<Payment>
  */
 class PaymentFactory extends Factory
 {
@@ -18,10 +19,11 @@ class PaymentFactory extends Factory
     public function definition()
     {
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
+
         return [
             'user_id' => $user->id,
             'amount' => fake()->randomFloat(2, 0, 1000),
-            'description' => fake()->boolean(50) ? fake()->sentence : 'Virement de ' . $user->name . ' à ' . config('app.name'),
+            'description' => fake()->boolean(50) ? fake()->sentence : 'Virement de '.$user->name.' à '.config('app.name'),
         ];
     }
 }

@@ -89,7 +89,7 @@ class TripTest extends TestCase
         $this->assertTrue($trip->users->contains($sailor));
         $this->assertTrue($trip->albums->contains($album));
         $this->assertEqualsCanonicalizing(['Pen Duick', 'Belle Poule'], $trip->boats->pluck('name')->all());
-        Storage::disk('local')->assertExists('public/trips/' . basename((string) $trip->imagePath));
+        Storage::disk('local')->assertExists('public/trips/'.basename((string) $trip->imagePath));
     }
 
     public function test_trip_creation_is_validated(): void
@@ -141,7 +141,7 @@ class TripTest extends TestCase
         ]))->assertSessionHasNoErrors();
 
         Storage::disk('local')->assertMissing('public/trips/old.jpg');
-        Storage::disk('local')->assertExists('public/trips/' . basename((string) $trip->refresh()->imagePath));
+        Storage::disk('local')->assertExists('public/trips/'.basename((string) $trip->refresh()->imagePath));
     }
 
     public function test_updating_a_trip_without_boats_removes_them(): void

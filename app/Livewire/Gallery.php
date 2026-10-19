@@ -2,9 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Models\User;
 use App\Models\Album;
 use App\Models\Photo;
+use App\Models\User;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,15 +15,23 @@ class Gallery extends Component
 
     // List of photo ids to display. If null display all photos.
     public $photoIds;
+
     public $paginate = 100;
+
     // Values to filter with
     public $searchTerm;
+
     public $sortTerm;
+
     public $usersFilter;
+
     public $albumsFilter;
+
     // Available values to filter with
     public $users;
+
     public $albums;
+
     // With count term to add to the query
     public $withCount = null;
 
@@ -58,7 +66,7 @@ class Gallery extends Component
                 ->groupBy([
                     function ($val) {
                         return $val->date->format('Y');
-                    }
+                    },
                 ])->toBase();
         }
     }
@@ -75,6 +83,7 @@ class Gallery extends Component
         switch ($value) {
             case 'most_comments':
                 $this->withCount = 'comments';
+
                 return ['comments_count', 'desc'];
             case 'taken_asc':
                 return ['taken_at', 'asc'];
@@ -107,12 +116,13 @@ class Gallery extends Component
     public function render()
     {
         $sortBy = $this->getSorting($this->sortTerm);
+
         return view('livewire.gallery', [
             'photos' => Photo::when($this->photoIds, function ($query) {
                 return $query->whereIn('id', $this->photoIds);
             })
                 ->when($this->searchTerm, function ($query) {
-                    return $query->whereAny(['title', 'legend'], 'like', '%' . $this->searchTerm . '%');
+                    return $query->whereAny(['title', 'legend'], 'like', '%'.$this->searchTerm.'%');
                 })
                 ->when($this->usersFilter, function ($query) {
                     return $query->whereIn('user_id', $this->usersFilter);
@@ -124,7 +134,7 @@ class Gallery extends Component
                     return $query->withCount($this->withCount);
                 })
                 ->orderBy($sortBy[0], $sortBy[1])
-                ->paginate($this->paginate)
+                ->paginate($this->paginate),
         ]);
     }
 }

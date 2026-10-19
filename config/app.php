@@ -12,7 +12,7 @@ return [
     |
     */
 
-    "name" => env("APP_NAME", "Laravel"),
+    'name' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ return [
     |
     */
 
-    "env" => env("APP_ENV", "production"),
+    'env' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ return [
     |
     */
 
-    "debug" => (bool) env("APP_DEBUG", false),
+    'debug' => (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,9 +51,9 @@ return [
     |
     */
 
-    "url" => env("APP_URL", "http://localhost"),
+    'url' => env('APP_URL', 'http://localhost'),
 
-    "asset_url" => env("ASSET_URL"),
+    'asset_url' => env('ASSET_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,7 +66,7 @@ return [
     |
     */
 
-    "timezone" => env("APP_TIMEZONE", "UTC"),
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +79,7 @@ return [
     |
     */
 
-    "locale" => "fr",
+    'locale' => 'fr',
 
     /*
     |--------------------------------------------------------------------------
@@ -92,7 +92,7 @@ return [
     |
     */
 
-    "fallback_locale" => "en",
+    'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -105,7 +105,7 @@ return [
     |
     */
 
-    "faker_locale" => "fr_FR",
+    'faker_locale' => 'fr_FR',
 
     /*
     |--------------------------------------------------------------------------
@@ -118,9 +118,9 @@ return [
     |
     */
 
-    "key" => env("APP_KEY"),
+    'key' => env('APP_KEY'),
 
-    "cipher" => "AES-256-CBC",
+    'cipher' => 'AES-256-CBC',
 
     /*
     |--------------------------------------------------------------------------
@@ -135,8 +135,8 @@ return [
     |
     */
 
-    "maintenance" => [
-        "driver" => "file",
+    'maintenance' => [
+        'driver' => 'file',
         // 'store'  => 'redis',
     ],
 

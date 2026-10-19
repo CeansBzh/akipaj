@@ -55,8 +55,8 @@ class PhotoTest extends TestCase
         $this->assertSame([450, 337], [$landscape->thumb_width, $landscape->thumb_height]);
         $this->assertSame([225, 450], [$photos[1]->thumb_width, $photos[1]->thumb_height]);
 
-        $this->assertFileExists($this->publicPath . '/storage/photos/' . basename($landscape->path));
-        $this->assertFileExists($this->publicPath . '/storage/photos/thumbs/' . basename($landscape->thumb_path));
+        $this->assertFileExists($this->publicPath.'/storage/photos/'.basename($landscape->path));
+        $this->assertFileExists($this->publicPath.'/storage/photos/thumbs/'.basename($landscape->thumb_path));
 
         // The uploader is subscribed to the comments of each photo
         $this->assertTrue($user->isSubscribedTo($landscape));

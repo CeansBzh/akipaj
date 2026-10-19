@@ -7,15 +7,12 @@ use App\Models\User;
 use App\Notifications\AccountCreated;
 use App\Notifications\RegistrationSuccessful;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendAccountCreatedNotification
 {
     /**
      * Handle the event.
      *
-     * @param  \Illuminate\Auth\Events\Registered  $event
      * @return void
      */
     public function handle(Registered $event)
@@ -27,6 +24,6 @@ class SendAccountCreatedNotification
             $user->notify(new AccountCreated($newUser));
         });
         // Information de l'utilisateur de la création de son compte
-        $newUser->notify(new RegistrationSuccessful());
+        $newUser->notify(new RegistrationSuccessful);
     }
 }

@@ -128,7 +128,7 @@ class ArticleTest extends TestCase
         $this->assertTrue((bool) $article->online);
         $this->assertNotNull($article->published_at);
         $this->assertNotNull($article->imagePath);
-        Storage::disk('local')->assertExists('public/articles/' . basename($article->imagePath));
+        Storage::disk('local')->assertExists('public/articles/'.basename($article->imagePath));
     }
 
     public function test_article_titles_must_be_unique(): void
@@ -231,7 +231,7 @@ class ArticleTest extends TestCase
 
         $url = $response->json('data.url');
         $this->assertIsString($url);
-        Storage::disk('local')->assertExists('public/articles/' . basename($url));
+        Storage::disk('local')->assertExists('public/articles/'.basename($url));
     }
 
     public function test_editor_images_are_limited_in_size(): void

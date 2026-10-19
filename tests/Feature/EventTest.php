@@ -77,7 +77,7 @@ class EventTest extends TestCase
 
         $event = Event::where('name', 'Régate')->firstOrFail();
         $this->assertSame('Brest', $event->location);
-        Storage::disk('local')->assertExists('public/events/' . basename((string) $event->imagePath));
+        Storage::disk('local')->assertExists('public/events/'.basename((string) $event->imagePath));
     }
 
     public function test_events_cannot_start_in_the_past_or_end_before_starting(): void

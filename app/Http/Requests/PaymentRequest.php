@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PaymentRequest extends FormRequest
 {
-
     /**
      * Prepare the data for validation.
      *
@@ -14,16 +13,16 @@ class PaymentRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $this['amount'] = (float)str_replace(',', '.', $this['amount']);
+        $this['amount'] = (float) str_replace(',', '.', $this['amount']);
         $this['message'] = trim($this['message']);
-        $this['card_number'] = (int)preg_replace('/\s/', '', $this['card_number']);
-        $this['card_cvc'] = (int)$this['card_cvc'];
+        $this['card_number'] = (int) preg_replace('/\s/', '', $this['card_number']);
+        $this['card_cvc'] = (int) $this['card_cvc'];
         if ($this['card_expiry'] != null) {
             $this['card_expiry'] = explode('/', preg_replace('/\s/', '', $this['card_expiry']));
             $this->merge([
                 'card_expiry_month' => $this['card_expiry'][0],
                 'card_expiry_year' => $this['card_expiry'][1],
-                'card_expiry_date' => date_create_from_format('m/y', $this['card_expiry'][0] . '/' . $this['card_expiry'][1])->format('Y-m-d'),
+                'card_expiry_date' => date_create_from_format('m/y', $this['card_expiry'][0].'/'.$this['card_expiry'][1])->format('Y-m-d'),
             ]);
         }
     }

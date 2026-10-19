@@ -10,8 +10,8 @@ use App\Models\Photo;
 use App\Notifications\CommentPosted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Livewire\Livewire;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class CommentsTest extends TestCase

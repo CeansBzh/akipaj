@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Article;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class ArticleSeeder extends Seeder
 {

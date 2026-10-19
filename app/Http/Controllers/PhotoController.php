@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use App\Enums\AlertLevelEnum;
+use App\Http\Requests\Photo\StorePhotoRequest;
 use App\Models\Album;
 use App\Models\Photo;
-use App\Enums\AlertLevelEnum;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\Photo\StorePhotoRequest;
 
 class PhotoController extends Controller
 {
@@ -26,8 +25,6 @@ class PhotoController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
     public function index(): View
     {
@@ -37,8 +34,6 @@ class PhotoController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
     public function create(Album $album): View
     {
@@ -47,9 +42,6 @@ class PhotoController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Photo\StorePhotoRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StorePhotoRequest $request): RedirectResponse
     {
@@ -60,19 +52,19 @@ class PhotoController extends Controller
             $exif = @exif_read_data($file->getRealPath());
             // Pour chaque fichier enregistrement dans le stockage du site
             $imageResource = imagecreatefromstring($file->getContent());
-            imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()));
+            imagejpeg($imageResource, public_path('storage/photos/'.$file->hashName()));
             // Enregistrement de la miniature
             $width = imagesx($imageResource);
             $height = imagesy($imageResource);
             // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
-            $ratio  = min(450 / $width, 450 / $height);
+            $ratio = min(450 / $width, 450 / $height);
             $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
-            imagejpeg($thumbResource, public_path('storage/photos/thumbs/thumb_' . $file->hashName()));
+            imagejpeg($thumbResource, public_path('storage/photos/thumbs/thumb_'.$file->hashName()));
             // Création d'une nouvelle photo
-            $photo = new Photo();
+            $photo = new Photo;
             $photo->title = $file->getClientOriginalName();
-            $photo->path = Storage::url('photos/' . $file->hashName());
-            $photo->thumb_path = Storage::url('photos/thumbs/thumb_' . $file->hashName());
+            $photo->path = Storage::url('photos/'.$file->hashName());
+            $photo->thumb_path = Storage::url('photos/thumbs/thumb_'.$file->hashName());
             $photo->width = $width;
             $photo->height = $height;
             $photo->thumb_width = imagesx($thumbResource);
@@ -99,16 +91,13 @@ class PhotoController extends Controller
             ]);
         }
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
 
         return redirect()->route('albums.show', $album);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Contracts\View\View
      */
     public function show(Photo $photo): View
     {
@@ -120,23 +109,16 @@ class PhotoController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Contracts\View\View
      */
     public function edit(Photo $photo): View
     {
         return view('photo.edit', [
-            'photo' => $photo
+            'photo' => $photo,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Photo $photo): RedirectResponse
     {
@@ -148,23 +130,20 @@ class PhotoController extends Controller
 
         $photo->update($validated);
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo mise à jour avec succès !');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photo mise à jour avec succès !');
 
         return redirect()->route('photos.show', $photo);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Photo $photo): RedirectResponse
     {
         // Suppression de la photo
         $photo->delete();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
 
         return redirect()->route('photos.index');
     }

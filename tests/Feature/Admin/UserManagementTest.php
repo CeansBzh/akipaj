@@ -72,7 +72,7 @@ class UserManagementTest extends TestCase
 
         $newPath = (string) $user->refresh()->profile_picture_path;
         Storage::disk('local')->assertMissing('public/profile_pictures/old.png');
-        Storage::disk('local')->assertExists('public/profile_pictures/' . basename($newPath));
+        Storage::disk('local')->assertExists('public/profile_pictures/'.basename($newPath));
 
         $this->patch(route('admin.users.update', $user), ['remove_image' => 'true'])->assertSessionHasNoErrors();
 

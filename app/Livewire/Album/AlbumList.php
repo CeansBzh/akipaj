@@ -11,6 +11,7 @@ class AlbumList extends Component
     use WithPagination;
 
     public $sortTerm = 'taken_desc';
+
     public $sortBy = ['date', 'desc'];
 
     public function updatedSortTerm()
@@ -25,7 +26,6 @@ class AlbumList extends Component
         }
         $this->resetPage();
     }
-
 
     public function render()
     {

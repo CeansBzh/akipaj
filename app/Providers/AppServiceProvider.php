@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Brevo (formerly Sendinblue) API transport. The "sendinblue" mailer name is kept for existing .env files.
         Mail::extend('brevo', function () {
-            return (new BrevoTransportFactory())->create(
+            return (new BrevoTransportFactory)->create(
                 new Dsn('brevo+api', 'default', config('services.brevo.key')),
             );
         });

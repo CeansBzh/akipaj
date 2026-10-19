@@ -7,11 +7,12 @@ use App\Livewire\Lightbox;
 use App\Models\Album;
 use App\Models\Comment;
 use App\Models\Photo;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Livewire\Livewire;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class GalleryTest extends TestCase
@@ -122,7 +123,7 @@ class GalleryTest extends TestCase
         $this->createUser();
         Photo::factory()->for(Album::factory())->create(['user_id' => $user->id]);
 
-        /** @var Collection<int, \App\Models\User> $users */
+        /** @var Collection<int, User> $users */
         $users = Livewire::test(Gallery::class)->get('users');
 
         $this->assertSame([$user->id], $users->pluck('id')->all());

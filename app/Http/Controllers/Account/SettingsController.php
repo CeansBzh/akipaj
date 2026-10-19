@@ -3,20 +3,21 @@
 namespace App\Http\Controllers\Account;
 
 use App\Enums\AlertLevelEnum;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class SettingsController extends Controller
 {
     /**
      * Display the user's profile edit form.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function edit(Request $request)
     {
@@ -28,8 +29,7 @@ class SettingsController extends Controller
     /**
      * Update the user's profile information.
      *
-     * @param  \App\Http\Requests\ProfileUpdateRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(ProfileUpdateRequest $request)
     {
@@ -40,14 +40,14 @@ class SettingsController extends Controller
             ($request->remove_image || $request->hasFile('profile_picture')) &&
             $request->user()->profile_picture_path
         ) {
-            $filePath = 'public/profile_pictures/' . basename($request->user()->profile_picture_path);
+            $filePath = 'public/profile_pictures/'.basename($request->user()->profile_picture_path);
             if (Storage::delete($filePath)) {
                 $request->user()->profile_picture_path = null;
             }
         }
         // Si une nouvelle photo de profil a été uploadée, on la sauvegarde
         if ($request->hasFile('profile_picture')) {
-            $imageName = time() . '.' . $request->profile_picture->extension();
+            $imageName = time().'.'.$request->profile_picture->extension();
             $path = $request->file('profile_picture')->storeAs('public/profile_pictures', $imageName);
             $request->user()->profile_picture_path = Storage::url($path);
         }
@@ -58,7 +58,7 @@ class SettingsController extends Controller
 
         $request->user()->save();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Modifications sauvegardées.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Modifications sauvegardées.');
 
         return Redirect::route('settings.edit')->with('status', $request->status());
     }
@@ -66,8 +66,7 @@ class SettingsController extends Controller
     /**
      * Delete the user's account.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(Request $request)
     {
@@ -84,7 +83,7 @@ class SettingsController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Votre compte a bien été supprimé.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Votre compte a bien été supprimé.');
 
         return Redirect::to('/');
     }

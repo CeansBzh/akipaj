@@ -66,7 +66,7 @@ class AlbumTest extends TestCase
         $response->assertRedirect(route('albums.show', $album));
         $this->assertSame('2023-07-01', $album->date->format('Y-m-d'));
         $this->assertEqualsCanonicalizing($trips->pluck('id')->all(), $album->trips()->pluck('trips.id')->all());
-        Storage::disk('local')->assertExists('public/albums/' . basename((string) $album->imagePath));
+        Storage::disk('local')->assertExists('public/albums/'.basename((string) $album->imagePath));
     }
 
     public function test_album_creation_is_validated(): void
@@ -117,12 +117,12 @@ class AlbumTest extends TestCase
 
         $newPath = (string) $album->refresh()->imagePath;
         Storage::disk('local')->assertMissing('public/albums/old.jpg');
-        Storage::disk('local')->assertExists('public/albums/' . basename($newPath));
+        Storage::disk('local')->assertExists('public/albums/'.basename($newPath));
 
         $this->put(route('albums.update', $album), $data + ['remove_image' => '1'])->assertSessionHasNoErrors();
 
         $this->assertNull($album->refresh()->imagePath);
-        Storage::disk('local')->assertMissing('public/albums/' . basename($newPath));
+        Storage::disk('local')->assertMissing('public/albums/'.basename($newPath));
     }
 
     public function test_members_can_delete_an_album_containing_only_their_photos(): void

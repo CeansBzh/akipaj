@@ -7,6 +7,7 @@ use Livewire\Component;
 class ThreadSubscribeButton extends Component
 {
     public $commentable;
+
     public $subscribeToThread = false;
 
     public function mount($commentable)

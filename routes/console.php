@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Schedule;
 |
 */
 
-Artisan::command("inspire", function () {
+Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
-})->purpose("Display an inspiring quote");
+})->purpose('Display an inspiring quote');
 
 // Permanently delete the users soft deleted for more than a month (see User::prunable())
 Schedule::command('model:prune')->daily();

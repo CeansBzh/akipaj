@@ -4,15 +4,15 @@ namespace App\Notifications;
 
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class CommentPosted extends Notification
 {
     use Queueable;
 
     protected $commentableTitle = '';
+
     protected $comment = null;
 
     /**
@@ -41,13 +41,13 @@ class CommentPosted extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage)
             ->subject('Nouveau commentaire dans un fil auquel vous êtes abonné')
-            ->line('Un nouveau commentaire viens d\'être posté sous ' . $this->commentableTitle . '.')
+            ->line('Un nouveau commentaire viens d\'être posté sous '.$this->commentableTitle.'.')
             ->line('Contenu du commentaire :')
             ->line($this->comment->content);
     }

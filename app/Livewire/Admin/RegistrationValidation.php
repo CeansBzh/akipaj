@@ -3,9 +3,9 @@
 namespace App\Livewire\Admin;
 
 use App\Enums\UserLevelEnum;
+use App\Events\RegistrationValidated;
 use App\Models\User;
 use Livewire\Component;
-use App\Events\RegistrationValidated;
 
 class RegistrationValidation extends Component
 {

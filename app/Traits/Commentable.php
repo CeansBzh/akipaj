@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\User;
 use App\Models\Comment;
 use App\Models\ThreadSubscription;
+use App\Models\User;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Commentable
 {

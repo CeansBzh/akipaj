@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Enums\UserLevelEnum;
+use App\Models\User;
 use Faker\Provider\Address;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -50,7 +51,7 @@ class UserFactory extends Factory
     public function unverified()
     {
         return $this->state(
-            fn(array $attributes) => [
+            fn (array $attributes) => [
                 'email_verified_at' => null,
             ],
         );
@@ -64,7 +65,7 @@ class UserFactory extends Factory
     public function noPersonalInformation()
     {
         return $this->state(
-            fn(array $attributes) => [
+            fn (array $attributes) => [
                 'firstname' => null,
                 'lastname' => null,
                 'birthdate' => null,
@@ -86,7 +87,7 @@ class UserFactory extends Factory
     public function noProfilePicture()
     {
         return $this->state(
-            fn(array $attributes) => [
+            fn (array $attributes) => [
                 'profile_picture_path' => null,
             ],
         );
@@ -95,13 +96,13 @@ class UserFactory extends Factory
     /**
      * Indicate that the model's level should be set to the given value.
      *
-     * @param \App\Enums\UserLevelEnum|int $level The level to set.
+     * @param  UserLevelEnum|int  $level  The level to set.
      * @return static
      */
     public function withLevel($level)
     {
         return $this->state(
-            fn(array $attributes) => [
+            fn (array $attributes) => [
                 'level' => $level,
             ],
         );

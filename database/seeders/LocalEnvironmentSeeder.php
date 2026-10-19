@@ -3,14 +3,13 @@
 namespace Database\Seeders;
 
 use App\Enums\UserLevelEnum;
-use App\Models\Role;
-use App\Models\Trip;
-use App\Models\User;
 use App\Models\Album;
-use App\Models\Event;
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\Event;
 use App\Models\Photo;
+use App\Models\Trip;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class LocalEnvironmentSeeder extends Seeder

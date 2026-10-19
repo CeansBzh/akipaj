@@ -43,7 +43,7 @@ class EmailVerificationTest extends TestCase
             'hash' => sha1($user->email),
         ]);
 
-        $this->get($verificationUrl)->assertRedirect(route('home', absolute: false) . '?verified=1');
+        $this->get($verificationUrl)->assertRedirect(route('home', absolute: false).'?verified=1');
 
         $this->assertTrue($user->fresh()?->hasVerifiedEmail());
         // The Verified event is only dispatched for MustVerifyEmail users

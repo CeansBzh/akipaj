@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\User;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -34,7 +34,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = $this->route('user');
 
         return [

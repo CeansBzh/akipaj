@@ -28,7 +28,7 @@ class PoliciesTest extends TestCase
     protected function assertAbilities(Model|string $subject, array $abilities, array $expected, ?User $owner = null): void
     {
         foreach ($expected as $levelName => $allowed) {
-            $level = constant(UserLevelEnum::class . '::' . $levelName);
+            $level = constant(UserLevelEnum::class.'::'.$levelName);
             $user = $owner && $levelName === 'OWNER' ? $owner : $this->createUser($level);
             foreach ($abilities as $ability) {
                 $this->assertSame($allowed, $user->can($ability, $subject), "$levelName / $ability");

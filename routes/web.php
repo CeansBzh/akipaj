@@ -1,17 +1,17 @@
 <?php
 
 use App\Enums\UserLevelEnum;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\TripController;
-use App\Http\Controllers\AlbumController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\PhotoController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\TripController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
 
 // Home
 Route::get('/', function () {
@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/virements/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/virements', [PaymentController::class, 'store'])->name('payments.store');
 
-    Route::middleware('level:' . UserLevelEnum::MEMBER->value)->group(function () {
+    Route::middleware('level:'.UserLevelEnum::MEMBER->value)->group(function () {
         Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
         Route::resources([
             'articles' => ArticleController::class,
@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/photos/create/{album}', [PhotoController::class, 'create'])->name('photos.create');
     });
 
-    Route::middleware('level:' . UserLevelEnum::ADMINISTRATOR->value)
+    Route::middleware('level:'.UserLevelEnum::ADMINISTRATOR->value)
         ->prefix('admin')
         ->group(function () {
             Route::get('/', function () {
@@ -65,9 +65,10 @@ Route::middleware('auth')->group(function () {
                 Artisan::call('view:clear');
                 Artisan::call('config:clear');
                 Artisan::call('config:cache');
+
                 return redirect()->route('admin.index');
             });
         });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

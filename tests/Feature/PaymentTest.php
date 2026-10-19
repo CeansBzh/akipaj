@@ -32,7 +32,8 @@ class PaymentTest extends TestCase
         // Never call the Stripe API: the controller receives a client whose services are mocks
         $this->tokens = Mockery::mock(TokenService::class);
         $this->charges = Mockery::mock(ChargeService::class);
-        $stripe = new class ($this->tokens, $this->charges) extends StripeClient {
+        $stripe = new class($this->tokens, $this->charges) extends StripeClient
+        {
             public function __construct(public TokenService $tokens, public ChargeService $charges)
             {
                 parent::__construct(['api_key' => 'sk_test_dummy']);
@@ -50,7 +51,7 @@ class PaymentTest extends TestCase
             'amount' => '25,50',
             'message' => 'Cotisation',
             'card_number' => '4242 4242 4242 4242',
-            'card_expiry' => '12 / ' . now()->addYear()->format('y'),
+            'card_expiry' => '12 / '.now()->addYear()->format('y'),
             'card_cvc' => '123',
             'card_holder_name' => 'Michel Dupont',
         ];
@@ -107,7 +108,7 @@ class PaymentTest extends TestCase
         $this->tokens->shouldReceive('create')->andReturn(Token::constructFrom(['id' => 'tok_123']));
         $this->charges->shouldReceive('create')
             ->once()
-            ->with(Mockery::on(fn (array $params) => $params['description'] === 'Virement de ' . $user->name . ' à ' . config('app.name')))
+            ->with(Mockery::on(fn (array $params) => $params['description'] === 'Virement de '.$user->name.' à '.config('app.name')))
             ->andReturn(Charge::constructFrom(['id' => 'ch_123', 'status' => 'succeeded']));
 
         $this->post(route('payments.store'), array_merge($this->validData(), ['message' => '']))

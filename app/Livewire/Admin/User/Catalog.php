@@ -11,7 +11,9 @@ class Catalog extends Component
     use WithPagination;
 
     public $searchTerm;
+
     public $level = -1;
+
     public $paginate = 10;
 
     public function updating()
@@ -22,7 +24,7 @@ class Catalog extends Component
     public function render()
     {
         return view('admin.user.livewire.catalog', [
-            'users' => User::whereAny(['name', 'email'], 'like', '%' . ($this->searchTerm ?? '') . '%')
+            'users' => User::whereAny(['name', 'email'], 'like', '%'.($this->searchTerm ?? '').'%')
                 ->when($this->level != -1, function ($query) {
                     $query->where('level', $this->level);
                 })

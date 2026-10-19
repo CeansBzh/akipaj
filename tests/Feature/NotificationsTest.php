@@ -23,10 +23,10 @@ class NotificationsTest extends TestCase
         $comment = Comment::factory()->for(Photo::factory()->for(Album::factory()), 'commentable')->create();
         $notifications = [
             new AccountCreated($user),
-            new AccountDeleted(),
+            new AccountDeleted,
             new CommentPosted('Photo', $comment),
-            new RegistrationSuccessful(),
-            new RegistrationValidated(),
+            new RegistrationSuccessful,
+            new RegistrationValidated,
         ];
 
         foreach ($notifications as $notification) {
@@ -61,10 +61,10 @@ class NotificationsTest extends TestCase
     {
         $user = $this->createUser();
 
-        $this->assertStringContainsString('Bienvenue', (new RegistrationSuccessful())->toMail($user)->subject);
-        $validated = (new RegistrationValidated())->toMail($user);
+        $this->assertStringContainsString('Bienvenue', (new RegistrationSuccessful)->toMail($user)->subject);
+        $validated = (new RegistrationValidated)->toMail($user);
         $this->assertStringContainsString('validé', $validated->subject);
         $this->assertSame(url('/'), $validated->actionUrl);
-        $this->assertStringContainsString('supprimé', (new AccountDeleted())->toMail($user)->subject);
+        $this->assertStringContainsString('supprimé', (new AccountDeleted)->toMail($user)->subject);
     }
 }

@@ -3,12 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Comment;
-use App\Traits\Commentable;
 use App\Notifications\CommentPosted;
+use App\Traits\Commentable;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Comments extends Component
 {
@@ -28,21 +28,23 @@ class Comments extends Component
      * The content of the new comment.
      */
     public $content;
+
     public $newContent;
 
     public $commentIdToDestroy;
+
     public $commentIdToUpdate;
 
     protected $rules = [
         'content' => 'required_without:newContent|nullable|string',
-        'newContent' => 'required_without:content|nullable|string'
+        'newContent' => 'required_without:content|nullable|string',
     ];
 
     #[On('commentsNeedUpdate')]
     public function updateComments($commentableId, $commentableType)
     {
         // The type comes from the client: only accept models using the Commentable trait
-        if (!is_string($commentableType) || !class_exists($commentableType) || !in_array(Commentable::class, class_uses_recursive($commentableType))) {
+        if (! is_string($commentableType) || ! class_exists($commentableType) || ! in_array(Commentable::class, class_uses_recursive($commentableType))) {
             abort(400);
         }
         $this->commentable = $commentableType::findOrFail($commentableId);

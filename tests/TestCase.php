@@ -23,8 +23,8 @@ abstract class TestCase extends BaseTestCase
 
         // PhotoController and PhotoFactory write directly in public/storage/photos:
         // point the public path to a temporary directory so the tests don't touch the real one.
-        $this->publicPath = sys_get_temp_dir() . '/akipaj-public-' . uniqid();
-        File::ensureDirectoryExists($this->publicPath . '/storage/photos/thumbs');
+        $this->publicPath = sys_get_temp_dir().'/akipaj-public-'.uniqid();
+        File::ensureDirectoryExists($this->publicPath.'/storage/photos/thumbs');
         $this->app->usePublicPath($this->publicPath);
     }
 

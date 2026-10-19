@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -26,13 +25,13 @@ class RegistrationSuccessful extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Bienvenue chez ' . config('app.name') . ' !')
-            ->line('Votre inscription sur le site ' . config('app.name') . ' a bien été prise en compte.')
+            ->subject('Bienvenue chez '.config('app.name').' !')
+            ->line('Votre inscription sur le site '.config('app.name').' a bien été prise en compte.')
             ->line('Un administrateur va valider votre compte et vous recevrez par la suite un email de confirmation.')
             ->line('Merci et bonne navigation !');
     }

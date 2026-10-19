@@ -3,6 +3,7 @@
 namespace Tests\Feature\Models;
 
 use App\Models\Album;
+use App\Models\Article;
 use App\Models\Boat;
 use App\Models\Comment;
 use App\Models\Payment;
@@ -86,7 +87,7 @@ class RelationsTest extends TestCase
 
     public function test_articles_use_their_slug_as_route_key(): void
     {
-        $article = \App\Models\Article::factory()->create(['slug' => 'un-slug']);
+        $article = Article::factory()->create(['slug' => 'un-slug']);
 
         $this->assertSame('un-slug', $article->getRouteKey());
     }
