@@ -8,8 +8,13 @@ on:
 
 jobs:
   tests:
-    name: PHPUnit & PHPStan
+    name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 8.3: minimum declared in composer.json, 8.4: Sail runtime
+        php: ['8.3', '8.4']
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
@@ -17,12 +22,22 @@ jobs:
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: ${{ matrix.php }}
           extensions: gd, exif, pdo_sqlite, zip
           coverage: pcov
 
       - name: 📦 Install Composer dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: 🟢 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      # Catches missing assets (Vite::asset) and the Livewire ESM import from vendor/
+      - name: 🎨 Build assets
+        run: npm ci && npm run build
 
       - name: 🧪 Run tests
         run: composer test

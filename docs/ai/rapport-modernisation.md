@@ -1,76 +1,95 @@
-# Rapport d'analyse et feuille de route de modernisation — Akipaj
+# Rapport d'analyse et de modernisation — Akipaj
 
-> Document destiné aux agents IA (et aux humains) qui reprennent le projet. Rédigé le 2026-10-19 après une
-> lecture complète de `app/`, `routes/`, `database/`, `config/` et des vues principales, puis la mise en place
-> d'une suite de tests et de PHPStan. Le guide opérationnel court est dans [CLAUDE.md](../../CLAUDE.md).
-> Les chemins sont relatifs à la racine du dépôt.
+> Document destiné aux agents IA (et aux humains) qui reprennent le projet. Le guide opérationnel court est
+> dans [CLAUDE.md](../../CLAUDE.md). Les chemins sont relatifs à la racine du dépôt. Mis à jour le 2026-10-19,
+> à la fin de la montée de version (branche `modernisation`).
 
 ## 1. Synthèse
 
-- **Fonctionnel** : application Laravel 9 + Livewire 2 d'environ 5 000 lignes de PHP dans `app/` (≈ 7 200 avec
-  routes, migrations, seeders et tests d'origine), développée d'octobre 2022 à juillet 2023, avec un dernier commit en février 2026.
-  Le domaine est simple et bien découpé (ressources CRUD, policies, form requests, composants Livewire).
-- **Avant cette intervention** : aucun test réel (les tests Breeze ciblaient des URLs inexistantes), pas d'analyse
-  statique, et des dépendances obsolètes ou vulnérables : 54 alertes Composer sur 17 paquets, 22 alertes npm
-  dont 1 critique. Laravel 9 (fin de support des correctifs de sécurité en février 2024) et PHP 8.1 (fin de
-  support en décembre 2025) ne sont plus maintenus.
-- **Après** : 222 tests (≈ 98 % des lignes de `app/` couvertes), PHPStan niveau 5 sans baseline sur `app`,
-  `config`, `database`, `routes` et `tests`, CI GitHub Actions, et 20 bugs corrigés (§ 4), dont 4 de sécurité.
-- **Priorités** : 1) remplacer le flux de paiement par carte (§ 5.1) ; 2) monter Laravel et Livewire de version
-  (§ 6), avec les tests comme filet de sécurité ; 3) fiabiliser le déploiement (§ 5.4).
+- **Le projet** : application Laravel + Livewire d'environ 5 000 lignes de PHP dans `app/`, développée
+  d'octobre 2022 à juillet 2023 (dernier commit en février 2026). Domaine simple et bien découpé :
+  ressources CRUD, policies, form requests, composants Livewire.
+- **Point de départ** : Laravel 9 et PHP 8.1 (plus maintenus), Livewire 2, Vite 3, aucun test réel, pas
+  d'analyse statique, 54 alertes Composer et 22 alertes npm.
+- **État actuel** : **Laravel 13, Livewire 4, PHP 8.3+ (8.4 sous Sail), Vite 8, PHPUnit 12, PHPStan 2 +
+  Larastan 3 (niveau 5, sans baseline), Laravel Boost 2**. 222 tests (≈ 98 % des lignes de `app/`), parcours
+  navigateur vérifiés, 0 alerte Composer, 10 alertes npm restantes (§ 5.5). 23 bugs corrigés (§ 4).
+- **Priorités restantes** : 1) préparer la production (PHP ≥ 8.3, build des assets ; § 5.1) ;
+  2) remplacer le paiement par carte (§ 5.2) ; 3) Tailwind 4 et le reste de la feuille de route (§ 6).
 
-## 2. Ce qui a été mis en place
+## 2. Historique des interventions
 
-| Élément | Fichiers |
+Commits de la branche `modernisation`, du plus ancien au plus récent :
+
+| Commit | Contenu |
 |---|---|
-| Configuration de test : SQLite en mémoire, `APP_KEY` et clés Stripe factices | `phpunit.xml` |
-| Base de test : `withoutVite()`, `public_path()` temporaire, helpers de niveau | `tests/TestCase.php` |
-| 222 tests (Feature + Unit) | `tests/` |
-| PHPStan 1.12 + Larastan 2.11 + phpstan-mockery, niveau 5 | `phpstan.neon`, `composer.json` |
-| Scripts `composer test`, `composer test:coverage`, `composer analyse` | `composer.json` |
-| CI : PHPUnit + PHPStan sur push `master` et PR | `.github/workflows/tests.yml` |
-| `phpstan.neon` exclu du déploiement FTP | `.github/workflows/ftp-deploy.yml` |
+| Ajoute PHPStan et Larastan, retire les paquets laravel-lang | Outillage d'analyse ; `laravel-lang/*` retirés car signalés comme malware (§ 7) |
+| Corrige les bugs et erreurs relevés par PHPStan | Bugs n° 1 à 20 (§ 4), types natifs |
+| Ajoute une suite de tests complète et la CI | 222 tests, workflow GitHub Actions |
+| Ajoute la documentation orientée IA | Première version de ce rapport et de `CLAUDE.md` |
+| Monte vers Laravel 13, Livewire 4 et PHP 8.3+ | Dépendances, structure Laravel 11+, migration Livewire, tests PHPUnit 12 |
+| Met à jour l'outillage front (Vite 8, Prettier 3) | `package.json` en ESM, dépendances inutilisées retirées |
+| Passe l'environnement Docker sur Laravel Sail (PHP 8.4) | `compose.yaml`, Mailpit, phpMyAdmin conservé |
+| Corrige le script « Ajouter à l'agenda » des événements | Bug n° 21 |
+| Installe Laravel Boost 2 | Guidelines, skills, serveur MCP ; Pint retiré |
+| Force DOMPurify 3 sous Toast UI Editor | Override npm (alerte XSS) |
+| (suivant) CI et documentation | CI PHP 8.3/8.4 + build Vite, documentation à jour |
 
-Changements de dépendances (lock), volontairement minimaux :
-- **Retirés** : `laravel-lang/attributes`, `laravel-lang/lang`, `laravel-lang/publisher` (dev). Composer refuse
-  de les installer : Packagist les signale comme **malware** (rapports Aikido, couvrant la quasi-totalité des
-  versions publiées). Ils ne servaient qu'à publier les traductions, déjà versionnées dans `lang/`. Si une
-  machine a installé ces paquets récemment, vérifier son intégrité.
-- **Mis à jour** : `laravel/framework` 9.52.10 → 9.52.22 (correctifs, requis par Larastan 2.9+).
-- **Ajoutés** (dev) : `larastan/larastan ^2.9`, `phpstan/phpstan ^1.12`, `phpstan/phpstan-mockery ^1.1`.
+### 2.1 Décisions de la montée de version
 
-Organisation des tests :
+- **Cibles** : dernières versions majeures stables au 2026-10-19. `composer.json` déclare `php: ^8.3`
+  (comme le squelette Laravel 13) et le lock est résolu pour PHP 8.3 (`config.platform.php`), afin de rester
+  installable sur un hébergement en 8.3. Le développement se fait en 8.4 (Sail).
+- **Structure Laravel 11+** adoptée : `bootstrap/app.php` et `bootstrap/providers.php` ; kernels, gestionnaire
+  d'exceptions, middlewares par défaut et providers Auth/Event/Route/Broadcast supprimés. Les listeners et les
+  policies sont découverts automatiquement.
+- **Configuration conservée** : les fichiers `config/*.php` de Laravel 9 sont gardés, sauf `app.php` (liste
+  des providers retirée) et `sanctum.php` (supprimé). Les valeurs par défaut du squelette 13 casseraient le
+  `.env` de production : cache et sessions en base, disque `local` sur `storage/app/private`, alors que tout le
+  code stocke dans `storage/app/public`.
+- **Livewire 2 → 4** : composants déplacés dans `App\Livewire`, `#[On]`, `dispatch()` avec paramètres nommés,
+  `wire:model.live` là où la v2 mettait à jour immédiatement, actions par identifiant (`int $commentId`) au
+  lieu d'une liaison de modèle. Livewire et Alpine sont importés par Vite depuis
+  `vendor/livewire/livewire/dist/livewire.esm` (`@livewireScriptConfig` dans les layouts) : Alpine est ainsi
+  disponible même sur les pages sans composant (pages invité).
+- **Mail** : `symfony/sendinblue-mailer` (abandonné) remplacé par `symfony/brevo-mailer`. Les mailers `brevo`
+  et `sendinblue` utilisent le même transport, et `BREVO_API_KEY` se rabat sur `SENDINBLUE_API_KEY` : le `.env`
+  de production existant reste valable.
+- **Retirés** : `laravel/breeze` (installateur, déjà publié), `spatie/laravel-ignition` (remplacé par la page
+  d'erreur de Laravel), `laravel/pint` (le projet formate avec Prettier ; la guideline Boost « lancer Pint »
+  entrait en conflit), et côté npm : `alpinejs`, `@alpinejs/collapse`, `flowbite`, `axios`, `lodash`.
+- **Tailwind 3.4 conservé** : la v4 renomme des classes et change des valeurs par défaut ; elle demande une
+  revue visuelle page par page.
+- **Boost** : guidelines dans `CLAUDE.md`, skills dans `.claude/skills` (le skill Laravel Cloud est désactivé
+  dans `boost.json`), serveur MCP via Sail dans `.mcp.json`. `composer update` exécute `boost:update`.
 
-```
-tests/Unit/                      Enums, conversion GPS EXIF (StorePhotoRequest::toGps)
-tests/Feature/Auth/              Connexion (dont rate limiting), inscription (niveau GUEST + mails), mots de passe, vérification email
-tests/Feature/AccessControlTest  Matrice routes × niveaux (visiteur, GUEST, MEMBER, CONTRIBUTOR, ADMIN)
-tests/Feature/Account/           Profil public, paramètres du compte, suppression de compte
-tests/Feature/Admin/             Gestion des utilisateurs
-tests/Feature/{Article,Album,Event,Trip,Photo,Payment}Test   CRUD, validation, images, autorisations
-tests/Feature/Livewire/          Tous les composants Livewire
-tests/Feature/Models/            Relations, cascades de suppression, pruning
-tests/Feature/PoliciesTest       Matrice des policies
-tests/Feature/NotificationsTest  Contenu des mails
-tests/Feature/InfrastructureTest Planificateur, macro whereLike, middleware, mailer Sendinblue, seeder local
-```
+### 2.2 Vérifications effectuées
+
+- `composer test` (222 tests) et `composer analyse` (niveau 5) au vert sous PHP 8.4 (Sail).
+- `artisan view:cache`, `config:cache`, `route:cache`, `event:list`, `schedule:list` sans erreur.
+- MySQL 8.4 : `migrate:fresh --seed` ; les 19 pages principales répondent 200 en admin.
+- Navigateur headless (Playwright) : Alpine et Livewire chargés sur les pages invité et membre, menu
+  déroulant, recherche globale, filtres de la galerie, lightbox, commentaires, abonnement, ajout de bateau,
+  catalogue admin, tri des albums, éditeur d'articles (y compris neutralisation d'un `onerror`). Aucune erreur JS.
+- Serveur MCP Boost : handshake `initialize` et `tools/list` (10 outils) via Sail.
 
 ## 3. Architecture (ce qu'il faut savoir avant de modifier)
 
 ### 3.1 Routage et contrôle d'accès
 
 `routes/web.php` est structuré en couches :
-1. Public : `/` (vue `index` pour un visiteur, `homepage.index` pour un connecté), `/mentions-legales`,
-   `/profil/{username?}` (contrôle d'accès dans le contrôleur), `/compte` (le middleware `auth` est posé dans
-   le constructeur de `SettingsController`), `/matelots` (middleware posé dans le constructeur).
-2. `auth` : `/virements` (tout utilisateur connecté, y compris GUEST).
-3. `auth` + `level:1` (MEMBER) : `Route::resources` articles, albums, events, trips, photos (+ `photos/create/{album}`).
-4. `auth` + `level:99` (ADMIN), préfixe `/admin` : tableau de bord, `admin.users.*` (index, edit, update, destroy),
-   `POST /articles/admin/storeImage` (le préfixe donne cette URL étrange, utilisée telle quelle par
+1. Public : `/` (route `home` : vue `index` pour un visiteur, `homepage.index` pour un connecté),
+   `/mentions-legales`, `/profil/{username?}` (accès contrôlé dans le contrôleur), `/up` (health check).
+2. `auth` : `/compte` (paramètres), `/virements` (tout utilisateur connecté, y compris GUEST).
+3. `auth` + `level:1` (MEMBER) : `/matelots`, ressources articles, albums, events, trips, photos
+   (+ `photos/create/{album}`).
+4. `auth` + `level:99` (ADMIN), préfixe `/admin` : tableau de bord, `admin.users.*` (index, edit, update,
+   destroy), `POST /articles/admin/storeImage` (le préfixe donne cette URL étrange, utilisée telle quelle par
    `resources/js/article-editor.js`), `GET /admin/reset`.
 
-Les contrôleurs de ressources appellent `authorizeResource()` (sauf `Admin\UserController`, protégé par la route).
-Les policies sont découvertes par convention (`AuthServiceProvider::$policies` est vide).
+Redirection des invités vers `login` avec un message flash, et des utilisateurs connectés vers `home` :
+configurées dans `bootstrap/app.php`. Les contrôleurs de ressources appellent `authorizeResource()` (le
+contrôleur de base garde `Illuminate\Routing\Controller` et `AuthorizesRequests`).
 
 ### 3.2 Modèle de données
 
@@ -79,196 +98,152 @@ users ─┬─< photos >── albums >─< trips ─< boats
        ├─< payments            │
        ├─< comments (auteur)   └─>< users (trip_user : équipage)
        └─< thread_subscriptions
-comments.commentable_*            → Photo | User (profil)      [trait Commentable]
+comments.commentable_*               → Photo | User (profil)      [trait Commentable]
 thread_subscriptions.subscribeable_* → Photo | User
 articles, events : autonomes
 ```
 
-- `users.level` : entier casté en `UserLevelEnum` (ajouté par la migration `2023_02_24`, qui a remplacé un
-  ancien système de rôles dont il restait des traces, nettoyées ici).
+- `users.level` : entier casté en `UserLevelEnum`.
 - Colonnes polymorphes en `unsignedInteger` alors que les ids sont des `bigint` : sans conséquence à cette
   échelle, à aligner avec `morphs()` lors d'une refonte.
-- `articles.online` est un `char(1)`, et non un booléen.
-- Les noms de colonnes `imagePath` (camelCase) cohabitent avec le snake_case ailleurs.
+- `articles.online` est un `char(1)` et non un booléen ; `imagePath` (camelCase) cohabite avec le snake_case.
+- Les modèles utilisent encore la propriété `$casts` (fonctionne en Laravel 13 ; la méthode `casts()` est la
+  forme moderne).
 
 ### 3.3 Fichiers
 
 - Couvertures (albums, articles, événements, sorties) et photos de profil : `storage/app/public/<dossier>`,
-  servies via le lien symbolique `public/storage`. `Storage::url('public/x')` donne `/storage/x` : Laravel retire
-  `public/` pour le disque local.
-- Photos de la galerie : écrites directement dans `public_path('storage/photos')` avec GD (ré-encodage JPEG
-  qualité par défaut et miniature ≤ 450 px). Le fichier n'est **jamais supprimé** du disque, ni à la suppression
-  de la photo, ni au pruning.
+  servies via le lien `public/storage`. `Storage::url('public/x')` donne `/storage/x`.
+- Photos de la galerie : écrites directement dans `public_path('storage/photos')` avec GD (ré-encodage JPEG et
+  miniature ≤ 450 px). Le fichier n'est **jamais supprimé** du disque.
 
 ### 3.4 Effets de bord
 
-- Événement `Registered` → listeners `SendEmailVerificationNotification` (sans effet : `User` n'implémente pas
-  `MustVerifyEmail`) et `SendAccountCreatedNotification` (mail aux admins + mail de bienvenue).
-- Événement `RegistrationValidated` → mail à l'utilisateur.
-- Commentaire posté → mail synchrone à chaque abonné (`QUEUE_CONNECTION=sync`, aucune notification en file).
-- Planificateur : `model:prune` quotidien (seul `User` est `Prunable`).
+- `Registered` → `SendAccountCreatedNotification` (mail aux admins + bienvenue) ; le framework y ajoute
+  `SendEmailVerificationNotification`, sans effet car `User` n'implémente pas `MustVerifyEmail`.
+- `RegistrationValidated` → mail à l'utilisateur. Commentaire → mail synchrone à chaque abonné
+  (`QUEUE_CONNECTION=sync`).
+- Planificateur (`routes/console.php`) : `model:prune` quotidien (seul `User` est `Prunable`).
 
-## 4. Bugs corrigés pendant l'intervention
+## 4. Bugs corrigés
 
 Chacun est couvert par au moins un test. ⚠ = impact sécurité.
 
 | # | Problème | Correction |
 |---|---|---|
-| 1 | ⚠ `PhotoController` sans autorisation : tout membre pouvait modifier ou supprimer les photos des autres en HTTP. `update()` faisait `$photo->update($request->all())`, ce qui permettait d'écraser `path` et `thumb_path`. | `authorizeResource()` + mise à jour limitée aux champs validés |
-| 2 | ⚠ `Livewire\Comments::updateComments()` appelait `$type::find()` avec un nom de classe fourni par le client | Accepte uniquement les classes utilisant `Commentable`, sinon 400 |
-| 3 | ⚠ `Livewire\Admin\RegistrationValidation` : `accept`/`reject` sans contrôle de rôle | `abort_unless(isAdmin)` |
-| 4 | ⚠ `PaymentController` : une exception Stripe pendant le débit renvoyait `['error' => …]`, considéré comme un succès → **paiement enregistré sans débit** | Tout tableau d'erreur ou un statut ≠ `succeeded` est traité comme un échec |
-| 5 | `PaymentController` construisait `new StripeClient(null)` → erreur sur toutes les pages `/virements` sans `STRIPE_SECRET_KEY` | Client injecté, binding dans `AppServiceProvider` |
-| 6 | `ProfileController::show` : erreur 500 pour un visiteur non connecté (`null->isGuest()`) | 404, comme prévu par le code |
-| 7 | `AlbumController::store` lisait `trip` alors que le formulaire envoie `trips[]` → sorties jamais associées à la création | `trips` |
-| 8 | `AlbumController::update` stockait et supprimait les couvertures dans `public/trips` → impossible de retirer une couverture créée à la création (stockée dans `public/albums`) | `public/albums` partout |
-| 9 | `ArticleController::update` : même problème (`public/article` au lieu de `public/articles`) | `public/articles` |
-| 10 | `PhotoController::store` : `imagecreatefromjpeg` plantait sur les PNG et GIF, pourtant autorisés par la validation | `imagecreatefromstring` |
-| 11 | `TripController::update` : `whereNotIn('id', [.., null])` ne supprimait jamais les bateaux retirés si un bateau était ajouté dans la même requête (et sinon, les nouveaux bateaux auraient été supprimés) | Suppression basée sur les ids réellement enregistrés |
-| 12 | `User::pruning()` appelait `roles()`, inexistant → `model:prune` planté chaque nuit ; et les photos déjà soft-deleted n'étaient pas supprimées définitivement | `trips()->detach()` + `withTrashed()` |
-| 13 | `User::isSubscribedTo()` ne comparait que l'id, pas le type polymorphe (photo n°3 et profil n°3 confondus) | Compare id et `getMorphClass()` |
-| 14 | `VerifyEmailController` : `new Verified($user)` → TypeError (`User` n'implémente pas `MustVerifyEmail`) | Événement émis seulement si le contrat est implémenté |
-| 15 | `ArticlePolicy::view` et `AlbumPolicy::delete` utilisaient `auth()->user()` au lieu de l'utilisateur évalué (faux avec `Gate::forUser`) | Utilisent `$user` |
-| 16 | `routes/web.php` : `require_once` de `auth.php` → routes d'authentification absentes après le premier test du processus | `require` |
-| 17 | Routes `admin.users.create` et `admin.users.store` exposées vers des méthodes vides (réponse 200 vide) | Routes et méthodes retirées |
-| 18 | Factories : `PhotoFactory` téléchargeait une image sur cataas.com à chaque photo ; `PaymentFactory` plantait sans utilisateur ; `TripFactory::withAlbums(n, true)` appelait une méthode inexistante ; textes plus longs que la validation ; `UserFactory` sans `level` (null en mémoire) ; événements « à venir » parfois dans le passé | Corrigées |
-| 19 | `database/seeders/UserSeeder.php` dépendait de l'ancien système de rôles (`RoleSeeder`, `attachRole`) | Supprimé |
-| 20 | PHPDoc incorrects (`@return Response` partout, classes inexistantes) masquant les vrais types | Types de retour natifs sur contrôleurs et relations |
+| 1 | ⚠ `PhotoController` sans autorisation : tout membre pouvait modifier ou supprimer les photos des autres. `update()` faisait `$photo->update($request->all())`, ce qui permettait d'écraser `path` et `thumb_path`. | `authorizeResource()` + champs validés uniquement |
+| 2 | ⚠ `Livewire\Comments::updateComments()` appelait `$type::find()` avec une classe fournie par le client | Seules les classes utilisant `Commentable` sont acceptées (400 sinon) |
+| 3 | ⚠ `RegistrationValidation` : `accept` et `reject` sans contrôle de rôle | `abort_unless(isAdmin)` |
+| 4 | ⚠ `PaymentController` : une exception Stripe pendant le débit était traitée comme un succès → **paiement enregistré sans débit** | Erreur ou statut ≠ `succeeded` = échec |
+| 5 | `new StripeClient(null)` → erreur sur `/virements` sans `STRIPE_SECRET_KEY` | Client injecté par le conteneur |
+| 6 | `ProfileController::show` : erreur 500 pour un visiteur non connecté | 404 |
+| 7 | Albums : sorties jamais associées à la création (`trip` au lieu de `trips`) | Corrigé |
+| 8 | Albums : couvertures stockées et supprimées dans `public/trips` | `public/albums` |
+| 9 | Articles : suppression de l'image dans `public/article` au lieu de `public/articles` | Corrigé |
+| 10 | Photos PNG et GIF : plantage (`imagecreatefromjpeg`) | `imagecreatefromstring` |
+| 11 | Sorties : les bateaux retirés n'étaient pas supprimés (`whereNotIn` avec `null`) | Suppression par ids enregistrés |
+| 12 | `User::pruning()` appelait `roles()` (inexistant) et ignorait les photos déjà soft-deleted | `trips()->detach()` + `withTrashed()` |
+| 13 | `User::isSubscribedTo()` ignorait le type polymorphe | Compare id et `getMorphClass()` |
+| 14 | `VerifyEmailController` : TypeError sur `Verified` | Événement émis si `MustVerifyEmail` |
+| 15 | `ArticlePolicy::view` / `AlbumPolicy::delete` utilisaient `auth()` au lieu de `$user` | `$user` |
+| 16 | `require_once` de `routes/auth.php` (routes absentes après le premier test) | `require` |
+| 17 | Routes `admin.users.create` et `admin.users.store` vers des méthodes vides | Retirées |
+| 18 | Factories : téléchargement réseau, crash sans utilisateur, méthode inexistante, textes trop longs, `level` absent, événements « à venir » dans le passé | Corrigées |
+| 19 | `UserSeeder` dépendant de l'ancien système de rôles | Supprimé |
+| 20 | PHPDoc faux (`@return Response` partout) | Types natifs et génériques |
+| 21 | « Ajouter à l'agenda » : valeurs insérées dans du JS avec `{{ }}` → erreur JS dès qu'une adresse contient un retour à la ligne (non sûr pour les guillemets) | `@js()` |
+| 22 | `<livewire:admin.registration-validation>` non fermée (ouvre un slot en Livewire 4) | Balise auto-fermante |
+| 23 | Vite 8 n'émettait plus les images de `resources/images` → `Vite::asset()` aurait levé une exception en production | `import.meta.glob(..., { eager: true, query: '?url' })` |
 
-## 5. Problèmes connus non corrigés (décisions à prendre)
+## 5. Problèmes connus et décisions à prendre
 
-### 5.1 Paiement par carte — **critique**
+### 5.1 Mise en production — **à faire avant de fusionner dans `production`**
 
-`PaymentController` + `PaymentRequest` reçoivent le **numéro de carte, la date et le CVC en clair** sur le
-serveur, puis créent un token et un `Charge` Stripe.
-- Ce flux exige la conformité PCI-DSS SAQ D. Stripe désactive par défaut l'envoi de données de carte brutes via
-  l'API, et l'API Charges est remplacée par PaymentIntents (SCA/3-D Secure non géré ici).
-- `card_cvc` et `card_number` sont convertis en `int` : un CVC commençant par 0 (`012`) devient `12` et échoue à
-  la validation.
-- Une date d'expiration mal formée (`13/xx`) fait échouer `date_create_from_format` → erreur 500.
-- Un message vide enregistre une description vide, alors que Stripe reçoit le libellé par défaut.
+- L'hébergement doit fournir **PHP ≥ 8.3** avec gd et exif.
+- `vendor/` et `public/build/` ne sont pas versionnés, et le workflow FTP n'envoie que les fichiers suivis par
+  git. Ils doivent être produits pour ce déploiement (`composer install --no-dev -o`, `npm ci && npm run build`).
+  Ce point n'a pas pu être vérifié côté serveur.
+- Les assets Livewire 2 publiés dans `public/vendor/livewire` ont été supprimés : Livewire est maintenant inclus
+  dans le bundle Vite.
+- Après déploiement : `php artisan migrate --force` (aucune nouvelle migration à ce jour), `php artisan optimize`,
+  vérifier que `bootstrap/cache/*.php` ne contient pas d'anciens caches (providers Laravel 9).
+- `.env` : aucune variable obligatoire ne change. Facultatif : `MAIL_MAILER=brevo` et `BREVO_API_KEY`.
+- Le workflow utilise `SamKirkland/FTP-Deploy-Action@master` (branche flottante : risque de chaîne
+  d'approvisionnement) et `actions/checkout@v2.1.0` : épingler une version.
 
-**Recommandation** : remplacer le formulaire par **Stripe Checkout** (redirection) ou le **Payment Element**
-(Stripe.js), avec un webhook `checkout.session.completed` / `payment_intent.succeeded` qui crée le `Payment`.
-Les tests `tests/Feature/PaymentTest.php` seront à réécrire autour du webhook.
+**Recommandation** : un workflow qui exécute `composer install --no-dev -o` et `npm ci && npm run build`,
+déploie l'artefact complet, puis lance `migrate --force` et `optimize`. Cela remplacerait aussi
+`GET /admin/reset`.
 
-### 5.2 Sécurité et robustesse
+### 5.2 Paiement par carte — **critique**
 
-- `GET /admin/reset` exécute `route:clear`, `cache:clear`, `config:clear`, puis `config:cache` : action à effet
-  de bord sur une route GET, sans protection CSRF. À passer en POST, ou mieux, dans le script de déploiement.
-- Noms de fichiers `time() . '.' . extension` : deux envois dans la même seconde, même par deux utilisateurs
-  différents, **s'écrasent**. Utiliser `store()` (nom aléatoire) ou `hashName()`.
-- Les fichiers photo ne sont jamais supprimés du disque (§ 3.3) et le traitement d'image est synchrone (jusqu'à
-  50 fichiers de 10 Mo par requête). L'orientation EXIF est ignorée, et un PNG ré-encodé en JPEG garde son
-  extension `.png`.
-- `ArticleController::update` ne vérifie pas l'unicité du titre : changer le titre vers celui d'un autre article
-  (ou vers un titre produisant le même slug, ex. « Été » / « Ete ») provoque une violation de la contrainte
-  unique sur `slug` → 500. `store` a le même problème pour deux titres différents donnant le même slug.
-- `TripController::update` : un `boats[*][id]` appartenant à une **autre** sortie passe la validation
-  (`exists:boats,id`) puis provoque une erreur de clé dupliquée. Réservé aux admins.
-- `ThreadSubscribeButton` peut créer des abonnements en double (pas de contrainte unique).
-- Un administrateur peut supprimer son propre compte, ou le dernier compte administrateur.
-- `EventController::update` impose `start_time >= now` : impossible de corriger un événement en cours ou passé.
-- `User::$cascadeDeletes = ['photos', 'comments']` : `comments` désigne les commentaires **reçus sur le profil**,
-  pas ceux écrits par l'utilisateur. Ses commentaires sur les photos des autres restent visibles jusqu'au
-  pruning. À clarifier fonctionnellement.
-- Vérification d'email : fonctionnalité Breeze en sommeil (`User` n'implémente pas `MustVerifyEmail`). Décider
-  de l'activer (ajouter le contrat et le middleware `verified`) ou de supprimer les routes, vues et contrôleurs
-  correspondants.
-- Le niveau `CONTRIBUTOR` existe mais n'ouvre aucun droit (l'écriture d'articles reste réservée aux admins).
-- `TrustHosts` est désactivé, Sanctum est installé pour la seule route `/api/user`, et `BroadcastServiceProvider`
-  est désactivé : du code mort à retirer ou à assumer.
+`PaymentController` et `PaymentRequest` reçoivent **numéro de carte, date et CVC en clair** puis créent un
+token et un `Charge` Stripe : flux non conforme PCI-DSS SAQ A, API Charges dépréciée, pas de 3-D Secure.
+Le CVC est converti en `int` (« 012 » devient 12 et est rejeté), une date mal formée donne une erreur 500, et un
+message vide enregistre une description vide. `stripe/stripe-php` est resté en v10 pour ne pas toucher à ce
+flux. **Recommandation** : Stripe Checkout ou Payment Element, avec un webhook qui crée le `Payment`.
 
-### 5.3 Qualité du code
+### 5.3 Sécurité et robustesse
 
-- Des vues exécutent des requêtes (`Album::all()`, `User::all()` dans les formulaires de sortie et d'album ;
-  partials de la page d'accueil ; `admin/index`). À déplacer dans les contrôleurs ou des view composers.
-- Logique d'upload dupliquée dans 6 contrôleurs (stocker, remplacer ou retirer une image) : à factoriser
-  (trait, action ou service) en même temps que la correction des noms de fichiers.
-- Validation inline dans `AlbumController`, `ArticleController` et `EventController`, contre des Form Requests
-  ailleurs : à uniformiser.
-- PHPStan niveau 6 : 127 erreurs restantes (propriétés Livewire non typées, génériques des relations, paramètres
-  sans type). À traiter pendant la migration Livewire 3, qui réécrit ces composants.
-- `composer.json` : `minimum-stability: dev`. Pendant l'installation de Larastan, une résolution a sélectionné
-  `laravel/framework 9.x-dev` : passer à `stable`. Le nom (`laravel/laravel`) et la description sont ceux du
-  squelette, tout comme `README.md`.
-- `FakerServiceProvider` (enregistré en production) référence un paquet `require-dev` : sans effet tant que
-  Faker n'est pas résolu, mais fragile.
+- `GET /admin/reset` : effets de bord (`config:cache`) sur une route GET.
+- Noms de fichiers `time() . '.' . extension` : deux envois dans la même seconde s'écrasent.
+- Les fichiers photo ne sont jamais supprimés du disque. Traitement d'image synchrone (jusqu'à 50 × 10 Mo par
+  requête), orientation EXIF ignorée, PNG ré-encodé en JPEG sous une extension `.png`.
+- Articles : pas d'unicité vérifiée sur le titre ou le slug en mise à jour (collision → 500).
+- Sorties : un `boats[*][id]` d'une autre sortie passe la validation et provoque une erreur SQL (admins seulement).
+- Abonnements en double possibles (`ThreadSubscribeButton`) ; un admin peut supprimer son propre compte ou le
+  dernier admin ; impossible de modifier un événement en cours ou passé (`start_time >= now`).
+- `User::$cascadeDeletes` : `comments` désigne les commentaires **reçus sur le profil**, pas ceux écrits par
+  l'utilisateur. À clarifier fonctionnellement.
+- Vérification d'email en sommeil : l'activer (`MustVerifyEmail` + middleware `verified`) ou supprimer le code.
+- Niveau `CONTRIBUTOR` sans droit propre. Sanctum installé pour la seule route `/api/user`.
 
-### 5.4 Déploiement
+### 5.4 Qualité du code
 
-- `.github/workflows/ftp-deploy.yml` synchronise par FTP les fichiers **suivis par git** de la branche
-  `production`. `vendor/` et `public/build/` ne sont pas versionnés : ils sont donc gérés hors du workflow, à
-  la main ou sur le serveur. Ce point n'a pas pu être vérifié.
-- `npm run deploy` enchaîne `build`, `git stash`, un merge dans `production` et un push : le build local n'est
-  pas déployé, puisque `public/build` est ignoré par git.
-- Ni migrations, ni `storage:link`, ni vidage de cache automatisés (d'où `/admin/reset`).
-- Le workflow utilise `actions/checkout@v2.1.0` et `SamKirkland/FTP-Deploy-Action@master` (branche flottante :
-  risque de chaîne d'approvisionnement). Épingler une version ou un SHA.
-
-**Recommandation** : un workflow qui exécute `composer install --no-dev -o` et `npm ci && npm run build`, puis
-déploie l'artefact complet (FTP ou rsync/SSH si l'hébergeur le permet) et lance `php artisan migrate --force`
-et `optimize`.
+- Des vues exécutent des requêtes (`Album::all()`, `User::all()` dans les formulaires, partials de l'accueil).
+- Logique d'upload d'image dupliquée dans 6 contrôleurs ; validation inline dans Album, Article et Event.
+- PHPStan niveau 6 : **109 erreurs** (propriétés Livewire non typées, paramètres et retours sans type).
+- `resources/views/components/hero-picture.blade.php` n'est utilisé nulle part et référence des images
+  inexistantes (code mort antérieur).
+- Bundle `app.js` d'environ 1 Mo (Toast UI Editor, Livewire, Flickity) chargé sur toutes les pages : charger
+  l'éditeur à la demande (`import()`) sur les pages d'articles.
 
 ### 5.5 Dépendances front
 
-`npm audit` : 22 vulnérabilités (1 critique `form-data` via axios, 14 hautes dont `vite`, `axios`, `lodash`,
-`postcss`, `dompurify` via Toast UI). Vite 3 → version actuelle avec `laravel-vite-plugin` correspondant ;
-axios 0.27 → 1.x ; Tailwind 3 (la v4 change la configuration : migration à part) ; `@shufo/prettier-plugin-blade`
-est figé en 0.2.1.
+`npm audit` : 10 alertes. Toutes concernent des outils de build de Tailwind 3 et du plugin Prettier Blade
+(non livrés au navigateur) ; elles disparaîtront avec Tailwind 4. DOMPurify est forcé en v3 (`overrides`) sous
+`@toast-ui/editor`, qui n'est plus maintenu depuis 2022 : envisager un autre éditeur Markdown.
 
-## 6. Feuille de route de modernisation proposée
+## 6. Feuille de route
 
-Chaque étape : une branche, `composer test` et `composer analyse` verts, puis un déploiement de recette.
+| Étape | État |
+|---|---|
+| Tests, PHPStan/Larastan, CI | ✅ |
+| `minimum-stability: stable`, audit Composer à zéro | ✅ |
+| PHP 8.3+ / Sail 8.4 | ✅ (côté code ; hébergement à vérifier, § 5.1) |
+| Laravel 9 → 13, structure Laravel 11+ | ✅ |
+| Livewire 2 → 4 | ✅ |
+| Sendinblue → Brevo | ✅ |
+| Vite 8, Prettier 3 | ✅ |
+| Laravel Boost 2 | ✅ |
+| Déploiement automatisé avec build (§ 5.1) | À faire, **bloquant pour la mise en production** |
+| Paiement Stripe Checkout (§ 5.2) | À faire |
+| Tailwind 3 → 4 (`npx @tailwindcss/upgrade`, puis revue visuelle) | À faire |
+| PHPStan niveau 6 puis 8 | À faire |
+| Factorisation des uploads, Form Requests partout, `casts()` | À faire |
+| Notifications en file d'attente | À faire |
 
-1. **Hygiène (rapide)** : `minimum-stability: stable` ; `composer update` dans les contraintes actuelles
-   (corrige une partie des 53 alertes : guzzle, symfony, commonmark, livewire 2.12.x) ; `npm audit fix` sans
-   changement de version majeure ; épingler les actions GitHub ; vrai `README.md`.
-2. **Paiement** (§ 5.1), indépendamment des montées de version.
-3. **PHP 8.2 ou 8.3** sur l'hébergement et en CI (Laravel 10 accepte 8.1–8.3).
-4. **Laravel 9 → 10** : PHPUnit 10 (attributs `#[DataProvider]` à la place des annotations, `phpunit.xml` à
-   migrer), Sanctum 3, Collision 7, Ignition 2. Types de retour natifs ajoutés par Laravel 10 dans les classes du
-   framework (middlewares, providers) : PHPStan les signalera.
-5. **Livewire 2 → 3** : changement majeur (`wire:model` différé par défaut, `$emit` → `$dispatch`,
-   `$listeners` → `#[On]`, `dispatchBrowserEvent` → `dispatch`, namespace `App\Livewire`, Alpine embarqué par
-   Livewire, donc à retirer de `resources/js/app.js`). Les tests `tests/Feature/Livewire` servent de
-   spécification. Utiliser l'outil `livewire:upgrade`.
-6. **Laravel 10 → 11 → version courante** : nouvelle structure de `bootstrap/app.php` (optionnelle),
-   **renommer la macro `whereLike`** (conflit avec la méthode native depuis Laravel 11 : la méthode native est
-   appelée et reçoit un tableau de colonnes → erreur), `casts()` en méthode, Larastan 3 / PHPStan 2.
-   Remplacer `symfony/sendinblue-mailer` (abandonné) par `symfony/brevo-mailer` (transport `brevo+api`).
-7. **Monter le niveau PHPStan** (6, puis 8) une fois Livewire 3 en place.
-8. **Améliorations fonctionnelles** : upload d'images factorisé et sûr (§ 5.2), notifications en file d'attente,
-   vérification d'email ou suppression du code mort, droits du niveau CONTRIBUTOR.
+Optionnel : lancer le skill Boost `infer-conventions` pour enregistrer les conventions du projet dans
+`.ai/rules`.
 
 ## 7. Environnement de développement
 
-PHP n'est pas installé sur la machine du mainteneur (WSL Ubuntu). Image utilisée pour cette intervention :
+Tout passe par **Laravel Sail** (`compose.yaml` : PHP 8.4 avec gd, exif, pcov et xdebug, MySQL 8.4, Redis,
+Mailpit sur :8025, phpMyAdmin sur :8081). Les commandes sont détaillées dans `CLAUDE.md`. Sans `vendor/`,
+l'installation initiale passe par l'image `laravelsail/php84-composer`, comme le recommande la documentation
+de Sail.
 
-```dockerfile
-FROM php:8.1-cli
-RUN apt-get update && apt-get install -y --no-install-recommends git unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev \
- && docker-php-ext-configure gd --with-jpeg --with-freetype \
- && docker-php-ext-install -j$(nproc) gd exif zip pdo_mysql bcmath \
- && pecl install pcov && docker-php-ext-enable pcov \
- && rm -rf /var/lib/apt/lists/*
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-RUN echo "memory_limit=-1" > /usr/local/etc/php/conf.d/mem.ini
-WORKDIR /app
-```
-
-```bash
-docker build -t akipaj-php:8.1 .     # depuis le dossier contenant ce Dockerfile
-docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/app akipaj-php:8.1 composer install
-docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/app akipaj-php:8.1 composer test
-```
-
-Composer 2.10 bloque par défaut l'installation des versions ayant des alertes de sécurité **et** des paquets
-signalés comme malware. Toutes les versions de Laravel 9 ont des alertes : pour une mise à jour ciblée dans
-Laravel 9, désactiver **uniquement** le blocage des alertes (`policy.advisories.block: false` et
-`audit.block-insecure: false` dans une config Composer globale temporaire), **jamais** `--no-blocking`, qui
-désactive aussi le filtre malware.
-
-Données de démo : `php artisan migrate:fresh --seed` en environnement `local` exécute `LocalEnvironmentSeeder`.
-Comptes créés, mot de passe `password` : `michel@test.com` (admin), `henry@test.com` (membre),
-`lucien@test.com` (GUEST).
+Composer bloque l'installation des versions ayant des alertes de sécurité **et** des paquets signalés comme
+malware. Ne jamais utiliser `--no-blocking`, qui désactive aussi le filtre malware. Les paquets `laravel-lang/*`
+ont été retirés pour cette raison (rapports Aikido couvrant la quasi-totalité de leurs versions) ; les
+traductions restent versionnées dans `lang/`.
