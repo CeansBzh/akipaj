@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 
@@ -11,6 +11,7 @@ class ThreadSubscribeButton extends Component
 
     public function mount($commentable)
     {
+        $this->commentable = $commentable;
         // Si l'utilisateur est abonné au commentable on coche la case
         $this->subscribeToThread = auth()->user()->isSubscribedTo($commentable);
     }

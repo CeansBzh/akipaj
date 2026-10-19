@@ -6,18 +6,12 @@ use App\Enums\AlertLevelEnum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 
 class SettingsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(Authenticate::class);
-    }
-
     /**
      * Display the user's profile edit form.
      *

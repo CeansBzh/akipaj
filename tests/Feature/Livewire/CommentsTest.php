@@ -3,7 +3,7 @@
 namespace Tests\Feature\Livewire;
 
 use App\Enums\UserLevelEnum;
-use App\Http\Livewire\Comments;
+use App\Livewire\Comments;
 use App\Models\Comment;
 use App\Models\Payment;
 use App\Models\Photo;
@@ -11,14 +11,14 @@ use App\Notifications\CommentPosted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
-use Livewire\Testing\TestableLivewire;
+use Livewire\Features\SupportTesting\Testable;
 use Tests\TestCase;
 
 class CommentsTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function mountFor(Photo $photo): TestableLivewire
+    protected function mountFor(Photo $photo): Testable
     {
         return Livewire::test(Comments::class, ['commentable' => $photo, 'comments' => $photo->comments]);
     }
@@ -151,7 +151,7 @@ class CommentsTest extends TestCase
         Comment::factory()->for($other, 'commentable')->create(['content' => 'Sur une autre photo']);
 
         $this->mountFor($photo)
-            ->emit('commentsNeedUpdate', $other->id, Photo::class)
+            ->dispatch('commentsNeedUpdate', commentableId: $other->id, commentableType: Photo::class)
             ->assertSee('Sur une autre photo');
     }
 
@@ -161,7 +161,7 @@ class CommentsTest extends TestCase
         $photo = Photo::factory()->create();
         $payment = Payment::factory()->create();
 
-        $this->mountFor($photo)->emit('commentsNeedUpdate', $payment->id, Payment::class)->assertStatus(400);
-        $this->mountFor($photo)->emit('commentsNeedUpdate', 1, 'NotAClass')->assertStatus(400);
+        $this->mountFor($photo)->dispatch('commentsNeedUpdate', commentableId: $payment->id, commentableType: Payment::class)->assertStatus(400);
+        $this->mountFor($photo)->dispatch('commentsNeedUpdate', commentableId: 1, commentableType: 'NotAClass')->assertStatus(400);
     }
 }

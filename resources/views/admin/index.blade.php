@@ -12,6 +12,6 @@
         </div>
     </div>
     <div class="border-t">
-        <livewire:admin.registration-validation>
+        <livewire:admin.registration-validation />
     </div>
 </x-admin-layout>

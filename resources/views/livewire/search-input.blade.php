@@ -25,7 +25,7 @@
             </label>
             <input type="search" id="search-input" aria-labelledby="search-label" autocomplete="off" autocorrect="off"
                 spellcheck="false" enterkeyhint="rechercher" placeholder="Rechercher..." autocapitalize="off"
-                maxlength="64" class="grow border-none py-3 focus:ring-0" autofocus wire:model.debounce="searchTerm"
+                maxlength="64" class="grow border-none py-3 focus:ring-0" autofocus wire:model.live.debounce.300ms="searchTerm"
                 x-ref="searchInput">
             <button type="reset" aria-label="Annuler" x-on:click="$dispatch('close'),$wire.searchTerm=''"
                 class="py-1.5 px-3 text-gray-600">

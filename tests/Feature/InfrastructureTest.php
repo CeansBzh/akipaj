@@ -6,7 +6,6 @@ use App\Enums\AlertLevelEnum;
 use App\Enums\UserLevelEnum;
 use App\Http\Middleware\EnsureHasLevel;
 use App\Models\Photo;
-use App\Models\Trip;
 use App\View\Components\Alert;
 use Illuminate\Console\Scheduling\Event as ScheduledEvent;
 use Illuminate\Console\Scheduling\Schedule;
@@ -14,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
-use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueApiTransport;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoApiTransport;
 use Stripe\StripeClient;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
@@ -30,15 +29,6 @@ class InfrastructureTest extends TestCase
 
         $this->assertCount(1, $events);
         $this->assertSame('0 0 * * *', $events->first()?->expression);
-    }
-
-    public function test_where_like_macro_searches_several_columns(): void
-    {
-        $match = Trip::factory()->create(['title' => 'Rien', 'description' => 'Une REGATE au large']);
-        Trip::factory()->create(['title' => 'Autre', 'description' => 'Croisière']);
-
-        $this->assertSame([$match->id], Trip::whereLike(['title', 'description'], 'regate')->pluck('id')->all());
-        $this->assertSame(2, Trip::whereLike('title', '')->count());
     }
 
     public function test_level_middleware_falls_back_to_guest_for_unknown_levels(): void
@@ -88,13 +78,13 @@ class InfrastructureTest extends TestCase
         $this->assertInstanceOf(StripeClient::class, $this->app->make(StripeClient::class));
     }
 
-    public function test_sendinblue_mailer_is_registered(): void
+    public function test_brevo_mailers_are_registered(): void
     {
-        config(['services.sendinblue.key' => 'xkeysib-test']);
+        config(['services.brevo.key' => 'xkeysib-test']);
 
-        $transport = Mail::mailer('sendinblue')->getSymfonyTransport();
-
-        $this->assertInstanceOf(SendinblueApiTransport::class, $transport);
+        $this->assertInstanceOf(BrevoApiTransport::class, Mail::mailer('brevo')->getSymfonyTransport());
+        // Legacy name used by existing .env files
+        $this->assertInstanceOf(BrevoApiTransport::class, Mail::mailer('sendinblue')->getSymfonyTransport());
     }
 
     public function test_photo_factory_creates_image_files_without_network(): void

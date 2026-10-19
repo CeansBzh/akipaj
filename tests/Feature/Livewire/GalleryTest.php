@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Http\Livewire\Gallery;
-use App\Http\Livewire\Lightbox;
+use App\Livewire\Gallery;
+use App\Livewire\Lightbox;
 use App\Models\Album;
 use App\Models\Comment;
 use App\Models\Photo;
@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Livewire\Livewire;
-use Livewire\Testing\TestableLivewire;
+use Livewire\Features\SupportTesting\Testable;
 use Tests\TestCase;
 
 class GalleryTest extends TestCase
@@ -23,7 +23,7 @@ class GalleryTest extends TestCase
      *
      * @return array<int, int>
      */
-    protected function displayedIds(TestableLivewire $component): array
+    protected function displayedIds(Testable $component): array
     {
         /** @var LengthAwarePaginator<Photo> $photos */
         $photos = $component->viewData('photos');
@@ -95,7 +95,7 @@ class GalleryTest extends TestCase
         $mine = Photo::factory()->for(Album::factory())->create(['user_id' => $user->id]);
         $notMine = Photo::factory()->for(Album::factory())->create(['user_id' => $this->createUser()->id]);
 
-        Livewire::test(Gallery::class)->emit('deleteSelected', [$mine->id, $notMine->id]);
+        Livewire::test(Gallery::class)->dispatch('deleteSelected', selectedIds: [$mine->id, $notMine->id]);
 
         $this->assertSoftDeleted($mine);
         $this->assertNotSoftDeleted($notMine);
@@ -110,8 +110,8 @@ class GalleryTest extends TestCase
         $component = Livewire::test(Lightbox::class);
         $this->assertSame($first->id, $component->get('photo')->id);
 
-        $component->emit('openPhotoLightbox', $second->id)
-            ->assertDispatchedBrowserEvent('open-lightbox')
+        $component->dispatch('openPhotoLightbox', photoId: $second->id)
+            ->assertDispatched('open-lightbox', name: 'photo-lightbox')
             ->assertSee('Seconde photo');
         $this->assertSame($second->id, $component->get('photo')->id);
     }

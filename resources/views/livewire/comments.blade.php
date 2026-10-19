@@ -1,7 +1,7 @@
 <div class="w-full">
     <div class="mb-6 flex flex-col justify-between sm:flex-row">
         <h4 class="text-lg">Commentaires</h4>
-        <livewire:thread-subscribe-button key="{{ now() }}" :commentable="$commentable" />
+        <livewire:thread-subscribe-button :key="'subscribe-' . now()->timestamp" :commentable="$commentable" />
     </div>
     @foreach ($comments as $comment)
         <div class="relative mb-8 grid grid-cols-1 gap-3 rounded-lg border bg-white p-4 shadow-lg">
@@ -43,7 +43,7 @@
                         <div class="mb-4 w-full rounded-lg border border-gray-200 bg-gray-50">
                             <div class="rounded-t-lg bg-white py-2 px-4">
                                 <label for="newContent" class="sr-only">Votre commentaire</label>
-                                <textarea id="newContent" wire:model.defer="newContent" x-data="{
+                                <textarea id="newContent" wire:model="newContent" x-data="{
                                     resize: () => {
                                         $el.style.height = '5px';
                                         $el.style.height = $el.scrollHeight + 'px'
@@ -77,7 +77,7 @@
         <div class="mb-4 w-full rounded-lg border border-gray-200 bg-gray-50">
             <div class="rounded-t-lg bg-white py-2 px-4">
                 <label for="content" class="sr-only">Votre commentaire</label>
-                <textarea id="content" wire:model.defer="content" x-data="{
+                <textarea id="content" wire:model="content" x-data="{
                     resize: () => {
                         $el.style.height = '5px';
                         $el.style.height = $el.scrollHeight + 'px'

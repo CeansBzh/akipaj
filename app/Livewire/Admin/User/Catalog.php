@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Admin\User;
+namespace App\Livewire\Admin\User;
 
 use App\Models\User;
 use Livewire\Component;
@@ -22,7 +22,7 @@ class Catalog extends Component
     public function render()
     {
         return view('admin.user.livewire.catalog', [
-            'users' => User::whereLike(['name', 'email'], $this->searchTerm ?? '')
+            'users' => User::whereAny(['name', 'email'], 'like', '%' . ($this->searchTerm ?? '') . '%')
                 ->when($this->level != -1, function ($query) {
                     $query->where('level', $this->level);
                 })

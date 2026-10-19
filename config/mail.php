@@ -61,8 +61,13 @@ return [
             "path" => env("MAIL_SENDMAIL_PATH", "/usr/sbin/sendmail -bs -i"),
         ],
 
+        "brevo" => [
+            "transport" => "brevo",
+        ],
+
+        // Legacy name of the Brevo mailer, kept for existing MAIL_MAILER=sendinblue configurations
         "sendinblue" => [
-            "transport" => "sendinblue",
+            "transport" => "brevo",
         ],
 
         "log" => [

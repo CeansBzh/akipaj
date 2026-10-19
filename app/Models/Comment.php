@@ -16,7 +16,7 @@ class Comment extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'user_id',
@@ -25,6 +25,8 @@ class Comment extends Model
 
     /**
      * Get the user that wrote the comment.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -33,6 +35,8 @@ class Comment extends Model
 
     /**
      * Get the parent commentable model.
+     *
+     * @return MorphTo<Model, $this>
      */
     public function commentable(): MorphTo
     {

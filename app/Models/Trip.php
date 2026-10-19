@@ -31,6 +31,8 @@ class Trip extends Model
 
     /**
      * Get the users for the trip.
+     *
+     * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
     {
@@ -39,6 +41,8 @@ class Trip extends Model
 
     /**
      * Get the albums for the trip.
+     *
+     * @return BelongsToMany<Album, $this>
      */
     public function albums(): BelongsToMany
     {
@@ -47,6 +51,8 @@ class Trip extends Model
 
     /**
      * Get the boats for the trip.
+     *
+     * @return HasMany<Boat, $this>
      */
     public function boats(): HasMany
     {

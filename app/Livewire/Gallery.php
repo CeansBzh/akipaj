@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\User;
 use App\Models\Album;
 use App\Models\Photo;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -25,8 +26,6 @@ class Gallery extends Component
     public $albums;
     // With count term to add to the query
     public $withCount = null;
-
-    protected $listeners = ['resetFilters', 'deleteSelected'];
 
     public function mount()
     {
@@ -64,6 +63,7 @@ class Gallery extends Component
         }
     }
 
+    #[On('resetFilters')]
     public function resetFilters()
     {
         $this->usersFilter = null;
@@ -84,6 +84,7 @@ class Gallery extends Component
         }
     }
 
+    #[On('deleteSelected')]
     public function deleteSelected($selectedIds)
     {
         $photos = Photo::whereIn('id', $selectedIds)->get();
@@ -111,7 +112,7 @@ class Gallery extends Component
                 return $query->whereIn('id', $this->photoIds);
             })
                 ->when($this->searchTerm, function ($query) {
-                    return $query->whereLike(['title', 'legend'], $this->searchTerm);
+                    return $query->whereAny(['title', 'legend'], 'like', '%' . $this->searchTerm . '%');
                 })
                 ->when($this->usersFilter, function ($query) {
                     return $query->whereIn('user_id', $this->usersFilter);

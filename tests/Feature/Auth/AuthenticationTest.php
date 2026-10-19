@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,7 +24,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect(route('home', absolute: false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
@@ -58,7 +57,7 @@ class AuthenticationTest extends TestCase
     {
         $this->actingAsMember();
 
-        $this->get(route('login'))->assertRedirect(RouteServiceProvider::HOME);
+        $this->get(route('login'))->assertRedirect(route('home', absolute: false));
     }
 
     public function test_users_can_logout(): void

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\UserLevelEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 /**
@@ -43,9 +44,7 @@ class AccessControlTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider memberPagesProvider
-     */
+    #[DataProvider('memberPagesProvider')]
     public function test_visitors_are_redirected_to_login_from_member_pages(string $url): void
     {
         $this->get($url)
@@ -53,9 +52,7 @@ class AccessControlTest extends TestCase
             ->assertSessionHas('status');
     }
 
-    /**
-     * @dataProvider memberPagesProvider
-     */
+    #[DataProvider('memberPagesProvider')]
     public function test_guest_level_users_are_redirected_to_their_profile_from_member_pages(string $url): void
     {
         $user = $this->actingAsLevel(UserLevelEnum::GUEST);
@@ -63,9 +60,7 @@ class AccessControlTest extends TestCase
         $this->get($url)->assertRedirect(route('profile.show', $user->name));
     }
 
-    /**
-     * @dataProvider memberPagesProvider
-     */
+    #[DataProvider('memberPagesProvider')]
     public function test_members_can_access_member_pages(string $url): void
     {
         $this->actingAsMember();
@@ -73,9 +68,7 @@ class AccessControlTest extends TestCase
         $this->get($url)->assertOk();
     }
 
-    /**
-     * @dataProvider memberPagesProvider
-     */
+    #[DataProvider('memberPagesProvider')]
     public function test_contributors_can_access_member_pages(string $url): void
     {
         $this->actingAsLevel(UserLevelEnum::CONTRIBUTOR);
@@ -83,9 +76,7 @@ class AccessControlTest extends TestCase
         $this->get($url)->assertOk();
     }
 
-    /**
-     * @dataProvider adminPagesProvider
-     */
+    #[DataProvider('adminPagesProvider')]
     public function test_members_are_forbidden_from_admin_pages(string $url): void
     {
         $this->actingAsMember();
@@ -93,9 +84,7 @@ class AccessControlTest extends TestCase
         $this->get($url)->assertForbidden();
     }
 
-    /**
-     * @dataProvider adminPagesProvider
-     */
+    #[DataProvider('adminPagesProvider')]
     public function test_administrators_can_access_admin_pages(string $url): void
     {
         $this->actingAsAdmin();

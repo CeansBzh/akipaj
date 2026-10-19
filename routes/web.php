@@ -13,17 +13,6 @@ use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 // Home
 Route::get('/', function () {
     if (auth()->check()) {
@@ -31,24 +20,24 @@ Route::get('/', function () {
     } else {
         return view('index');
     }
-});
+})->name('home');
 Route::view('mentions-legales', 'legal')->name('legal');
 
-// Users
-Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
+// Profiles (access is checked in the controller)
 Route::get('profil/{username?}', [ProfileController::class, 'show'])->name('profile.show');
 
-// Settings
-Route::get('compte', [SettingsController::class, 'edit'])->name('settings.edit');
-Route::patch('compte', [SettingsController::class, 'update'])->name('settings.update');
-Route::delete('compte', [SettingsController::class, 'destroy'])->name('settings.destroy');
-
 Route::middleware('auth')->group(function () {
+    // Settings
+    Route::get('compte', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('compte', [SettingsController::class, 'update'])->name('settings.update');
+    Route::delete('compte', [SettingsController::class, 'destroy'])->name('settings.destroy');
+
     Route::get('/virements', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('/virements/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/virements', [PaymentController::class, 'store'])->name('payments.store');
 
     Route::middleware('level:' . UserLevelEnum::MEMBER->value)->group(function () {
+        Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
         Route::resources([
             'articles' => ArticleController::class,
             'albums' => AlbumController::class,

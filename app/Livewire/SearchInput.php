@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\Trip;
 use App\Models\Album;
@@ -30,7 +30,7 @@ class SearchInput extends Component
             return;
         }
 
-        $trips = Trip::whereLike(['title', 'description'], $trimmed)->get();
+        $trips = Trip::whereAny(['title', 'description'], 'like', '%' . $trimmed . '%')->get();
         // If trips are found, add them to the search results
         if ($trips->isNotEmpty()) {
             $this->searchResults['Sorties'] = $trips->map(function ($trip) {
@@ -41,7 +41,7 @@ class SearchInput extends Component
             })->toArray();
         }
 
-        $albums = Album::whereLike(['title', 'description'], $trimmed)->get();
+        $albums = Album::whereAny(['title', 'description'], 'like', '%' . $trimmed . '%')->get();
         // If albums are found, add them to the search results
         if ($albums->isNotEmpty()) {
             $this->searchResults['Albums'] = $albums->map(function ($album) {
@@ -52,7 +52,7 @@ class SearchInput extends Component
             })->toArray();
         }
 
-        $photos = Photo::whereLike(['title', 'legend'], $trimmed)->get();
+        $photos = Photo::whereAny(['title', 'legend'], 'like', '%' . $trimmed . '%')->get();
         // If photos are found, add them to the search results
         if ($photos->isNotEmpty()) {
             $this->searchResults['Photos'] = $photos->map(function ($photo) {
@@ -63,7 +63,7 @@ class SearchInput extends Component
             })->toArray();
         }
 
-        $articles = Article::whereLike(['title', 'summary'], $trimmed)->get();
+        $articles = Article::whereAny(['title', 'summary'], 'like', '%' . $trimmed . '%')->get();
         // If articles are found, add them to the search results
         if ($articles->isNotEmpty()) {
             $this->searchResults['Articles'] = $articles->map(function ($article) {
@@ -74,7 +74,7 @@ class SearchInput extends Component
             })->toArray();
         }
 
-        $events = Event::whereLike(['name', 'description'], $trimmed)->get();
+        $events = Event::whereAny(['name', 'description'], 'like', '%' . $trimmed . '%')->get();
         // If events are found, add them to the search results
         if ($events->isNotEmpty()) {
             $this->searchResults['Événements'] = $events->map(function ($event) {

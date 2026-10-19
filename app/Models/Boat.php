@@ -13,7 +13,7 @@ class Boat extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -27,6 +27,8 @@ class Boat extends Model
 
     /**
      * Get the trip that owns the boat.
+     *
+     * @return BelongsTo<Trip, $this>
      */
     public function trip(): BelongsTo
     {

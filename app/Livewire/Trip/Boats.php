@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Trip;
+namespace App\Livewire\Trip;
 
 use Livewire\Component;
 

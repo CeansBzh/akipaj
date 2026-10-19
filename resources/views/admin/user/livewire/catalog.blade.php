@@ -1,13 +1,13 @@
 <div>
     <div class="my-2 flex flex-col sm:flex-row">
         <div class="mb-1 flex flex-row sm:mb-0">
-            <select wire:model="paginate"
+            <select wire:model.live="paginate"
                 class="block h-full w-full appearance-none rounded-l border border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none">
                 <option value="5">5</option>
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
             </select>
-            <select wire:model="level"
+            <select wire:model.live="level"
                 class="block h-full w-full appearance-none rounded-r border-t border-r border-b border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-l focus:border-r focus:border-gray-500 focus:bg-white focus:outline-none sm:rounded-r-none sm:border-r-0">
                 <option value="-1">Tous</option>
                 @foreach (\App\Enums\UserLevelEnum::class::cases() as $level)
@@ -23,7 +23,7 @@
                     </path>
                 </svg>
             </span>
-            <input placeholder="Rechercher" wire:model="searchTerm" type="text"
+            <input placeholder="Rechercher" wire:model.live.debounce.300ms="searchTerm" type="text"
                 class="block w-full appearance-none rounded-r rounded-l border border-b border-gray-400 bg-white py-2 pl-8 pr-6 text-sm text-gray-700 placeholder-gray-400 focus:bg-white focus:text-gray-700 focus:placeholder-gray-600 focus:outline-none sm:rounded-l-none" />
         </div>
     </div>

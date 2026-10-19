@@ -15,7 +15,7 @@ class Payment extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'user_id',
@@ -25,6 +25,8 @@ class Payment extends Model
 
     /**
      * Get the user that owns the payment.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {

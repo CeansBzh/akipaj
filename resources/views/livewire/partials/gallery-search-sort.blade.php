@@ -9,7 +9,7 @@
                 </svg>
             </div>
 
-            <x-text-input type="text" placeholder="Rechercher par titre ou légende" wire:model="searchTerm"
+            <x-text-input type="text" placeholder="Rechercher par titre ou légende" wire:model.live.debounce.300ms="searchTerm"
                 class="w-full px-8 py-3 text-sm text-gray-500 xs:rounded-r-none xs:rounded-l-md" />
         </div>
         <x-secondary-button class="mb-2 focus:ring-offset-0 xs:rounded-r-md xs:rounded-l-none" ::class="{ 'ring-2': open }"
@@ -25,7 +25,7 @@
             </div>
         </x-secondary-button>
 
-        <x-select-input wire:model="sortTerm" class="mb-2 ml-2 text-gray-500">
+        <x-select-input wire:model.live="sortTerm" class="mb-2 ml-2 text-gray-500">
             <option value="taken_desc">Date (décroissant)</option>
             <option value="taken_asc">Date (croissant)</option>
             <option value="most_comments">Commentaires</option>

@@ -1,7 +1,7 @@
 <section x-data="albumList()">
     @if ($albums->count() > 0)
         <div class="mb-5 w-full text-right">
-            <x-select-input wire:model="sortTerm" class="text-gray-500">
+            <x-select-input wire:model.live="sortTerm" class="text-gray-500">
                 <option value="date_desc" selected>Date (décroissant)</option>
                 <option value="date_asc">Date (croissant)</option>
             </x-select-input>

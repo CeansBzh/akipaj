@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\File;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
-
     /**
      * Temporary directory used as the public path during the test.
      */
@@ -27,7 +25,7 @@ abstract class TestCase extends BaseTestCase
         // point the public path to a temporary directory so the tests don't touch the real one.
         $this->publicPath = sys_get_temp_dir() . '/akipaj-public-' . uniqid();
         File::ensureDirectoryExists($this->publicPath . '/storage/photos/thumbs');
-        $this->app->instance('path.public', $this->publicPath);
+        $this->app->usePublicPath($this->publicPath);
     }
 
     protected function tearDown(): void

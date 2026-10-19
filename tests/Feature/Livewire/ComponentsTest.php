@@ -4,12 +4,12 @@ namespace Tests\Feature\Livewire;
 
 use App\Enums\UserLevelEnum;
 use App\Events\RegistrationValidated;
-use App\Http\Livewire\Admin\RegistrationValidation;
-use App\Http\Livewire\Admin\User\Catalog;
-use App\Http\Livewire\Album\AlbumList;
-use App\Http\Livewire\SearchInput;
-use App\Http\Livewire\ThreadSubscribeButton;
-use App\Http\Livewire\Trip\Boats;
+use App\Livewire\Admin\RegistrationValidation;
+use App\Livewire\Admin\User\Catalog;
+use App\Livewire\Album\AlbumList;
+use App\Livewire\SearchInput;
+use App\Livewire\ThreadSubscribeButton;
+use App\Livewire\Trip\Boats;
 use App\Models\Album;
 use App\Models\Article;
 use App\Models\Event;

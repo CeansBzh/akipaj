@@ -14,7 +14,7 @@ class ThreadSubscription extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'user_id',
@@ -22,6 +22,8 @@ class ThreadSubscription extends Model
 
     /**
      * Get the user that is subscribed.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -30,6 +32,8 @@ class ThreadSubscription extends Model
 
     /**
      * Get the parent subscribeable model.
+     *
+     * @return MorphTo<Model, $this>
      */
     public function subscribeable(): MorphTo
     {

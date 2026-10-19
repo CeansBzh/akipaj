@@ -6,7 +6,6 @@ use App\Enums\UserLevelEnum;
 use App\Models\User;
 use App\Notifications\AccountCreated;
 use App\Notifications\RegistrationSuccessful;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -32,7 +31,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect(route('home', absolute: false));
 
         $user = User::where('email', 'test@example.com')->firstOrFail();
         // New accounts must be validated by an administrator

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use App\Models\Comment;
 use App\Traits\Commentable;
 use App\Notifications\CommentPosted;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -32,13 +33,12 @@ class Comments extends Component
     public $commentIdToDestroy;
     public $commentIdToUpdate;
 
-    protected $listeners = ['commentsNeedUpdate' => 'updateComments'];
-
     protected $rules = [
         'content' => 'required_without:newContent|nullable|string',
         'newContent' => 'required_without:content|nullable|string'
     ];
 
+    #[On('commentsNeedUpdate')]
     public function updateComments($commentableId, $commentableType)
     {
         // The type comes from the client: only accept models using the Commentable trait
@@ -82,8 +82,9 @@ class Comments extends Component
         }
     }
 
-    public function update(Comment $comment)
+    public function update(int $commentId)
     {
+        $comment = Comment::findOrFail($commentId);
         $this->authorize('update', $comment);
         $this->validate();
 
@@ -107,8 +108,9 @@ class Comments extends Component
         }
     }
 
-    public function destroy(Comment $comment)
+    public function destroy(int $commentId)
     {
+        $comment = Comment::findOrFail($commentId);
         $this->authorize('delete', $comment);
         $comment->delete();
         $this->updateComments($this->commentable->id, get_class($this->commentable));

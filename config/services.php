@@ -30,7 +30,8 @@ return [
         "region" => env("AWS_DEFAULT_REGION", "us-east-1"),
     ],
 
-    "sendinblue" => [
-        "key" => env("SENDINBLUE_API_KEY"),
+    // Brevo (formerly Sendinblue): SENDINBLUE_API_KEY is still read for existing .env files
+    "brevo" => [
+        "key" => env("BREVO_API_KEY", env("SENDINBLUE_API_KEY")),
     ],
 ];

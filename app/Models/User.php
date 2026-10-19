@@ -27,7 +27,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -48,7 +48,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = ['password', 'remember_token'];
 
@@ -72,6 +72,8 @@ class User extends Authenticatable
 
     /**
      * Get the photos for the user.
+     *
+     * @return HasMany<Photo, $this>
      */
     public function photos(): HasMany
     {
@@ -80,6 +82,8 @@ class User extends Authenticatable
 
     /**
      * Get the comments sent by the user.
+     *
+     * @return HasMany<Comment, $this>
      */
     public function commentsSent(): HasMany
     {
@@ -88,6 +92,8 @@ class User extends Authenticatable
 
     /**
      * Get the payments for the user.
+     *
+     * @return HasMany<Payment, $this>
      */
     public function payments(): HasMany
     {
@@ -96,6 +102,8 @@ class User extends Authenticatable
 
     /**
      * Get the trips for the user.
+     *
+     * @return BelongsToMany<Trip, $this>
      */
     public function trips(): BelongsToMany
     {
@@ -104,6 +112,8 @@ class User extends Authenticatable
 
     /**
      * Get the thread subscriptions for the user.
+     *
+     * @return HasMany<ThreadSubscription, $this>
      */
     public function threadSubscriptions(): HasMany
     {

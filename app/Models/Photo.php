@@ -16,7 +16,7 @@ class Photo extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'title',
@@ -34,6 +34,8 @@ class Photo extends Model
 
     /**
      * Get the album that owns the photo.
+     *
+     * @return BelongsTo<Album, $this>
      */
     public function album(): BelongsTo
     {
@@ -42,6 +44,8 @@ class Photo extends Model
 
     /**
      * Get the user that owns the photo.
+     *
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {

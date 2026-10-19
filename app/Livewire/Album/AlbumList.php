@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Album;
+namespace App\Livewire\Album;
 
 use App\Models\Album;
 use Livewire\Component;

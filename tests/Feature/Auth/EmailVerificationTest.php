@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,7 +29,7 @@ class EmailVerificationTest extends TestCase
     {
         $this->actingAsMember();
 
-        $this->get(route('verification.notice'))->assertRedirect(RouteServiceProvider::HOME);
+        $this->get(route('verification.notice'))->assertRedirect(route('home', absolute: false));
     }
 
     public function test_email_can_be_verified(): void
@@ -44,7 +43,7 @@ class EmailVerificationTest extends TestCase
             'hash' => sha1($user->email),
         ]);
 
-        $this->get($verificationUrl)->assertRedirect(RouteServiceProvider::HOME . '?verified=1');
+        $this->get($verificationUrl)->assertRedirect(route('home', absolute: false) . '?verified=1');
 
         $this->assertTrue($user->fresh()?->hasVerifiedEmail());
         // The Verified event is only dispatched for MustVerifyEmail users
@@ -71,7 +70,7 @@ class EmailVerificationTest extends TestCase
         Notification::fake();
         $this->actingAsMember();
 
-        $this->post(route('verification.send'))->assertRedirect(RouteServiceProvider::HOME);
+        $this->post(route('verification.send'))->assertRedirect(route('home', absolute: false));
 
         Notification::assertNothingSent();
     }

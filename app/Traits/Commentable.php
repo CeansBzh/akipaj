@@ -14,19 +14,18 @@ trait Commentable
     use CascadeSoftDeletes;
 
     /**
-     * Initialize the commentable trait for a model. Add the cascadeDeletes property if it doesn't already exist.
+     * Initialize the commentable trait for a model: soft delete the comments along with the model.
+     * Models using this trait must declare the $cascadeDeletes property (CascadeSoftDeletes).
      */
-    public function initializeCommentable()
+    public function initializeCommentable(): void
     {
-        if (property_exists($this, 'cascadeDeletes')) {
-            $this->cascadeDeletes = array_unique(array_merge($this->cascadeDeletes, ['comments']));
-        } else {
-            $this->cascadeDeletes = ['comments'];
-        }
+        $this->cascadeDeletes = array_values(array_unique([...$this->cascadeDeletes, 'comments']));
     }
 
     /**
      * Get all of the model's comments.
+     *
+     * @return MorphMany<Comment, $this>
      */
     public function comments(): MorphMany
     {
@@ -35,6 +34,8 @@ trait Commentable
 
     /**
      * Get all of the subscriptions for the commentable.
+     *
+     * @return MorphMany<ThreadSubscription, $this>
      */
     public function subscriptions(): MorphMany
     {
@@ -43,6 +44,8 @@ trait Commentable
 
     /**
      * Get all of the users subscribed to the commentable.
+     *
+     * @return BelongsToMany<User, $this>
      */
     public function subscribers(): BelongsToMany
     {

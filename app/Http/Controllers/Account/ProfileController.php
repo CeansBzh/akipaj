@@ -6,15 +6,9 @@ use App\Enums\UserLevelEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\Authenticate;
 
 class ProfileController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware([Authenticate::class, 'level:' . UserLevelEnum::MEMBER->value], ['only' => ['index']]);
-    }
-
     /**
      * Display the user profile.
      *

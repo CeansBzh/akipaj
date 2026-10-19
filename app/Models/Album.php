@@ -17,7 +17,7 @@ class Album extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'title',
@@ -37,6 +37,8 @@ class Album extends Model
 
     /**
      * Get the photos for the album.
+     *
+     * @return HasMany<Photo, $this>
      */
     public function photos(): HasMany
     {
@@ -45,6 +47,8 @@ class Album extends Model
 
     /**
      * Get the trips for the album.
+     *
+     * @return BelongsToMany<Trip, $this>
      */
     public function trips(): BelongsToMany
     {
@@ -53,6 +57,8 @@ class Album extends Model
 
     /**
      * Get the albums's oldest uploaded photo (not necessarily the oldest photo realtime-wise).
+     *
+     * @return HasOne<Photo, $this>
      */
     public function oldestPhoto(): HasOne
     {

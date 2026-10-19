@@ -19,6 +19,7 @@ class PhotoTest extends TestCase
         $this->actingAsMember();
         Photo::factory()->create();
 
+        // @phpstan-ignore method.notFound (macro registered by Livewire)
         $this->get(route('photos.index'))->assertOk()->assertViewIs('photo.index')->assertSeeLivewire('gallery');
     }
 

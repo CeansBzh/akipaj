@@ -55,11 +55,13 @@
                         resizeAllGridItems();
                         window.addEventListener('resize', resizeAllGridItems);
                         // When a message is sent to the livewire component we reload the grid (for example when we filter the gallery)
-                        Livewire.hook('message.processed', (message, component) => {
-                            items = document.querySelectorAll('[data-role=gallery-item]');
-                            for (x = 0; x < items.length; x++) {
-                                imagesLoaded(items[x], resizeInstance);
-                            }
+                        Livewire.hook('commit', ({ succeed }) => {
+                            succeed(() => queueMicrotask(() => {
+                                items = document.querySelectorAll('[data-role=gallery-item]');
+                                for (x = 0; x < items.length; x++) {
+                                    imagesLoaded(items[x], resizeInstance);
+                                }
+                            }));
                         })
                         // Listen for keyboard arrows navigation
                         document.addEventListener('keyup', (e) => {
@@ -120,7 +122,7 @@
                         });
                     },
                     deleteSelected: function() {
-                        Livewire.emit('deleteSelected', this.selectedImages);
+                        Livewire.dispatch('deleteSelected', { selectedIds: this.selectedImages });
                         this.stopSelection();
                     },
                     toggleSelectedStyle: function(item) {
@@ -143,7 +145,7 @@
                     openPhotoLightbox: function(photoId) {
                         if (this.selectedImages.length === 0) {
                             this.lightboxPhotoId = photoId;
-                            Livewire.emit('openPhotoLightbox', photoId);
+                            Livewire.dispatch('openPhotoLightbox', { photoId: photoId });
                         }
                     },
                     lightboxGoLeft: function() {
@@ -153,7 +155,7 @@
                         if (previous !== null) {
                             let id = previous.id.split('-')[1];
                             this.lightboxPhotoId = id;
-                            Livewire.emit('loadPhoto', id);
+                            Livewire.dispatch('loadPhoto', { photoId: id });
                         }
                     },
                     lightboxGoRight: function() {
@@ -163,7 +165,7 @@
                         if (next !== null) {
                             let id = next.id.split('-')[1];
                             this.lightboxPhotoId = id;
-                            Livewire.emit('loadPhoto', id);
+                            Livewire.dispatch('loadPhoto', { photoId: id });
                         }
                     },
                 }

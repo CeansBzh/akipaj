@@ -2,54 +2,46 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
+use DavidBadura\FakerMarkdownGenerator\FakerProvider as MarkdownFakerProvider;
+use Faker\Generator as FakerGenerator;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stripe\StripeClient;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
-use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         // The array form accepts a missing key, so the app boots even when Stripe isn't configured
         $this->app->bind(StripeClient::class, fn () => new StripeClient(['api_key' => config('stripe.secret_key')]));
+
+        // Markdown generator for the factories (dev dependency, only used when Faker is resolved)
+        $this->app->afterResolving(FakerGenerator::class, function (FakerGenerator $faker) {
+            $faker->addProvider(new MarkdownFakerProvider($faker));
+        });
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Carbon::setLocale(config('app.locale'));
-        // Source: https://freek.dev/1182-searching-models-using-a-where-like-query-in-laravel#adding-support-for-relations
-        Builder::macro('whereLike', function ($attributes, string $searchTerm) {
-            $this->where(function (Builder $query) use ($attributes, $searchTerm) {
-                foreach (Arr::wrap($attributes) as $attribute) {
-                    $query->orWhere($attribute, 'LIKE', "%{$searchTerm}%");
-                }
-            });
 
-            return $this;
-        });
-        // Source: doc officielle de Laravel
-        Mail::extend('sendinblue', function () {
-            return (new SendinblueTransportFactory)->create(
-                new Dsn(
-                    'sendinblue+api',
-                    'default',
-                    config('services.sendinblue.key')
-                )
+        Route::bind('username', fn (string $username) => User::findByUsername($username));
+
+        // Brevo (formerly Sendinblue) API transport. The "sendinblue" mailer name is kept for existing .env files.
+        Mail::extend('brevo', function () {
+            return (new BrevoTransportFactory())->create(
+                new Dsn('brevo+api', 'default', config('services.brevo.key')),
             );
         });
     }
