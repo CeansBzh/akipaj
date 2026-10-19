@@ -33,6 +33,7 @@ jobs:
             artisan
             docker-compose.yml
             phpunit.xml
+            phpstan.neon
             postcss.config.js
             tailwind.config.js
             vite.config.js
