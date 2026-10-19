@@ -33,6 +33,24 @@ class HomepageTest extends TestCase
             ->assertSee('Régate de printemps');
     }
 
+    public function test_add_to_agenda_script_encodes_event_values(): void
+    {
+        $this->actingAsMember();
+        Event::factory()->create([
+            'name' => 'Sortie "pirate"',
+            'location' => "1 rue du Port\n29200 Brest",
+            'start_time' => now()->addWeek(),
+            'end_time' => now()->addWeek(),
+        ]);
+
+        // A raw line break or quote inside the JS string literal would be a syntax error in the browser
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee("1 rue du Port\n29200 Brest", false)
+            ->assertDontSee('name: "Sortie "pirate""', false)
+            ->assertSee('atcb_action', false);
+    }
+
     public function test_legal_page_is_public(): void
     {
         $this->get(route('legal'))->assertOk()->assertViewIs('legal');
