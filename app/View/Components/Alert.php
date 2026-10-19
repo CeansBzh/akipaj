@@ -31,7 +31,7 @@ class Alert extends Component
     /**
      * Create a new component instance.
      *
-     * @param  string  $level
+     * @param  \App\Enums\AlertLevelEnum  $level
      * @param  mixed   $message
      */
     public function __construct(AlertLevelEnum $level = AlertLevelEnum::INFO, $message = '')

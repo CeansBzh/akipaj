@@ -77,7 +77,7 @@ class TripPolicy
      */
     public function restore(User $user, Trip $trip)
     {
-        //
+        return false;
     }
 
     /**
@@ -89,6 +89,6 @@ class TripPolicy
      */
     public function forceDelete(User $user, Trip $trip)
     {
-        //
+        return false;
     }
 }

@@ -30,12 +30,13 @@ class ProfileController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function show(Request $request, User $user = null)
     {
+        $currentUser = $request->user();
         // If the user is logged in and not a guest, or if the requested user is the current user, show the profile
-        if ($user && ($user == $request->user() || !$request->user()->isGuest())) {
+        if ($user && $currentUser && ($user->is($currentUser) || !$currentUser->isGuest())) {
             $user->loadCount('photos');
             $tripsByYear = $user
                 ->trips()
@@ -50,8 +51,8 @@ class ProfileController extends Controller
             return view('profile.show', compact('user', 'tripsByYear'));
         }
 
-        if ($request->user()) {
-            return redirect()->route('profile.show', $request->user()->name);
+        if ($currentUser) {
+            return redirect()->route('profile.show', $currentUser->name);
         }
 
         abort(404);

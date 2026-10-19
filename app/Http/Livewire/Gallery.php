@@ -76,10 +76,8 @@ class Gallery extends Component
             case 'most_comments':
                 $this->withCount = 'comments';
                 return ['comments_count', 'desc'];
-                break;
             case 'taken_asc':
                 return ['taken_at', 'asc'];
-                break;
             case 'taken_desc':
             default:
                 return ['taken_at', 'desc'];

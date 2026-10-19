@@ -90,7 +90,7 @@ class CommentPolicy
      */
     public function restore(User $user, Comment $comment)
     {
-        //
+        return false;
     }
 
     /**
@@ -102,6 +102,6 @@ class CommentPolicy
      */
     public function forceDelete(User $user, Comment $comment)
     {
-        //
+        return false;
     }
 }

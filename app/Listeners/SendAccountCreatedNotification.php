@@ -15,16 +15,18 @@ class SendAccountCreatedNotification
     /**
      * Handle the event.
      *
-     * @param  \App\Events\Registered  $event
+     * @param  \Illuminate\Auth\Events\Registered  $event
      * @return void
      */
     public function handle(Registered $event)
     {
+        /** @var User $newUser */
+        $newUser = $event->user;
         // Information des admins de la création d'un compte
-        User::where('level', UserLevelEnum::ADMINISTRATOR)->each(function (User $user) use ($event) {
-            $user->notify(new AccountCreated($event->user));
+        User::where('level', UserLevelEnum::ADMINISTRATOR)->each(function (User $user) use ($newUser) {
+            $user->notify(new AccountCreated($newUser));
         });
         // Information de l'utilisateur de la création de son compte
-        $event->user->notify(new RegistrationSuccessful($event->user));
+        $newUser->notify(new RegistrationSuccessful());
     }
 }

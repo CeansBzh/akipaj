@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\ServiceProvider;
+use Stripe\StripeClient;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
 
@@ -19,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // The array form accepts a missing key, so the app boots even when Stripe isn't configured
+        $this->app->bind(StripeClient::class, fn () => new StripeClient(['api_key' => config('stripe.secret_key')]));
     }
 
     /**

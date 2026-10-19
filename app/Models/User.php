@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\UserLevelEnum;
@@ -11,6 +13,7 @@ use App\Models\Payment;
 use App\Traits\Commentable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
@@ -70,7 +73,7 @@ class User extends Authenticatable
     /**
      * Get the photos for the user.
      */
-    public function photos()
+    public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
     }
@@ -78,7 +81,7 @@ class User extends Authenticatable
     /**
      * Get the comments sent by the user.
      */
-    public function commentsSent()
+    public function commentsSent(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
@@ -86,7 +89,7 @@ class User extends Authenticatable
     /**
      * Get the payments for the user.
      */
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
@@ -94,7 +97,7 @@ class User extends Authenticatable
     /**
      * Get the trips for the user.
      */
-    public function trips()
+    public function trips(): BelongsToMany
     {
         return $this->belongsToMany(Trip::class);
     }
@@ -102,7 +105,7 @@ class User extends Authenticatable
     /**
      * Get the thread subscriptions for the user.
      */
-    public function threadSubscriptions()
+    public function threadSubscriptions(): HasMany
     {
         return $this->hasMany(ThreadSubscription::class);
     }
@@ -130,12 +133,15 @@ class User extends Authenticatable
     /**
      * Check if user is subscribed to the specified commentable.
      *
-     * @param  \App\Traits\Commentable  $commentable
+     * @param  \Illuminate\Database\Eloquent\Model  $commentable  A model using the Commentable trait
      */
-    public function isSubscribedTo($commentable)
+    public function isSubscribedTo(Model $commentable): bool
     {
         if (in_array(Commentable::class, class_uses_recursive($commentable::class))) {
-            return $this->threadSubscriptions->contains('subscribeable_id', $commentable->id);
+            return $this->threadSubscriptions->contains(
+                fn (ThreadSubscription $subscription) => $subscription->subscribeable_id == $commentable->getKey()
+                    && $subscription->subscribeable_type === $commentable->getMorphClass(),
+            );
         }
         return false;
     }
@@ -157,8 +163,9 @@ class User extends Authenticatable
      */
     protected function pruning()
     {
-        $this->photos()->forceDelete();
-        $this->commentsSent()->forceDelete();
-        $this->roles()->detach();
+        // The photos were soft deleted along with the user (cascadeDeletes): include the trashed ones
+        $this->photos()->withTrashed()->forceDelete();
+        $this->commentsSent()->withTrashed()->forceDelete();
+        $this->trips()->detach();
     }
 }

@@ -16,12 +16,12 @@ class EventFactory extends Factory
      */
     public function definition()
     {
-        $start = fake()->dateTimeBetween('today', '+2 year');
+        $start = fake()->dateTimeBetween('+1 hour', '+2 year');
         $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
 
         return [
-            'name' => fake()->sentence,
-            'description' => fake()->paragraph,
+            'name' => fake()->text(50), // Same limits as the form validation
+            'description' => fake()->text(140),
             'location' => fake()->address,
             'start_time' => $start,
             'end_time' => fake()->boolean(20) ? $start : $end,

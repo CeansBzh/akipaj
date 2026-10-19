@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Trip;
 use App\Enums\AlertLevelEnum;
 use Illuminate\Support\Facades\Storage;
@@ -23,9 +25,9 @@ class TripController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('trip.index')->with(
             'tripsByYear',
@@ -41,9 +43,9 @@ class TripController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): View
     {
         // TODO import données depuis évenement programme existant (titre, dates, description ?)
         return view('trip.create');
@@ -53,9 +55,9 @@ class TripController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\Trip\StoreTripRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreTripRequest $request)
+    public function store(StoreTripRequest $request): RedirectResponse
     {
         $trip = new Trip();
         $trip->title = $request->title;
@@ -91,9 +93,9 @@ class TripController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function show(Trip $trip)
+    public function show(Trip $trip): View
     {
         return view('trip.show')->with('trip', Trip::findOrFail($trip->id));
     }
@@ -102,9 +104,9 @@ class TripController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function edit(Trip $trip)
+    public function edit(Trip $trip): View
     {
         return view('trip.edit')->with('trip', $trip->load('boats'));
     }
@@ -114,9 +116,9 @@ class TripController extends Controller
      *
      * @param  \App\Http\Requests\Trip\UpdateTripRequest  $request
      * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateTripRequest $request, Trip $trip)
+    public function update(UpdateTripRequest $request, Trip $trip): RedirectResponse
     {
         $trip = Trip::findOrFail($trip->id);
         $trip->title = $request->title;
@@ -148,18 +150,15 @@ class TripController extends Controller
         // Modification des bateaux
         if ($request->has('boats')) {
             // Mise à jour des bateaux existants et création des nouveaux
+            $savedBoatIds = [];
             foreach ($request->boats as $boat) {
-                if (isset($boat['id'])) {
-                    $boat['id'] = (int) $boat['id'];
-                }
-
-                $trip->boats()->updateOrCreate(
-                    ['id' => $boat['id']],
+                $savedBoatIds[] = $trip->boats()->updateOrCreate(
+                    ['id' => isset($boat['id']) ? (int) $boat['id'] : null],
                     ['name' => $boat['name'], 'type' => $boat['type'], 'year' => $boat['year'], 'builder' => $boat['builder'], 'renter' => $boat['renter'], 'city' => $boat['city'], 'crew' => $boat['crew']]
-                );
+                )->id;
             }
-            // Suppression des bateaux supprimés
-            $trip->boats()->whereNotIn('id', array_column($request->boats, 'id'))->delete();
+            // Suppression des bateaux supprimés (ceux qui n'ont pas été envoyés)
+            $trip->boats()->whereNotIn('id', $savedBoatIds)->delete();
         } else if ($trip->boats()->count() > 0) {
             // Si aucun bateau n'a été envoyé, on supprime tous les bateaux de la sortie
             $trip->boats()->delete();
@@ -176,9 +175,9 @@ class TripController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Trip  $trip
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Trip $trip)
+    public function destroy(Trip $trip): RedirectResponse
     {
         $trip = Trip::findOrFail($trip->id);
         // Remove image

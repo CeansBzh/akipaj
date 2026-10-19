@@ -31,7 +31,7 @@ class ArticlePolicy
     public function view(User $user, Article $article)
     {
         // Show the article if it's online or, if the article is offline, if the user is authorized to update it.
-        return $user->isMemberOrAbove() && ($article->online || $this->update(auth()->user(), $article));
+        return $user->isMemberOrAbove() && ($article->online || $this->update($user, $article));
     }
 
     /**
@@ -78,7 +78,7 @@ class ArticlePolicy
      */
     public function restore(User $user, Article $article)
     {
-        //
+        return false;
     }
 
     /**
@@ -90,6 +90,6 @@ class ArticlePolicy
      */
     public function forceDelete(User $user, Article $article)
     {
-        //
+        return false;
     }
 }

@@ -21,8 +21,8 @@ class TripFactory extends Factory
         $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
 
         return [
-            'title' => fake()->sentence,
-            'description' => fake()->paragraph,
+            'title' => fake()->text(50), // Same limits as the form validation
+            'description' => fake()->text(500),
             'start_date' => $start,
             'end_date' => fake()->boolean(10) ? $start : $end,
             'imagePath' => fake()->boolean(60) ? fake()->imageUrl(640, 480, 'cats') : null,
@@ -51,7 +51,7 @@ class TripFactory extends Factory
         return $this->afterCreating(function (Trip $trip) use ($count, $withPhotos) {
             $trip->albums()->saveMany(\App\Models\Album::factory($count)->create()->each(function ($album) use ($withPhotos) {
                 if ($withPhotos) {
-                    $album->withPhotos(rand(1, 10));
+                    \App\Models\Photo::factory(rand(1, 10))->for($album)->create();
                 }
             }));
         });

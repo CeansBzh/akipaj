@@ -65,7 +65,7 @@ class AlbumPolicy
      */
     public function delete(User $user, Album $album)
     {
-        return $user->isMemberOrAbove() && !$album->photos()->where('user_id', '!=', auth()->id())->exists();
+        return $user->isMemberOrAbove() && !$album->photos()->where('user_id', '!=', $user->id)->exists();
     }
 
     /**
@@ -77,7 +77,7 @@ class AlbumPolicy
      */
     public function restore(User $user, Album $album)
     {
-        //
+        return false;
     }
 
     /**
@@ -89,6 +89,6 @@ class AlbumPolicy
      */
     public function forceDelete(User $user, Album $album)
     {
-        //
+        return false;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,7 +26,7 @@ class Comment extends Model
     /**
      * Get the user that wrote the comment.
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -32,7 +34,7 @@ class Comment extends Model
     /**
      * Get the parent commentable model.
      */
-    public function commentable()
+    public function commentable(): MorphTo
     {
         return $this->morphTo();
     }

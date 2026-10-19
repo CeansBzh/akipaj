@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Exception;
 use Stripe\StripeClient;
 use App\Enums\AlertLevelEnum;
@@ -12,19 +14,22 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-
-    private $stripe;
-    public function __construct()
+    /**
+     * Create the controller instance.
+     *
+     * @param  \Stripe\StripeClient  $stripe  Bound in AppServiceProvider
+     * @return void
+     */
+    public function __construct(private StripeClient $stripe)
     {
-        $this->stripe = new StripeClient(config('stripe.secret_key'));
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('payment.index', [
             'payments' => Payment::where('user_id', Auth::id())->paginate(30),
@@ -34,9 +39,9 @@ class PaymentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view('payment.create');
     }
@@ -45,9 +50,9 @@ class PaymentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\PaymentRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(PaymentRequest $request)
+    public function store(PaymentRequest $request): RedirectResponse
     {
         $token = $this->createToken($request);
         if (!empty($token['error'])) {
@@ -60,7 +65,8 @@ class PaymentController extends Controller
         }
 
         $charge = $this->createCharge($token['id'], $request['amount'] * 100, $request['message']);
-        if (empty($charge) || (isset($charge['status']) && $charge['status'] != 'succeeded')) {
+        // createCharge() returns an array containing the error message when Stripe throws
+        if (is_array($charge) || $charge->status !== 'succeeded') {
             session()->flash('alert-' . AlertLevelEnum::ERROR->name, 'Échec du paiement.');
             return back();
         } else {
@@ -77,8 +83,8 @@ class PaymentController extends Controller
     /**
      * Create a Stripe token.
      *
-     * @param  \App\Http\Requests\PaymentRequest  $request
-     * @return array<string, mixed>
+     * @param  \App\Http\Requests\PaymentRequest  $cardData
+     * @return \Stripe\Token|array{error: string}
      */
     private function createToken(PaymentRequest $cardData)
     {
@@ -107,7 +113,7 @@ class PaymentController extends Controller
      * @param  string  $tokenId
      * @param  int  $amount
      * @param  string  $message
-     * @return array<string, mixed>
+     * @return \Stripe\Charge|array{error: string}
      */
     private function createCharge($tokenId, $amount, $message)
     {

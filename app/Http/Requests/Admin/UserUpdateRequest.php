@@ -34,9 +34,12 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules()
     {
+        /** @var \App\Models\User $user */
+        $user = $this->route('user');
+
         return [
             'name' => ['string', 'max:255'],
-            'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->route('user')->id)],
+            'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'profile_picture' => ['nullable', 'mimes:png,jpg,jpeg,gif', 'max:10000', 'dimensions:max_width=100,max_height=100'],
             'remove_image' => ['required', 'boolean'],
             'firstname' => ['nullable', 'string', 'max:255'],

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserLevelEnum;
 use Faker\Provider\Address;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -36,6 +37,8 @@ class UserFactory extends Factory
             'city' => fake()->city(),
             'clothing_size' => fake()->randomElement(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
             'remember_token' => Str::random(10),
+            // Same as the database default, so the attribute is also set on freshly created models
+            'level' => UserLevelEnum::GUEST,
         ];
     }
 
@@ -92,7 +95,7 @@ class UserFactory extends Factory
     /**
      * Indicate that the model's level should be set to the given value.
      *
-     * @param int $level The level to set. Use the UserLevelEnum.
+     * @param \App\Enums\UserLevelEnum|int $level The level to set.
      * @return static
      */
     public function withLevel($level)

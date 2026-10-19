@@ -19,7 +19,8 @@ class ArticleFactory extends Factory
     {
         $title = fake()->sentence;
         $slug = Str::slug($title, '-');
-        $body_md = fake()->markdown;
+        // Provided by davidbadura/faker-markdown-generator (see FakerServiceProvider)
+        $body_md = fake()->format('markdown');
         $body_html = Str::markdown($body_md);
 
         return [

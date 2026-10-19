@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Comment;
+use App\Traits\Commentable;
 use App\Notifications\CommentPosted;
 use Livewire\Component;
 use Illuminate\Support\Facades\Notification;
@@ -40,7 +41,11 @@ class Comments extends Component
 
     public function updateComments($commentableId, $commentableType)
     {
-        $this->commentable = $commentableType::find($commentableId);
+        // The type comes from the client: only accept models using the Commentable trait
+        if (!is_string($commentableType) || !class_exists($commentableType) || !in_array(Commentable::class, class_uses_recursive($commentableType))) {
+            abort(400);
+        }
+        $this->commentable = $commentableType::findOrFail($commentableId);
         $this->comments = $this->commentable->comments;
     }
 

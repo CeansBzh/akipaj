@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Event;
 use App\Enums\AlertLevelEnum;
 use Illuminate\Http\Request;
@@ -22,9 +24,9 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('event.index')->with('events', Event::where('start_time', '>=', date('Y-m-d'))->orderBy('start_time')->get());
     }
@@ -32,9 +34,9 @@ class EventController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view('event.create');
     }
@@ -43,9 +45,9 @@ class EventController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:50',
@@ -78,9 +80,9 @@ class EventController extends Controller
      * Display the specified resource.
      *
      * @param  Event $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function show(Event $event)
+    public function show(Event $event): View
     {
         return view('event.show')->with('event', Event::findOrFail($event->id));
     }
@@ -89,9 +91,9 @@ class EventController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  Event $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function edit(Event $event)
+    public function edit(Event $event): View
     {
         return view('event.edit')->with('event', Event::findOrFail($event->id));
     }
@@ -101,9 +103,9 @@ class EventController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  Event $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request, Event $event): RedirectResponse
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request->validateWithBag('updateEvent', [
@@ -147,9 +149,9 @@ class EventController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Event $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Event $event)
+    public function destroy(Event $event): RedirectResponse
     {
         $event = Event::findOrFail($event->id);
         if ($event->imagePath) {

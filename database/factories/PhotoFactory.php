@@ -17,7 +17,7 @@ class PhotoFactory extends Factory
     /**
      * Configure the model factory.
      *
-     * @return $this
+     * @return static
      */
     public function configure()
     {
@@ -36,10 +36,9 @@ class PhotoFactory extends Factory
      */
     public function definition()
     {
-        // Création d'une image aléatoire
+        // Création d'une image aléatoire, générée localement pour ne pas dépendre du réseau (seeders et tests)
         $fileName = fake()->slug . '.jpg';
-        $image = file_get_contents('https://cataas.com/cat');
-        $imageResource = imagecreatefromstring($image);
+        $imageResource = $this->generateImage();
         imagejpeg($imageResource, public_path('storage/photos/' . $fileName));
         // Enregistrement de la miniature
         $width = imagesx($imageResource);
@@ -67,5 +66,23 @@ class PhotoFactory extends Factory
             'longitude' => $hasCoordinates ? fake()->longitude : null,
             'taken_at' => fake()->boolean(50) ? fake()->dateTime : null,
         ];
+    }
+
+    /**
+     * Generate a random landscape or portrait image made of colored rectangles.
+     *
+     * @return \GdImage
+     */
+    protected function generateImage()
+    {
+        [$width, $height] = fake()->boolean() ? [800, 600] : [600, 800];
+        $image = imagecreatetruecolor($width, $height);
+        imagefill($image, 0, 0, imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
+        for ($i = 0; $i < 5; $i++) {
+            $color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255));
+            imagefilledrectangle($image, rand(0, $width), rand(0, $height), rand(0, $width), rand(0, $height), $color);
+        }
+
+        return $image;
     }
 }

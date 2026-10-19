@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Album;
 use App\Traits\Commentable;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +35,7 @@ class Photo extends Model
     /**
      * Get the album that owns the photo.
      */
-    public function album()
+    public function album(): BelongsTo
     {
         return $this->belongsTo(Album::class);
     }
@@ -42,7 +43,7 @@ class Photo extends Model
     /**
      * Get the user that owns the photo.
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

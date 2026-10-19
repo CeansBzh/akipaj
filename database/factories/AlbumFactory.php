@@ -20,8 +20,8 @@ class AlbumFactory extends Factory
     public function definition()
     {
         return [
-            'title' => fake()->sentence,
-            'description' => fake()->paragraph,
+            'title' => fake()->text(63), // Same limits as the form validation
+            'description' => fake()->text(255),
             'date' =>  \Carbon\Carbon::parse($this->faker->dateTimeBetween('-50 years', 'now')->format('Y-m-d'))->startOfMonth(),
             'imagePath' => fake()->boolean(50) ? fake()->imageUrl() : null,
         ];

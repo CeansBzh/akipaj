@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use App\Models\Article;
 use Illuminate\Support\Str;
 use App\Enums\AlertLevelEnum;
@@ -23,9 +26,9 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('article.index', [
             'articles' => Article::orderByDesc('published_at')
@@ -39,9 +42,9 @@ class ArticleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view('article.create');
     }
@@ -49,10 +52,10 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request['online'] = filter_var($request['online'], FILTER_VALIDATE_BOOLEAN);
         $request->validate([
@@ -91,9 +94,9 @@ class ArticleController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function show(Article $article)
+    public function show(Article $article): View
     {
         return view('article.show')->with('article', $article);
     }
@@ -102,9 +105,9 @@ class ArticleController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function edit(Article $article)
+    public function edit(Article $article): View
     {
         return view('article.edit')->with('article', $article);
     }
@@ -112,11 +115,11 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Article $article): RedirectResponse
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request['online'] = filter_var($request['online'], FILTER_VALIDATE_BOOLEAN);
@@ -149,7 +152,7 @@ class ArticleController extends Controller
         $article->body_html = Str::markdown($article->body_md);
         // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
         if (($request->remove_image || $request->hasFile('image')) && $article->imagePath) {
-            $filePath = 'public/article/' . basename($article->imagePath);
+            $filePath = 'public/articles/' . basename($article->imagePath);
             if (Storage::delete($filePath)) {
                 $article->imagePath = null;
             }
@@ -157,7 +160,7 @@ class ArticleController extends Controller
         // Si une nouvelle image a été uploadée, on la sauvegarde
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
-            $path = $request->file('image')->storeAs('public/article', $imageName);
+            $path = $request->file('image')->storeAs('public/articles', $imageName);
             $article->imagePath = Storage::url($path);
         }
         $article->save();
@@ -171,9 +174,9 @@ class ArticleController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Article $article)
+    public function destroy(Article $article): RedirectResponse
     {
         $article->delete();
 
@@ -186,9 +189,9 @@ class ArticleController extends Controller
      * Upload an image and return the url.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function storeImage(Request $request)
+    public function storeImage(Request $request): JsonResponse
     {
         $request->validate([
             'image' => ['required', 'mimes:png,jpg,jpeg,gif', 'max:10000', 'dimensions:max_width=800,max_height=800'],

@@ -15,6 +15,6 @@ class SendRegistrationValidationNotification
      */
     public function handle(RegistrationValidated $event)
     {
-        $event->user->notify(new RegistrationValidatedNotification($event->user));
+        $event->user->notify(new RegistrationValidatedNotification());
     }
 }

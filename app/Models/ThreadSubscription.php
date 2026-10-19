@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,7 +23,7 @@ class ThreadSubscription extends Model
     /**
      * Get the user that is subscribed.
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -29,7 +31,7 @@ class ThreadSubscription extends Model
     /**
      * Get the parent subscribeable model.
      */
-    public function subscribeable()
+    public function subscribeable(): MorphTo
     {
         return $this->morphTo();
     }

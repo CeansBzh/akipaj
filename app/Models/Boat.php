@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +28,7 @@ class Boat extends Model
     /**
      * Get the trip that owns the boat.
      */
-    public function trip()
+    public function trip(): BelongsTo
     {
         return $this->belongsTo(Trip::class);
     }

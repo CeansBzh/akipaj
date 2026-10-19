@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\ThreadSubscription;
@@ -26,7 +28,7 @@ trait Commentable
     /**
      * Get all of the model's comments.
      */
-    public function comments()
+    public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
@@ -34,7 +36,7 @@ trait Commentable
     /**
      * Get all of the subscriptions for the commentable.
      */
-    public function subscriptions()
+    public function subscriptions(): MorphMany
     {
         return $this->morphMany(ThreadSubscription::class, 'subscribeable');
     }
@@ -42,7 +44,7 @@ trait Commentable
     /**
      * Get all of the users subscribed to the commentable.
      */
-    public function subscribers()
+    public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, ThreadSubscription::class, 'subscribeable_id', 'user_id')->where(
             'subscribeable_type',

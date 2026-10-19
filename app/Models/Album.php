@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Trip;
 use App\Models\Photo;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +29,7 @@ class Album extends Model
     /**
      * The attributes that should be cast.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'date' => 'datetime:Y-m-d',
@@ -35,7 +38,7 @@ class Album extends Model
     /**
      * Get the photos for the album.
      */
-    public function photos()
+    public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
     }
@@ -43,7 +46,7 @@ class Album extends Model
     /**
      * Get the trips for the album.
      */
-    public function trips()
+    public function trips(): BelongsToMany
     {
         return $this->belongsToMany(Trip::class);
     }
@@ -51,7 +54,7 @@ class Album extends Model
     /**
      * Get the albums's oldest uploaded photo (not necessarily the oldest photo realtime-wise).
      */
-    public function oldestPhoto()
+    public function oldestPhoto(): HasOne
     {
         return $this->hasOne(Photo::class)->oldestOfMany();
     }

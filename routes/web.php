@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
             })->name('admin.index');
             Route::resource('users', AdminUserController::class, [
                 'as' => 'admin',
-            ])->except(['show']);
+            ])->except(['show', 'create', 'store']);
             Route::post('/storeImage', [ArticleController::class, 'storeImage'])->prefix('articles');
             Route::get('/reset', function () {
                 Artisan::call('route:clear');
@@ -81,4 +81,4 @@ Route::middleware('auth')->group(function () {
         });
 });
 
-require_once __DIR__ . '/auth.php';
+require __DIR__ . '/auth.php';

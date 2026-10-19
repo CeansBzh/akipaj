@@ -11,6 +11,8 @@ class RegistrationValidation extends Component
 {
     public function accept(User $user)
     {
+        abort_unless(auth()->user()?->isAdmin(), 403);
+
         $user->level = UserLevelEnum::MEMBER;
         $user->save();
         event(new RegistrationValidated($user));
@@ -18,6 +20,8 @@ class RegistrationValidation extends Component
 
     public function reject(User $user)
     {
+        abort_unless(auth()->user()?->isAdmin(), 403);
+
         $user->delete();
     }
 

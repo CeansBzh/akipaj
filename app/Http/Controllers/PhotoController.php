@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Album;
 use App\Models\Photo;
 use App\Enums\AlertLevelEnum;
@@ -13,11 +15,21 @@ use App\Http\Requests\Photo\StorePhotoRequest;
 class PhotoController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Photo::class, 'photo');
+    }
+
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(): View
     {
         // Les photos sont récupérées dans la galerie Livewire
         return view('photo.index');
@@ -26,9 +38,9 @@ class PhotoController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function create(Album $album)
+    public function create(Album $album): View
     {
         return view('photo.create')->with('album', $album);
     }
@@ -36,10 +48,10 @@ class PhotoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePhotoRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\Photo\StorePhotoRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StorePhotoRequest $request)
+    public function store(StorePhotoRequest $request): RedirectResponse
     {
         $album = Album::find($request->album);
         // Enregistrement des photos
@@ -47,7 +59,7 @@ class PhotoController extends Controller
             // Lecture des données EXIF
             $exif = @exif_read_data($file->getRealPath());
             // Pour chaque fichier enregistrement dans le stockage du site
-            $imageResource = imagecreatefromjpeg($file->getRealPath());
+            $imageResource = imagecreatefromstring($file->getContent());
             imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()));
             // Enregistrement de la miniature
             $width = imagesx($imageResource);
@@ -96,9 +108,9 @@ class PhotoController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function show(Photo $photo)
+    public function show(Photo $photo): View
     {
         return view('photo.show', [
             'photo' => $photo,
@@ -110,9 +122,9 @@ class PhotoController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
-    public function edit(Photo $photo)
+    public function edit(Photo $photo): View
     {
         return view('photo.edit', [
             'photo' => $photo
@@ -122,19 +134,19 @@ class PhotoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Photo $photo)
+    public function update(Request $request, Photo $photo): RedirectResponse
     {
-        $request->validateWithBag('updatePhoto', [
+        $validated = $request->validateWithBag('updatePhoto', [
             'title' => 'required|max:255',
             'legend' => 'nullable|max:2048',
             'taken_at' => 'nullable|date',
         ]);
 
-        $photo->update($request->all());
+        $photo->update($validated);
 
         session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo mise à jour avec succès !');
 
@@ -145,9 +157,9 @@ class PhotoController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Photo $photo)
+    public function destroy(Photo $photo): RedirectResponse
     {
         // Suppression de la photo
         $photo->delete();
