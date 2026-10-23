@@ -6,7 +6,6 @@ use App\Models\Album;
 use App\Models\Article;
 use App\Models\Boat;
 use App\Models\Comment;
-use App\Models\Payment;
 use App\Models\Photo;
 use App\Models\ThreadSubscription;
 use App\Models\Trip;
@@ -66,15 +65,6 @@ class RelationsTest extends TestCase
         $this->assertTrue($subscription->subscribeable->is($photo));
         $this->assertTrue($subscription->user->is($owner));
         $this->assertSame([$owner->id], $photo->subscribers->pluck('id')->all());
-    }
-
-    public function test_payment_belongs_to_a_user(): void
-    {
-        $user = $this->createUser();
-        $payment = Payment::factory()->create(['user_id' => $user->id]);
-
-        $this->assertTrue($payment->user->is($user));
-        $this->assertTrue($user->payments->contains($payment));
     }
 
     public function test_boat_belongs_to_a_trip(): void

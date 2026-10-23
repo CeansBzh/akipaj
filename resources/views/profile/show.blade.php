@@ -124,15 +124,6 @@
                 @endforelse
             </ul>
         </div>
-        @if (isset($latestPayments))
-            <hr>
-
-            <div class="rounded-lg bg-white p-4 shadow-sm sm:p-8">
-                <div class="mx-auto max-w-3xl">
-                    @include('profile.partials.latest-payments')
-                </div>
-            </div>
-        @endif
     </div>
     {{-- Sidebar --}}
     <div class="space-y-4 sm:w-1/4">

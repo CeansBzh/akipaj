@@ -4,8 +4,8 @@ namespace Tests\Feature\Livewire;
 
 use App\Enums\UserLevelEnum;
 use App\Livewire\Comments;
+use App\Models\Album;
 use App\Models\Comment;
-use App\Models\Payment;
 use App\Models\Photo;
 use App\Notifications\CommentPosted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -159,9 +159,9 @@ class CommentsTest extends TestCase
     {
         $this->actingAsMember();
         $photo = Photo::factory()->create();
-        $payment = Payment::factory()->create();
+        $album = Album::factory()->create();
 
-        $this->mountFor($photo)->dispatch('commentsNeedUpdate', commentableId: $payment->id, commentableType: Payment::class)->assertStatus(400);
+        $this->mountFor($photo)->dispatch('commentsNeedUpdate', commentableId: $album->id, commentableType: Album::class)->assertStatus(400);
         $this->mountFor($photo)->dispatch('commentsNeedUpdate', commentableId: 1, commentableType: 'NotAClass')->assertStatus(400);
     }
 }

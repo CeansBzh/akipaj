@@ -9,7 +9,6 @@ use Faker\Generator as FakerGenerator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Stripe\StripeClient;
 use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
 
@@ -20,9 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // The array form accepts a missing key, so the app boots even when Stripe isn't configured
-        $this->app->bind(StripeClient::class, fn () => new StripeClient(['api_key' => config('stripe.secret_key')]));
-
         // Markdown generator for the factories (dev dependency, only used when Faker is resolved)
         $this->app->afterResolving(FakerGenerator::class, function (FakerGenerator $faker) {
             $faker->addProvider(new MarkdownFakerProvider($faker));

@@ -15,7 +15,6 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
-        "stripe/stripe-php": "^22.0",
         "symfony/brevo-mailer": "^7.4",
         "symfony/http-client": "^7.4"
     },

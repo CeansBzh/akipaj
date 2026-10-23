@@ -89,16 +89,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the payments for the user.
-     *
-     * @return HasMany<Payment, $this>
-     */
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    /**
      * Get the trips for the user.
      *
      * @return BelongsToMany<Trip, $this>

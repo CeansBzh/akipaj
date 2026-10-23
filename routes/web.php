@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TripController;
 use Illuminate\Support\Facades\Artisan;
@@ -31,10 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::get('compte', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('compte', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('compte', [SettingsController::class, 'destroy'])->name('settings.destroy');
-
-    Route::get('/virements', [PaymentController::class, 'index'])->name('payments.index');
-    Route::get('/virements/create', [PaymentController::class, 'create'])->name('payments.create');
-    Route::post('/virements', [PaymentController::class, 'store'])->name('payments.store');
 
     Route::middleware('level:'.UserLevelEnum::MEMBER->value)->group(function () {
         Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');

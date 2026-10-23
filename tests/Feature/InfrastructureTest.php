@@ -14,7 +14,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
-use Stripe\StripeClient;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoApiTransport;
 use Tests\TestCase;
@@ -70,13 +69,6 @@ class InfrastructureTest extends TestCase
         $this->withSession(['alert-'.AlertLevelEnum::SUCCESS->name => 'Tout est OK'])
             ->get(route('photos.index'))
             ->assertSee('Tout est OK');
-    }
-
-    public function test_stripe_client_can_be_resolved_without_configuration(): void
-    {
-        config(['stripe.secret_key' => null]);
-
-        $this->assertInstanceOf(StripeClient::class, $this->app->make(StripeClient::class));
     }
 
     public function test_brevo_mailers_are_registered(): void

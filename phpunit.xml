@@ -32,7 +32,5 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="STRIPE_SECRET_KEY" value="sk_test_dummy"/>
-        <env name="STRIPE_PUBLISHABLE_KEY" value="pk_test_dummy"/>
     </php>
 </phpunit>

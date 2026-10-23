@@ -92,15 +92,6 @@ class AccessControlTest extends TestCase
         $this->get($url)->assertOk();
     }
 
-    public function test_payment_pages_only_require_authentication(): void
-    {
-        $this->get(route('payments.index'))->assertRedirect(route('login'));
-
-        $this->actingAsLevel(UserLevelEnum::GUEST);
-        $this->get(route('payments.index'))->assertOk();
-        $this->get(route('payments.create'))->assertOk();
-    }
-
     public function test_settings_require_authentication(): void
     {
         $this->get(route('settings.edit'))->assertRedirect(route('login'));
