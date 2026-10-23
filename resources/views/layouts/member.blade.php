@@ -3,7 +3,7 @@
 
     <!-- Page Heading -->
     @if (isset($header))
-        <header class="bg-white shadow">
+        <header class="bg-white shadow-sm">
             <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>

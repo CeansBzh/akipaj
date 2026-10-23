@@ -10,11 +10,10 @@ class SendRegistrationValidationNotification
     /**
      * Handle the event.
      *
-     * @param  \App\Events\RegistrationValidated  $event
      * @return void
      */
     public function handle(RegistrationValidated $event)
     {
-        $event->user->notify(new RegistrationValidatedNotification($event->user));
+        $event->user->notify(new RegistrationValidatedNotification);
     }
 }

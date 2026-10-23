@@ -2,22 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AlertLevelEnum;
+use App\Http\Requests\Photo\StorePhotoRequest;
 use App\Models\Album;
 use App\Models\Photo;
-use App\Enums\AlertLevelEnum;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\Photo\StorePhotoRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PhotoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Create the controller instance.
      *
-     * @return \Illuminate\Http\Response
+     * @return void
      */
-    public function index()
+    public function __construct()
+    {
+        $this->authorizeResource(Photo::class, 'photo');
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): View
     {
         // Les photos sont récupérées dans la galerie Livewire
         return view('photo.index');
@@ -25,10 +36,8 @@ class PhotoController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create(Album $album)
+    public function create(Album $album): View
     {
         return view('photo.create')->with('album', $album);
     }
@@ -36,31 +45,33 @@ class PhotoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePhotoRequest  $request
-     * @return \Illuminate\Http\Response
+     * The upload form sends the photos in batches as JSON requests, since PHP drops the files beyond
+     * max_file_uploads (20 by default) in a single request.
      */
-    public function store(StorePhotoRequest $request)
+    public function store(StorePhotoRequest $request): RedirectResponse|JsonResponse
     {
         $album = Album::find($request->album);
+        $disk = Storage::disk('photos');
+        $disk->makeDirectory('thumbs');
         // Enregistrement des photos
         foreach ($request->file('files') as $file) {
             // Lecture des données EXIF
             $exif = @exif_read_data($file->getRealPath());
-            // Pour chaque fichier enregistrement dans le stockage du site
-            $imageResource = imagecreatefromjpeg($file->getRealPath());
-            imagejpeg($imageResource, public_path('storage/photos/' . $file->hashName()));
+            // Pour chaque fichier enregistrement dans le stockage privé des photos
+            $imageResource = imagecreatefromstring($file->getContent());
+            imagejpeg($imageResource, $disk->path($file->hashName()));
             // Enregistrement de la miniature
             $width = imagesx($imageResource);
             $height = imagesy($imageResource);
             // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
-            $ratio  = min(450 / $width, 450 / $height);
+            $ratio = min(450 / $width, 450 / $height);
             $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
-            imagejpeg($thumbResource, public_path('storage/photos/thumbs/thumb_' . $file->hashName()));
+            imagejpeg($thumbResource, $disk->path('thumbs/thumb_'.$file->hashName()));
             // Création d'une nouvelle photo
-            $photo = new Photo();
+            $photo = new Photo;
             $photo->title = $file->getClientOriginalName();
-            $photo->path = Storage::url('photos/' . $file->hashName());
-            $photo->thumb_path = Storage::url('photos/thumbs/thumb_' . $file->hashName());
+            $photo->path = route('photos.file', $file->hashName(), false);
+            $photo->thumb_path = route('photos.file', 'thumbs/thumb_'.$file->hashName(), false);
             $photo->width = $width;
             $photo->height = $height;
             $photo->thumb_width = imagesx($thumbResource);
@@ -87,18 +98,19 @@ class PhotoController extends Controller
             ]);
         }
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
+
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('albums.show', $album)]);
+        }
 
         return redirect()->route('albums.show', $album);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
      */
-    public function show(Photo $photo)
+    public function show(Photo $photo): View
     {
         return view('photo.show', [
             'photo' => $photo,
@@ -107,52 +119,57 @@ class PhotoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
+     * Send the file of a photo or of its thumbnail, which isn't publicly accessible.
      */
-    public function edit(Photo $photo)
+    public function file(string $path): StreamedResponse
+    {
+        $disk = Storage::disk('photos');
+
+        abort_unless($disk->fileExists($path), 404);
+
+        // The file names are unique, so the browser can keep them, but shared caches must not
+        return $disk->response($path, headers: [
+            'Cache-Control' => 'private, max-age=31536000, immutable',
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Photo $photo): View
     {
         return view('photo.edit', [
-            'photo' => $photo
+            'photo' => $photo,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\Request  $request
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Photo $photo)
+    public function update(Request $request, Photo $photo): RedirectResponse
     {
-        $request->validateWithBag('updatePhoto', [
+        $validated = $request->validateWithBag('updatePhoto', [
             'title' => 'required|max:255',
             'legend' => 'nullable|max:2048',
             'taken_at' => 'nullable|date',
         ]);
 
-        $photo->update($request->all());
+        $photo->update($validated);
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo mise à jour avec succès !');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photo mise à jour avec succès !');
 
         return redirect()->route('photos.show', $photo);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Photo $photo)
+    public function destroy(Photo $photo): RedirectResponse
     {
         // Suppression de la photo
         $photo->delete();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photo supprimée avec succès !');
 
         return redirect()->route('photos.index');
     }

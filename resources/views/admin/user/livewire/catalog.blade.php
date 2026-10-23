@@ -1,14 +1,14 @@
 <div>
     <div class="my-2 flex flex-col sm:flex-row">
         <div class="mb-1 flex flex-row sm:mb-0">
-            <select wire:model="paginate"
-                class="block h-full w-full appearance-none rounded-l border border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none">
+            <select wire:model.live="paginate"
+                class="block h-full w-full appearance-none rounded-l border border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-hidden">
                 <option value="5">5</option>
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
             </select>
-            <select wire:model="level"
-                class="block h-full w-full appearance-none rounded-r border-t border-r border-b border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-l focus:border-r focus:border-gray-500 focus:bg-white focus:outline-none sm:rounded-r-none sm:border-r-0">
+            <select wire:model.live="level"
+                class="block h-full w-full appearance-none rounded-r border-t border-r border-b border-gray-400 bg-white py-2 px-4 pr-8 leading-tight text-gray-700 focus:border-l focus:border-r focus:border-gray-500 focus:bg-white focus:outline-hidden sm:rounded-r-none sm:border-r-0">
                 <option value="-1">Tous</option>
                 @foreach (\App\Enums\UserLevelEnum::class::cases() as $level)
                     <option value="{{ $level->value }}">{{ $level->label() }}</option>
@@ -23,12 +23,12 @@
                     </path>
                 </svg>
             </span>
-            <input placeholder="Rechercher" wire:model="searchTerm" type="text"
-                class="block w-full appearance-none rounded-r rounded-l border border-b border-gray-400 bg-white py-2 pl-8 pr-6 text-sm text-gray-700 placeholder-gray-400 focus:bg-white focus:text-gray-700 focus:placeholder-gray-600 focus:outline-none sm:rounded-l-none" />
+            <input placeholder="Rechercher" wire:model.live.debounce.300ms="searchTerm" type="text"
+                class="block w-full appearance-none rounded-r rounded-l border border-b border-gray-400 bg-white py-2 pl-8 pr-6 text-sm text-gray-700 placeholder-gray-400 focus:bg-white focus:text-gray-700 focus:placeholder-gray-600 focus:outline-hidden sm:rounded-l-none" />
         </div>
     </div>
     <div class="-mx-4 overflow-x-auto px-4 py-4 sm:-mx-8 sm:px-8">
-        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+        <div class="inline-block min-w-full overflow-hidden rounded-lg shadow-sm">
             <table class="min-w-full leading-normal">
                 <thead>
                     <tr>
@@ -55,7 +55,7 @@
                         <tr>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center">
-                                    <div class="h-10 w-10 flex-shrink-0">
+                                    <div class="h-10 w-10 shrink-0">
                                         <img class="h-full w-full rounded-full"
                                             src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                                             alt="Photo de profil de {{ $user->name }}" />

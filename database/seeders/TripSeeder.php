@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Album;
 use App\Models\Trip;
 use App\Models\User;
-use App\Models\Album;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TripSeeder extends Seeder
 {

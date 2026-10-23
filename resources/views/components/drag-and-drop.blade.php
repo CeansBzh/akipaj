@@ -66,10 +66,10 @@
 <template id="previewElement">
     <div class="mb-5 rounded-md">
         <div class="flex items-center justify-between">
-            <canvas class="rounded" width="25" height="25">
+            <canvas class="rounded-sm" width="25" height="25">
                 Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
             </canvas>
-            <div class="flex w-full flex-row justify-end rounded-r bg-white py-2 px-4 shadow-sm">
+            <div class="flex w-full flex-row justify-end rounded-r bg-white py-2 px-4 shadow-xs">
                 <span class="truncate px-3 text-base font-medium text-[#07074D]">
                     fichier.png
                 </span>

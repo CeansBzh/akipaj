@@ -7,7 +7,7 @@
         Informations
     </h2>
     <div class="{{ $userCount > 6 ? '' : 'md:flex md:flex-row md:justify-around md:divide-x' }}">
-        <div class="{{ $userCount > 6 ? '' : 'md:mx-0 md:flex-grow' }} mx-auto mb-4 max-w-sm">
+        <div class="{{ $userCount > 6 ? '' : 'md:mx-0 md:grow' }} mx-auto mb-4 max-w-sm">
             <h4 class="text-center text-lg font-bold">Dates</h4>
             <div class="flex flex-row items-center justify-evenly">
                 <div>
@@ -90,7 +90,7 @@
                 </table>
             </div>
             {{-- Mobile Table --}}
-            <div class="relative overflow-x-auto rounded border shadow-md md:hidden">
+            <div class="relative overflow-x-auto rounded-sm border shadow-md md:hidden">
                 <table class="w-full text-left text-sm text-gray-700">
                     <tr class="border-b border-gray-200">
                         <th class="bg-gray-50"></th>

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\User;
-use App\Models\Album;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Trip extends Model
 {
@@ -29,24 +29,30 @@ class Trip extends Model
 
     /**
      * Get the users for the trip.
+     *
+     * @return BelongsToMany<User, $this>
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
     /**
      * Get the albums for the trip.
+     *
+     * @return BelongsToMany<Album, $this>
      */
-    public function albums()
+    public function albums(): BelongsToMany
     {
         return $this->belongsToMany(Album::class);
     }
 
     /**
      * Get the boats for the trip.
+     *
+     * @return HasMany<Boat, $this>
      */
-    public function boats()
+    public function boats(): HasMany
     {
         return $this->hasMany(Boat::class);
     }

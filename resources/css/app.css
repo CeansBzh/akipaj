@@ -1,6 +1,64 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+/* Alert component classes, built from AlertLevelEnum::color() */
+@source inline('{focus:,}ring-{red,green,blue,yellow}-400');
+@source inline('text-{red,green,blue,yellow}-{500,700}');
+@source inline('{hover:,}bg-{red,green,blue,yellow}-{100,200}');
+
+@theme {
+    --breakpoint-xs: 29.6875rem;
+
+    --font-sans: Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
+/* Tailwind v3 defaults kept to preserve the look: gray borders and pointer cursor on buttons */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentcolor);
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+
+    /* v4 preflight strips the native file input button, v3 only made it inherit the font */
+    ::file-selector-button {
+        all: revert;
+        font: inherit;
+    }
+}
+
+@utility selected {
+    @apply scale-[0.95] rounded-sm outline-8 -outline-offset-8 outline-sky-500 outline-solid;
+}
+
+@utility text-shadow-outline {
+    text-shadow:
+        1px 1px 0 var(--tw-shadow-color),
+        -1px 1px 0 var(--tw-shadow-color),
+        1px -1px 0 var(--tw-shadow-color),
+        -1px -1px 0 var(--tw-shadow-color);
+}
+
+@utility text-shadow {
+    text-shadow: 1px 1px 7px var(--tw-shadow-color);
+}
+
+@utility svg-shadow {
+    -webkit-filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
+    filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
+    -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
+}
 
 @layer base {
     /* Webfont: Guttie-Regular */
@@ -30,12 +88,6 @@
     }
 }
 
-@layer components {
-    .selected {
-        @apply scale-[0.95] rounded outline outline-8 -outline-offset-8 outline-sky-500;
-    }
-}
-
 @layer utilities {
     @media screen and (min-width: 640px) {
         body {
@@ -43,7 +95,7 @@
         }
 
         * {
-            --scrollbar-color: theme(colors.sky.600 / 75%);
+            --scrollbar-color: --theme(--color-sky-600 / 75%);
             scrollbar-width: thin;
             scrollbar-color: var(--scrollbar-color);
         }
@@ -62,7 +114,7 @@
         }
 
         ::-webkit-scrollbar-thumb:window-inactive {
-            --scrollbar-color: theme(colors.sky.600 / 40%) !important;
+            --scrollbar-color: --theme(--color-sky-600 / 40%) !important;
             background: var(--scrollbar-color);
         }
 
@@ -79,25 +131,5 @@
         *::-webkit-scrollbar-track-piece {
             background-color: #ffffff44;
         }
-    }
-
-    .text-shadow-outline {
-        text-shadow: 1px 1px 0 var(--tw-shadow-color),
-            -1px 1px 0 var(--tw-shadow-color), 1px -1px 0 var(--tw-shadow-color),
-            -1px -1px 0 var(--tw-shadow-color);
-    }
-
-    .text-shadow {
-        text-shadow: 1px 1px 7px var(--tw-shadow-color);
-    }
-
-    .text-shadow-none {
-        text-shadow: none;
-    }
-
-    .svg-shadow {
-        -webkit-filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
-        filter: drop-shadow(3px 3px 22px var(--tw-shadow-color));
-        -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
     }
 }

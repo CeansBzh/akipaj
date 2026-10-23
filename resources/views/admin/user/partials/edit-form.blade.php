@@ -11,7 +11,7 @@
                     @click="removeImage">Retirer</button>
             </div>
 
-            <div class="flex-grow">
+            <div class="grow">
                 <x-input-label for="profile_picture_input" value="Photo de profil (facultatif)" />
                 <input type="file" id="profile_picture_input" name="profile_picture" class="mt-1 block w-full"
                     accept="image/png, image/jpeg" @change="fileChosen">

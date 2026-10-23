@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
 use App\Enums\AlertLevelEnum;
+use App\Models\Event;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,31 +23,24 @@ class EventController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         return view('event.index')->with('events', Event::where('start_time', '>=', date('Y-m-d'))->orderBy('start_time')->get());
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('event.create');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:50',
@@ -56,54 +51,44 @@ class EventController extends Controller
             'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:10000|dimensions:max_width=2560,max_height=1600',
         ]);
 
-        $event = new Event();
+        $event = new Event;
         $event->name = $request->name;
         $event->description = $request->description;
         $event->start_time = $request->start_time;
         $event->end_time = $request->end_time;
         $event->location = $request->location;
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
+            $imageName = time().'.'.$request->image->extension();
             $path = $request->file('image')->storeAs('public/events', $imageName);
             $event->imagePath = Storage::url($path);
         }
         $event->save();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Événement créé avec succès.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Événement créé avec succès.');
 
         return redirect()->route('events.index');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  Event $event
-     * @return \Illuminate\Http\Response
      */
-    public function show(Event $event)
+    public function show(Event $event): View
     {
         return view('event.show')->with('event', Event::findOrFail($event->id));
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  Event $event
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Event $event)
+    public function edit(Event $event): View
     {
         return view('event.edit')->with('event', Event::findOrFail($event->id));
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Event $event
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request, Event $event): RedirectResponse
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request->validateWithBag('updateEvent', [
@@ -125,40 +110,37 @@ class EventController extends Controller
 
         // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
         if (($request->remove_image || $request->hasFile('image')) && $event->imagePath) {
-            $filePath = 'public/events/' . basename($event->imagePath);
+            $filePath = 'public/events/'.basename($event->imagePath);
             if (Storage::delete($filePath)) {
                 $event->imagePath = null;
             }
         }
         // Si une nouvelle image a été uploadée, on la sauvegarde
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
+            $imageName = time().'.'.$request->image->extension();
             $path = $request->file('image')->storeAs('public/events', $imageName);
             $event->imagePath = Storage::url($path);
         }
         $event->save();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Événement modifié avec succès.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Événement modifié avec succès.');
 
         return redirect()->route('events.show', $event);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  Event $event
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Event $event)
+    public function destroy(Event $event): RedirectResponse
     {
         $event = Event::findOrFail($event->id);
         if ($event->imagePath) {
-            $filePath = 'public/events/' . basename($event->imagePath);
+            $filePath = 'public/events/'.basename($event->imagePath);
             Storage::delete($filePath);
         }
         $event->delete();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Événement supprimé avec succès.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Événement supprimé avec succès.');
 
         return redirect()->route('events.index');
     }

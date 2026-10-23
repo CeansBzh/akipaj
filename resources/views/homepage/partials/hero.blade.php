@@ -28,9 +28,9 @@
         </picture>
     </div>
     <div class="relative md:bg-neutral-900/20">
-        <div class="relative mx-auto min-h-[27rem] max-w-screen-2xl md:flex">
+        <div class="relative mx-auto min-h-108 max-w-(--breakpoint-2xl) md:flex">
             {{-- Left/Top side --}}
-            <div class="relative md:flex-grow">
+            <div class="relative md:grow">
                 <div class="absolute inset-0 overflow-hidden md:hidden">
                     <picture>
                         <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.avif') }}"
@@ -43,13 +43,13 @@
                             width="767" height="511" loading="lazy" decoding="async">
                     </picture>
                 </div>
-                <div class="relative mx-auto h-full min-h-[21rem] max-w-screen-xl bg-neutral-900/20 md:bg-transparent">
+                <div class="relative mx-auto h-full min-h-84 max-w-(--breakpoint-xl) bg-neutral-900/20 md:bg-transparent">
                     <div class="pt-12 text-center md:ml-12 md:pt-40 md:text-left lg:ml-24">
                         <div class="mx-auto w-fit md:m-0">
                             <x-application-logo class="mx-auto mb-3 h-20 md:mx-0 md:h-28" />
                             <p class="text-shadow mb-3 text-2xl text-white shadow-gray-800">Bienvenue à bord !</p>
                             <a href="{{ route('profile.show', Auth::user()->name) }}"
-                                class="text-shadow-outline inline-flex items-center rounded border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-sm shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-25">
+                                class="text-shadow-outline inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-xs shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-25">
                                 Mon profil
                             </a>
                         </div>
@@ -59,7 +59,7 @@
 
             {{-- Events section --}}
             <div class="relative mb-5 w-full px-2 md:m-0 md:w-fit md:p-6">
-                <div class="mx-auto -mt-24 max-w-sm rounded bg-white p-5 shadow-lg md:mt-0">
+                <div class="mx-auto -mt-24 max-w-sm rounded-sm bg-white p-5 shadow-lg md:mt-0">
                     <h2 class="text-2xl font-extrabold">Prochaines sorties</h2>
                     <hr class="my-5">
                     <ul class="list-disc px-5">

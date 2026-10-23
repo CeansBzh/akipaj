@@ -16,7 +16,7 @@
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
 
             <button
-                class="leading-0 absolute top-8 right-2 block h-7 w-7 rounded text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 focus:outline-none focus:motion-safe:animate-pulse"
+                class="leading-0 absolute top-8 right-2 block h-7 w-7 rounded-sm text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 focus:outline-hidden motion-safe:focus:animate-pulse"
                 @click.prevent="showOldPasswordField=!showOldPasswordField">
                 <span x-show="showOldPasswordField">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -56,7 +56,7 @@
             <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
 
             <button
-                class="leading-0 absolute top-8 right-2 block h-7 w-7 text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 focus:outline-none focus:motion-safe:animate-pulse"
+                class="leading-0 absolute top-8 right-2 block h-7 w-7 text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 focus:outline-hidden motion-safe:focus:animate-pulse"
                 @click.prevent="showNewPasswordField=!showNewPasswordField">
                 <span x-show="showNewPasswordField">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

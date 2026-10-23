@@ -36,10 +36,10 @@
             </picture>
         </div>
         <div
-            class="relative mx-auto flex h-96 max-w-screen-xl items-center justify-center px-4 py-32 sm:justify-start sm:px-6 lg:px-8">
+            class="relative mx-auto flex h-96 max-w-(--breakpoint-xl) items-center justify-center px-4 py-32 sm:justify-start sm:px-6 lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
                 <div class="text-3xl">
-                    <a href="{{ url('/') }}" class="text-yellow-500 hover:underline">
+                    <a href="{{ url('/') }}" class="text-white hover:underline">
                         <h1 class="text-shadow block font-bold shadow-gray-500 sm:text-5xl">
                             Akipaj
                         </h1>
@@ -48,11 +48,11 @@
 
                 <div class="mt-8 flex flex-wrap gap-4 text-center">
                     <a href="{{ route('register') }}"
-                        class="block w-full rounded bg-sky-600 px-12 py-3 font-medium text-white shadow hover:bg-sky-500 focus:outline-none focus:ring active:bg-sky-600 sm:w-auto">
+                        class="block w-full rounded-sm bg-sky-600 px-12 py-3 font-medium text-white shadow-sm hover:bg-sky-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500/50 active:bg-sky-600 sm:w-auto">
                         Créer un compte
                     </a>
                     <a href="{{ route('login') }}"
-                        class="block w-full rounded bg-white px-12 py-3 font-medium text-sky-900 shadow hover:text-sky-500 focus:outline-none focus:ring active:text-sky-400 sm:w-auto">
+                        class="block w-full rounded-sm bg-white px-12 py-3 font-medium text-sky-900 shadow-sm hover:text-sky-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500/50 active:text-sky-400 sm:w-auto">
                         Je suis déjà membre
                     </a>
                 </div>
@@ -60,7 +60,7 @@
         </div>
     </section>
 
-    <section class="mx-auto max-w-screen-lg">
+    <section class="mx-auto max-w-(--breakpoint-lg)">
         <h2 class="mb-5 font-sans text-2xl">Mentions légales</h2>
         <div class="mb-5">
             <p class="mb-2 font-semibold">Informations sur l'association Akipaj :</p>

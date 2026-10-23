@@ -10,7 +10,7 @@
                 @include('article.partials.edit-article-form')
             </div>
 
-            <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div class="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                 @include('article.partials.delete-article-form')
             </div>
 

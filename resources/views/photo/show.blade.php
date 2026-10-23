@@ -9,7 +9,7 @@
             x-data="" x-on:click.prevent="$dispatch('open-lightbox', 'photo-lightbox')">
         <div class="relative mx-auto -mt-2 flex max-w-md rounded-lg bg-white shadow-lg md:max-w-2xl">
             <div class="flex w-full items-start px-4 py-6">
-                <img class="mr-4 h-12 w-12 rounded-full object-cover shadow"
+                <img class="mr-4 h-12 w-12 rounded-full object-cover shadow-sm"
                     src="{{ $photo->user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                     alt="Photo de profil">
                 <div class="grow">
@@ -57,7 +57,7 @@
     <div class="py-6">
         <div class="mx-auto max-w-7xl flex-col space-y-4 sm:px-6 lg:px-8">
 
-            <div class="mx-auto max-w-3xl bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div class="mx-auto max-w-3xl bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                 <livewire:comments :comments="$photo->comments" :commentable="$photo" />
             </div>
 

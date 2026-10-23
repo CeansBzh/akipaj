@@ -2,11 +2,15 @@
 
 namespace Database\Factories;
 
+use App\Models\Album;
+use App\Models\Boat;
+use App\Models\Photo;
 use App\Models\Trip;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Trip>
+ * @extends Factory<Trip>
  */
 class TripFactory extends Factory
 {
@@ -18,11 +22,11 @@ class TripFactory extends Factory
     public function definition()
     {
         $start = fake()->dateTimeBetween('-1 year', '+1 year');
-        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
+        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s').' +1 day', $start->format('Y-m-d H:i:s').' +10 days');
 
         return [
-            'title' => fake()->sentence,
-            'description' => fake()->paragraph,
+            'title' => fake()->text(50), // Same limits as the form validation
+            'description' => fake()->text(500),
             'start_date' => $start,
             'end_date' => fake()->boolean(10) ? $start : $end,
             'imagePath' => fake()->boolean(60) ? fake()->imageUrl(640, 480, 'cats') : null,
@@ -37,7 +41,7 @@ class TripFactory extends Factory
     public function withUsers($count)
     {
         return $this->afterCreating(function (Trip $trip) use ($count) {
-            $trip->users()->saveMany(\App\Models\User::factory($count)->create());
+            $trip->users()->saveMany(User::factory($count)->create());
         });
     }
 
@@ -49,9 +53,9 @@ class TripFactory extends Factory
     public function withAlbums($count, $withPhotos = false)
     {
         return $this->afterCreating(function (Trip $trip) use ($count, $withPhotos) {
-            $trip->albums()->saveMany(\App\Models\Album::factory($count)->create()->each(function ($album) use ($withPhotos) {
+            $trip->albums()->saveMany(Album::factory($count)->create()->each(function ($album) use ($withPhotos) {
                 if ($withPhotos) {
-                    $album->withPhotos(rand(1, 10));
+                    Photo::factory(rand(1, 10))->for($album)->create();
                 }
             }));
         });
@@ -65,7 +69,7 @@ class TripFactory extends Factory
     public function withBoats($count)
     {
         return $this->afterCreating(function (Trip $trip) use ($count) {
-            $trip->boats()->saveMany(\App\Models\Boat::factory($count)->create([
+            $trip->boats()->saveMany(Boat::factory($count)->create([
                 'trip_id' => $trip->id,
             ]));
         });

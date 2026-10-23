@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\AlertLevelEnum;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -13,8 +14,7 @@ class PasswordController extends Controller
     /**
      * Update the user's password.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request)
     {
@@ -27,7 +27,7 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Votre mot de passe a bien été changé.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Votre mot de passe a bien été changé.');
 
         return back()->with('status', 'password-updated');
     }
