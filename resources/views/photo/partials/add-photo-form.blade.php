@@ -5,7 +5,7 @@
 
             <div id="dropbox" class="flex w-full items-center justify-center">
                 <label for="dropbox-file"
-                    class="fixed bottom-[calc(5rem+25px)] cursor-pointer rounded-lg border-2 border-sky-300 bg-white p-3 hover:bg-sky-100 md:relative md:bottom-0 md:flex md:h-56 md:w-full md:items-center md:justify-center md:border-dashed md:p-8">
+                    class="fixed bottom-26.25 cursor-pointer rounded-lg border-2 border-sky-300 bg-white p-3 hover:bg-sky-100 md:relative md:bottom-0 md:flex md:h-56 md:w-full md:items-center md:justify-center md:border-dashed md:p-8">
                     <div id="loading-spinner" role="status"
                         class="absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)] hidden">
                         <svg class="mr-2 inline h-10 w-10 fill-sky-500 text-gray-300 motion-safe:animate-spin"
@@ -48,11 +48,12 @@
                             <p class="text-xs md:text-gray-500">PNG, JPG ou GIF</p>
                         </div>
                     </div>
-                    <input id="dropbox-file" type="file" name="files[]" class="hidden" multiple />
+                    <input id="dropbox-file" type="file" name="files[]" class="hidden" multiple accept="image/png, image/jpeg, image/gif" />
                 </label>
             </div>
 
             <p id="fileNb" class="text-center"></p>
+            <ul id="uploadErrors" class="text-center text-red-500"></ul>
             <div id="previewContainer" class="mt-4 pb-3">
                 <div id="info" class="px-5 sm:py-10">
                     <div class="mx-auto max-w-xs text-sm text-gray-500">
@@ -79,9 +80,8 @@
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
                             </svg>
-                            <p class="mb-2">Toutes les photos importées seront redimensionnées pour réduire leur
+                            <p>Toutes les photos importées seront redimensionnées pour réduire leur
                                 poids.</p>
-                            <p>Le nombre maximal de photos par envoi est de 20.</p>
                         @endif
                     </div>
                 </div>
@@ -121,7 +121,8 @@
                             <span class="font-semibold">{{ $album->title }}</span>"
                         </p>
                         <div>
-                            <x-primary-button class="w-max bg-sky-500 py-3 hover:bg-sky-700">
+                            <x-primary-button
+                                class="w-max bg-sky-500 py-3 hover:bg-sky-700 disabled:cursor-wait disabled:opacity-50">
                                 Ajouter mes photos
                             </x-primary-button>
                         </div>
@@ -133,261 +134,5 @@
 </section>
 
 @push('scripts')
-    <script type="text/javascript">
-        // Script to drag and drop, resize, rewrite exif data, and preview images
-        // Assembled using different sources
-        // Version 0.1.1
-        // Speed for 100 images (average size 3.3MB): 15.6s
-
-        const MAX_FILES = 20;
-        const MAX_WIDTH = 1920;
-        const MAX_HEIGHT = 1080;
-        const PREVIEW_SIZE = 70;
-        const MIME_TYPE = "image/jpeg";
-        const QUALITY = 0.7;
-
-        const dataTransfer = new DataTransfer();
-        const loadedFileNames = [];
-
-        var dragAndDropSupported = function() {
-            var div = document.createElement('div');
-            return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window &&
-                'FileReader' in window;
-        }();
-        if (dragAndDropSupported) {
-            document.getElementById('draggableMsg').classList.remove('hidden');
-
-            const dropbox = document.getElementById('dropbox');
-            dropbox.addEventListener('dragover', (e) => {
-                // prevent default to allow drop
-                e.preventDefault();
-            }, false);
-
-            dropbox.addEventListener('dragenter', (e) => {
-                // highlight potential drop target using svg icon
-                document.getElementById('dropbox-body').classList.add('invisible');
-                document.getElementById('drag-over-icon').classList.remove('hidden');
-            });
-
-            dropbox.addEventListener('dragleave', (e) => {
-                // remove highlight for potential drop target
-                document.getElementById('dropbox-body').classList.remove('invisible');
-                document.getElementById('drag-over-icon').classList.add('hidden');
-            });
-
-            dropbox.addEventListener('drop', (e) => {
-                // prevent default action
-                e.preventDefault();
-                // remove highlight for potential drop target
-                document.getElementById('dropbox-body').classList.remove('invisible');
-                document.getElementById('drag-over-icon').classList.add('hidden');
-                // add files to the list
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                handleFiles(files);
-            });
-        }
-
-        let inputElement = document.getElementById("dropbox-file");
-        inputElement.addEventListener("change", handleFiles, false);
-
-        let previewContainer = document.getElementById("previewContainer");
-
-        const loadImage = file =>
-            new Promise((resolve, reject) => {
-                const blobURL = URL.createObjectURL(file);
-                const img = new Image();
-                img.src = blobURL;
-                img.onerror = function() {
-                    URL.revokeObjectURL(img.src);
-                    // Handle the failure properly
-                    console.log("Cannot load image");
-                };
-                img.onload = () => {
-                    URL.revokeObjectURL(img.src);
-                    const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
-                    const canvas = document.createElement("canvas");
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
-                    canvas.toBlob(
-                        async (blob) => {
-                                dataTransfer.items.add(new File([await copyExif(file, blob)], file.name, {
-                                    type: MIME_TYPE
-                                }));
-                                inputElement.files = dataTransfer.files;
-                                loadedFileNames.push(file.name);
-                                addPreview(img, file.name);
-                                resolve(true);
-                                return;
-                            },
-                            MIME_TYPE,
-                            QUALITY
-                    );
-                };
-            });
-
-        function handleFiles(files) {
-            var startTime = performance.now();
-            if (!(files instanceof FileList)) {
-                files = this.files
-            }
-            const promises = [];
-            const info = document.getElementById('info');
-            if (files.length > MAX_FILES || dataTransfer.files.length + files.length > MAX_FILES) {
-                let svg = info.querySelector('svg');
-                svg.classList.remove('text-gray-400');
-                svg.classList.add('text-red-500');
-                svg.innerHTML =
-                    '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>';
-                info.replaceChild(svg, info.firstChild);
-                let p = info.querySelectorAll('p');
-                p[0].innerHTML = 'Vous ne pouvez pas ajouter plus de ' + MAX_FILES + ' fichiers.';
-                p[1].remove();
-                return;
-            }
-            document.getElementById('dropbox-body').classList.add('invisible');
-            document.getElementById('loading-spinner').classList.remove('hidden');
-            if (info) {
-                info.remove();
-            }
-            for (let i = 0; i < files.length; i++) {
-                // Pour chaque fichier on vérifie qu'il s'agit bien d'une image, et qu'il n'est pas déjà chargé
-                const file = files[i];
-                if (loadedFileNames.includes(file.name) || !file.type.startsWith('image/')) {
-                    continue
-                }
-                // Si le fichier est une image et n'est pas déjà dans la liste :
-                promises.push(loadImage(file));
-            }
-            Promise.all(promises).then(() => {
-                document.getElementById('dropbox-body').classList.remove('invisible');
-                document.getElementById('loading-spinner').classList.add('hidden');
-                var endTime = performance.now()
-                console.log(`Temps d'exécution : ${(endTime - startTime) / 1000} secondes`)
-            });
-        }
-
-        function calculateSize(img, maxWidth, maxHeight) {
-            let ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-            return [img.naturalWidth * ratio, img.naturalHeight * ratio];
-        }
-
-        function removeFile(e) {
-            const canvas = e.target.closest('div').previousElementSibling;
-            const filename = canvas.getAttribute('data-filename');
-            for (let i = 0; i < dataTransfer.items.length; i++) {
-                if (dataTransfer.items[i].getAsFile().name == filename) {
-                    dataTransfer.items.remove(i);
-                    break;
-                }
-            }
-            document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
-            inputElement.files = dataTransfer.files;
-            canvas.closest('div').remove();
-        }
-
-        function addPreview(img, fileName) {
-            if ('content' in document.createElement('template')) {
-                // Si le navigateur supporte les templates
-                const template = document.getElementById('previewElement');
-                const clone = template.content.cloneNode(true);
-                const canvas = clone.querySelector('canvas');
-                canvas.width = PREVIEW_SIZE;
-                canvas.height = PREVIEW_SIZE;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
-                clone.querySelector('span').innerHTML = fileName;
-                canvas.setAttribute('data-filename', fileName);
-                clone.querySelector('button').addEventListener('click', removeFile);
-                previewContainer.appendChild(clone);
-            } else {
-                // Si le navigateur ne supporte pas les templates
-                const previewElem = document.createElement("p");
-                previewElem.innerHTML = fileName;
-                previewContainer.appendChild(previewElem);
-            }
-            document.getElementById('fileNb').innerHTML = dataTransfer.files.length + ' fichiers sélectionnés';
-        }
-
-        async function copyExif(srcBlob, destBlob) {
-            const exif = await getApp1Segment(srcBlob);
-            return new Blob([destBlob.slice(0, 2), exif, destBlob.slice(2)], {
-                type: "image/jpeg",
-            });
-        };
-
-        const SOI = 0xffd8,
-            SOS = 0xffda,
-            APP1 = 0xffe1,
-            EXIF = 0x45786966,
-            LITTLE_ENDIAN = 0x4949,
-            BIG_ENDIAN = 0x4d4d,
-            TAG_ID_ORIENTATION = 0x0112,
-            TAG_TYPE_SHORT = 3,
-            getApp1Segment = (blob) =>
-            new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.addEventListener("load", ({
-                    target: {
-                        result: buffer
-                    }
-                }) => {
-                    const view = new DataView(buffer);
-                    let offset = 0;
-                    if (view.getUint16(offset) !== SOI) return reject("not a valid JPEG");
-                    offset += 2;
-
-                    while (true) {
-                        const marker = view.getUint16(offset);
-                        if (marker === SOS) break;
-
-                        const size = view.getUint16(offset + 2);
-                        if (marker === APP1 && view.getUint32(offset + 4) === EXIF) {
-                            const tiffOffset = offset + 10;
-                            let littleEndian;
-                            switch (view.getUint16(tiffOffset)) {
-                                case LITTLE_ENDIAN:
-                                    littleEndian = true;
-                                    break;
-                                case BIG_ENDIAN:
-                                    littleEndian = false;
-                                    break;
-                                default:
-                                    return reject("TIFF header contains invalid endian");
-                            }
-                            if (view.getUint16(tiffOffset + 2, littleEndian) !== 0x2a)
-                                return reject("TIFF header contains invalid version");
-
-                            const ifd0Offset = view.getUint32(tiffOffset + 4, littleEndian);
-                            let endOfTagsOffset =
-                                tiffOffset +
-                                ifd0Offset +
-                                2 +
-                                view.getUint16(tiffOffset + ifd0Offset, littleEndian) * 12;
-                            for (
-                                let i = tiffOffset + ifd0Offset + 2; i < endOfTagsOffset; i += 12
-                            ) {
-                                const tagId = view.getUint16(i);
-                                if (tagId == TAG_ID_ORIENTATION) {
-                                    if (view.getUint16(i + 2, littleEndian) !== TAG_TYPE_SHORT)
-                                        return reject("Orientation data type is invalid");
-
-                                    if (view.getUint32(i + 4, littleEndian) !== 1)
-                                        return reject("Orientation data count is invalid");
-
-                                    view.setUint16(i + 8, 1, littleEndian);
-                                    break;
-                                }
-                            }
-                            return resolve(buffer.slice(offset, offset + 2 + size));
-                        }
-                        offset += 2 + size;
-                    }
-                    return resolve(new Blob());
-                });
-                reader.readAsArrayBuffer(blob);
-            });
-    </script>
+    @vite('resources/js/add-photo-form.js')
 @endpush

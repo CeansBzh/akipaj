@@ -75,6 +75,23 @@ class PhotoTest extends TestCase
         $this->post(route('photos.store'), ['album' => Album::factory()->create()->id])->assertSessionHasErrors('files');
     }
 
+    public function test_upload_form_sends_photos_in_batches(): void
+    {
+        $this->actingAsMember();
+        $album = Album::factory()->create();
+
+        foreach (['premier.jpg', 'second.jpg'] as $fileName) {
+            $this->postJson(route('photos.store'), [
+                'album' => $album->id,
+                'files' => [UploadedFile::fake()->image($fileName, 800, 600)],
+            ])->assertOk()->assertExactJson(['redirect' => route('albums.show', $album)]);
+        }
+
+        $this->assertSame(2, $album->photos()->count());
+        // The success alert survives the batch requests until the form redirects to the album
+        $this->get(route('albums.show', $album))->assertSee('Photos ajoutées avec succès !');
+    }
+
     public function test_members_can_see_a_photo_and_its_comments(): void
     {
         $this->actingAsMember();

@@ -16,6 +16,20 @@
     prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable() },
     nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
     prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) - 1 },
+    swipeStart: null,
+    startSwipe(event) {
+        // Ignore pinch-zoom and panning a zoomed-in page...
+        let isZoomed = (window.visualViewport?.scale ?? 1) > 1
+        this.swipeStart = event.touches.length === 1 && !isZoomed ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null
+    },
+    endSwipe(event) {
+        if (!this.swipeStart) return
+        let deltaX = event.changedTouches[0].clientX - this.swipeStart.x
+        let deltaY = event.changedTouches[0].clientY - this.swipeStart.y
+        this.swipeStart = null
+        if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return
+        $dispatch(deltaX < 0 ? 'lightbox-next' : 'lightbox-previous')
+    },
 }" x-init="$watch('show', value => {
     if (value) {
         document.body.classList.add('overflow-y-hidden');
@@ -26,7 +40,8 @@
 })"
     x-on:open-lightbox.window="($event.detail?.name ?? $event.detail) == '{{ $name }}' ? show = true : null" x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
-    x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show" x-cloak
+    x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-on:touchstart.passive="startSwipe($event)"
+    x-on:touchend.passive="endSwipe($event)" x-show="show" x-cloak
     class="fixed inset-0 z-50 overflow-y-hidden">
     <div x-show="show" class="fixed inset-0 transform cursor-zoom-out transition-all" x-on:click="show = false"
         x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -35,7 +50,7 @@
         <div class="absolute inset-0 bg-black opacity-95"></div>
     </div>
 
-    <div x-show="show" class="flex h-full transform flex-col transition-all sm:mx-auto"
+    <div x-show="show" class="relative flex h-full transform flex-col transition-all sm:mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"

@@ -7,6 +7,7 @@ use App\Http\Requests\Photo\StorePhotoRequest;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -42,8 +43,11 @@ class PhotoController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * The upload form sends the photos in batches as JSON requests, since PHP drops the files beyond
+     * max_file_uploads (20 by default) in a single request.
      */
-    public function store(StorePhotoRequest $request): RedirectResponse
+    public function store(StorePhotoRequest $request): RedirectResponse|JsonResponse
     {
         $album = Album::find($request->album);
         // Enregistrement des photos
@@ -92,6 +96,10 @@ class PhotoController extends Controller
         }
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
+
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('albums.show', $album)]);
+        }
 
         return redirect()->route('albums.show', $album);
     }

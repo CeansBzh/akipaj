@@ -1,4 +1,5 @@
-<div x-data="gallery()" class="px-2">
+<div x-data="gallery()" x-on:lightbox-previous.window="lightboxGoLeft()"
+    x-on:lightbox-next.window="lightboxGoRight()" class="px-2">
 
     <div class="p-2">
         @include('livewire.partials.gallery-search-sort')
@@ -8,7 +9,7 @@
         @include('livewire.partials.gallery-mass-selection-menu')
     </div>
 
-    <div class="grid auto-rows-[20px] grid-cols-1 gap-0.5 px-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="grid auto-rows-5 grid-cols-1 gap-0.5 px-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         @foreach ($photos as $photo)
             @can('delete', $photo)
                 <div x-on:click="imageClicked" id="photo-{{ $photo->id }}" data-role="gallery-item"
@@ -28,7 +29,7 @@
                     </svg>
                 </div>
             @else
-                <div data-role="gallery-item" class="relative h-full select-none overflow-hidden"
+                <div id="photo-{{ $photo->id }}" data-role="gallery-item" class="relative h-full select-none overflow-hidden"
                     :class="selectedImages.length === 0 ? 'cursor-pointer' : 'cursor-default'"
                     x-on:click="openPhotoLightbox({{ $photo->id }})">
                     <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"

@@ -4,6 +4,7 @@
     ],
     "cloud": false,
     "guidelines": true,
+    "sail": true,
     "skills": [
         "infer-conventions",
         "laravel-best-practices",
