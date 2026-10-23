@@ -4,7 +4,7 @@
         <div class="mx-auto max-w-7xl flex-col space-y-4 sm:px-6 lg:px-8">
 
             <div class="relative bg-white p-4 sm:rounded-lg sm:p-8">
-                <div class="mx-auto max-w-screen-md">
+                <div class="mx-auto max-w-(--breakpoint-md)">
                     <article class="relative pt-10">
                         <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">
                             {{ $article->title }}

@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
+use App\Models\Article;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Article>
+ * @extends Factory<Article>
  */
 class ArticleFactory extends Factory
 {
@@ -19,7 +20,8 @@ class ArticleFactory extends Factory
     {
         $title = fake()->sentence;
         $slug = Str::slug($title, '-');
-        $body_md = fake()->markdown;
+        // Provided by davidbadura/faker-markdown-generator (see FakerServiceProvider)
+        $body_md = fake()->format('markdown');
         $body_html = Str::markdown($body_md);
 
         return [

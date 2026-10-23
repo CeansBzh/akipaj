@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
-use Illuminate\Support\Str;
 use App\Enums\AlertLevelEnum;
+use App\Models\Article;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
@@ -22,14 +25,12 @@ class ArticleController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         return view('article.index', [
             'articles' => Article::orderByDesc('published_at')
-                ->when(!auth()->user()->isAdmin(), function ($query) {
+                ->when(! auth()->user()->isAdmin(), function ($query) {
                     return $query->where('online', true);
                 })
                 ->paginate(),
@@ -38,21 +39,16 @@ class ArticleController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('article.create');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request['online'] = filter_var($request['online'], FILTER_VALIDATE_BOOLEAN);
         $request->validate([
@@ -63,7 +59,7 @@ class ArticleController extends Controller
             'image' => ['required_if:online,true', 'mimes:png,jpg,jpeg,gif', 'max:10000', 'dimensions:max_width=2560,max_height=1600'],
         ]);
 
-        $article = new Article();
+        $article = new Article;
         $article->title = $request->title;
         $article->body_md = $request->body;
         $article->summary = $request->summary;
@@ -76,47 +72,37 @@ class ArticleController extends Controller
         $article->body_html = Str::markdown($article->body_md);
         // Save image
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
+            $imageName = time().'.'.$request->image->extension();
             $path = $request->file('image')->storeAs('public/articles', $imageName);
             $article->imagePath = Storage::url($path);
         }
         $article->save();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Article enregistré avec succès.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Article enregistré avec succès.');
 
         return redirect()->route('articles.index');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
      */
-    public function show(Article $article)
+    public function show(Article $article): View
     {
         return view('article.show')->with('article', $article);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Article $article)
+    public function edit(Article $article): View
     {
         return view('article.edit')->with('article', $article);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\Request  $request
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Article $article): RedirectResponse
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request['online'] = filter_var($request['online'], FILTER_VALIDATE_BOOLEAN);
@@ -129,7 +115,7 @@ class ArticleController extends Controller
             'remove_image' => ['boolean'],
         ]);
         // If the article is online and has no previous image or the current image is removed, the image is required
-        if ($request->online && (!$article->imagePath || $request->remove_image)) {
+        if ($request->online && (! $article->imagePath || $request->remove_image)) {
             $request->validateWithBag('updateArticle', [
                 'image' => ['required'],
             ]);
@@ -149,51 +135,45 @@ class ArticleController extends Controller
         $article->body_html = Str::markdown($article->body_md);
         // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
         if (($request->remove_image || $request->hasFile('image')) && $article->imagePath) {
-            $filePath = 'public/article/' . basename($article->imagePath);
+            $filePath = 'public/articles/'.basename($article->imagePath);
             if (Storage::delete($filePath)) {
                 $article->imagePath = null;
             }
         }
         // Si une nouvelle image a été uploadée, on la sauvegarde
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $path = $request->file('image')->storeAs('public/article', $imageName);
+            $imageName = time().'.'.$request->image->extension();
+            $path = $request->file('image')->storeAs('public/articles', $imageName);
             $article->imagePath = Storage::url($path);
         }
         $article->save();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Article enregistré avec succès.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Article enregistré avec succès.');
 
         return redirect()->route('articles.index');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy(Article $article): RedirectResponse
     {
         $article->delete();
 
-        session()->flash('alert-' . AlertLevelEnum::SUCCESS->name, 'Article supprimé avec succès.');
+        session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Article supprimé avec succès.');
 
         return redirect()->route('articles.index');
     }
 
     /**
      * Upload an image and return the url.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function storeImage(Request $request)
+    public function storeImage(Request $request): JsonResponse
     {
         $request->validate([
             'image' => ['required', 'mimes:png,jpg,jpeg,gif', 'max:10000', 'dimensions:max_width=800,max_height=800'],
         ]);
-        $imageName = time() . '.' . $request->image->extension();
+        $imageName = time().'.'.$request->image->extension();
         $path = $request->file('image')->storeAs('public/articles', $imageName);
 
         return response()->json([

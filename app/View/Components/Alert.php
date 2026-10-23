@@ -3,6 +3,7 @@
 namespace App\View\Components;
 
 use App\Enums\AlertLevelEnum;
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Alert extends Component
@@ -31,20 +32,19 @@ class Alert extends Component
     /**
      * Create a new component instance.
      *
-     * @param  string  $level
-     * @param  mixed   $message
+     * @param  mixed  $message
      */
     public function __construct(AlertLevelEnum $level = AlertLevelEnum::INFO, $message = '')
     {
-       $this->color   = $level->color();
-       $this->message = $message;
-       $this->id      = uniqid();
+        $this->color = $level->color();
+        $this->message = $message;
+        $this->id = uniqid();
     }
 
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

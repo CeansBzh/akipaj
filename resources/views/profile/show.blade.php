@@ -1,7 +1,7 @@
 <x-member-layout>
-    <div class="mx-auto flex max-w-screen-xl flex-col space-y-5 py-12 px-5 sm:flex-row sm:space-y-0 sm:space-x-5">
+    <div class="mx-auto flex max-w-(--breakpoint-xl) flex-col space-y-5 py-12 px-5 sm:flex-row sm:space-y-0 sm:space-x-5">
         <div class="h-full grow space-y-5">
-            <div class="overflow-hidden rounded-lg bg-white shadow">
+            <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:svgjs="http://svgjs.com/svgjs" width="950" height="300" preserveAspectRatio="none"
                     viewBox="0 0 950 300" class="h-32 w-full object-cover md:h-52">
@@ -66,7 +66,7 @@
                 <div class="py-6">
                     <div class="mx-auto max-w-7xl flex-col space-y-4 sm:px-6 lg:px-8">
 
-                        <div class="mx-auto max-w-3xl bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <div class="mx-auto max-w-3xl bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                             <livewire:comments :comments="$user->comments" :commentable="$user" />
                         </div>
 
@@ -124,15 +124,6 @@
                 @endforelse
             </ul>
         </div>
-        @if (isset($latestPayments))
-            <hr>
-
-            <div class="rounded-lg bg-white p-4 shadow sm:p-8">
-                <div class="mx-auto max-w-3xl">
-                    @include('profile.partials.latest-payments')
-                </div>
-            </div>
-        @endif
     </div>
     {{-- Sidebar --}}
     <div class="space-y-4 sm:w-1/4">
@@ -140,7 +131,7 @@
             <div x-data="{ animation: false }" class="px-1">
                 <div role="alert"
                     class="relative mb-6 scale-90 rounded-lg bg-yellow-200 p-4 text-sm text-yellow-800 transition duration-500 ease-in-out md:scale-100"
-                    :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring ring-yellow-300' : ''"
+                    :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring-3 ring-yellow-300' : ''"
                     x-init="$nextTick(() => {
                         animation = true;
                         setTimeout(() => { animation = false; }, 500);
@@ -152,7 +143,7 @@
             </div>
         @endif
 
-        <div class="rounded-lg bg-white p-4 shadow sm:p-8">
+        <div class="rounded-lg bg-white p-4 shadow-sm sm:p-8">
             <div class="mx-auto max-w-3xl">
                 <section class="flex flex-col items-center justify-between space-y-4 xs:space-y-0 lg:flex-row">
                     <h2 class="text-lg font-medium text-gray-900">Gestion du compte</h2>

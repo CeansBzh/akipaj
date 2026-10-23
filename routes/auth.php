@@ -11,79 +11,79 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware("guest")->group(function () {
-    Route::get("inscription", [
+Route::middleware('guest')->group(function () {
+    Route::get('inscription', [
         RegisteredUserController::class,
-        "create",
-    ])->name("register");
+        'create',
+    ])->name('register');
 
-    Route::post("inscription", [RegisteredUserController::class, "store"]);
+    Route::post('inscription', [RegisteredUserController::class, 'store']);
 
-    Route::get("connexion", [
+    Route::get('connexion', [
         AuthenticatedSessionController::class,
-        "create",
-    ])->name("login");
+        'create',
+    ])->name('login');
 
-    Route::post("connexion", [AuthenticatedSessionController::class, "store"]);
+    Route::post('connexion', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get("mot-de-passe-oublie", [
+    Route::get('mot-de-passe-oublie', [
         PasswordResetLinkController::class,
-        "create",
-    ])->name("password.request");
+        'create',
+    ])->name('password.request');
 
-    Route::post("mot-de-passe-oublie", [
+    Route::post('mot-de-passe-oublie', [
         PasswordResetLinkController::class,
-        "store",
-    ])->name("password.email");
+        'store',
+    ])->name('password.email');
 
-    Route::get("reinitialisation-mot-de-passe/{token}", [
+    Route::get('reinitialisation-mot-de-passe/{token}', [
         NewPasswordController::class,
-        "create",
-    ])->name("password.reset");
+        'create',
+    ])->name('password.reset');
 
-    Route::post("reinitialisation-mot-de-passe", [
+    Route::post('reinitialisation-mot-de-passe', [
         NewPasswordController::class,
-        "store",
-    ])->name("password.store");
+        'store',
+    ])->name('password.store');
 });
 
-Route::middleware("auth")->group(function () {
-    Route::get("verification-email", [
+Route::middleware('auth')->group(function () {
+    Route::get('verification-email', [
         EmailVerificationPromptController::class,
-        "__invoke",
-    ])->name("verification.notice");
+        '__invoke',
+    ])->name('verification.notice');
 
-    Route::get("verification-email/{id}/{hash}", [
+    Route::get('verification-email/{id}/{hash}', [
         VerifyEmailController::class,
-        "__invoke",
+        '__invoke',
     ])
-        ->middleware(["signed", "throttle:6,1"])
-        ->name("verification.verify");
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
 
-    Route::post("email/verification-notification", [
+    Route::post('email/verification-notification', [
         EmailVerificationNotificationController::class,
-        "store",
+        'store',
     ])
-        ->middleware("throttle:6,1")
-        ->name("verification.send");
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
 
-    Route::get("confirmation-mot-de-passe", [
+    Route::get('confirmation-mot-de-passe', [
         ConfirmablePasswordController::class,
-        "show",
-    ])->name("password.confirm");
+        'show',
+    ])->name('password.confirm');
 
-    Route::post("confirmation-mot-de-passe", [
+    Route::post('confirmation-mot-de-passe', [
         ConfirmablePasswordController::class,
-        "store",
+        'store',
     ]);
 
-    Route::put("changement-mot-de-passe", [
+    Route::put('changement-mot-de-passe', [
         PasswordController::class,
-        "update",
-    ])->name("password.update");
+        'update',
+    ])->name('password.update');
 
-    Route::post("deconnexion", [
+    Route::post('deconnexion', [
         AuthenticatedSessionController::class,
-        "destroy",
-    ])->name("logout");
+        'destroy',
+    ])->name('logout');
 });

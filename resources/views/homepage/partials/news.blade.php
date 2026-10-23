@@ -9,11 +9,11 @@
     class="mx-auto flex max-w-md flex-col space-y-3 md:grid md:max-w-none md:grid-cols-[1.3fr_repeat(2,1fr)] md:gap-3 md:space-y-0">
     {{-- first article --}}
     @if ($articles->first())
-        <div class="group/card relative overflow-hidden shadow-sm">
+        <div class="group/card relative overflow-hidden shadow-xs">
             <img src="{{ $articles->first()->imagePath }}"
                 alt="Image de couverture de l'article {{ $articles->first()->title }}"
                 class="absolute h-full w-full transform select-none overflow-hidden object-cover duration-500 ease-in-out group-hover/card:scale-105">
-            <div class="absolute inset-0 bg-gradient-to-tr from-neutral-800/75">
+            <div class="absolute inset-0 bg-linear-to-tr from-neutral-800/75">
             </div>
             <div class="relative top-0 flex h-full w-full max-w-sm flex-col justify-end p-5">
                 <a href="{{ route('articles.show', $articles->first()) }}">
@@ -52,7 +52,7 @@
                 <a href="{{ route('articles.show', $article) }}">
                     <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900">{{ $article->title }}</h5>
                 </a>
-                <p class="mb-3 font-normal text-gray-700 flex-grow">{{ $article->summary }}</p>
+                <p class="mb-3 font-normal text-gray-700 grow">{{ $article->summary }}</p>
                 <div class="flex justify-between items-center">
                     <p class="mb-2 font-semibold text-sky-600">{{ $article->published_at->translatedFormat('d M Y') }}</p>
                     <a href="{{ route('articles.show', $article) }}"

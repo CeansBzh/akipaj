@@ -1,7 +1,7 @@
 <x-member-layout>
     @if ($trip->imagePath)
         <div class="absolute w-screen">
-            <div class="absolute inset-0 from-transparent via-gray-100/10 to-gray-100 sm:bg-gradient-to-b">
+            <div class="absolute inset-0 from-transparent via-gray-100/10 to-gray-100 sm:bg-linear-to-b">
             </div>
             <img src="{{ $trip->imagePath }}" alt="Image de couverture de l'événement {{ $trip->name }}"
                 class="min-h-[150px] w-full object-cover">
@@ -16,7 +16,7 @@
                 </h1>
             </div>
 
-            <div class="relative bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div class="relative bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                 @include('trip.partials.trip-details')
 
                 <div class="absolute top-4 right-3">
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div class="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                 @include('trip.partials.trip-related-albums')
             </div>
 

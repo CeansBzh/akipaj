@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -26,12 +25,12 @@ class RegistrationValidated extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Votre compte ' . config('app.name') . ' a été validé')
+            ->subject('Votre compte '.config('app.name').' a été validé')
             ->line('Félicitation, vous avez désormais accès à l\'ensemble du site !')
             ->line('Vous pouvez dès à présent vous connecter avec vos identifiants :')
             ->action('Aller sur le site', url('/'))

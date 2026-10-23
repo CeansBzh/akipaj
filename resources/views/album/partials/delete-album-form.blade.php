@@ -27,6 +27,6 @@
             </form>
         </x-modal>
     @else
-        <p class="text-sm text-gray-500">L'album contient des photos ne vous appartenant pas. Supression interdite.</p>
+        <p class="text-sm text-gray-500">L'album contient des photos ne vous appartenant pas. Suppression interdite.</p>
     @endcan
 </section>

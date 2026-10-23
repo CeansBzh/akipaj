@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Event;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
+ * @extends Factory<Event>
  */
 class EventFactory extends Factory
 {
@@ -16,12 +17,12 @@ class EventFactory extends Factory
      */
     public function definition()
     {
-        $start = fake()->dateTimeBetween('today', '+2 year');
-        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
+        $start = fake()->dateTimeBetween('+1 hour', '+2 year');
+        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s').' +1 day', $start->format('Y-m-d H:i:s').' +10 days');
 
         return [
-            'name' => fake()->sentence,
-            'description' => fake()->paragraph,
+            'name' => fake()->text(50), // Same limits as the form validation
+            'description' => fake()->text(140),
             'location' => fake()->address,
             'start_time' => $start,
             'end_time' => fake()->boolean(20) ? $start : $end,
@@ -61,7 +62,7 @@ class EventFactory extends Factory
     public function passed()
     {
         $start = fake()->dateTimeBetween('-2 year', '-1 month');
-        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s') . ' +1 day', $start->format('Y-m-d H:i:s') . ' +10 days');
+        $end = fake()->dateTimeBetween($start->format('Y-m-d H:i:s').' +1 day', $start->format('Y-m-d H:i:s').' +10 days');
 
         return $this->state(fn (array $attributes) => [
             'start_time' => $start,

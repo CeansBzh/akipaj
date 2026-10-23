@@ -6,7 +6,7 @@
                 <img src="{{ $event->imagePath }}" alt="Image de couverture de l'événement {{ $event->name }}"
                     class="{{ $event->imagePath ? 'sm:rounded-t-lg' : '' }} max-h-80 w-full object-cover">
             @endif
-            <div class="{{ $event->imagePath ? 'sm:rounded-b-lg' : 'sm:rounded-lg' }} bg-white p-4 shadow sm:p-8">
+            <div class="{{ $event->imagePath ? 'sm:rounded-b-lg' : 'sm:rounded-lg' }} bg-white p-4 shadow-sm sm:p-8">
                 <div class="flex flex-row justify-between">
                     <div>
                         <h1 class="mb-1 text-xl font-bold text-gray-900">{{ $event->name }}</h1>

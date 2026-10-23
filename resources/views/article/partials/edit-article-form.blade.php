@@ -21,7 +21,7 @@
         <div>
             <div class="flex flex-col space-y-2">
                 <x-input-label for="editor" value="Contenu" />
-                <div id="editor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                <div id="editor" class="mt-1 block w-full rounded-md border-gray-300 shadow-xs">
                     {!! $article->body_html !!}
                 </div>
                 <x-input-error class="mt-2" :messages="$errors->updateArticle->get('body')" />
@@ -57,7 +57,7 @@
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 group-focus:motion-safe:animate-pulse">
+                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 motion-safe:group-focus:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -68,7 +68,7 @@
 
             <div class="flex items-center space-x-2">
                 <x-input-label for="online_input" value="Publier l'article" />
-                <input id="online_input" type="checkbox" name="online" class="rounded"
+                <input id="online_input" type="checkbox" name="online" class="rounded-sm"
                     {{ $article->online ? 'checked' : '' }}>
                 <x-input-error class="mt-2" :messages="$errors->updateArticle->get('online')" />
             </div>

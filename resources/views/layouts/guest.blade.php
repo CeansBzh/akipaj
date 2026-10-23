@@ -16,6 +16,9 @@
         rel="stylesheet">
 
     <!-- Scripts -->
+    @livewireStyles
+    {{-- Livewire and Alpine are bundled by Vite (resources/js/app.js) --}}
+    @livewireScriptConfig
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
     <style>

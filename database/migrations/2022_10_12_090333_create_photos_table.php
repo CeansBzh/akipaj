@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\User;
 use App\Models\Album;
+use App\Models\User;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->integer('thumb_width')->nullable();
             $table->integer('thumb_height')->nullable();
             $table->text('legend')->nullable();
-            $table->double('latitude',)->nullable();
+            $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
             $table->timestamp('taken_at')->nullable();
             $table->timestamps();

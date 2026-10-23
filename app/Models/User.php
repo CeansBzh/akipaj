@@ -2,29 +2,30 @@
 
 namespace App\Models;
 
+use App\Enums\UserLevelEnum;
+use App\Traits\Commentable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Enums\UserLevelEnum;
-use App\Models\Trip;
-use App\Models\Photo;
-use App\Models\Payment;
-use App\Traits\Commentable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Prunable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Dyrynda\Database\Support\CascadeSoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, CascadeSoftDeletes, Prunable, Notifiable, Commentable;
+    use CascadeSoftDeletes, Commentable, HasApiTokens, HasFactory, Notifiable, Notifiable, Prunable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -45,7 +46,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = ['password', 'remember_token'];
 
@@ -69,40 +70,40 @@ class User extends Authenticatable
 
     /**
      * Get the photos for the user.
+     *
+     * @return HasMany<Photo, $this>
      */
-    public function photos()
+    public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
     }
 
     /**
      * Get the comments sent by the user.
+     *
+     * @return HasMany<Comment, $this>
      */
-    public function commentsSent()
+    public function commentsSent(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
     /**
-     * Get the payments for the user.
-     */
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    /**
      * Get the trips for the user.
+     *
+     * @return BelongsToMany<Trip, $this>
      */
-    public function trips()
+    public function trips(): BelongsToMany
     {
         return $this->belongsToMany(Trip::class);
     }
 
     /**
      * Get the thread subscriptions for the user.
+     *
+     * @return HasMany<ThreadSubscription, $this>
      */
-    public function threadSubscriptions()
+    public function threadSubscriptions(): HasMany
     {
         return $this->hasMany(ThreadSubscription::class);
     }
@@ -130,20 +131,24 @@ class User extends Authenticatable
     /**
      * Check if user is subscribed to the specified commentable.
      *
-     * @param  \App\Traits\Commentable  $commentable
+     * @param  Model  $commentable  A model using the Commentable trait
      */
-    public function isSubscribedTo($commentable)
+    public function isSubscribedTo(Model $commentable): bool
     {
         if (in_array(Commentable::class, class_uses_recursive($commentable::class))) {
-            return $this->threadSubscriptions->contains('subscribeable_id', $commentable->id);
+            return $this->threadSubscriptions->contains(
+                fn (ThreadSubscription $subscription) => $subscription->subscribeable_id == $commentable->getKey()
+                    && $subscription->subscribeable_type === $commentable->getMorphClass(),
+            );
         }
+
         return false;
     }
 
     /**
      * Get the users deleted for more than 30 days.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function prunable()
     {
@@ -157,8 +162,9 @@ class User extends Authenticatable
      */
     protected function pruning()
     {
-        $this->photos()->forceDelete();
-        $this->commentsSent()->forceDelete();
-        $this->roles()->detach();
+        // The photos were soft deleted along with the user (cascadeDeletes): include the trashed ones
+        $this->photos()->withTrashed()->forceDelete();
+        $this->commentsSent()->withTrashed()->forceDelete();
+        $this->trips()->detach();
     }
 }

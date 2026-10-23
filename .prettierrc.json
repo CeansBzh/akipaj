@@ -1,7 +1,13 @@
 {
+    "plugins": [
+        "@shufo/prettier-plugin-blade",
+        "prettier-plugin-tailwindcss"
+    ],
     "overrides": [
         {
-            "files": ["*.blade.php"],
+            "files": [
+                "*.blade.php"
+            ],
             "options": {
                 "tabWidth": 4,
                 "parser": "blade"
@@ -10,7 +16,5 @@
     ],
     "sortTailwindcssClasses": true,
     "singleQuote": true,
-    "phpVersion": "8.1",
-    "braceStyle": "per-cs",
     "printWidth": 120
 }

@@ -15,7 +15,7 @@
                         class="h-64 w-full rounded-xl object-cover">
                 @endif
                 <div
-                    class="{{ $event->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur bg-opacity-60 rounded-md' : 'rounded-xl' }} flex w-full flex-row space-x-4 bg-white p-3">
+                    class="{{ $event->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur-sm bg-white/60 rounded-md' : 'rounded-xl bg-white' }} flex w-full flex-row gap-4 p-3">
                     <div
                         class="flex min-w-fit flex-col items-center justify-around rounded-md bg-sky-100 p-2 text-lg font-bold md:justify-center">
                         {{ $event->start_time != $event->end_time ? $event->start_time->format('d') . ' - ' : '' }}{{ $event->end_time->translatedFormat('d M') }}

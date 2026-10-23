@@ -1,4 +1,5 @@
-<div x-data="gallery()" class="px-2">
+<div x-data="gallery()" x-on:lightbox-previous.window="lightboxGoLeft()"
+    x-on:lightbox-next.window="lightboxGoRight()" class="px-2">
 
     <div class="p-2">
         @include('livewire.partials.gallery-search-sort')
@@ -8,7 +9,7 @@
         @include('livewire.partials.gallery-mass-selection-menu')
     </div>
 
-    <div class="grid auto-rows-[20px] grid-cols-1 gap-0.5 px-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="grid auto-rows-5 grid-cols-1 gap-0.5 px-3 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         @foreach ($photos as $photo)
             @can('delete', $photo)
                 <div x-on:click="imageClicked" id="photo-{{ $photo->id }}" data-role="gallery-item"
@@ -17,18 +18,18 @@
                         class="content h-fit w-full object-cover transition duration-75 ease-linear"
                         src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}"
                         height="{{ $photo->thumb_height }}" data-role="item-image">
-                    <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 opacity-0 group-hover:opacity-100"
+                    <div class="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-black/50 opacity-0 group-hover:opacity-100"
                         data-role="item-top-gradient"></div>
                     <svg x-on:click="checkboxClicked" role="checkbox" aria-checked="false"
                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="absolute top-3 left-3 h-6 w-6 text-white opacity-0 hover:!opacity-100 group-hover:opacity-60">
+                        class="absolute top-3 left-3 h-6 w-6 text-white opacity-0 hover:opacity-100! group-hover:opacity-60">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                 </div>
             @else
-                <div data-role="gallery-item" class="relative h-full select-none overflow-hidden"
+                <div id="photo-{{ $photo->id }}" data-role="gallery-item" class="relative h-full select-none overflow-hidden"
                     :class="selectedImages.length === 0 ? 'cursor-pointer' : 'cursor-default'"
                     x-on:click="openPhotoLightbox({{ $photo->id }})">
                     <img alt="{{ $photo->legend ? substr($photo->legend, 0, 140) : 'Image sans description' }}"
@@ -55,11 +56,13 @@
                         resizeAllGridItems();
                         window.addEventListener('resize', resizeAllGridItems);
                         // When a message is sent to the livewire component we reload the grid (for example when we filter the gallery)
-                        Livewire.hook('message.processed', (message, component) => {
-                            items = document.querySelectorAll('[data-role=gallery-item]');
-                            for (x = 0; x < items.length; x++) {
-                                imagesLoaded(items[x], resizeInstance);
-                            }
+                        Livewire.hook('commit', ({ succeed }) => {
+                            succeed(() => queueMicrotask(() => {
+                                items = document.querySelectorAll('[data-role=gallery-item]');
+                                for (x = 0; x < items.length; x++) {
+                                    imagesLoaded(items[x], resizeInstance);
+                                }
+                            }));
                         })
                         // Listen for keyboard arrows navigation
                         document.addEventListener('keyup', (e) => {
@@ -120,7 +123,7 @@
                         });
                     },
                     deleteSelected: function() {
-                        Livewire.emit('deleteSelected', this.selectedImages);
+                        Livewire.dispatch('deleteSelected', { selectedIds: this.selectedImages });
                         this.stopSelection();
                     },
                     toggleSelectedStyle: function(item) {
@@ -130,12 +133,12 @@
 
                         if (item.classList.contains('selected')) {
                             checkbox.classList.replace('text-sky-500', 'text-white');
-                            checkbox.classList.remove('!opacity-100');
+                            checkbox.classList.remove('opacity-100!');
                             item.classList.remove('selected');
                             gradient.classList.remove('hidden');
                         } else {
                             checkbox.classList.replace('text-white', 'text-sky-500');
-                            checkbox.classList.add('!opacity-100');
+                            checkbox.classList.add('opacity-100!');
                             item.classList.add('selected');
                             gradient.classList.add('hidden');
                         }
@@ -143,7 +146,7 @@
                     openPhotoLightbox: function(photoId) {
                         if (this.selectedImages.length === 0) {
                             this.lightboxPhotoId = photoId;
-                            Livewire.emit('openPhotoLightbox', photoId);
+                            Livewire.dispatch('openPhotoLightbox', { photoId: photoId });
                         }
                     },
                     lightboxGoLeft: function() {
@@ -153,7 +156,7 @@
                         if (previous !== null) {
                             let id = previous.id.split('-')[1];
                             this.lightboxPhotoId = id;
-                            Livewire.emit('loadPhoto', id);
+                            Livewire.dispatch('loadPhoto', { photoId: id });
                         }
                     },
                     lightboxGoRight: function() {
@@ -163,7 +166,7 @@
                         if (next !== null) {
                             let id = next.id.split('-')[1];
                             this.lightboxPhotoId = id;
-                            Livewire.emit('loadPhoto', id);
+                            Livewire.dispatch('loadPhoto', { photoId: id });
                         }
                     },
                 }
