@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoApiTransport;
 use Tests\TestCase;
@@ -84,8 +85,7 @@ class InfrastructureTest extends TestCase
     {
         $photo = Photo::factory()->create();
 
-        $this->assertFileExists($this->publicPath.'/storage/photos/'.basename($photo->path));
-        $this->assertFileExists($this->publicPath.'/storage/photos/thumbs/'.basename($photo->thumb_path));
+        Storage::disk('photos')->assertExists([basename($photo->path), 'thumbs/'.basename($photo->thumb_path)]);
     }
 
     public function test_local_environment_seeder_runs(): void

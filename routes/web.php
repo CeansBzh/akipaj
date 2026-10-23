@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
         ]);
         Route::resource('photos', PhotoController::class)->except(['create']);
         Route::get('/photos/create/{album}', [PhotoController::class, 'create'])->name('photos.create');
+        // Keeps the URL of the photos uploaded when they were in the public storage
+        Route::get('/storage/photos/{path}', [PhotoController::class, 'file'])
+            ->where('path', '(thumbs/)?\w[\w.-]*')
+            ->name('photos.file');
     });
 
     Route::middleware('level:'.UserLevelEnum::ADMINISTRATOR->value)

@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserLevelEnum;
 use App\Models\Album;
 use App\Models\Comment;
 use App\Models\Photo;
 use App\Models\ThreadSubscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 class PhotoTest extends TestCase
@@ -55,8 +58,9 @@ class PhotoTest extends TestCase
         $this->assertSame([450, 337], [$landscape->thumb_width, $landscape->thumb_height]);
         $this->assertSame([225, 450], [$photos[1]->thumb_width, $photos[1]->thumb_height]);
 
-        $this->assertFileExists($this->publicPath.'/storage/photos/'.basename($landscape->path));
-        $this->assertFileExists($this->publicPath.'/storage/photos/thumbs/'.basename($landscape->thumb_path));
+        Storage::disk('photos')->assertExists([basename($landscape->path), 'thumbs/'.basename($landscape->thumb_path)]);
+        $this->get($landscape->path)->assertOk();
+        $this->get($landscape->thumb_path)->assertOk();
 
         // The uploader is subscribed to the comments of each photo
         $this->assertTrue($user->isSubscribedTo($landscape));
@@ -102,6 +106,51 @@ class PhotoTest extends TestCase
             ->assertOk()
             ->assertSee($photo->title)
             ->assertSee($comment->content);
+    }
+
+    public function test_members_can_see_the_files_of_a_photo(): void
+    {
+        $this->actingAsMember();
+        $photo = Photo::factory()->create();
+        $fileName = basename($photo->path);
+
+        // URLs stored for the photos uploaded when the files were in the public storage
+        $photoResponse = $this->get('/storage/photos/'.$fileName);
+        $thumbResponse = $this->get('/storage/photos/thumbs/thumb_'.$fileName);
+
+        $photoResponse->assertOk()->assertHeader('Content-Type', 'image/jpeg');
+        $this->assertSame(Storage::disk('photos')->get($fileName), $photoResponse->streamedContent());
+        $this->assertTrue($photoResponse->headers->hasCacheControlDirective('private'));
+
+        $thumbResponse->assertOk()->assertHeader('Content-Type', 'image/jpeg');
+        $this->assertSame(Storage::disk('photos')->get('thumbs/thumb_'.$fileName), $thumbResponse->streamedContent());
+    }
+
+    public function test_visitors_are_redirected_to_login_from_the_files_of_a_photo(): void
+    {
+        $photo = Photo::factory()->create();
+
+        $this->get($photo->path)->assertRedirect(route('login'));
+        $this->get($photo->thumb_path)->assertRedirect(route('login'));
+    }
+
+    public function test_guest_level_users_are_redirected_to_their_profile_from_the_files_of_a_photo(): void
+    {
+        $user = $this->actingAsLevel(UserLevelEnum::GUEST);
+        $photo = Photo::factory()->create();
+
+        $this->get($photo->path)->assertRedirect(route('profile.show', $user->name));
+    }
+
+    #[TestWith(['missing.jpg'])]
+    #[TestWith(['thumbs'])]
+    #[TestWith(['../../../.env'])]
+    #[TestWith(['thumbs/../../.env'])]
+    public function test_only_existing_photo_files_are_served(string $path): void
+    {
+        $this->actingAsMember();
+
+        $this->get('/storage/photos/'.$path)->assertNotFound();
     }
 
     public function test_owners_can_update_their_photos(): void

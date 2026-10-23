@@ -37,15 +37,17 @@ class PhotoFactory extends Factory
     {
         // Création d'une image aléatoire, générée localement pour ne pas dépendre du réseau (seeders et tests)
         $fileName = fake()->slug.'.jpg';
+        $disk = Storage::disk('photos');
+        $disk->makeDirectory('thumbs');
         $imageResource = $this->generateImage();
-        imagejpeg($imageResource, public_path('storage/photos/'.$fileName));
+        imagejpeg($imageResource, $disk->path($fileName));
         // Enregistrement de la miniature
         $width = imagesx($imageResource);
         $height = imagesy($imageResource);
         // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
         $ratio = min(450 / $width, 450 / $height);
         $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
-        imagejpeg($thumbResource, public_path('storage/photos/thumbs/thumb_'.$fileName));
+        imagejpeg($thumbResource, $disk->path('thumbs/thumb_'.$fileName));
 
         // Probabilité d'avoir des coordonnées GPS
         $hasCoordinates = fake()->boolean(50);
@@ -54,8 +56,8 @@ class PhotoFactory extends Factory
             'album_id' => Album::inRandomOrder()->first()->id ?? Album::factory(),
             'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
             'title' => fake()->sentence,
-            'path' => Storage::url('photos/'.$fileName),
-            'thumb_path' => Storage::url('photos/thumbs/thumb_'.$fileName),
+            'path' => route('photos.file', $fileName, false),
+            'thumb_path' => route('photos.file', 'thumbs/thumb_'.$fileName, false),
             'width' => $width,
             'height' => $height,
             'thumb_width' => imagesx($thumbResource),

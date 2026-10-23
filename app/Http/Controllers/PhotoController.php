@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PhotoController extends Controller
 {
@@ -50,25 +51,27 @@ class PhotoController extends Controller
     public function store(StorePhotoRequest $request): RedirectResponse|JsonResponse
     {
         $album = Album::find($request->album);
+        $disk = Storage::disk('photos');
+        $disk->makeDirectory('thumbs');
         // Enregistrement des photos
         foreach ($request->file('files') as $file) {
             // Lecture des données EXIF
             $exif = @exif_read_data($file->getRealPath());
-            // Pour chaque fichier enregistrement dans le stockage du site
+            // Pour chaque fichier enregistrement dans le stockage privé des photos
             $imageResource = imagecreatefromstring($file->getContent());
-            imagejpeg($imageResource, public_path('storage/photos/'.$file->hashName()));
+            imagejpeg($imageResource, $disk->path($file->hashName()));
             // Enregistrement de la miniature
             $width = imagesx($imageResource);
             $height = imagesy($imageResource);
             // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
             $ratio = min(450 / $width, 450 / $height);
             $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
-            imagejpeg($thumbResource, public_path('storage/photos/thumbs/thumb_'.$file->hashName()));
+            imagejpeg($thumbResource, $disk->path('thumbs/thumb_'.$file->hashName()));
             // Création d'une nouvelle photo
             $photo = new Photo;
             $photo->title = $file->getClientOriginalName();
-            $photo->path = Storage::url('photos/'.$file->hashName());
-            $photo->thumb_path = Storage::url('photos/thumbs/thumb_'.$file->hashName());
+            $photo->path = route('photos.file', $file->hashName(), false);
+            $photo->thumb_path = route('photos.file', 'thumbs/thumb_'.$file->hashName(), false);
             $photo->width = $width;
             $photo->height = $height;
             $photo->thumb_width = imagesx($thumbResource);
@@ -112,6 +115,21 @@ class PhotoController extends Controller
         return view('photo.show', [
             'photo' => $photo,
             'comments' => $photo->comments,
+        ]);
+    }
+
+    /**
+     * Send the file of a photo or of its thumbnail, which isn't publicly accessible.
+     */
+    public function file(string $path): StreamedResponse
+    {
+        $disk = Storage::disk('photos');
+
+        abort_unless($disk->fileExists($path), 404);
+
+        // The file names are unique, so the browser can keep them, but shared caches must not
+        return $disk->response($path, headers: [
+            'Cache-Control' => 'private, max-age=31536000, immutable',
         ]);
     }
 

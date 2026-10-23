@@ -5,15 +5,10 @@ namespace Tests;
 use App\Enums\UserLevelEnum;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * Temporary directory used as the public path during the test.
-     */
-    protected string $publicPath;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -21,18 +16,8 @@ abstract class TestCase extends BaseTestCase
         // The views use @vite, which requires a built manifest
         $this->withoutVite();
 
-        // PhotoController and PhotoFactory write directly in public/storage/photos:
-        // point the public path to a temporary directory so the tests don't touch the real one.
-        $this->publicPath = sys_get_temp_dir().'/akipaj-public-'.uniqid();
-        File::ensureDirectoryExists($this->publicPath.'/storage/photos/thumbs');
-        $this->app->usePublicPath($this->publicPath);
-    }
-
-    protected function tearDown(): void
-    {
-        File::deleteDirectory($this->publicPath);
-
-        parent::tearDown();
+        // PhotoController and PhotoFactory write the photo files: keep the tests away from the real ones
+        Storage::fake('photos');
     }
 
     /**

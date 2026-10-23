@@ -42,6 +42,13 @@ return [
             'throw' => false,
         ],
 
+        // Photos are kept out of the public directory: they're served to members by the "photos.file" route
+        'photos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/photos'),
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
