@@ -2,17 +2,20 @@
     "name": "ceansbzh/akipaj",
     "type": "project",
     "description": "Site de l'association de voile Akipaj.",
-    "keywords": ["laravel", "livewire"],
+    "keywords": [
+        "laravel",
+        "livewire"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
         "dyrynda/laravel-cascade-soft-deletes": "^4.6",
-        "guzzlehttp/guzzle": "^7.8",
+        "guzzlehttp/guzzle": "^8.0",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
-        "stripe/stripe-php": "^10.0",
+        "stripe/stripe-php": "^22.0",
         "symfony/brevo-mailer": "^7.4",
         "symfony/http-client": "^7.4"
     },

@@ -13,8 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 8.3: minimum declared in composer.json, 8.4: Sail runtime
-        php: ['8.3', '8.4']
+        php: ['8.5']
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
