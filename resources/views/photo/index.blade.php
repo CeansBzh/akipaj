@@ -11,7 +11,7 @@
     <div>
         @if (\App\Models\Photo::count() > 0)
             <livewire:lightbox />
-            <div class="mx-auto max-w-screen-2xl">
+            <div class="mx-auto max-w-(--breakpoint-2xl)">
                 <livewire:gallery />
             </div>
         @else

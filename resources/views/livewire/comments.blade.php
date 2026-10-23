@@ -34,9 +34,9 @@
                     <div class="text-center">
                         <p class="pb-1">Voulez-vous vraiment supprimer ce commentaire ?</p>
                         <button wire:click="destroy({{ $comment->id }})"
-                            class="w-32 rounded border bg-red-800 px-4 py-1 text-white hover:bg-red-600">Oui</button>
+                            class="w-32 rounded-sm border bg-red-800 px-4 py-1 text-white hover:bg-red-600">Oui</button>
                         <button wire:click="setCommentToDestroy(null)"
-                            class="w-32 rounded border bg-gray-600 px-4 py-1 text-white hover:bg-gray-500">Non</button>
+                            class="w-32 rounded-sm border bg-gray-600 px-4 py-1 text-white hover:bg-gray-500">Non</button>
                     </div>
                 @elseif($commentIdToUpdate === $comment->id)
                     <form wire:submit.prevent="update({{ $comment->id }})">

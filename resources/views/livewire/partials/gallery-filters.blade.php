@@ -1,4 +1,4 @@
-<div class="ml-auto w-full rounded-lg bg-white p-5 shadow md:w-2/3">
+<div class="ml-auto w-full rounded-lg bg-white p-5 shadow-sm md:w-2/3">
     <div class="flex items-center justify-between">
         <p class="font-medium">
             Filtres

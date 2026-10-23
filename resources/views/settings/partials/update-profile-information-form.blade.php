@@ -20,7 +20,7 @@
                     @click="removeImage">Retirer</button>
             </div>
 
-            <div class="flex-grow">
+            <div class="grow">
                 <x-input-label for="profile_picture_input" value="Photo de profil (facultatif)" />
                 <input type="file" id="profile_picture_input" name="profile_picture" class="mt-1 block w-full"
                     accept="image/png, image/jpeg" @change="fileChosen">
@@ -52,7 +52,7 @@
                         Votre adresse mail n'a pas été confirmée.
 
                         <button form="send-verification"
-                            class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                            class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                             Cliquer ici pour recevoir à nouveau le lien de confirmation.
                         </button>
                     </p>

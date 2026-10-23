@@ -15,7 +15,7 @@
             <div class="relative mx-auto grid max-w-5xl grid-cols-1 grid-rows-1">
                 <div class="carousel col-start-1 row-start-1" x-ref="carousel">
                     @foreach ($tripsByYear as $year => $trips)
-                        <div class="mr-8 flex h-32 w-1/4 flex-col items-center justify-center rounded sm:w-1/6">
+                        <div class="mr-8 flex h-32 w-1/4 flex-col items-center justify-center rounded-sm sm:w-1/6">
                             <p class="cursor-pointer font-merriweather text-4xl font-bold text-white"
                                 x-on:click="flkty.selectCell({{ $loop->index }})">{{ $year }}</p>
                             <p class="mt-2 text-center text-lg text-gray-200">{{ $trips->count() }}
@@ -43,10 +43,10 @@
                                 @if ($trip->imagePath)
                                     <img src="{{ $trip->imagePath }}"
                                         alt="Image de couverture de la sortie {{ $trip->title }}"
-                                        class="h-[22rem] w-full rounded-xl object-cover">
+                                        class="h-88 w-full rounded-xl object-cover">
                                 @endif
                                 <div
-                                    class="{{ $trip->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur bg-opacity-75 rounded-md' : 'rounded-xl' }} flex w-full flex-row justify-between space-x-4 bg-white py-3 px-3 sm:px-8">
+                                    class="{{ $trip->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur-sm bg-white/75 rounded-md' : 'rounded-xl bg-white' }} flex w-full flex-row justify-between gap-4 py-3 px-3 sm:px-8">
                                     <div>
                                         <a href="{{ route('trips.show', $trip) }}"
                                             class="trip_item_clickable trip_item_link text-lg font-bold">

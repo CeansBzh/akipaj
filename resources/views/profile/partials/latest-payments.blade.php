@@ -15,7 +15,7 @@
 
     <div class="mt-4">
         <div class="-mx-4 overflow-x-auto px-4 py-2 sm:-mx-8 sm:px-8">
-            <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+            <div class="inline-block min-w-full overflow-hidden rounded-lg shadow-sm">
                 <table class="min-w-full leading-normal">
                     <thead>
                         <tr>

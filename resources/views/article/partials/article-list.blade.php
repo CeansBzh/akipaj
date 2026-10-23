@@ -5,7 +5,7 @@
                 <div>
                     <a href="{{ route('articles.show', $article) }}">
                         <img src="{{ $article->imagePath }}" alt="{{ $article->title }}"
-                            class="h-64 w-full rounded object-cover">
+                            class="h-64 w-full rounded-sm object-cover">
                     </a>
                 </div>
                 <div>

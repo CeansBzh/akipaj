@@ -23,7 +23,7 @@
                         class="h-full w-full select-none object-cover">
                     <div class="absolute top-0 h-full w-full items-end justify-center">
                         <a href="{{ route('trips.show', $trips[0]) }}"
-                            class="absolute inset-0 rounded-3xl p-4 text-xl font-bold text-white ring-inset ring-sky-400 focus:ring">
+                            class="absolute inset-0 rounded-3xl p-4 text-xl font-bold text-white ring-inset ring-sky-400 focus:ring-3">
                             {{ $trips[0]->title }}
                         </a>
                     </div>
@@ -37,7 +37,7 @@
                         class="h-full w-full select-none object-cover">
                     <div class="absolute top-0 h-full w-full items-end justify-center">
                         <a href="{{ route('trips.show', $trips[1]) }}"
-                            class="absolute inset-0 rounded-3xl p-4 text-xl font-bold text-white ring-inset ring-sky-400 focus:ring">
+                            class="absolute inset-0 rounded-3xl p-4 text-xl font-bold text-white ring-inset ring-sky-400 focus:ring-3">
                             {{ $trips[1]->title }}
                         </a>
                     </div>
@@ -51,7 +51,7 @@
                         class="h-full w-full select-none object-cover">
                     <div class="absolute top-0 h-full w-full items-end justify-center">
                         <a href="{{ route('trips.show', $trips[2]) }}"
-                            class="absolute inset-0 rounded-3xl p-4 text-xl font-bold text-white ring-inset ring-sky-400 focus:ring">
+                            class="absolute inset-0 rounded-3xl p-4 text-xl font-bold text-white ring-inset ring-sky-400 focus:ring-3">
                             {{ $trips[2]->title }}
                         </a>
                     </div>

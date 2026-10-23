@@ -1,7 +1,7 @@
 <div>
     <div class="flex">
         <button type="button"
-            class="w-full items-center rounded-md text-sm leading-6 text-gray-500 sm:flex sm:py-1.5 sm:pl-2 sm:pr-3 sm:text-slate-600 sm:shadow-sm sm:ring-1 sm:ring-slate-900/10 sm:hover:ring-slate-400/80"
+            class="w-full items-center rounded-md text-sm leading-6 text-gray-500 sm:flex sm:py-1.5 sm:pl-2 sm:pr-3 sm:text-slate-600 sm:shadow-xs sm:ring-1 sm:ring-slate-900/10 sm:hover:ring-slate-400/80"
             x-data="" x-on:click.prevent="$dispatch('open-modal', 'search-input')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" class="h-7 sm:h-5">
@@ -46,7 +46,7 @@
                         @foreach ($results as $result)
                             <li class="mt-1">
                                 <a href="{{ $result['url'] }}"
-                                    class="group block rounded bg-gray-100 py-2 px-3 leading-6 text-gray-900 hover:bg-sky-500 hover:text-white">
+                                    class="group block rounded-sm bg-gray-100 py-2 px-3 leading-6 text-gray-900 hover:bg-sky-500 hover:text-white">
                                     <div class="flex items-center space-x-5">
                                         <div class="text-gray-500 group-hover:text-white">
                                             {!! $icons[$category] !!}

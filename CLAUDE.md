@@ -16,7 +16,7 @@ ne pas l'éditer à la main, et ne jamais écrire le nom de sa balise ailleurs d
 | PHP | `^8.3` (lock résolu pour 8.3), **8.4** sous Sail | `config.platform.php` = 8.3.0 dans `composer.json` |
 | Laravel | **13** | Structure Laravel 11+ (`bootstrap/app.php`, pas de kernels) |
 | Livewire | **4** | Composants classiques dans `app/Livewire`, vues dans `resources/views/**/livewire` |
-| Front | Vite 8, Tailwind **3.4**, Alpine (fourni par Livewire), Toast UI Editor | `resources/js`, `resources/css` |
+| Front | Vite 8, Tailwind **4** (`@tailwindcss/vite`), Alpine (fourni par Livewire), Toast UI Editor | `resources/js`, `resources/css` |
 | Tests | PHPUnit 12, SQLite en mémoire | 222 tests |
 | Analyse statique | PHPStan 2 + Larastan 3, **niveau 5**, sans baseline | `phpstan.neon` |
 | IA | Laravel Boost 2 (MCP + skills `.claude/skills`) | `.mcp.json`, `boost.json` |
@@ -103,6 +103,10 @@ Vocabulaire : *sortie* = `Trip`, *programme* = `Event`, *actualités* = `Article
   à jour immédiate. Événements : `#[On('nom')]` côté PHP, `$this->dispatch('nom', param: …)` et, côté JS,
   `Livewire.dispatch('nom', { param: … })` (paramètres **nommés**). Les actions reçoivent des identifiants
   (`int $commentId`) et chargent le modèle avec `findOrFail`. Fermer les balises `<livewire:… />` (sinon slot).
+- Tailwind 4 : pas de `tailwind.config.js`, tout est dans `resources/css/app.css` (`@theme` : breakpoint `xs`,
+  polices ; `@plugin` forms ; `@source inline(...)` pour les classes construites dynamiquement, comme celles de
+  `<x-alert>` ; `@utility` pour les utilitaires maison). Bordures grises et curseur pointeur des boutons de la v3
+  conservés en `@layer base`. Classes v4 : `shadow-xs`, `rounded-sm`, `outline-hidden`, `shrink-0`, `max-w-(--breakpoint-xl)`…
 - Données injectées dans du JavaScript inline : `@js($valeur)`, jamais `"{{ $valeur }}"`.
 - Images statiques référencées avec `Vite::asset()` : doivent être sous `resources/images` ou
   `resources/views/**/images` (glob eager dans `app.js`).

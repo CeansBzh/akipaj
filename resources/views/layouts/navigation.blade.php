@@ -12,7 +12,7 @@
             </svg>
             <span class="sr-only">Retour à l'accueil</span>
         </a>
-        <div class="flex items-center space-x-5 md:order-2">
+        <div class="flex items-center gap-5 md:order-2">
             {{-- Search bar --}}
             <livewire:search-input />
             {{-- User dropdown --}}
@@ -60,7 +60,7 @@
             </x-dropdown>
             {{-- Main menu burger button --}}
             <button type="button" @click="open = !open"
-                class="inline-flex items-center rounded-lg text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden"
+                class="inline-flex items-center rounded-lg text-sm text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 md:hidden"
                 aria-controls="mobile-menu" aria-expanded="false">
                 <span class="sr-only">Open main menu</span>
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22 22" fill="none"
@@ -117,9 +117,9 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute left-0 z-50 mt-2 w-full min-w-[10rem] origin-top-left rounded-md shadow-lg"
+                            class="absolute left-0 z-50 mt-2 w-full min-w-40 origin-top-left rounded-md shadow-lg"
                             style="display: none;" @click="open = false">
-                            <div class="rounded-md bg-white py-1 ring-1 ring-black ring-opacity-5">
+                            <div class="rounded-md bg-white py-1 ring-1 ring-black/5">
                                 <ul class="py-1" aria-labelledby="gallery-menu-button">
                                     <li>
                                         <x-dropdown-link :href="route('albums.index')" :aria-current="request()->routeIs('albums.index') ? 'page' : ''">

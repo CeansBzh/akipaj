@@ -1,5 +1,5 @@
 <div class="-mx-4 overflow-x-auto px-4 py-4 sm:-mx-8 sm:px-8">
-    <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+    <div class="inline-block min-w-full overflow-hidden rounded-lg shadow-sm">
         <table class="min-w-full table-fixed leading-normal">
             <thead>
                 <tr>
@@ -44,7 +44,7 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <div class="flex max-w-[5rem] justify-between">
+                            <div class="flex max-w-20 justify-between">
                                 <button type="button" wire:click="reject({{ $user->id }})">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                         class="h-7 w-7 shrink-0 stroke-red-600 stroke-[1.7] hover:stroke-2"

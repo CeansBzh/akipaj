@@ -12,7 +12,7 @@
             <x-text-input type="text" placeholder="Rechercher par titre ou légende" wire:model.live.debounce.300ms="searchTerm"
                 class="w-full px-8 py-3 text-sm text-gray-500 xs:rounded-r-none xs:rounded-l-md" />
         </div>
-        <x-secondary-button class="mb-2 focus:ring-offset-0 xs:rounded-r-md xs:rounded-l-none" ::class="{ 'ring-2': open }"
+        <x-secondary-button class="mb-2 focus:ring-offset-0 xs:rounded-r-md xs:rounded-l-none" ::class="{ 'ring-2 ring-blue-500/50': open }"
             @click="open = ! open">
             <div class="flex items-center justify-between space-x-1 text-gray-500">
                 <span>Filtrer</span>

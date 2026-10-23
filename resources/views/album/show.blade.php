@@ -47,20 +47,20 @@
         </div>
         <hr class="mt-2 mb-4">
         <div
-            class="{{ strlen($album->description) > 150 ? 'text-sm' : '' }} flex flex-wrap space-x-1 sm:space-x-5 md:flex-nowrap">
+            class="{{ strlen($album->description) > 150 ? 'text-sm' : '' }} flex flex-wrap gap-x-1 sm:gap-x-5 md:flex-nowrap">
             <p class="min-w-fit font-bold">Description :</p>
-            <p class="flex-grow">{{ $album->description }}</p>
+            <p class="grow">{{ $album->description }}</p>
         </div>
-        <div class="flex flex-wrap space-x-1 sm:space-x-5 md:flex-nowrap">
+        <div class="flex flex-wrap gap-x-1 sm:gap-x-5 md:flex-nowrap">
             <p class="min-w-fit font-bold">Nombre de photos :</p>
-            <p class="flex-grow">{{ $album->photos->count() }}</p>
+            <p class="grow">{{ $album->photos->count() }}</p>
         </div>
     </x-slot>
 
     <section class="text-gray-700">
         @if (count($photoIds) > 0)
             <livewire:lightbox />
-            <div class="mx-auto max-w-screen-2xl">
+            <div class="mx-auto max-w-(--breakpoint-2xl)">
                 <livewire:gallery :photoIds="$photoIds" />
             </div>
         @else

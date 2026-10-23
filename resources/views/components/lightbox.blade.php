@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div class="fixed inset-x-0 top-0 bg-gradient-to-b from-black/60 p-4" x-show="showDetails"
+    <div class="fixed inset-x-0 top-0 bg-linear-to-b from-black/60 p-4" x-show="showDetails"
         x-transition:enter="transition ease duration-500 transform" x-transition:enter-start="opacity-0 -translate-y-4"
         x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease duration-300 transform"
         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4">
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <div class="fixed inset-x-0 bottom-0 bg-gradient-to-t from-black/60 p-2" x-show="showDetails"
+    <div class="fixed inset-x-0 bottom-0 bg-linear-to-t from-black/60 p-2" x-show="showDetails"
         x-transition:enter="transition ease duration-500 transform" x-transition:enter-start="opacity-0 translate-y-4"
         x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease duration-300 transform"
         x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4">

@@ -35,10 +35,10 @@
                             <img class="h-full w-full rounded-lg object-cover"
                                 src="{{ $album->imagePath ?? $album->oldestPhoto->path }}"
                                 alt="Image de couverture de l'album {{ $album->title }}">
-                            <div class="absolute inset-0 rounded-lg bg-gradient-to-t from-black/30 via-black/10">
+                            <div class="absolute inset-0 rounded-lg bg-linear-to-t from-black/30 via-black/10">
                             </div>
                             <figcaption
-                                class="absolute bottom-1 text-ellipsis break-words px-1 text-center text-sm text-white sm:bottom-6 sm:px-4 sm:text-base">
+                                class="absolute bottom-1 text-ellipsis wrap-break-word px-1 text-center text-sm text-white sm:bottom-6 sm:px-4 sm:text-base">
                                 {{ $album->title }}
                             </figcaption>
                         </a>

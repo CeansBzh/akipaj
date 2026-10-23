@@ -5,7 +5,7 @@
     </div>
 
     @if (!empty($boats))
-        <div class="relative overflow-x-auto rounded border shadow-md">
+        <div class="relative overflow-x-auto rounded-sm border shadow-md">
             <table class="w-full text-left text-sm text-gray-700">
                 <tr class="border-b border-gray-200">
                     <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Nom</th>

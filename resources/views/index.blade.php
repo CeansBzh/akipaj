@@ -37,7 +37,7 @@
         </div>
         <div class="relative bg-neutral-900/10">
             <div
-                class="mx-auto flex h-[calc(100vh-6rem)] min-h-[27rem] max-w-screen-xl items-center justify-center px-4 py-32 sm:justify-start sm:px-6 lg:px-8">
+                class="mx-auto flex h-[calc(100vh-6rem)] min-h-108 max-w-(--breakpoint-xl) items-center justify-center px-4 py-32 sm:justify-start sm:px-6 lg:px-8">
                 <div class="max-w-xl text-center sm:text-left">
                     <div class="text-3xl">
                         <x-application-logo class="mx-auto h-20 sm:mx-0 sm:h-28" />
@@ -46,11 +46,11 @@
 
                     <div class="mt-8 flex flex-wrap gap-4 text-center">
                         <a href="{{ route('register') }}"
-                            class="block w-full rounded bg-sky-600 px-12 py-3 font-medium text-white shadow hover:bg-sky-500 focus:outline-none focus:ring active:bg-sky-600 sm:w-auto">
+                            class="block w-full rounded-sm bg-sky-600 px-12 py-3 font-medium text-white shadow-sm hover:bg-sky-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500/50 active:bg-sky-600 sm:w-auto">
                             Créer un compte
                         </a>
                         <a href="{{ route('login') }}"
-                            class="block w-full rounded bg-white px-12 py-3 font-medium text-sky-900 shadow hover:text-sky-500 focus:outline-none focus:ring active:text-sky-400 sm:w-auto">
+                            class="block w-full rounded-sm bg-white px-12 py-3 font-medium text-sky-900 shadow-sm hover:text-sky-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500/50 active:text-sky-400 sm:w-auto">
                             Je suis déjà membre
                         </a>
                     </div>
@@ -61,7 +61,7 @@
 
     {{-- Features section --}}
     <section id="animated-svg">
-        <div class="mx-auto max-w-screen-xl py-40 px-5 lg:px-12">
+        <div class="mx-auto max-w-(--breakpoint-xl) py-40 px-5 lg:px-12">
             <div class="mb-12 text-center">
                 <h2 class="mb-4 text-3xl font-bold">Fonctionnalités</h2>
                 <p>Toute l'actualité et tous vos souvenirs, au même endroit.</p>
@@ -112,18 +112,18 @@
 
     {{-- Gallery section --}}
     <section class="bg-white shadow-[0_-2px_35px_5px_rgba(0,0,0,0.2)]">
-        <div class="py-24 px-2 lg:mx-auto lg:flex lg:max-w-screen-xl lg:px-12">
+        <div class="py-24 px-2 lg:mx-auto lg:flex lg:max-w-(--breakpoint-xl) lg:px-12">
             <div class="mb-5 text-center lg:order-last lg:mx-14 lg:mb-52 lg:grow lg:self-center">
                 <h2 class="mb-4 text-3xl font-bold">Galerie</h2>
                 <p class="mx-auto max-w-md">Vous avez des photos et souhaitez en faire profiter les autres ? La galerie
                     est
                     faite pour ça ✨</p>
                 <a href="{{ route('photos.index') }}"
-                    class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                    class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-base font-medium text-white shadow-xs hover:bg-sky-700 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                     Voir la galerie
                 </a>
             </div>
-            <div class="relative mx-auto max-w-screen-md columns-3 gap-1 p-4 sm:gap-4 lg:m-0 lg:w-2/3">
+            <div class="relative mx-auto max-w-(--breakpoint-md) columns-3 gap-1 p-4 sm:gap-4 lg:m-0 lg:w-2/3">
                 <img class="w-full rounded-md" src="{{ Vite::asset('resources/images/carousel/1.webp') }}"
                     alt="" width="235" height="157" loading="lazy" />
                 <img class="mt-1 w-full rounded-md sm:mt-4"
@@ -154,20 +154,20 @@
                 <img class="mt-1 w-full rounded-md sm:mt-4"
                     src="{{ Vite::asset('resources/images/carousel/11.webp') }}" alt="" width="235"
                     height="157" loading="lazy" />
-                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white via-white/95"></div>
+                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-white via-white/95"></div>
             </div>
         </div>
     </section>
 
     {{-- Trips section --}}
     <section id="animated-svg-2">
-        <div class="py-40 px-5 lg:mx-auto lg:flex lg:max-w-screen-xl lg:px-12">
+        <div class="py-40 px-5 lg:mx-auto lg:flex lg:max-w-(--breakpoint-xl) lg:px-12">
             <div class="mb-8 text-center lg:mx-14 lg:grow lg:self-center">
                 <h2 class="mb-4 text-3xl font-bold">Historique</h2>
                 <p class="mx-auto max-w-md">Pour se remémorer les sorties Akipaj, jusqu'au début en 2001! Albums,
                     membres d'équipage, détails des bateaux,.. ⛵</p>
                 <a href="{{ route('trips.index') }}"
-                    class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                    class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-base font-medium text-white shadow-xs hover:bg-sky-700 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                     Voir l'historique
                 </a>
             </div>

@@ -17,12 +17,12 @@
                         class="content h-fit w-full object-cover transition duration-75 ease-linear"
                         src="{{ $photo->thumb_path }}" loading="lazy" width="{{ $photo->thumb_width }}"
                         height="{{ $photo->thumb_height }}" data-role="item-image">
-                    <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 opacity-0 group-hover:opacity-100"
+                    <div class="absolute inset-x-0 top-0 h-16 bg-linear-to-b from-black/50 opacity-0 group-hover:opacity-100"
                         data-role="item-top-gradient"></div>
                     <svg x-on:click="checkboxClicked" role="checkbox" aria-checked="false"
                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="absolute top-3 left-3 h-6 w-6 text-white opacity-0 hover:!opacity-100 group-hover:opacity-60">
+                        class="absolute top-3 left-3 h-6 w-6 text-white opacity-0 hover:opacity-100! group-hover:opacity-60">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
@@ -132,12 +132,12 @@
 
                         if (item.classList.contains('selected')) {
                             checkbox.classList.replace('text-sky-500', 'text-white');
-                            checkbox.classList.remove('!opacity-100');
+                            checkbox.classList.remove('opacity-100!');
                             item.classList.remove('selected');
                             gradient.classList.remove('hidden');
                         } else {
                             checkbox.classList.replace('text-white', 'text-sky-500');
-                            checkbox.classList.add('!opacity-100');
+                            checkbox.classList.add('opacity-100!');
                             item.classList.add('selected');
                             gradient.classList.add('hidden');
                         }

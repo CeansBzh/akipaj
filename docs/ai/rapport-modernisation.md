@@ -15,7 +15,7 @@
   Larastan 3 (niveau 5, sans baseline), Laravel Boost 2**. 222 tests (≈ 98 % des lignes de `app/`), parcours
   navigateur vérifiés, 0 alerte Composer, 10 alertes npm restantes (§ 5.5). 23 bugs corrigés (§ 4).
 - **Priorités restantes** : 1) préparer la production (PHP ≥ 8.3, build des assets ; § 5.1) ;
-  2) remplacer le paiement par carte (§ 5.2) ; 3) Tailwind 4 et le reste de la feuille de route (§ 6).
+  2) remplacer le paiement par carte (§ 5.2) ; 3) le reste de la feuille de route (§ 6).
 
 ## 2. Historique des interventions
 
@@ -62,8 +62,9 @@ Commits de la branche `modernisation`, du plus ancien au plus récent :
 - **Formatage** : Laravel **Pint** (preset `laravel`) pour tout le PHP, conformément aux guidelines Boost ;
   Prettier ne formate plus que Blade, JS et CSS (`@prettier/plugin-php` retiré). Le passage de Prettier à
   Pint a fait l'objet d'un commit de reformatage isolé.
-- **Tailwind 3.4 conservé** : la v4 renomme des classes et change des valeurs par défaut ; elle demande une
-  revue visuelle page par page.
+- **Tailwind 4** : migration par `@tailwindcss/upgrade` (classes renommées dans les vues), configuration
+  déplacée dans `resources/css/app.css`, plugin `@tailwindcss/vite` à la place de PostCSS/autoprefixer.
+  Bordures grises et curseur pointeur des boutons de la v3 conservés. Revue visuelle page par page à faire.
 - **Boost** : guidelines dans `CLAUDE.md`, skills dans `.claude/skills` (le skill Laravel Cloud est désactivé
   dans `boost.json`), serveur MCP via Sail dans `.mcp.json`. `composer update` exécute `boost:update`.
 
@@ -214,8 +215,8 @@ flux. **Recommandation** : Stripe Checkout ou Payment Element, avec un webhook q
 
 ### 5.5 Dépendances front
 
-`npm audit` : 10 alertes. Toutes concernent des outils de build de Tailwind 3 et du plugin Prettier Blade
-(non livrés au navigateur) ; elles disparaîtront avec Tailwind 4. DOMPurify est forcé en v3 (`overrides`) sous
+`npm audit` : 9 alertes, toutes dues au Tailwind 3 embarqué par `@shufo/prettier-plugin-blade` (blade-formatter),
+un outil de formatage non livré au navigateur. DOMPurify est forcé en v3 (`overrides`) sous
 `@toast-ui/editor`, qui n'est plus maintenu depuis 2022 : envisager un autre éditeur Markdown.
 
 ## 6. Feuille de route
@@ -232,7 +233,7 @@ flux. **Recommandation** : Stripe Checkout ou Payment Element, avec un webhook q
 | Laravel Boost 2 | ✅ |
 | Déploiement automatisé avec build (§ 5.1) | À faire, **bloquant pour la mise en production** |
 | Paiement Stripe Checkout (§ 5.2) | À faire |
-| Tailwind 3 → 4 (`npx @tailwindcss/upgrade`, puis revue visuelle) | À faire |
+| Tailwind 3 → 4 | ✅ (revue visuelle à faire) |
 | PHPStan niveau 6 puis 8 | À faire |
 | Factorisation des uploads, Form Requests partout, `casts()` | À faire |
 | Notifications en file d'attente | À faire |

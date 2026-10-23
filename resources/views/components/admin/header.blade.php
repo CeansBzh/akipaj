@@ -7,7 +7,7 @@
                     src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
                     alt="Photo de profil">
                 <button
-                    class="flex items-center font-medium text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-none">
+                    class="flex items-center font-medium text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-hidden">
                     {{ Auth::user()->name }}
 
                     <div class="ml-1">
@@ -43,7 +43,7 @@
     <div class="flex items-center justify-between">
         <a href="{{ url('/') }}" class="text-3xl font-semibold uppercase text-white hover:text-gray-300">Akipaj</a>
         <button @click="open = !open"
-            class="rounded-md p-1 text-white transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none">
+            class="rounded-md p-1 text-white transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden">
             <svg class="h-8 w-8" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                 <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round"
                     stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

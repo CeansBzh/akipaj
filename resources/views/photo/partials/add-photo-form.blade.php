@@ -90,10 +90,10 @@
             <template id="previewElement">
                 <div class="mb-5 rounded-md">
                     <div class="flex items-center justify-between">
-                        <canvas class="rounded" width="25" height="25">
+                        <canvas class="rounded-sm" width="25" height="25">
                             Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
                         </canvas>
-                        <div class="flex w-full flex-row justify-end rounded-r bg-white py-2 px-4 shadow-sm">
+                        <div class="flex w-full flex-row justify-end rounded-r bg-white py-2 px-4 shadow-xs">
                             <span class="truncate px-3 text-base font-medium text-[#07074D]">
                                 fichier.png
                             </span>
@@ -116,7 +116,7 @@
             <div class="fixed bottom-0 left-0 right-0">
                 <div class="mx-auto h-20 max-w-3xl rounded-t-xl bg-white p-5 shadow-2xl">
                     <div class="flex items-center justify-between">
-                        <p class="mr-2 grow overflow-hidden overflow-ellipsis whitespace-nowrap text-left">Vos photos
+                        <p class="mr-2 grow overflow-hidden text-ellipsis whitespace-nowrap text-left">Vos photos
                             seront ajoutées à l'album "
                             <span class="font-semibold">{{ $album->title }}</span>"
                         </p>
