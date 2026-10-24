@@ -11,6 +11,43 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v7
 
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: gd, exif, zip
+          coverage: none
+
+      # Also writes the package manifest to bootstrap/cache
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
+
+      - name: 🟢 Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      # After Composer: app.js imports Livewire's ESM build from vendor/
+      - name: 🎨 Build assets
+        run: npm ci && npm run build
+
+      # Livewire derives its route URLs from APP_KEY, so the secret must match the server .env.
+      # Config and views are not cached here: config:cache would store the runner's paths and
+      # needs the server .env, and compiled views live in storage/, which is never uploaded.
+      - name: ⚡ Cache routes and events
+        env:
+          APP_KEY: ${{ secrets.app_key }}
+        run: |
+          if [ -z "$APP_KEY" ]; then
+            echo "::error::Missing app_key secret: add the APP_KEY value from the server .env to the repository secrets."
+            exit 1
+          fi
+          php artisan route:cache
+          php artisan event:cache
+
+      # Uploads vendor/, public/build and bootstrap/cache along with the code. Files sent by a
+      # previous deploy that are no longer in the build get deleted from the server.
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -21,11 +58,12 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+            **/node_modules/**
             **/database/**
             **/storage/**
             **/tests/**
             .editorconfig
-            .env.example
+            .env*
             .gitattributes
             .gitignore
             .prettierignore
