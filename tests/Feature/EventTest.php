@@ -121,4 +121,61 @@ class EventTest extends TestCase
         $this->assertModelMissing($event);
         Storage::disk('local')->assertMissing('public/events/old.jpg');
     }
+
+    public function test_event_page_renders_the_description_formatting_without_scripts(): void
+    {
+        $this->actingAsMember();
+        $event = Event::factory()->create([
+            'description' => '<div><strong>Régate</strong> au <a href="https://example.com" onclick="alert(1)">port</a><script>alert(2)</script> <a href="javascript:alert(3)">piège</a></div>',
+        ]);
+
+        $this->get(route('events.show', $event))
+            ->assertOk()
+            ->assertSee('<div><strong>Régate</strong> au <a href="https://example.com">port</a> <a>piège</a></div>', false)
+            ->assertDontSee('alert(', false);
+    }
+
+    public function test_event_cards_and_reminders_show_the_description_without_formatting(): void
+    {
+        $this->actingAsMember();
+        Event::factory()->create(['description' => '<div>Rendez-vous au <strong>port</strong></div><div>Retour le soir</div>']);
+
+        // The card comes first, then the script of the "Add to calendar" button
+        $this->get(route('events.index'))
+            ->assertOk()
+            ->assertSeeInOrder(['Rendez-vous au port Retour le soir', 'Rendez-vous au port Retour le soir.[br]Voir sur le site'], false);
+    }
+
+    public function test_event_description_formatting_does_not_count_towards_its_length(): void
+    {
+        $this->actingAsAdmin();
+        $description = '<div><strong>'.str_repeat('a', 140).'</strong></div>';
+
+        $this->post(route('events.store'), array_merge($this->validData(), ['description' => $description]))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('events.index'));
+
+        $this->assertDatabaseHas('events', ['description' => $description]);
+    }
+
+    public function test_event_description_text_cannot_exceed_140_characters(): void
+    {
+        $this->actingAsAdmin();
+
+        $this->post(route('events.store'), array_merge($this->validData(), [
+            'description' => '<div><strong>'.str_repeat('a', 141).'</strong></div>',
+        ]))->assertSessionHasErrors(['description' => 'Le texte de description ne peut pas contenir plus de 140 caractères.']);
+
+        $this->assertDatabaseCount('events', 0);
+    }
+
+    public function test_event_description_needs_text_besides_the_formatting(): void
+    {
+        $this->actingAsAdmin();
+
+        $this->post(route('events.store'), array_merge($this->validData(), ['description' => '<div><br></div>']))
+            ->assertSessionHasErrors(['description' => 'Le champ description est obligatoire.']);
+
+        $this->assertDatabaseCount('events', 0);
+    }
 }

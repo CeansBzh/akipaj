@@ -63,8 +63,8 @@
                     </x-dropdown>
                 </div>
                 <div>
-                    <div>
-                        <p class="mt-4 text-gray-600">{{ $event->description }}</p>
+                    <div class="rich-text mt-4 text-gray-600">
+                        {!! $event->description !!}
                     </div>
                     <div class="mt-5 text-center">
                         <x-primary-button type="button" class="add-to-agenda mb-2 sm:mb-0 sm:mr-2">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\RichText;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,6 +24,7 @@ class Trip extends Model
     ];
 
     protected $casts = [
+        'description' => RichText::class,
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];

@@ -51,7 +51,7 @@
     </div>
     <div>
         <h4 class="text-lg font-bold">À propos</h4>
-        <p class="text-justify indent-2 text-gray-800">{{ $trip->description }}</p>
+        <div class="rich-text text-justify text-gray-800">{!! $trip->description !!}</div>
     </div>
 </section>
 <section class="mx-auto max-w-5xl">

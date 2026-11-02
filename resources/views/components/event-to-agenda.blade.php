@@ -10,7 +10,7 @@
         document.getElementById("event-item-{{ $event->id }}").querySelectorAll('.add-to-agenda').forEach((button) => {
             button.addEventListener('click', () => atcb_action({
                     name: @js($event->name),
-                    description: @js($event->description . '.[br]Voir sur le site → [url]' . route('events.show', $event) . '[/url]'),
+                    description: @js($event->description_text . '.[br]Voir sur le site → [url]' . route('events.show', $event) . '[/url]'),
                     startDate: "{{ $event->start_time->format('Y-m-d') }}",
                     endDate: "{{ $event->end_time->format('Y-m-d') }}",
                     location: @js($event->location ?? ''),

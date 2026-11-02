@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Trip;
 
+use App\Rules\RichTextLength;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTripRequest extends FormRequest
@@ -27,7 +28,7 @@ class UpdateTripRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:50',
-            'description' => 'required|string|max:500',
+            'description' => ['required', 'string', new RichTextLength(500)],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'albums' => 'nullable|array',

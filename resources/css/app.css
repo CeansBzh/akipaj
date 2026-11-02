@@ -38,6 +38,43 @@
     }
 }
 
+/* HTML written with the Trix editor, styled the same in the editor and where it is displayed */
+@layer components {
+    .rich-text h1 {
+        @apply font-merriweather text-lg font-bold;
+    }
+
+    .rich-text blockquote {
+        @apply my-1 border-l-4 border-gray-300 pl-3 italic;
+    }
+
+    .rich-text pre {
+        @apply my-1 overflow-x-auto rounded-sm bg-gray-100 p-2 font-mono text-sm;
+    }
+
+    .rich-text ul {
+        @apply list-disc pl-6;
+    }
+
+    .rich-text ol {
+        @apply list-decimal pl-6;
+    }
+
+    .rich-text a {
+        @apply text-sky-600 underline hover:text-sky-800;
+    }
+}
+
+/* Outside any layer and more specific than trix.css, which is not in a layer either and is loaded later */
+trix-editor.rich-text-input {
+    @apply min-h-32 rounded-md border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-sky-500 focus:ring-1 focus:ring-sky-500;
+}
+
+/* Files can't be attached (see rich-text-editor.js) */
+trix-toolbar .trix-button-group.trix-button-group--file-tools {
+    display: none;
+}
+
 @utility selected {
     @apply scale-[0.95] rounded-sm outline-8 -outline-offset-8 outline-sky-500 outline-solid;
 }

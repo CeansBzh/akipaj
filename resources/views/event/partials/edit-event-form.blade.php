@@ -33,10 +33,8 @@
 
         <div>
             <x-input-label for="description_input" value="Description" />
-            <x-textarea-input id="description_input" name="description" class="mt-1 block w-full"
-                placeholder="Description de l'événement" maxlength="140" required>
-                {{ $event->description }}
-            </x-textarea-input>
+            <x-rich-text-input id="description_input" name="description" :value="$event->description" :maxlength="140"
+                class="mt-1" placeholder="Description de l'événement" />
             <x-input-error class="mt-2" :messages="$errors->updateEvent->get('description')" />
         </div>
 

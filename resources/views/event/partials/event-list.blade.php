@@ -23,7 +23,7 @@
                             </h3>
                         </a>
                         <p class="mt-1 max-w-2xl text-sm text-gray-600">
-                            {{ $event->description }}
+                            {{ $event->description_text }}
                         </p>
                     </div>
                     <div class="hidden max-w-min self-center md:block lg:max-w-fit">

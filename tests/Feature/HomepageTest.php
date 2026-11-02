@@ -28,6 +28,21 @@ class HomepageTest extends TestCase
             ->assertSee('Régate de printemps');
     }
 
+    public function test_event_cards_and_reminders_show_the_description_without_formatting(): void
+    {
+        $this->actingAsMember();
+        Event::factory()->create([
+            'description' => '<div>Rendez-vous au <strong>port</strong></div><div>Retour le soir</div>',
+            'start_time' => now()->addWeek(),
+            'end_time' => now()->addWeek(),
+        ]);
+
+        // The card comes first, then the script of the "Add to calendar" button
+        $this->get('/')
+            ->assertOk()
+            ->assertSeeInOrder(['Rendez-vous au port Retour le soir', 'Rendez-vous au port Retour le soir.[br]Voir sur le site'], false);
+    }
+
     public function test_add_to_agenda_script_encodes_event_values(): void
     {
         $this->actingAsMember();

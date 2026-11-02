@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\AlertLevelEnum;
 use App\Models\Event;
+use App\Rules\RichTextLength;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class EventController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:50',
-            'description' => 'required|string|max:140',
+            'description' => ['required', 'string', new RichTextLength(140)],
             'start_time' => 'required|date|after_or_equal:today',
             'end_time' => 'required|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
@@ -93,7 +94,7 @@ class EventController extends Controller
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request->validateWithBag('updateEvent', [
             'name' => 'required|string|max:50',
-            'description' => 'required|string|max:140',
+            'description' => ['required', 'string', new RichTextLength(140)],
             'start_time' => 'required|date|after_or_equal:now',
             'end_time' => 'required|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',

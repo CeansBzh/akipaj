@@ -169,4 +169,39 @@ class TripTest extends TestCase
         $this->assertDatabaseCount('boats', 0);
         Storage::disk('local')->assertMissing('public/trips/old.jpg');
     }
+
+    public function test_trip_page_renders_the_description_formatting_without_scripts(): void
+    {
+        $this->actingAsMember();
+        $trip = Trip::factory()->create(['description' => '<div><em>Une semaine</em> en mer<img src="x" onerror="alert(1)"></div>']);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSee('<div><em>Une semaine</em> en mer</div>', false)
+            ->assertDontSee('onerror', false);
+    }
+
+    public function test_trip_description_formatting_does_not_count_towards_its_length(): void
+    {
+        $this->actingAsAdmin();
+        $description = '<div><em>'.str_repeat('a', 500).'</em></div>';
+
+        $this->post(route('trips.store'), array_merge($this->validData(), ['description' => $description]))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('trips.index'));
+
+        $this->assertDatabaseHas('trips', ['description' => $description]);
+    }
+
+    public function test_trip_description_text_cannot_exceed_500_characters(): void
+    {
+        $this->actingAsAdmin();
+        $trip = Trip::factory()->create();
+        $description = '<div><em>'.str_repeat('a', 501).'</em></div>';
+
+        $this->put(route('trips.update', $trip), array_merge($this->validData(), ['description' => $description]))
+            ->assertSessionHasErrorsIn('updateTrip', ['description' => 'Le texte de description ne peut pas contenir plus de 500 caractères.']);
+
+        $this->assertDatabaseMissing('trips', ['description' => $description]);
+    }
 }

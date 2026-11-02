@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/multi-select-dropdown.js',
                 'resources/js/add-photo-form.js',
+                'resources/js/rich-text-editor.js',
             ],
             refresh: true,
         }),
