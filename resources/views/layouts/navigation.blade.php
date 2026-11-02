@@ -83,11 +83,6 @@
                     </x-nav-link>
                 </li>
                 <li>
-                    <x-nav-link :href="route('articles.index')" :active="request()->routeIs('articles.*')">
-                        Articles
-                    </x-nav-link>
-                </li>
-                <li>
                     <x-nav-link :href="route('trips.index')" :active="request()->routeIs('trips.*')">
                         Sorties
                     </x-nav-link>

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Enums\UserLevelEnum;
 use App\Models\Album;
-use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Event;
 use App\Models\Photo;
@@ -27,10 +26,6 @@ class LocalEnvironmentSeeder extends Seeder
         $this->createUsers();
         $this->createUsersWithEmailUnverified();
         $this->createUsersWithoutPersonalInformation();
-
-        // Articles
-        $this->createDraftArticles();
-        $this->createPublishedArticles();
 
         // Albums and photos
         $this->createAlbumsWithoutPhotos();
@@ -114,22 +109,6 @@ class LocalEnvironmentSeeder extends Seeder
         User::factory(2)
             ->withLevel(UserLevelEnum::GUEST)
             ->noPersonalInformation()
-            ->create();
-
-        return $this;
-    }
-
-    protected function createPublishedArticles(): self
-    {
-        Article::factory(4)->create();
-
-        return $this;
-    }
-
-    protected function createDraftArticles(): self
-    {
-        Article::factory(2)
-            ->draft()
             ->create();
 
         return $this;

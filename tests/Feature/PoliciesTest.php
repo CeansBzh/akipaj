@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Enums\UserLevelEnum;
 use App\Models\Album;
-use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Event;
 use App\Models\Photo;
@@ -38,7 +37,7 @@ class PoliciesTest extends TestCase
 
     public function test_content_readable_by_members(): void
     {
-        $subjects = [Album::factory()->create(), Event::factory()->create(), Trip::factory()->create(), Article::factory()->create()];
+        $subjects = [Album::factory()->create(), Event::factory()->create(), Trip::factory()->create()];
 
         foreach ($subjects as $subject) {
             $this->assertAbilities($subject::class, ['viewAny'], ['GUEST' => false, 'MEMBER' => true, 'CONTRIBUTOR' => true, 'ADMINISTRATOR' => true]);
@@ -46,21 +45,13 @@ class PoliciesTest extends TestCase
         }
     }
 
-    public function test_events_trips_and_articles_are_managed_by_admins_only(): void
+    public function test_events_and_trips_are_managed_by_admins_only(): void
     {
-        foreach ([Event::factory()->create(), Trip::factory()->create(), Article::factory()->create()] as $subject) {
+        foreach ([Event::factory()->create(), Trip::factory()->create()] as $subject) {
             $this->assertAbilities($subject::class, ['create'], ['MEMBER' => false, 'CONTRIBUTOR' => false, 'ADMINISTRATOR' => true]);
             $this->assertAbilities($subject, ['update', 'delete'], ['MEMBER' => false, 'CONTRIBUTOR' => false, 'ADMINISTRATOR' => true]);
             $this->assertAbilities($subject, ['restore', 'forceDelete'], ['ADMINISTRATOR' => false]);
         }
-    }
-
-    public function test_draft_articles_are_only_visible_to_admins(): void
-    {
-        $this->actingAsMember();
-        $draft = Article::factory()->draft()->create();
-
-        $this->assertAbilities($draft, ['view'], ['MEMBER' => false, 'CONTRIBUTOR' => false, 'ADMINISTRATOR' => true]);
     }
 
     public function test_albums_are_managed_by_members(): void

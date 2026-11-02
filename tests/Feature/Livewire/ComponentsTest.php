@@ -11,7 +11,6 @@ use App\Livewire\SearchInput;
 use App\Livewire\ThreadSubscribeButton;
 use App\Livewire\Trip\Boats;
 use App\Models\Album;
-use App\Models\Article;
 use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Trip;
@@ -41,7 +40,6 @@ class ComponentsTest extends TestCase
         $trip = Trip::factory()->create(['title' => 'Croisière en Bretagne']);
         $album = Album::factory()->create(['title' => 'Photos de Bretagne']);
         $photo = Photo::factory()->for($album)->create(['title' => 'Phare', 'legend' => 'Un phare breton en Bretagne']);
-        $article = Article::factory()->create(['title' => 'Bretagne 2023']);
         $event = Event::factory()->create(['name' => 'Fête de la Bretagne']);
         Trip::factory()->create(['title' => 'Méditerranée', 'description' => 'Au soleil']);
 
@@ -50,7 +48,6 @@ class ComponentsTest extends TestCase
         $this->assertSame([['title' => $trip->title, 'url' => route('trips.show', $trip)]], $results['Sorties']);
         $this->assertSame([['title' => $album->title, 'url' => route('albums.show', $album)]], $results['Albums']);
         $this->assertSame([['title' => $photo->title, 'url' => route('photos.show', $photo)]], $results['Photos']);
-        $this->assertSame([['title' => $article->title, 'url' => route('articles.show', $article)]], $results['Articles']);
         $this->assertSame([['title' => $event->name, 'url' => route('events.show', $event)]], $results['Événements']);
     }
 

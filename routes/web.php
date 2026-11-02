@@ -5,7 +5,6 @@ use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AlbumController;
-use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TripController;
@@ -34,7 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::middleware('level:'.UserLevelEnum::MEMBER->value)->group(function () {
         Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
         Route::resources([
-            'articles' => ArticleController::class,
             'albums' => AlbumController::class,
             'events' => EventController::class,
             'trips' => TripController::class,
@@ -56,7 +54,6 @@ Route::middleware('auth')->group(function () {
             Route::resource('users', AdminUserController::class, [
                 'as' => 'admin',
             ])->except(['show', 'create', 'store']);
-            Route::post('/storeImage', [ArticleController::class, 'storeImage'])->prefix('articles');
             Route::get('/reset', function () {
                 Artisan::call('route:clear');
                 Artisan::call('cache:clear');
