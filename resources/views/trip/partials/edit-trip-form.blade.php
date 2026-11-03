@@ -54,7 +54,7 @@
 
         <div>
             <x-input-label for="description_input" value="Description" />
-            <x-rich-text-input id="description_input" name="description" :value="$trip->description" :maxlength="500"
+            <x-rich-text-input id="description_input" name="description" :value="$trip->description" :maxlength="1000"
                 class="mt-1" placeholder="Description de la sortie" />
             <x-input-error class="mt-2" :messages="$errors->updateTrip->get('description')" />
         </div>
@@ -164,7 +164,7 @@
                     img.src = blobURL;
                     img.onerror = function() {
                         URL.revokeObjectURL(this.src);
-                        // Handle the failure properly
+                        // Gérer correctement l'échec
                         console.log("Cannot load image");
                     };
                     img.onload = () => {

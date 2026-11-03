@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreTripRequest extends FormRequest
 {
     /**
-     * Get the validation rules that apply to the request.
+     * Donne les règles de validation qui s'appliquent à la requête.
      *
      * @return array<string, mixed>
      */
@@ -16,7 +16,7 @@ class StoreTripRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:50',
-            'description' => ['required', 'string', new RichTextLength(500)],
+            'description' => ['required', 'string', new RichTextLength(1000)],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'albums' => 'nullable|array',

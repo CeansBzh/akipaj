@@ -88,7 +88,7 @@ class EventTest extends TestCase
             'start_time' => now()->subDays(2)->format('Y-m-d'),
             'end_time' => now()->subDays(3)->format('Y-m-d'),
             'name' => str_repeat('a', 51),
-            'description' => str_repeat('a', 141),
+            'description' => str_repeat('a', 1001),
         ]))->assertSessionHasErrors(['start_time', 'end_time', 'name', 'description']);
     }
 
@@ -126,30 +126,30 @@ class EventTest extends TestCase
     {
         $this->actingAsMember();
         $event = Event::factory()->create([
-            'description' => '<div><strong>Régate</strong> au <a href="https://example.com" onclick="alert(1)">port</a><script>alert(2)</script> <a href="javascript:alert(3)">piège</a></div>',
+            'description' => '<h2>Programme</h2><h3>Samedi</h3><h4>Matin</h4><div><strong>Régate</strong> au <a href="https://example.com" onclick="alert(1)">port</a><script>alert(2)</script> <a href="javascript:alert(3)">piège</a></div>',
         ]);
 
         $this->get(route('events.show', $event))
             ->assertOk()
-            ->assertSee('<div><strong>Régate</strong> au <a href="https://example.com">port</a> <a>piège</a></div>', false)
+            ->assertSee('<h2>Programme</h2><h3>Samedi</h3><h4>Matin</h4><div><strong>Régate</strong> au <a href="https://example.com">port</a> <a>piège</a></div>', false)
             ->assertDontSee('alert(', false);
     }
 
     public function test_event_cards_and_reminders_show_the_description_without_formatting(): void
     {
         $this->actingAsMember();
-        Event::factory()->create(['description' => '<div>Rendez-vous au <strong>port</strong></div><div>Retour le soir</div>']);
+        Event::factory()->create(['description' => '<h2>Programme</h2><div>Rendez-vous au <strong>port</strong></div><div>Retour le soir</div>']);
 
-        // The card comes first, then the script of the "Add to calendar" button
+        // La carte vient d'abord, puis le script du bouton « Ajouter à l'agenda »
         $this->get(route('events.index'))
             ->assertOk()
-            ->assertSeeInOrder(['Rendez-vous au port Retour le soir', 'Rendez-vous au port Retour le soir.[br]Voir sur le site'], false);
+            ->assertSeeInOrder(['Programme Rendez-vous au port Retour le soir', 'Programme Rendez-vous au port Retour le soir.[br]Voir sur le site'], false);
     }
 
     public function test_event_description_formatting_does_not_count_towards_its_length(): void
     {
         $this->actingAsAdmin();
-        $description = '<div><strong>'.str_repeat('a', 140).'</strong></div>';
+        $description = '<div><strong>'.str_repeat('a', 1000).'</strong></div>';
 
         $this->post(route('events.store'), array_merge($this->validData(), ['description' => $description]))
             ->assertSessionHasNoErrors()
@@ -158,13 +158,13 @@ class EventTest extends TestCase
         $this->assertDatabaseHas('events', ['description' => $description]);
     }
 
-    public function test_event_description_text_cannot_exceed_140_characters(): void
+    public function test_event_description_text_cannot_exceed_1000_characters(): void
     {
         $this->actingAsAdmin();
 
         $this->post(route('events.store'), array_merge($this->validData(), [
-            'description' => '<div><strong>'.str_repeat('a', 141).'</strong></div>',
-        ]))->assertSessionHasErrors(['description' => 'Le texte de description ne peut pas contenir plus de 140 caractères.']);
+            'description' => '<div><strong>'.str_repeat('a', 1001).'</strong></div>',
+        ]))->assertSessionHasErrors(['description' => 'Le texte de description ne peut pas contenir plus de 1000 caractères.']);
 
         $this->assertDatabaseCount('events', 0);
     }

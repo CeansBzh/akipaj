@@ -164,7 +164,7 @@ class TripTest extends TestCase
         $this->delete(route('trips.destroy', $trip))->assertRedirect(route('trips.index'));
 
         $this->assertModelMissing($trip);
-        // Albums are only detached
+        // Les albums sont seulement détachés
         $this->assertModelExists($album);
         $this->assertDatabaseCount('boats', 0);
         Storage::disk('local')->assertMissing('public/trips/old.jpg');
@@ -184,7 +184,7 @@ class TripTest extends TestCase
     public function test_trip_description_formatting_does_not_count_towards_its_length(): void
     {
         $this->actingAsAdmin();
-        $description = '<div><em>'.str_repeat('a', 500).'</em></div>';
+        $description = '<div><em>'.str_repeat('a', 1000).'</em></div>';
 
         $this->post(route('trips.store'), array_merge($this->validData(), ['description' => $description]))
             ->assertSessionHasNoErrors()
@@ -193,14 +193,14 @@ class TripTest extends TestCase
         $this->assertDatabaseHas('trips', ['description' => $description]);
     }
 
-    public function test_trip_description_text_cannot_exceed_500_characters(): void
+    public function test_trip_description_text_cannot_exceed_1000_characters(): void
     {
         $this->actingAsAdmin();
         $trip = Trip::factory()->create();
-        $description = '<div><em>'.str_repeat('a', 501).'</em></div>';
+        $description = '<div><em>'.str_repeat('a', 1001).'</em></div>';
 
         $this->put(route('trips.update', $trip), array_merge($this->validData(), ['description' => $description]))
-            ->assertSessionHasErrorsIn('updateTrip', ['description' => 'Le texte de description ne peut pas contenir plus de 500 caractères.']);
+            ->assertSessionHasErrorsIn('updateTrip', ['description' => 'Le texte de description ne peut pas contenir plus de 1000 caractères.']);
 
         $this->assertDatabaseMissing('trips', ['description' => $description]);
     }

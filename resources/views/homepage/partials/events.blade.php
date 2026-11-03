@@ -30,7 +30,7 @@
                                 {{ $event->name }}
                             </h3>
                         </a>
-                        <p class="mt-1 max-w-2xl text-sm text-gray-600">
+                        <p class="mt-1 line-clamp-4 max-w-2xl text-sm text-gray-600">
                             {{ $event->description_text }}
                         </p>
                     </div>

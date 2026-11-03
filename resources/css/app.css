@@ -4,7 +4,7 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-/* Alert component classes, built from AlertLevelEnum::color() */
+/* Classes du composant d'alerte, construites par AlertLevelEnum::color() */
 @source inline('{focus:,}ring-{red,green,blue,yellow}-400');
 @source inline('text-{red,green,blue,yellow}-{500,700}');
 @source inline('{hover:,}bg-{red,green,blue,yellow}-{100,200}');
@@ -16,7 +16,7 @@
     --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 }
 
-/* Tailwind v3 defaults kept to preserve the look: gray borders and pointer cursor on buttons */
+/* Défauts de Tailwind v3 gardés pour conserver l'apparence : bordures grises et curseur pointeur sur les boutons */
 @layer base {
     *,
     ::after,
@@ -31,17 +31,25 @@
         cursor: pointer;
     }
 
-    /* v4 preflight strips the native file input button, v3 only made it inherit the font */
+    /* Le preflight de la v4 retire le bouton natif du champ fichier, la v3 lui faisait juste hériter de la police */
     ::file-selector-button {
         all: revert;
         font: inherit;
     }
 }
 
-/* HTML written with the Trix editor, styled the same in the editor and where it is displayed */
+/* HTML écrit avec l'éditeur Trix, mis en forme de la même façon dans l'éditeur et là où il est affiché */
 @layer components {
-    .rich-text h1 {
-        @apply font-merriweather text-lg font-bold;
+    .rich-text h2 {
+        @apply mt-2 text-lg font-bold first:mt-0;
+    }
+
+    .rich-text h3 {
+        @apply mt-2 font-bold first:mt-0;
+    }
+
+    .rich-text h4 {
+        @apply mt-2 text-sm font-bold uppercase first:mt-0;
     }
 
     .rich-text blockquote {
@@ -65,12 +73,12 @@
     }
 }
 
-/* Outside any layer and more specific than trix.css, which is not in a layer either and is loaded later */
+/* Hors de toute couche et plus spécifique que trix.css, qui n'est pas non plus dans une couche et est chargé après */
 trix-editor.rich-text-input {
     @apply min-h-32 rounded-md border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-sky-500 focus:ring-1 focus:ring-sky-500;
 }
 
-/* Files can't be attached (see rich-text-editor.js) */
+/* Les fichiers ne peuvent pas être joints (voir rich-text-editor.js) */
 trix-toolbar .trix-button-group.trix-button-group--file-tools {
     display: none;
 }
@@ -98,14 +106,14 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
 }
 
 @layer base {
-    /* Webfont: Guttie-Regular */
+    /* Police web : Guttie-Regular */
     @font-face {
         font-family: "Guttie";
         src: url("fonts/Guttie.eot");
-        /* IE9 Compat Modes */
+        /* Modes de compatibilité d'IE9 */
         src: url("fonts/Guttie.eot?#iefix") format("embedded-opentype"),
             /* IE6-IE8 */ url("fonts/Guttie.woff") format("woff"),
-            /* Modern Browsers */ url("fonts/Guttie.ttf") format("truetype");
+            /* Navigateurs modernes */ url("fonts/Guttie.ttf") format("truetype");
         /* Safari, Android, iOS */
         font-style: normal;
         font-weight: normal;

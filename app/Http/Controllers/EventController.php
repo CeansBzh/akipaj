@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class EventController extends Controller
 {
     /**
-     * Create the controller instance.
+     * Crée l'instance du contrôleur.
      *
      * @return void
      */
@@ -23,7 +23,7 @@ class EventController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Affiche la liste des ressources.
      */
     public function index(): View
     {
@@ -31,7 +31,7 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affiche le formulaire de création d'une ressource.
      */
     public function create(): View
     {
@@ -39,13 +39,13 @@ class EventController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistre une nouvelle ressource.
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:50',
-            'description' => ['required', 'string', new RichTextLength(140)],
+            'description' => ['required', 'string', new RichTextLength(1000)],
             'start_time' => 'required|date|after_or_equal:today',
             'end_time' => 'required|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
@@ -71,7 +71,7 @@ class EventController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Affiche la ressource indiquée.
      */
     public function show(Event $event): View
     {
@@ -79,7 +79,7 @@ class EventController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Affiche le formulaire de modification de la ressource indiquée.
      */
     public function edit(Event $event): View
     {
@@ -87,14 +87,14 @@ class EventController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour la ressource indiquée.
      */
     public function update(Request $request, Event $event): RedirectResponse
     {
         $request->request->add(['remove_image' => filter_var($request->remove_image, FILTER_VALIDATE_BOOLEAN)]);
         $request->validateWithBag('updateEvent', [
             'name' => 'required|string|max:50',
-            'description' => ['required', 'string', new RichTextLength(140)],
+            'description' => ['required', 'string', new RichTextLength(1000)],
             'start_time' => 'required|date|after_or_equal:now',
             'end_time' => 'required|date|after_or_equal:start_time',
             'location' => 'nullable|string|max:255',
@@ -130,7 +130,7 @@ class EventController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime la ressource indiquée.
      */
     public function destroy(Event $event): RedirectResponse
     {

@@ -9,12 +9,6 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /**
- * HTML written with the Trix editor.
- *
- * The HTML is sanitized when it is read, not when it is saved: the sanitizer encodes apostrophes as entities,
- * which the search could no longer match, and the descriptions written as plain text before the editor are
- * then rendered safely too.
- *
  * @implements CastsAttributes<string|null, string|null>
  */
 class RichText implements CastsAttributes
@@ -22,7 +16,7 @@ class RichText implements CastsAttributes
     protected static ?HtmlSanitizer $sanitizer = null;
 
     /**
-     * Cast the given value.
+     * Convertit la valeur donnée.
      *
      * @param  array<string, mixed>  $attributes
      */
@@ -32,7 +26,7 @@ class RichText implements CastsAttributes
     }
 
     /**
-     * Prepare the given value for storage.
+     * Prépare la valeur donnée pour l'enregistrement.
      *
      * @param  array<string, mixed>  $attributes
      */
@@ -42,7 +36,8 @@ class RichText implements CastsAttributes
     }
 
     /**
-     * Keep only the formatting the Trix toolbar can produce, and links to web pages, emails and phone numbers.
+     * Ne garde que la mise en forme que la barre d'outils de Trix peut produire, et les liens vers des pages web,
+     * des adresses e-mail et des numéros de téléphone.
      */
     public static function sanitize(string $html): string
     {
@@ -54,7 +49,9 @@ class RichText implements CastsAttributes
                 ->allowElement('em')
                 ->allowElement('del')
                 ->allowElement('a', ['href'])
-                ->allowElement('h1')
+                ->allowElement('h2')
+                ->allowElement('h3')
+                ->allowElement('h4')
                 ->allowElement('blockquote')
                 ->allowElement('pre')
                 ->allowElement('ul')
@@ -67,11 +64,12 @@ class RichText implements CastsAttributes
     }
 
     /**
-     * Get the text a reader sees, with the paragraphs, line breaks and list items separated by a space.
+     * Donne le texte que voit le lecteur, avec les paragraphes, les titres, les retours à la ligne et les éléments
+     * de liste séparés par un espace.
      */
     public static function toPlainText(string $html): string
     {
-        $separatedBlocks = preg_replace('/<br \/>|<\/(div|h1|blockquote|pre|li)>/', ' ', static::sanitize($html));
+        $separatedBlocks = preg_replace('/<br \/>|<\/(div|h[2-4]|blockquote|pre|li)>/', ' ', static::sanitize($html));
 
         return Str::squish(html_entity_decode(strip_tags((string) $separatedBlocks), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     }
