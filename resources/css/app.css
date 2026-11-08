@@ -27,48 +27,6 @@
 
     --font-sans: Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-
-    /*
-     * Bateaux de la page de sortie (composant x-boat-card) : bercés par la houle, la mer glisse et le pavillon flotte.
-     * À n'utiliser qu'avec la variante `motion-safe:`, pour que rien ne bouge chez qui a demandé moins d'animations.
-     */
-    --animate-boat-rock: boat-rock 6s ease-in-out infinite;
-    --animate-flag-flutter: flag-flutter 1.6s ease-in-out infinite;
-    --animate-swell: swell 7s linear infinite;
-    --animate-swell-slow: swell-slow 12s linear infinite;
-
-    @keyframes boat-rock {
-        0%,
-        100% {
-            transform: translateY(0) rotate(-1.2deg);
-        }
-        50% {
-            transform: translateY(1.5px) rotate(1.2deg);
-        }
-    }
-
-    @keyframes flag-flutter {
-        0%,
-        100% {
-            transform: skewY(0) scaleX(1);
-        }
-        50% {
-            transform: skewY(-7deg) scaleX(0.88);
-        }
-    }
-
-    /* Une période de vague (80 et 100 unités du dessin) : la boucle reprend sans à-coup */
-    @keyframes swell {
-        to {
-            transform: translateX(-80px);
-        }
-    }
-
-    @keyframes swell-slow {
-        to {
-            transform: translateX(-100px);
-        }
-    }
 }
 
 /* Défauts de Tailwind v3 gardés pour conserver l'apparence : bordures grises et curseur pointeur sur les boutons */
@@ -239,5 +197,17 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
         *::-webkit-scrollbar-track-piece {
             background-color: #ffffff44;
         }
+    }
+}
+
+/* Papier quadrillé sur lequel sont posés les plans des bateaux (composant x-boat-card) */
+@layer components {
+    .blueprint {
+        background-color: var(--color-primary-50);
+        background-image:
+            linear-gradient(to right, var(--color-primary-100) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--color-primary-100) 1px, transparent 1px);
+        background-size: 1.25rem 1.25rem;
+        background-position: center;
     }
 }
