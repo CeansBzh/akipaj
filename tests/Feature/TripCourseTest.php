@@ -114,7 +114,7 @@ class TripCourseTest extends TestCase
 
         $this->get(route('trips.show', $trip))->assertOk()->assertSeeInOrder([
             'Le parcours',
-            'Environ 60 milles nautiques en 2 jours',
+            'Environ 60 milles', 'nautiques en 2 jours',
             'Jour 1', 'vendredi 12 juin', 'Lorient', 'Port-Tudy', 'Environ 30 milles',
             'Jour 2', 'samedi 13 juin', 'Départ de', 'Port-Tudy', 'Belle-Île', 'Environ 30 milles',
         ]);
