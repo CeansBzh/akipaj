@@ -55,7 +55,7 @@ Sur l'accueil, seule la sortie à venir la plus proche a la forme d'un billet (c
 - Toute action porte un libellé texte : une icône seule ne suffit pas. Seule exception, voulue : le bouton d'agenda des petites cartes de sortie à venir, avec un `aria-label` et un `title`. Les liens dans un texte sont soulignés.
 - Rien ne dépend du survol (inexistant sur téléphone) ni d'un geste caché (balayage, appui long) : chaque action a un bouton visible. Pas de défilement automatique, carrousels compris.
 - Dates écrites en toutes lettres au format français (« samedi 14 juin 2026 ») plutôt qu'en chiffres (« 14/06 »).
-- Focus clavier visible, `prefers-reduced-motion` respecté, animations rares et courtes, seulement en réponse à une action.
+- Focus clavier visible, `prefers-reduced-motion` respecté, animations rares et courtes, seulement en réponse à une action. Exception voulue : les bateaux dessinés de la page de sortie (`x-boat-card`), bercés lentement par la houle, qui s'arrêtent avec `prefers-reduced-motion`.
 - La mise en page supporte un zoom du texte à 200 % sans contenu coupé ni défilement horizontal.
 
 ## Mobile d'abord, connexion lente, navigateurs récents

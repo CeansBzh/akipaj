@@ -27,6 +27,48 @@
 
     --font-sans: Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+    /*
+     * Bateaux de la page de sortie (composant x-boat-card) : bercés par la houle, la mer glisse et le pavillon flotte.
+     * À n'utiliser qu'avec la variante `motion-safe:`, pour que rien ne bouge chez qui a demandé moins d'animations.
+     */
+    --animate-boat-rock: boat-rock 6s ease-in-out infinite;
+    --animate-flag-flutter: flag-flutter 1.6s ease-in-out infinite;
+    --animate-swell: swell 7s linear infinite;
+    --animate-swell-slow: swell-slow 12s linear infinite;
+
+    @keyframes boat-rock {
+        0%,
+        100% {
+            transform: translateY(0) rotate(-1.2deg);
+        }
+        50% {
+            transform: translateY(1.5px) rotate(1.2deg);
+        }
+    }
+
+    @keyframes flag-flutter {
+        0%,
+        100% {
+            transform: skewY(0) scaleX(1);
+        }
+        50% {
+            transform: skewY(-7deg) scaleX(0.88);
+        }
+    }
+
+    /* Une période de vague (80 et 100 unités du dessin) : la boucle reprend sans à-coup */
+    @keyframes swell {
+        to {
+            transform: translateX(-80px);
+        }
+    }
+
+    @keyframes swell-slow {
+        to {
+            transform: translateX(-100px);
+        }
+    }
 }
 
 /* Défauts de Tailwind v3 gardés pour conserver l'apparence : bordures grises et curseur pointeur sur les boutons */
@@ -82,13 +124,13 @@
     }
 
     .rich-text a {
-        @apply text-sky-600 underline hover:text-sky-800;
+        @apply text-primary-700 underline hover:text-primary-800;
     }
 }
 
 /* Hors de toute couche et plus spécifique que trix.css, qui n'est pas non plus dans une couche et est chargé après */
 trix-editor.rich-text-input {
-    @apply min-h-32 rounded-md border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-sky-500 focus:ring-1 focus:ring-sky-500;
+    @apply min-h-32 rounded-md border-gray-300 bg-white px-3 py-2 shadow-xs focus:border-primary-500 focus:ring-1 focus:ring-primary-500;
 }
 
 /* Les fichiers ne peuvent pas être joints (voir rich-text-editor.js) */
@@ -97,7 +139,7 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
 }
 
 @utility selected {
-    @apply scale-[0.95] rounded-sm outline-8 -outline-offset-8 outline-sky-500 outline-solid;
+    @apply scale-[0.95] rounded-sm outline-8 -outline-offset-8 outline-primary-500 outline-solid;
 }
 
 @utility text-shadow-outline {
@@ -131,7 +173,7 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
 }
 
 /*
- * Billet (cartes d'événement) : deux encoches rondes découpées aux bouts de la ligne de perforation.
+ * Billet (prochaine sortie de l'accueil) : deux encoches rondes découpées aux bouts de la ligne de perforation.
  * Sur téléphone, la ligne est horizontale, sous la photo haute de --ticket-photo-height.
  * À partir de md, elle est verticale, à droite de la photo large de --ticket-photo-width.
  */
@@ -161,7 +203,7 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
         }
 
         * {
-            --scrollbar-color: --theme(--color-sky-600 / 75%);
+            --scrollbar-color: --theme(--color-primary-600 / 75%);
             scrollbar-width: thin;
             scrollbar-color: var(--scrollbar-color);
         }
@@ -180,7 +222,7 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
         }
 
         ::-webkit-scrollbar-thumb:window-inactive {
-            --scrollbar-color: --theme(--color-sky-600 / 40%) !important;
+            --scrollbar-color: --theme(--color-primary-600 / 40%) !important;
             background: var(--scrollbar-color);
         }
 

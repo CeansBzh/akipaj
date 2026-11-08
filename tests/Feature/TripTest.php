@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Album;
 use App\Models\Boat;
+use App\Models\Photo;
 use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -242,7 +243,7 @@ class TripTest extends TestCase
             ->assertSee('startDate: "2026-06-12"', false);
     }
 
-    public function test_finished_trip_page_does_not_offer_to_add_it_to_the_agenda(): void
+    public function test_finished_trip_page_says_it_is_over_and_does_not_offer_the_agenda(): void
     {
         $this->actingAsMember();
         $this->travelTo('2026-06-15');
@@ -250,7 +251,43 @@ class TripTest extends TestCase
 
         $this->get(route('trips.show', $trip))
             ->assertOk()
+            ->assertSee('Terminée')
             ->assertDontSee('Ajouter à mon agenda');
+    }
+
+    public function test_trip_page_shows_each_boat_with_the_details_it_has(): void
+    {
+        $this->actingAsMember();
+        $trip = Trip::factory()->create();
+        Boat::factory()->for($trip)->create([
+            'name' => 'Pen Duick',
+            'type' => 'Ketch',
+            'year' => 1898,
+            'builder' => null,
+            'renter' => 'Loc Mer',
+            'city' => 'Lorient',
+            'crew' => 4,
+        ]);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSeeInOrder(['Le bateau', 'Pen Duick', 'Ketch', 'Année', '1898', 'Loueur', 'Loc Mer', 'Port', 'Lorient', 'Équipage', '4 personnes'])
+            ->assertDontSee('Constructeur');
+    }
+
+    public function test_trip_page_lists_only_the_albums_with_photos_and_their_photo_count(): void
+    {
+        $this->actingAsMember();
+        $trip = Trip::factory()->create();
+        $album = Album::factory()->create(['title' => 'Escale à Groix']);
+        Photo::factory()->count(3)->for($album)->create();
+        $emptyAlbum = Album::factory()->create(['title' => 'Album sans photo']);
+        $trip->albums()->attach([$album->id, $emptyAlbum->id]);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSeeInOrder(['Les photos', 'Escale à Groix', '3 photos'])
+            ->assertDontSee('Album sans photo');
     }
 
     #[DataProvider('oldEventLinks')]

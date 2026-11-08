@@ -1,8 +1,10 @@
 @props(['trip'])
 
-{{-- Statut d'une sortie à venir : « En cours », ou dans combien de temps elle commence (« Demain », « Dans 3 jours »…) --}}
+{{-- Statut d'une sortie : « Terminée », « En cours », ou dans combien de temps elle commence (« Demain », « Dans 3 jours »…) --}}
 
-@if ($trip->isOngoing())
+@if ($trip->isFinished())
+    Terminée
+@elseif ($trip->isOngoing())
     En cours
 @else
     {{ ucfirst(
