@@ -275,19 +275,20 @@ class TripTest extends TestCase
             ->assertDontSee('Constructeur');
     }
 
-    public function test_trip_page_lists_only_the_albums_with_photos_and_their_photo_count(): void
+    public function test_trip_page_lists_its_albums_with_their_photo_count_and_a_link(): void
     {
         $this->actingAsMember();
         $trip = Trip::factory()->create();
-        $album = Album::factory()->create(['title' => 'Escale à Groix']);
+        $album = Album::factory()->create(['title' => 'Escale à Groix', 'date' => '2026-06-12']);
         Photo::factory()->count(3)->for($album)->create();
-        $emptyAlbum = Album::factory()->create(['title' => 'Album sans photo']);
-        $trip->albums()->attach([$album->id, $emptyAlbum->id]);
+        $emptyAlbum = Album::factory()->create(['title' => 'Retour à Lorient', 'date' => '2026-06-14']);
+        $trip->albums()->attach([$emptyAlbum->id, $album->id]);
 
         $this->get(route('trips.show', $trip))
             ->assertOk()
-            ->assertSeeInOrder(['Les photos', 'Escale à Groix', '3 photos'])
-            ->assertDontSee('Album sans photo');
+            ->assertSeeInOrder(['Les photos', 'Escale à Groix', '3 photos', 'Retour à Lorient', "Aucune photo pour l'instant"])
+            ->assertSee(route('albums.show', $album))
+            ->assertSee(route('albums.show', $emptyAlbum));
     }
 
     #[DataProvider('oldEventLinks')]

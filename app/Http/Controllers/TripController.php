@@ -89,14 +89,14 @@ class TripController extends Controller
     }
 
     /**
-     * Affiche une sortie, avec ses bateaux, ses matelots et ses albums qui contiennent des photos.
+     * Affiche une sortie, avec ses bateaux, ses matelots et ses albums, même ceux qui n'ont pas encore de photo.
      */
     public function show(Trip $trip): View
     {
         return view('trip.show')->with('trip', $trip->load([
             'boats',
             'users',
-            'albums' => fn ($query) => $query->has('photos')->withCount('photos')->with('oldestPhoto')->orderBy('date'),
+            'albums' => fn ($query) => $query->withCount('photos')->with('oldestPhoto')->orderBy('date'),
         ]));
     }
 

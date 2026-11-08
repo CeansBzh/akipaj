@@ -86,20 +86,48 @@
                 @if ($trip->albums->isNotEmpty())
                     <section aria-labelledby="trip-albums-title" class="mt-16">
                         <h2 id="trip-albums-title" class="text-2xl font-bold text-gray-900">Les photos</h2>
-                        <ul class="mt-6 grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 lg:grid-cols-4">
+                        <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             @foreach ($trip->albums as $album)
+                                @php($cover = $album->imagePath ?? $album->oldestPhoto?->thumb_path)
                                 <li class="min-w-0">
+                                    {{-- Toute la carte mène à l'album ; le bouton « Voir l'album » montre qu'elle se touche --}}
                                     <a href="{{ route('albums.show', $album) }}"
-                                        class="group flex flex-col gap-3 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-700">
-                                        <img src="{{ $album->imagePath ?? $album->oldestPhoto?->thumb_path }}" alt=""
-                                            width="400" height="300" loading="lazy" decoding="async"
-                                            class="aspect-4/3 w-full rounded-2xl bg-gray-100 object-cover">
-                                        <span>
-                                            <span class="block font-bold break-words text-gray-900 group-hover:underline">
-                                                {{ $album->title }}
+                                        class="group flex h-full flex-col overflow-hidden rounded-3xl bg-gray-100 transition-colors hover:bg-gray-200/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-700">
+                                        @if ($cover)
+                                            <img src="{{ $cover }}" alt="" width="480" height="320" loading="lazy"
+                                                decoding="async" class="aspect-3/2 w-full bg-gray-200 object-cover">
+                                        @else
+                                            <span class="flex aspect-3/2 w-full items-center justify-center bg-gray-200 text-gray-500">
+                                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-12">
+                                                    <rect x="3" y="4" width="18" height="16" rx="2.5" />
+                                                    <circle cx="9" cy="9.5" r="1.75" />
+                                                    <path d="m21 15.5-4.5-4.5L7 20" />
+                                                </svg>
                                             </span>
-                                            <span class="text-gray-600">
-                                                {{ $album->photos_count }} {{ $album->photos_count > 1 ? 'photos' : 'photo' }}
+                                        @endif
+                                        <span class="flex grow flex-col items-start gap-1 p-5">
+                                            <span class="text-lg font-bold break-words text-gray-900">{{ $album->title }}</span>
+                                            <span class="flex items-center gap-2 text-gray-700">
+                                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                                                    <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5Z" />
+                                                    <circle cx="12" cy="13" r="3.5" />
+                                                </svg>
+                                                @if ($album->photos_count === 0)
+                                                    Aucune photo pour l'instant
+                                                @else
+                                                    {{ $album->photos_count }} {{ $album->photos_count > 1 ? 'photos' : 'photo' }}
+                                                @endif
+                                            </span>
+                                            <span class="mt-auto pt-4">
+                                                <span class="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2 font-semibold text-primary-800 ring-1 ring-gray-300 ring-inset">
+                                                    Voir l'album
+                                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                                                        <path d="M5 12h14M13 6l6 6-6 6" />
+                                                    </svg>
+                                                </span>
                                             </span>
                                         </span>
                                     </a>
