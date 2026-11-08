@@ -50,6 +50,36 @@ class TripTest extends TestCase
         $this->assertCount(2, $tripsByYear[2023]);
     }
 
+    /**
+     * @param  array<int, int>  $years
+     */
+    #[DataProvider('yearsWithTrips')]
+    public function test_index_opens_the_year_selector_on_the_current_year(array $years, int $initialYear): void
+    {
+        $this->actingAsMember();
+        $this->travelTo('2026-11-08');
+        Trip::factory()
+            ->count(count($years))
+            ->sequence(...array_map(fn (int $year) => ['start_date' => "$year-06-01", 'end_date' => "$year-06-02"], $years))
+            ->create();
+
+        $this->get(route('trips.index'))
+            ->assertOk()
+            ->assertViewHas('initialYear', $initialYear);
+    }
+
+    /**
+     * @return array<string, array{array<int, int>, int}>
+     */
+    public static function yearsWithTrips(): array
+    {
+        return [
+            'the current year' => [[2025, 2026, 2027], 2026],
+            'the last past year when the current one has no trip' => [[2023, 2024, 2027], 2024],
+            'the first year when every trip is upcoming' => [[2027, 2028], 2027],
+        ];
+    }
+
     public function test_members_can_see_a_trip(): void
     {
         $this->actingAsMember();
@@ -223,6 +253,16 @@ class TripTest extends TestCase
             ->assertDontSee('Ajouter à mon agenda');
     }
 
+    #[DataProvider('oldEventLinks')]
+    public function test_old_event_links_lead_to_the_homepage(string $url): void
+    {
+        $this->actingAsMember();
+
+        $this->get($url)
+            ->assertMovedPermanently()
+            ->assertRedirect(route('home'));
+    }
+
     /**
      * @return array<string, array{string}>
      */
@@ -232,16 +272,6 @@ class TripTest extends TestCase
             'the programme' => ['/events'],
             'an event' => ['/events/12'],
         ];
-    }
-
-    #[DataProvider('oldEventLinks')]
-    public function test_old_event_links_lead_to_the_homepage(string $url): void
-    {
-        $this->actingAsMember();
-
-        $this->get($url)
-            ->assertMovedPermanently()
-            ->assertRedirect(route('home'));
     }
 
     public function test_trip_description_formatting_does_not_count_towards_its_length(): void

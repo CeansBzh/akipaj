@@ -115,7 +115,7 @@
                 return {
                     active: 0,
                     init() {
-                        this.active = this.$refs.carousel.children.length - 1;
+                        this.active = {{ $tripsByYear->keys()->search($initialYear) ?: 0 }};
                         this.flkty = new Flickity(this.$refs.carousel, {
                             wrapAround: false,
                             initialIndex: this.active,
