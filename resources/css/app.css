@@ -212,6 +212,22 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
     }
 }
 
+/*
+ * Mer dessinée au trait (composant x-sea-swell), répétée à l'horizontale comme un masque CSS.
+ * Le dessin est un masque en luminance : ses traits blancs laissent voir le fond, de la couleur du texte,
+ * et ses aplats noirs cachent à la fois ce fond et les lignes de mer de derrière.
+ */
+@layer components {
+    .sea-swell {
+        background-color: currentColor;
+        mask-image: url('../images/sea-swell.svg');
+        mask-mode: luminance;
+        mask-size: auto 100%;
+        mask-repeat: repeat-x;
+        mask-position: center bottom;
+    }
+}
+
 /* Défilement doux vers une année ou une sortie choisie dans la liste des sorties */
 @media (prefers-reduced-motion: no-preference) {
     html:has([data-trip-timeline]) {

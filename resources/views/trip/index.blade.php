@@ -15,7 +15,7 @@
     <div class="relative bg-primary-50 pb-24">
         {{-- La mer en fond de page : elle reste à l'écran pendant que les cartes défilent par-dessus --}}
         <div aria-hidden="true" class="pointer-events-none sticky top-0 -mb-[100dvh] h-dvh overflow-hidden">
-            <x-sea-swell class="absolute inset-x-0 bottom-0 h-[72%] w-full fill-primary-50 text-primary-900/25" />
+            <x-sea-swell class="absolute inset-x-0 bottom-0 h-[72%] text-primary-900/25" />
         </div>
 
         <div class="relative mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8 lg:pt-12">
