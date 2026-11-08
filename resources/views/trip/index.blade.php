@@ -1,8 +1,8 @@
 {{--
     Les sorties du club, de la plus récente à la plus ancienne, rangées par année, sur une mer dessinée au trait
-    qui reste en fond pendant la lecture. Les années se choisissent en haut de la liste ; sur grand écran,
-    la frise à gauche suit aussi la lecture et mène à une année ou à une sortie. Sur téléphone, le titre de l'année
-    reste affiché pendant qu'on lit ses sorties.
+    qui reste en fond pendant la lecture. Sur grand écran, la frise à gauche montre toutes les années, suit la lecture
+    et mène à une année ou à une sortie. Sur téléphone, les années se choisissent en haut de la liste et le titre
+    de l'année reste affiché pendant qu'on lit ses sorties.
     Le repère « Aujourd'hui » sépare les sorties à venir ou en cours des sorties passées.
 --}}
 
@@ -31,21 +31,24 @@
                     <x-trip-timeline :trips="$trips" class="hidden lg:block" />
 
                     <div class="w-full">
-                        <nav aria-label="Années" class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-                            <ul class="flex flex-wrap gap-2">
-                                @foreach ($tripsByYear as $year => $yearTrips)
-                                    <li>
-                                        <a href="#annee-{{ $year }}"
-                                            class="inline-flex min-h-11 items-center rounded-full bg-white px-4 py-2 font-semibold text-gray-900 shadow-sm ring-1 ring-gray-200 ring-inset transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
-                                            {{ $year }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
+                        {{-- Sur téléphone, les années se choisissent ici ; sur grand écran, dans la frise --}}
+                        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 lg:justify-end">
+                            <nav aria-label="Années" class="lg:hidden">
+                                <ul class="flex flex-wrap gap-2">
+                                    @foreach ($tripsByYear as $year => $yearTrips)
+                                        <li>
+                                            <a href="#annee-{{ $year }}"
+                                                class="inline-flex min-h-11 items-center rounded-full bg-white px-4 py-2 font-semibold text-gray-900 shadow-sm ring-1 ring-gray-200 ring-inset transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                                                {{ $year }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </nav>
                             @can('create', App\Models\Trip::class)
                                 @include('trip.partials.new-trip-link')
                             @endcan
-                        </nav>
+                        </div>
 
                         @foreach ($tripsByYear as $year => $yearTrips)
                             @if (!$todayIsPlaced && $today->year > $year)

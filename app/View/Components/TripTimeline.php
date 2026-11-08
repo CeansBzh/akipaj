@@ -10,44 +10,23 @@ use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
 /**
- * Frise des sorties, de la plus récente à la plus ancienne, avec les années et le jour présent.
+ * Frise des sorties : toutes les années, de la plus récente à la plus ancienne, années sans sortie comprises.
  *
- * Chaque repère est placé à une distance du précédent proportionnelle au temps qui les sépare : une année occupe
- * YEAR_HEIGHT rem. Deux repères trop proches sont seulement écartés assez pour que leurs libellés ne se chevauchent pas.
- * Les années sans sortie restent sur la frise, pour montrer le temps passé sans sortir.
+ * Seule l'année en cours de lecture est dépliée sur ses sorties et, s'il tombe dedans, sur le jour présent.
+ * Entre deux repères d'une année, un écart compte les jours qui les séparent : la vue leur partage la place
+ * à proportion, sans jamais faire se chevaucher les libellés.
  */
 class TripTimeline extends Component
 {
-    /**
-     * Hauteur d'une année sur la frise, en rem.
-     */
-    public const YEAR_HEIGHT = 36.0;
+    private const SECONDS_PER_DAY = 86400;
 
     /**
-     * Place à laisser sous chaque type de repère pour son libellé, en rem.
-     */
-    public const LABEL_HEIGHTS = ['year' => 4.0, 'trip' => 5.0, 'today' => 2.5];
-
-    private const SECONDS_PER_YEAR = 365.25 * 24 * 3600;
-
-    /**
-     * Repères de la frise, de haut en bas, avec leur hauteur en rem.
+     * Années de la frise, de la plus récente à la plus ancienne. Leurs repères vont du 31 décembre au 1er janvier,
+     * chacun précédé de l'écart qui le sépare du précédent ; un dernier écart va jusqu'au 1er janvier.
      *
-     * @var list<array{type: 'year'|'trip'|'today', key: string, top: float, year: int|null, hasTrips: bool, trip: Trip|null}>
+     * @var list<array{year: int, tripCount: int, hasToday: bool, entries: list<array{type: 'gap'|'trip'|'today', days: float, trip: Trip|null}>}>
      */
-    public array $marks = [];
-
-    /**
-     * Graduations des débuts de mois, de haut en bas ; celle d'un 1er janvier sépare deux années.
-     *
-     * @var list<array{top: float, isNewYear: bool}>
-     */
-    public array $ticks = [];
-
-    /**
-     * Hauteur totale de la frise, en rem.
-     */
-    public float $height = 0.0;
+    public array $years = [];
 
     /**
      * @param  Collection<int, Trip>  $trips
@@ -59,76 +38,45 @@ class TripTimeline extends Component
         }
 
         $today = CarbonImmutable::today();
-        $tripYears = $trips->map(fn (Trip $trip): int => $trip->start_date->year)->unique();
-        $firstYear = min($tripYears->min(), $today->year);
-        $lastYear = max($tripYears->max(), $today->year);
+        $tripsByYear = $trips->groupBy(fn (Trip $trip): int => $trip->start_date->year);
+        $firstYear = min($tripsByYear->keys()->min(), $today->year);
+        $lastYear = max($tripsByYear->keys()->max(), $today->year);
 
-        $moments = [];
         for ($year = $lastYear; $year >= $firstYear; $year--) {
-            // Le libellé d'une année est posé en haut de son année, juste avant le 1er janvier suivant
-            $moments[] = ['type' => 'year', 'key' => "year-{$year}", 'time' => CarbonImmutable::create($year)->endOfYear()->getTimestamp(),
-                'year' => $year, 'hasTrips' => $tripYears->contains($year), 'trip' => null];
-        }
-        foreach ($trips as $trip) {
-            $moments[] = ['type' => 'trip', 'key' => "trip-{$trip->id}", 'time' => $trip->start_date->getTimestamp(),
-                'year' => null, 'hasTrips' => false, 'trip' => $trip];
-        }
-        // À midi, pour qu'une sortie qui commence aujourd'hui passe sous le repère, avec les sorties commencées
-        $moments[] = ['type' => 'today', 'key' => 'today', 'time' => $today->midDay()->getTimestamp(),
-            'year' => null, 'hasTrips' => false, 'trip' => null];
+            /** @var Collection<int, Trip> $yearTrips */
+            $yearTrips = $tripsByYear->get($year, new Collection);
 
-        usort($moments, fn (array $a, array $b): int => $b['time'] <=> $a['time']);
-
-        $top = 0.0;
-        $previous = null;
-        foreach ($moments as $moment) {
-            if ($previous !== null) {
-                $top += $this->distance($previous, $moment['time']);
+            $moments = $yearTrips
+                ->map(fn (Trip $trip): array => ['type' => 'trip', 'time' => $trip->start_date->getTimestamp(), 'trip' => $trip])
+                ->values()
+                ->all();
+            if ($today->year === $year) {
+                // À midi, pour qu'une sortie qui commence aujourd'hui passe sous le repère, avec les sorties commencées
+                $moments[] = ['type' => 'today', 'time' => $today->midDay()->getTimestamp(), 'trip' => null];
             }
-            $this->marks[] = [...array_diff_key($moment, ['time' => true]), 'top' => round($top, 2)];
-            $previous = $moment;
-        }
+            usort($moments, fn (array $a, array $b): int => $b['time'] <=> $a['time']);
 
-        // La frise s'arrête au 1er janvier de la première année
-        $end = CarbonImmutable::create($firstYear)->startOfYear()->getTimestamp();
-        $this->height = round($top + $this->distance($previous, $end), 2);
+            $entries = [];
+            $previousTime = CarbonImmutable::create($year)->endOfYear()->getTimestamp();
+            foreach ($moments as $moment) {
+                $entries[] = $this->gap($previousTime, $moment['time']);
+                $entries[] = ['type' => $moment['type'], 'days' => 0.0, 'trip' => $moment['trip']];
+                $previousTime = $moment['time'];
+            }
+            $entries[] = $this->gap($previousTime, CarbonImmutable::create($year)->startOfYear()->getTimestamp());
 
-        $anchors = [...array_map(fn (array $moment, array $mark): array => [$moment['time'], $mark['top']], $moments, $this->marks), [$end, $this->height]];
-        for ($month = CarbonImmutable::create($lastYear, 12); $month->year >= $firstYear; $month = $month->subMonth()) {
-            $this->ticks[] = ['top' => round($this->interpolate($anchors, $month->getTimestamp()), 2), 'isNewYear' => $month->month === 1];
+            $this->years[] = ['year' => $year, 'tripCount' => $yearTrips->count(), 'hasToday' => $today->year === $year, 'entries' => $entries];
         }
     }
 
     /**
-     * Donne l'écart entre un repère et le moment suivant : proportionnel au temps, mais assez grand pour le libellé du repère.
+     * Donne l'écart entre deux moments d'une année, en jours.
      *
-     * @param  array{type: 'year'|'trip'|'today', time: int}  $from
+     * @return array{type: 'gap', days: float, trip: null}
      */
-    private function distance(array $from, int $time): float
+    private function gap(int $from, int $to): array
     {
-        return max(self::LABEL_HEIGHTS[$from['type']], ($from['time'] - $time) / self::SECONDS_PER_YEAR * self::YEAR_HEIGHT);
-    }
-
-    /**
-     * Place un moment entre les deux repères qui l'entourent, proportionnellement au temps.
-     *
-     * @param  list<array{int, float}>  $anchors  moments et hauteurs, du plus récent au plus ancien
-     */
-    private function interpolate(array $anchors, int $time): float
-    {
-        foreach ($anchors as $index => [$anchorTime, $anchorTop]) {
-            if ($anchorTime > $time) {
-                continue;
-            }
-            if ($index === 0) {
-                return $anchorTop;
-            }
-            [$previousTime, $previousTop] = $anchors[$index - 1];
-
-            return $previousTop + ($previousTime - $time) / ($previousTime - $anchorTime) * ($anchorTop - $previousTop);
-        }
-
-        return end($anchors)[1];
+        return ['type' => 'gap', 'days' => round(max(0, $from - $to) / self::SECONDS_PER_DAY, 1), 'trip' => null];
     }
 
     /**

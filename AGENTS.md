@@ -37,7 +37,7 @@ Le titre et la description passent après.
 
 Sur l'accueil, seule la sortie à venir la plus proche a la forme d'un billet (composant `x-trip-ticket`, encoches dessinées par la classe `.ticket` de `resources/css/app.css`). Les suivants sont de petites cartes sans style de billet, sur deux colonnes à partir de `sm` (composant `x-trip-card`) : photo en plein cadre, date et statut sur fond de verre, nom, dates et lieu sur un flou progressif, bouton d'agenda rond en icône seule. Les cartes des dernières sorties n'ont pas de coins arrondis. Les dates d'une sortie s'écrivent avec le composant `x-date-range` (« Du 12 au 14 juin 2026 »).
 
-La page des sorties les présente de la plus récente à la plus ancienne, rangées par année, en grandes cartes photo sur le modèle des petites cartes de l'accueil (composant `x-trip-entry`), sur une mer dessinée au trait qui reste en fond de page (`x-sea-swell`). Les années se choisissent en haut de la liste. Sur grand écran, une frise (`x-trip-timeline`) accompagne les cartes à gauche : elle suit la lecture, mène à une année ou à une sortie, et espace les sorties selon le temps écoulé.
+La page des sorties les présente de la plus récente à la plus ancienne, rangées par année, en grandes cartes photo sur le modèle des petites cartes de l'accueil (composant `x-trip-entry`), sur une mer dessinée au trait qui reste en fond de page (`x-sea-swell`). Sur grand écran, une frise (`x-trip-timeline`) accompagne les cartes à gauche, sur toute la hauteur de l'écran : elle montre toutes les années, déplie seulement celle en cours de lecture sur ses sorties espacées selon le temps écoulé, suit la lecture et mène à une année ou à une sortie. Sur téléphone, les années se choisissent en haut de la liste.
 
 ## Albums photo
 
