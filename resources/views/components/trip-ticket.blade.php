@@ -1,19 +1,19 @@
-@props(['event', 'eager' => false])
+@props(['trip', 'eager' => false])
 
-{{-- Grande carte d'événement en forme de billet : la photo, puis le talon avec les dates, le lieu et l'ajout à l'agenda --}}
+{{-- Grande carte de sortie à venir en forme de billet : la photo, puis le talon avec les dates, le lieu et l'ajout à l'agenda --}}
 
 @php
-    $isOngoing = $event->isOngoing();
-    $isSingleDay = $event->start_time->isSameDay($event->end_time);
+    $isOngoing = $trip->isOngoing();
+    $isSingleDay = $trip->start_date->isSameDay($trip->end_date);
 @endphp
 
-<article id="event-item-{{ $event->id }}"
+<article id="trip-item-{{ $trip->id }}"
     {{ $attributes->class(['ticket grid overflow-hidden rounded-2xl bg-white md:grid-cols-[var(--ticket-photo-width)_1fr]']) }}>
-    <x-event-to-agenda :event="$event" />
+    <x-trip-to-agenda :trip="$trip" />
 
-    <a href="{{ route('events.show', $event) }}"
+    <a href="{{ route('trips.show', $trip) }}"
         class="group relative isolate flex h-(--ticket-photo-height) flex-col justify-between gap-3 overflow-hidden p-4 focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-primary-400 md:h-auto md:min-h-72">
-        <img src="{{ $event->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
+        <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
             class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
             loading="{{ $eager ? 'eager' : 'lazy' }}" decoding="async">
         <div class="absolute inset-0 -z-10 bg-linear-to-t from-gray-950/80 via-gray-950/20 to-transparent"></div>
@@ -23,11 +23,11 @@
             'bg-primary-700 text-white' => $isOngoing,
             'bg-white text-primary-800' => !$isOngoing,
         ])>
-            <x-event-status :event="$event" />
+            <x-trip-status :trip="$trip" />
         </p>
 
         <h3 class="text-xl font-bold text-balance text-white group-hover:underline">
-            {{ $event->name }}
+            {{ $trip->title }}
         </h3>
     </a>
 
@@ -45,16 +45,16 @@
         <dl class="grid grid-cols-[auto_1fr] items-baseline gap-x-4 gap-y-3">
             @if ($isSingleDay)
                 <dt class="text-sm text-gray-600">Date</dt>
-                <dd class="text-lg font-bold text-gray-900">{{ $event->start_time->isoFormat('dddd Do MMMM YYYY') }}</dd>
+                <dd class="text-lg font-bold text-gray-900">{{ $trip->start_date->isoFormat('dddd Do MMMM YYYY') }}</dd>
             @else
                 <dt class="text-sm text-gray-600">Départ</dt>
-                <dd class="text-lg font-bold text-gray-900">{{ $event->start_time->isoFormat('dddd Do MMMM YYYY') }}</dd>
+                <dd class="text-lg font-bold text-gray-900">{{ $trip->start_date->isoFormat('dddd Do MMMM YYYY') }}</dd>
                 <dt class="text-sm text-gray-600">Retour</dt>
-                <dd class="text-lg font-bold text-gray-900">{{ $event->end_time->isoFormat('dddd Do MMMM YYYY') }}</dd>
+                <dd class="text-lg font-bold text-gray-900">{{ $trip->end_date->isoFormat('dddd Do MMMM YYYY') }}</dd>
             @endif
-            @if ($event->location)
+            @if ($trip->location)
                 <dt class="text-sm text-gray-600">Lieu</dt>
-                <dd class="whitespace-pre-line text-gray-900">{{ $event->location }}</dd>
+                <dd class="whitespace-pre-line text-gray-900">{{ $trip->location }}</dd>
             @endif
         </dl>
 

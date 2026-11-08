@@ -5,7 +5,6 @@ use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AlbumController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TripController;
 use Illuminate\Support\Facades\Artisan;
@@ -20,6 +19,8 @@ Route::get('/', function () {
     }
 })->name('home');
 Route::view('mentions-legales', 'legal')->name('legal');
+// Les événements sont devenus des sorties : leurs anciens liens, gardés dans les agendas des membres, mènent au programme
+Route::permanentRedirect('events/{event?}', '/');
 
 // Profiles (access is checked in the controller)
 Route::get('profil/{username?}', [ProfileController::class, 'show'])->name('profile.show');
@@ -34,7 +35,6 @@ Route::middleware('auth')->group(function () {
         Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
         Route::resources([
             'albums' => AlbumController::class,
-            'events' => EventController::class,
             'trips' => TripController::class,
         ]);
         Route::resource('photos', PhotoController::class)->except(['create']);

@@ -5,7 +5,7 @@
 - Akipaj est le site d'un club de voile. Ses visiteurs sont les membres du club, dont beaucoup de personnes âgées peu à l'aise avec le numérique. Ils le consultent surtout sur téléphone, parfois avec une connexion lente.
 - Objectif principal : annoncer les prochaines sorties et permettre de consulter les photos (albums réservés aux membres).
 - Objectif secondaire : garder l'historique des sorties passées du club.
-- Les événements (`events`) et les sorties (`trips`) vont être fusionnés : un événement est une sortie à venir. Concevoir une seule carte et une seule page de sortie qui couvrent les deux cas.
+- Les événements ont été fusionnés dans les sorties (`trips`) : un événement est désormais une sortie à venir. Concevoir une seule carte et une seule page de sortie qui couvrent les deux cas.
 - Les fonctionnalités sociales (pages de profil `profile.*`, commentaires sous les photos) vont être supprimées : ne pas les redessiner et ne pas en ajouter de nouvelles.
 - Hors périmètre pour l'instant : l'administration (`resources/views/admin`, `resources/views/components/admin`, `layouts/admin.blade.php`). Ne pas la modifier.
 
@@ -18,7 +18,7 @@
 - Thème clair uniquement : pas de variantes `dark:`.
 - Couleur principale : les classes `primary-*`, déclarées dans le bloc `@theme` de `resources/css/app.css` et aujourd'hui égales à la palette `sky`. Ne pas écrire de `sky-*` dans du nouveau code, et remplacer les `sky-*` par `primary-*` dans les fichiers modifiés. Neutres en `gray`. Rouge, vert, jaune et bleu sont réservés aux messages d'état (composant `x-alert`).
 - Les photos du club sont le meilleur décor : les mettre en avant plutôt que des illustrations ou des dégradés décoratifs.
-- Verre (fond translucide et `backdrop-blur`) : bienvenu sur une photo, pour y poser un badge, un bouton ou du texte lisible (voir `x-event-card`). Pas sur un fond uni, où il n'apporte rien.
+- Verre (fond translucide et `backdrop-blur`) : bienvenu sur une photo, pour y poser un badge, un bouton ou du texte lisible (voir `x-trip-card`). Pas sur un fond uni, où il n'apporte rien.
 
 ## Cartes de sortie
 
@@ -28,11 +28,11 @@ Par ordre d'importance :
 2. Le statut : en cours, à venir ou terminée.
 3. Les dates.
 4. Le lieu.
-5. Un bouton « Ajouter à mon agenda » bien visible, pour les sorties à venir ou en cours (aujourd'hui le composant `x-event-to-agenda`).
+5. Un bouton « Ajouter à mon agenda » bien visible, pour les sorties à venir ou en cours (aujourd'hui le composant `x-trip-to-agenda`).
 
 Le titre et la description passent après.
 
-Sur l'accueil, seul l'événement le plus proche a la forme d'un billet (composant `x-event-ticket`, encoches dessinées par la classe `.ticket` de `resources/css/app.css`). Les suivants sont de petites cartes sans style de billet, sur deux colonnes à partir de `sm` (composant `x-event-card`) : photo en plein cadre, date et statut sur fond de verre, nom, dates et lieu sur un flou progressif, bouton d'agenda rond en icône seule. Les cartes des dernières sorties n'ont pas de coins arrondis. Les dates d'une sortie s'écrivent avec le composant `x-date-range` (« Du 12 au 14 juin 2026 »).
+Sur l'accueil, seule la sortie à venir la plus proche a la forme d'un billet (composant `x-trip-ticket`, encoches dessinées par la classe `.ticket` de `resources/css/app.css`). Les suivants sont de petites cartes sans style de billet, sur deux colonnes à partir de `sm` (composant `x-trip-card`) : photo en plein cadre, date et statut sur fond de verre, nom, dates et lieu sur un flou progressif, bouton d'agenda rond en icône seule. Les cartes des dernières sorties n'ont pas de coins arrondis. Les dates d'une sortie s'écrivent avec le composant `x-date-range` (« Du 12 au 14 juin 2026 »).
 
 ## Albums photo
 
@@ -52,7 +52,7 @@ Sur l'accueil, seul l'événement le plus proche a la forme d'un billet (composa
 
 - Contraste WCAG AA au minimum : texte bleu sur fond clair en `primary-700` ou plus foncé, texte blanc sur un fond `primary-700` ou plus foncé (`primary-500` et `primary-600` ne suffisent pas pour du texte). Texte gris en `gray-600` ou plus foncé, `gray-500` seulement sur fond blanc. Sur une photo, garder un fond assez opaque derrière le texte.
 - Cibles tactiles d'au moins 44 × 44 px, bien espacées.
-- Toute action porte un libellé texte : une icône seule ne suffit pas. Seule exception, voulue : le bouton d'agenda des petites cartes d'événement, avec un `aria-label` et un `title`. Les liens dans un texte sont soulignés.
+- Toute action porte un libellé texte : une icône seule ne suffit pas. Seule exception, voulue : le bouton d'agenda des petites cartes de sortie à venir, avec un `aria-label` et un `title`. Les liens dans un texte sont soulignés.
 - Rien ne dépend du survol (inexistant sur téléphone) ni d'un geste caché (balayage, appui long) : chaque action a un bouton visible. Pas de défilement automatique, carrousels compris.
 - Dates écrites en toutes lettres au format français (« samedi 14 juin 2026 ») plutôt qu'en chiffres (« 14/06 »).
 - Focus clavier visible, `prefers-reduced-motion` respecté, animations rares et courtes, seulement en réponse à une action.

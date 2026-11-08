@@ -49,7 +49,7 @@
                             <x-application-logo class="mx-auto mb-3 h-20 md:mx-0 md:h-28" />
                             <p class="text-shadow mb-3 text-2xl text-white shadow-gray-800">Bienvenue à bord !</p>
                             <a href="{{ route('profile.show', Auth::user()->name) }}"
-                                class="text-shadow-outline inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-xs shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-25">
+                                class="text-shadow-outline inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-xs shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-25">
                                 Mon profil
                             </a>
                         </div>
@@ -63,17 +63,16 @@
                     <h2 class="text-2xl font-extrabold">Prochaines sorties</h2>
                     <hr class="my-5">
                     <ul class="list-disc px-5">
-                        @forelse(\App\Models\Event::where('start_time', '>=',
-                    date('Y-m-d'))->orderBy('start_time')->take(5)->get() as $event)
+                        @forelse (\App\Models\Trip::upcoming()->orderBy('start_date')->take(5)->get() as $trip)
                             <li class="mt-2 font-semibold">
-                                <a href="{{ route('events.show', $event) }}">
-                                    {{ $event->name }}
+                                <a href="{{ route('trips.show', $trip) }}">
+                                    {{ $trip->title }}
                                 </a>
-                                <p class="text-sky-600">{{ $event->start_time->translatedFormat('d M Y') }}</p>
+                                <p class="text-primary-700">{{ $trip->start_date->translatedFormat('d M Y') }}</p>
                             </li>
                         @empty
                             <li class="flex flex-col items-center justify-center">
-                                <p class="text-center text-gray-500">Aucun événement à venir</p>
+                                <p class="text-center text-gray-500">Aucune sortie à venir</p>
                             </li>
                         @endforelse
                     </ul>

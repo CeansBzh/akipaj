@@ -23,7 +23,6 @@ class AccessControlTest extends TestCase
     {
         return [
             'albums' => ['/albums'],
-            'events' => ['/events'],
             'trips' => ['/trips'],
             'photos' => ['/photos'],
             'members list' => ['/matelots'],

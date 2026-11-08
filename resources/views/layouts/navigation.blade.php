@@ -19,7 +19,7 @@
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button type="button" id="user-menu-button"
-                        class="flex rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-sky-200">
+                        class="flex rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-primary-200">
                         <span class="sr-only">Ouvrir le menu utilisateur</span>
                         <img class="h-8 w-8 rounded-full"
                             src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
@@ -85,11 +85,6 @@
                 <li>
                     <x-nav-link :href="route('trips.index')" :active="request()->routeIs('trips.*')">
                         Sorties
-                    </x-nav-link>
-                </li>
-                <li>
-                    <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
-                        Programme
                     </x-nav-link>
                 </li>
                 <li>

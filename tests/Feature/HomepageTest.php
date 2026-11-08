@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Event;
 use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -20,7 +19,7 @@ class HomepageTest extends TestCase
     public function test_authenticated_users_see_the_members_homepage(): void
     {
         $this->actingAsMember();
-        Event::factory()->create(['name' => 'Régate de printemps', 'start_time' => now()->addWeek(), 'end_time' => now()->addWeek()]);
+        Trip::factory()->create(['title' => 'Régate de printemps', 'start_date' => now()->addWeek(), 'end_date' => now()->addWeek()]);
         Trip::factory()->create(['end_date' => now()->subDay(), 'start_date' => now()->subDays(3)]);
 
         $this->get('/')
@@ -29,13 +28,13 @@ class HomepageTest extends TestCase
             ->assertSee('Régate de printemps');
     }
 
-    public function test_agenda_reminders_show_the_event_description_without_formatting(): void
+    public function test_agenda_reminders_show_the_trip_description_without_formatting(): void
     {
         $this->actingAsMember();
-        Event::factory()->create([
+        Trip::factory()->create([
             'description' => '<div>Rendez-vous au <strong>port</strong></div><div>Retour le soir</div>',
-            'start_time' => now()->addWeek(),
-            'end_time' => now()->addWeek(),
+            'start_date' => now()->addWeek(),
+            'end_date' => now()->addWeek(),
         ]);
 
         $this->get('/')
@@ -43,14 +42,14 @@ class HomepageTest extends TestCase
             ->assertSee('Rendez-vous au port Retour le soir.[br]Voir sur le site', false);
     }
 
-    public function test_add_to_agenda_script_encodes_event_values(): void
+    public function test_add_to_agenda_script_encodes_trip_values(): void
     {
         $this->actingAsMember();
-        Event::factory()->create([
-            'name' => 'Sortie "pirate"',
+        Trip::factory()->create([
+            'title' => 'Sortie "pirate"',
             'location' => "1 rue du Port\n29200 Brest",
-            'start_time' => now()->addWeek(),
-            'end_time' => now()->addWeek(),
+            'start_date' => now()->addWeek(),
+            'end_date' => now()->addWeek(),
         ]);
 
         // A raw line break or quote inside the JS string literal would be a syntax error in the browser
@@ -61,12 +60,12 @@ class HomepageTest extends TestCase
             ->assertSee('addToAgenda', false);
     }
 
-    #[DataProvider('eventStatusDays')]
-    public function test_event_tickets_show_whether_the_event_is_ongoing(string $now, string $status): void
+    #[DataProvider('tripStatusDays')]
+    public function test_trip_tickets_show_whether_the_trip_is_ongoing(string $now, string $status): void
     {
         $this->actingAsMember();
         $this->travelTo($now);
-        Event::factory()->create(['start_time' => '2026-06-12', 'end_time' => '2026-06-14']);
+        Trip::factory()->create(['start_date' => '2026-06-12', 'end_date' => '2026-06-14']);
 
         $this->get('/')
             ->assertOk()
@@ -76,7 +75,7 @@ class HomepageTest extends TestCase
     /**
      * @return array<string, array{string, string}>
      */
-    public static function eventStatusDays(): array
+    public static function tripStatusDays(): array
     {
         return [
             'the day before' => ['2026-06-11 18:00', 'Demain'],
@@ -85,33 +84,44 @@ class HomepageTest extends TestCase
         ];
     }
 
-    public function test_finished_events_leave_the_homepage(): void
+    public function test_finished_trips_move_from_the_programme_to_the_last_trips(): void
     {
         $this->actingAsMember();
         $this->travelTo('2026-06-15 08:00');
-        Event::factory()->create(['name' => 'Régate terminée', 'start_time' => '2026-06-12', 'end_time' => '2026-06-14']);
+        Trip::factory()->create(['title' => 'Régate terminée', 'start_date' => '2026-06-12', 'end_date' => '2026-06-14']);
 
         $this->get('/')
             ->assertOk()
-            ->assertDontSee('Régate terminée');
+            ->assertSeeInOrder(['Aucune sortie à venir.', 'Régate terminée']);
     }
 
-    public function test_event_tickets_show_the_departure_and_return_days_and_the_location(): void
+    public function test_trips_join_the_last_trips_only_after_their_last_day(): void
+    {
+        $this->actingAsMember();
+        $this->travelTo('2026-06-14 23:00');
+        Trip::factory()->create(['start_date' => '2026-06-12', 'end_date' => '2026-06-14']);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee("Aucune sortie terminée pour l'instant.", false);
+    }
+
+    public function test_trip_tickets_show_the_departure_and_return_days_and_the_location(): void
     {
         $this->actingAsMember();
         $this->travelTo('2026-06-01');
-        Event::factory()->create(['start_time' => '2026-06-12', 'end_time' => '2026-06-14', 'location' => 'Port de Concarneau']);
+        Trip::factory()->create(['start_date' => '2026-06-12', 'end_date' => '2026-06-14', 'location' => 'Port de Concarneau']);
 
         $this->get('/')
             ->assertOk()
             ->assertSeeInOrder(['Départ', 'vendredi 12 juin 2026', 'Retour', 'dimanche 14 juin 2026', 'Lieu', 'Port de Concarneau']);
     }
 
-    public function test_single_day_event_tickets_show_one_date(): void
+    public function test_single_day_trip_tickets_show_one_date(): void
     {
         $this->actingAsMember();
         $this->travelTo('2026-05-20');
-        Event::factory()->create(['start_time' => '2026-06-01', 'end_time' => '2026-06-01']);
+        Trip::factory()->create(['start_date' => '2026-06-01', 'end_date' => '2026-06-01']);
 
         $this->get('/')
             ->assertOk()
@@ -119,12 +129,12 @@ class HomepageTest extends TestCase
             ->assertDontSee('Retour</dt>', false);
     }
 
-    public function test_only_the_closest_event_gets_the_ticket(): void
+    public function test_only_the_closest_trip_gets_the_ticket(): void
     {
         $this->actingAsMember();
         $this->travelTo('2026-06-01');
-        Event::factory()->create(['start_time' => '2026-06-20', 'end_time' => '2026-06-20']);
-        Event::factory()->create(['start_time' => '2026-06-12', 'end_time' => '2026-06-12']);
+        Trip::factory()->create(['start_date' => '2026-06-20', 'end_date' => '2026-06-20']);
+        Trip::factory()->create(['start_date' => '2026-06-12', 'end_date' => '2026-06-12']);
 
         // Le billet écrit le jour de la semaine, les petites cartes non
         $this->get('/')
@@ -134,11 +144,11 @@ class HomepageTest extends TestCase
             ->assertDontSee('samedi 20 juin 2026');
     }
 
-    public function test_the_programme_lists_every_upcoming_event(): void
+    public function test_the_programme_lists_every_upcoming_trip(): void
     {
         $this->actingAsMember();
-        Event::factory()->count(5)->create(['start_time' => now()->addWeek(), 'end_time' => now()->addWeek()]);
-        Event::factory()->create(['name' => 'Convoyage de fin de saison', 'start_time' => now()->addMonth(), 'end_time' => now()->addMonth()]);
+        Trip::factory()->count(5)->create(['start_date' => now()->addWeek(), 'end_date' => now()->addWeek()]);
+        Trip::factory()->create(['title' => 'Convoyage de fin de saison', 'start_date' => now()->addMonth(), 'end_date' => now()->addMonth()]);
 
         $this->get('/')
             ->assertOk()

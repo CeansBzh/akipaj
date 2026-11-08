@@ -13,7 +13,8 @@
 <section class="mx-auto max-w-2xl" x-data="addTrip()">
     <header>
         <h2 class="text-lg font-medium text-gray-900">Ajouter une sortie</h2>
-        <p class="mt-1 text-sm text-gray-600">La sortie sera visible à tous les membres.</p>
+        <p class="mt-1 text-sm text-gray-600">La sortie sera visible à tous les membres. Une sortie à venir est annoncée
+            sur la page d'accueil, avec un bouton pour l'ajouter à son agenda.</p>
     </header>
 
     <form method="post" action="{{ route('trips.store') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
@@ -39,21 +40,23 @@
             <div>
                 <x-input-label for="start_date_input" value="Date de début" />
                 <x-text-input id="start_date_input" name="start_date" type="date" class="mt-1 block w-full"
-                    :value="old(
-                        'start_date',
-                        now()
-                            ->subDays(10)
-                            ->format('Y-m-d'),
-                    )" required />
+                    :value="old('start_date')" required />
                 <x-input-error class="mt-2" :messages="$errors->get('start_date')" />
             </div>
 
             <div>
                 <x-input-label for="end_date_input" value="Date de fin" />
                 <x-text-input id="end_date_input" name="end_date" type="date" class="mt-1 block w-full"
-                    :value="old('end_date', date('Y-m-d'))" required />
+                    :value="old('end_date')" required />
                 <x-input-error class="mt-2" :messages="$errors->get('end_date')" />
             </div>
+        </div>
+
+        <div>
+            <x-input-label for="location_input" value="Lieu (facultatif)" />
+            <x-text-input id="location_input" name="location" type="text" class="mt-1 block w-full"
+                :value="old('location')" placeholder="Port de plaisance de Horta, Portugal" maxlength="255" />
+            <x-input-error class="mt-2" :messages="$errors->get('location')" />
         </div>
 
         <div>
@@ -108,7 +111,7 @@
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 motion-safe:group-focus:animate-pulse">
+                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-primary-500 motion-safe:group-focus:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

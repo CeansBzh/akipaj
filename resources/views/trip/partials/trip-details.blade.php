@@ -25,6 +25,10 @@
                     <p>{{ $trip->end_date->translatedFormat('d M Y') }}</p>
                 </div>
             </div>
+            @if ($trip->location)
+                <h4 class="mt-4 text-center text-lg font-bold">Lieu</h4>
+                <p class="text-center">{{ $trip->location }}</p>
+            @endif
         </div>
         @if ($userCount > 0)
             <div class="{{ $userCount > 6 ? '' : 'md:flex-1' }} mb-4">

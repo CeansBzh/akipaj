@@ -1,5 +1,5 @@
 @php
-    $trips = App\Models\Trip::where('end_date', '<=', now())
+    $trips = App\Models\Trip::finished()
         ->orderByDesc('end_date')
         ->limit(3)
         ->get();
@@ -9,7 +9,7 @@
 <section class="mx-auto max-w-md md:max-w-none">
     @if ($trips->isEmpty())
         <div class="flex flex-col items-center gap-2 p-12 text-center">
-            <p class="text-gray-600">Aucune sortie n'a encore été créée.</p>
+            <p class="text-gray-600">Aucune sortie terminée pour l'instant.</p>
             @can('create', App\Models\Trip::class)
                 <a href="{{ route('trips.create') }}" class="font-semibold text-primary-700 underline">Créer une sortie</a>
             @endcan

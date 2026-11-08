@@ -3,7 +3,7 @@
         <div class="absolute w-screen">
             <div class="absolute inset-0 from-transparent via-gray-100/10 to-gray-100 sm:bg-linear-to-b">
             </div>
-            <img src="{{ $trip->imagePath }}" alt="Image de couverture de l'événement {{ $trip->name }}"
+            <img src="{{ $trip->imagePath }}" alt="Image de couverture de la sortie {{ $trip->title }}"
                 class="min-h-[150px] w-full object-cover">
         </div>
     @endif
@@ -16,8 +16,17 @@
                 </h1>
             </div>
 
-            <div class="relative bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
+            <div id="trip-item-{{ $trip->id }}" class="relative bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                 @include('trip.partials.trip-details')
+
+                @unless ($trip->isFinished())
+                    <x-trip-to-agenda :trip="$trip" />
+                    <div class="mt-6 text-center">
+                        <x-primary-button type="button" class="add-to-agenda">
+                            Ajouter à mon agenda
+                        </x-primary-button>
+                    </div>
+                @endunless
 
                 <div class="absolute top-4 right-3">
                     <x-dropdown align="right" width="48">
@@ -47,9 +56,11 @@
                 </div>
             </div>
 
-            <div class="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
-                @include('trip.partials.trip-related-albums')
-            </div>
+            @if ($trip->albums->isNotEmpty())
+                <div class="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
+                    @include('trip.partials.trip-related-albums')
+                </div>
+            @endif
 
         </div>
     </div>

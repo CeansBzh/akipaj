@@ -53,6 +53,13 @@
         </div>
 
         <div>
+            <x-input-label for="location_input" value="Lieu (facultatif)" />
+            <x-text-input id="location_input" name="location" type="text" class="mt-1 block w-full"
+                :value="$trip->location" placeholder="Port de plaisance de Horta, Portugal" maxlength="255" />
+            <x-input-error class="mt-2" :messages="$errors->updateTrip->get('location')" />
+        </div>
+
+        <div>
             <x-input-label for="description_input" value="Description" />
             <x-rich-text-input id="description_input" name="description" :value="$trip->description" :maxlength="1000"
                 class="mt-1" placeholder="Description de la sortie" />
@@ -107,12 +114,12 @@
 
         <div class="relative" x-show="!imageRemoved">
             <img id="image_display" src="{{ $trip->imagePath }}"
-                alt="Image de couverture de l'événement {{ $trip->name }}"
+                alt="Image de couverture de la sortie {{ $trip->title }}"
                 class="h-64 w-full rounded-xl object-cover">
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 motion-safe:group-focus:animate-pulse">
+                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-primary-500 motion-safe:group-focus:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
         // $this->call([
         //     PhotoSeeder::class,
         //     AlbumSeeder::class,
-        //     EventSeeder::class,
         //     TripSeeder::class,
         //     CommentSeeder::class,
         // ]);

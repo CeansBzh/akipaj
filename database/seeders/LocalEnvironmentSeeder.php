@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\UserLevelEnum;
 use App\Models\Album;
 use App\Models\Comment;
-use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Trip;
 use App\Models\User;
@@ -35,11 +34,8 @@ class LocalEnvironmentSeeder extends Seeder
         // Trips
         $this->createTrips();
         $this->createTripsWithAllRelations();
-
-        // Events
-        $this->createEvents();
-        $this->createPassedEvents();
-        $this->createEventsWithoutImageOrLocation();
+        $this->createUpcomingTrips();
+        $this->createUpcomingTripsWithoutLocationOrImage();
     }
 
     protected function createDefaultUser(): self
@@ -157,27 +153,18 @@ class LocalEnvironmentSeeder extends Seeder
         return $this;
     }
 
-    protected function createEvents(): self
+    protected function createUpcomingTrips(): self
     {
-        Event::factory(2)->create();
+        Trip::factory(2)->upcoming()->create();
 
         return $this;
     }
 
-    protected function createPassedEvents(): self
+    protected function createUpcomingTripsWithoutLocationOrImage(): self
     {
-        Event::factory(2)
-            ->passed()
-            ->create();
-
-        return $this;
-    }
-
-    protected function createEventsWithoutImageOrLocation(): self
-    {
-        Event::factory(2)
-            ->noImage()
-            ->noLocation()
+        Trip::factory(2)
+            ->upcoming()
+            ->withoutLocationOrImage()
             ->create();
 
         return $this;

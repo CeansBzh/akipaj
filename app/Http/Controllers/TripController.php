@@ -43,7 +43,6 @@ class TripController extends Controller
      */
     public function create(): View
     {
-        // TODO import données depuis évenement programme existant (titre, dates, description ?)
         return view('trip.create');
     }
 
@@ -57,6 +56,7 @@ class TripController extends Controller
         $trip->description = $request->description;
         $trip->start_date = $request->start_date;
         $trip->end_date = $request->end_date;
+        $trip->location = $request->location;
         $trip->uuid = $request->uuid;
         if ($request->hasFile('image')) {
             $imageName = time().'.'.$request->image->extension();
@@ -108,6 +108,7 @@ class TripController extends Controller
         $trip->description = $request->description;
         $trip->start_date = $request->start_date;
         $trip->end_date = $request->end_date;
+        $trip->location = $request->location;
         $trip->uuid = $request->uuid;
         // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
         if (($request->remove_image || $request->hasFile('image')) && $trip->imagePath) {

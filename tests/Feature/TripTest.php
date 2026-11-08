@@ -8,6 +8,7 @@ use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class TripTest extends TestCase
@@ -31,6 +32,7 @@ class TripTest extends TestCase
             'description' => 'Une semaine en mer',
             'start_date' => '2023-07-01',
             'end_date' => '2023-07-08',
+            'location' => 'Port de Brest',
             'remove_image' => 'false',
         ];
     }
@@ -86,6 +88,7 @@ class TripTest extends TestCase
         ]))->assertSessionHasNoErrors()->assertRedirect(route('trips.index'));
 
         $trip = Trip::where('title', 'Tour de Bretagne')->firstOrFail();
+        $this->assertSame('Port de Brest', $trip->location);
         $this->assertTrue($trip->users->contains($sailor));
         $this->assertTrue($trip->albums->contains($album));
         $this->assertEqualsCanonicalizing(['Pen Duick', 'Belle Poule'], $trip->boats->pluck('name')->all());
@@ -100,9 +103,10 @@ class TripTest extends TestCase
             'title' => str_repeat('a', 51),
             'start_date' => '2023-07-08',
             'end_date' => '2023-07-01',
+            'location' => str_repeat('a', 256),
             'users' => [999],
             'boats' => [['type' => 'Ketch']],
-        ])->assertSessionHasErrors(['title', 'description', 'end_date', 'users.0', 'boats.0.name']);
+        ])->assertSessionHasErrors(['title', 'description', 'end_date', 'location', 'users.0', 'boats.0.name']);
     }
 
     public function test_admin_can_update_a_trip_and_its_boats(): void
@@ -124,6 +128,7 @@ class TripTest extends TestCase
 
         $trip->refresh();
         $this->assertSame('Tour de Bretagne', $trip->title);
+        $this->assertSame('Port de Brest', $trip->location);
         $this->assertSame([$sailor->id], $trip->users()->pluck('users.id')->all());
         $this->assertSame('Nouveau nom', $kept->refresh()->name);
         $this->assertModelMissing($removed);
@@ -179,6 +184,64 @@ class TripTest extends TestCase
             ->assertOk()
             ->assertSee('<div><em>Une semaine</em> en mer</div>', false)
             ->assertDontSee('onerror', false);
+    }
+
+    public function test_trip_page_keeps_headings_and_links_but_drops_scripts(): void
+    {
+        $this->actingAsMember();
+        $trip = Trip::factory()->create([
+            'description' => '<h2>Programme</h2><h3>Samedi</h3><h4>Matin</h4><div><strong>Régate</strong> au <a href="https://example.com" onclick="alert(1)">port</a><script>alert(2)</script> <a href="javascript:alert(3)">piège</a></div>',
+        ]);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSee('<h2>Programme</h2><h3>Samedi</h3><h4>Matin</h4><div><strong>Régate</strong> au <a href="https://example.com">port</a> <a>piège</a></div>', false)
+            ->assertDontSee('alert(', false);
+    }
+
+    public function test_upcoming_trip_page_shows_the_location_and_offers_to_add_it_to_the_agenda(): void
+    {
+        $this->actingAsMember();
+        $this->travelTo('2026-06-01');
+        $trip = Trip::factory()->create(['start_date' => '2026-06-12', 'end_date' => '2026-06-14', 'location' => 'Port de Concarneau']);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSee('Port de Concarneau')
+            ->assertSee('Ajouter à mon agenda')
+            ->assertSee('startDate: "2026-06-12"', false);
+    }
+
+    public function test_finished_trip_page_does_not_offer_to_add_it_to_the_agenda(): void
+    {
+        $this->actingAsMember();
+        $this->travelTo('2026-06-15');
+        $trip = Trip::factory()->create(['start_date' => '2026-06-12', 'end_date' => '2026-06-14']);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertDontSee('Ajouter à mon agenda');
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function oldEventLinks(): array
+    {
+        return [
+            'the programme' => ['/events'],
+            'an event' => ['/events/12'],
+        ];
+    }
+
+    #[DataProvider('oldEventLinks')]
+    public function test_old_event_links_lead_to_the_homepage(string $url): void
+    {
+        $this->actingAsMember();
+
+        $this->get($url)
+            ->assertMovedPermanently()
+            ->assertRedirect(route('home'));
     }
 
     public function test_trip_description_formatting_does_not_count_towards_its_length(): void

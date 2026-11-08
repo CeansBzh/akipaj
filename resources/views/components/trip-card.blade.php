@@ -1,17 +1,17 @@
-@props(['event'])
+@props(['trip'])
 
 {{--
-    Petite carte d'événement : la photo en plein cadre, la date et le statut posés dessus sur un fond de verre,
+    Petite carte de sortie à venir : la photo en plein cadre, la date et le statut posés dessus sur un fond de verre,
     puis le nom, le lieu et les dates sur un flou progressif, à côté d'un bouton rond d'ajout à l'agenda.
 --}}
 
-@php($isOngoing = $event->isOngoing())
+@php($isOngoing = $trip->isOngoing())
 
-<article id="event-item-{{ $event->id }}"
+<article id="trip-item-{{ $trip->id }}"
     {{ $attributes->class(['group relative isolate flex h-full min-h-80 flex-col justify-between gap-6 overflow-hidden rounded-3xl p-4 text-white shadow-lg shadow-gray-900/15']) }}>
-    <x-event-to-agenda :event="$event" />
+    <x-trip-to-agenda :trip="$trip" />
 
-    <img src="{{ $event->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
+    <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
         class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
         loading="lazy" decoding="async">
     {{-- Flou progressif et dégradé sombre sous le texte, pour qu'il reste lisible sur n'importe quelle photo --}}
@@ -27,24 +27,24 @@
             'bg-primary-700 text-white' => $isOngoing,
             'bg-white text-primary-800' => !$isOngoing,
         ])>
-            <x-event-status :event="$event" />
+            <x-trip-status :trip="$trip" />
         </p>
         <p
             class="flex min-w-16 flex-col items-center rounded-2xl px-3 py-2 leading-none bg-white text-primary-800">
-            <span class="text-2xl font-bold">{{ $event->start_time->isoFormat('D') }}</span>
-            <span class="mt-1 text-sm">{{ $event->start_time->isoFormat('MMMM') }}</span>
+            <span class="text-2xl font-bold">{{ $trip->start_date->isoFormat('D') }}</span>
+            <span class="mt-1 text-sm">{{ $trip->start_date->isoFormat('MMMM') }}</span>
         </p>
     </div>
 
     <div class="flex flex-col gap-3">
         <div class="flex items-end justify-between gap-4">
             <h3 class="line-clamp-2 text-xl leading-snug font-bold text-balance">
-                <a href="{{ route('events.show', $event) }}"
+                <a href="{{ route('trips.show', $trip) }}"
                     class="after:absolute after:inset-0 after:rounded-3xl hover:underline focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 focus-visible:after:outline-primary-300">
-                    {{ $event->name }}
+                    {{ $trip->title }}
                 </a>
             </h3>
-            <button type="button" aria-label="Ajouter « {{ $event->name }} » à mon agenda" title="Ajouter à mon agenda"
+            <button type="button" aria-label="Ajouter « {{ $trip->title }} » à mon agenda" title="Ajouter à mon agenda"
                 class="add-to-agenda relative z-10 inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-primary-700 shadow-md transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-60">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" class="size-5">
@@ -62,9 +62,9 @@
                     <path d="M3 9.5h18M8 2.5v4M16 2.5v4" />
                 </svg>
                 <span class="sr-only">Dates :</span>
-                <span><x-date-range :start="$event->start_time" :end="$event->end_time" /></span>
+                <span><x-date-range :start="$trip->start_date" :end="$trip->end_date" /></span>
             </li>
-            @if ($event->location)
+            @if ($trip->location)
                 <li class="flex items-center gap-2">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0">
@@ -72,7 +72,7 @@
                         <circle cx="12" cy="9.5" r="2.5" />
                     </svg>
                     <span class="sr-only">Lieu :</span>
-                    <span class="min-w-0 truncate">{{ $event->location }}</span>
+                    <span class="min-w-0 truncate">{{ $trip->location }}</span>
                 </li>
             @endif
         </ul>

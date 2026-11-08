@@ -31,6 +31,7 @@ class UpdateTripRequest extends FormRequest
             'description' => ['required', 'string', new RichTextLength(1000)],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'nullable|string|max:255',
             'albums' => 'nullable|array',
             'albums.*' => 'nullable|integer|distinct|exists:albums,id',
             'users' => 'nullable|array',
