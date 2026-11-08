@@ -22,6 +22,7 @@
         "add-to-calendar-button": "^3.5.0",
         "flickity": "^3.0.0",
         "imagesloaded": "^5.0.0",
+        "leaflet": "^1.9.4",
         "trix": "^2.1.19"
     },
     "allowScripts": {

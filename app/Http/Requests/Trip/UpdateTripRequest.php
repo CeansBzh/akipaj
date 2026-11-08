@@ -7,6 +7,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTripRequest extends FormRequest
 {
+    use ValidatesCourse;
+
     protected $errorBag = 'updateTrip';
 
     /**
@@ -47,6 +49,17 @@ class UpdateTripRequest extends FormRequest
             'boats.*.renter' => 'nullable|max:255',
             'boats.*.city' => 'nullable|max:255',
             'boats.*.crew' => 'nullable|integer',
+            ...$this->courseRules(),
         ];
+    }
+
+    /**
+     * Donne les messages d'erreur propres à cette requête.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return $this->courseMessages();
     }
 }

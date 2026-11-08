@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/multi-select-dropdown.js',
                 'resources/js/add-photo-form.js',
                 'resources/js/rich-text-editor.js',
+                'resources/js/course-map.js',
             ],
             refresh: true,
         }),

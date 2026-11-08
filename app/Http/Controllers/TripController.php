@@ -8,6 +8,7 @@ use App\Http\Requests\Trip\UpdateTripRequest;
 use App\Models\Trip;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class TripController extends Controller
@@ -82,6 +83,7 @@ class TripController extends Controller
         if ($request->has('boats') && is_array($request->boats)) {
             $trip->boats()->createMany($request->boats);
         }
+        $this->saveCourse($trip, $request);
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Sortie créée avec succès.');
 
@@ -89,7 +91,7 @@ class TripController extends Controller
     }
 
     /**
-     * Affiche une sortie, avec ses bateaux, ses matelots et ses albums, même ceux qui n'ont pas encore de photo.
+     * Affiche une sortie, avec son parcours, ses bateaux, ses matelots et ses albums, même ceux qui n'ont pas encore de photo.
      */
     public function show(Trip $trip): View
     {
@@ -97,6 +99,7 @@ class TripController extends Controller
             'boats',
             'users',
             'albums' => fn ($query) => $query->withCount('photos')->with('oldestPhoto')->orderBy('date'),
+            'coursePoints',
         ]));
     }
 
@@ -105,7 +108,7 @@ class TripController extends Controller
      */
     public function edit(Trip $trip): View
     {
-        return view('trip.edit')->with('trip', $trip->load('boats'));
+        return view('trip.edit')->with('trip', $trip->load(['boats', 'coursePoints']));
     }
 
     /**
@@ -159,6 +162,7 @@ class TripController extends Controller
         }
 
         $trip->save();
+        $this->saveCourse($trip, $request);
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Sortie modifiée avec succès.');
 
@@ -186,5 +190,36 @@ class TripController extends Controller
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Sortie supprimée avec succès.');
 
         return redirect()->route('trips.index');
+    }
+
+    /**
+     * Remplace le parcours de la sortie par celui du formulaire, quand le formulaire en contient un.
+     * Les points sont rangés par jour, sans changer leur ordre au sein d'une même journée.
+     */
+    private function saveCourse(Trip $trip, StoreTripRequest|UpdateTripRequest $request): void
+    {
+        if (! $request->has('course')) {
+            return;
+        }
+
+        /** @var list<array{name: string, day: int|string, latitude: float|string, longitude: float|string}> $points */
+        $points = $request->validated('course') ?? [];
+
+        DB::transaction(function () use ($trip, $points): void {
+            $trip->coursePoints()->delete();
+            $trip->coursePoints()->createMany(
+                collect($points)
+                    ->sortBy(fn (array $point): int => (int) $point['day'])
+                    ->values()
+                    ->map(fn (array $point, int $index): array => [
+                        'position' => $index + 1,
+                        'day' => (int) $point['day'],
+                        'name' => $point['name'],
+                        'latitude' => $point['latitude'],
+                        'longitude' => $point['longitude'],
+                    ])
+                    ->all()
+            );
+        });
     }
 }

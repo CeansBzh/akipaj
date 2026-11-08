@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\RichText;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Trip extends Model
 {
@@ -23,7 +25,6 @@ class Trip extends Model
         'end_date',
         'uuid',
         'imagePath',
-        'positions',
     ];
 
     protected $casts = [
@@ -98,6 +99,47 @@ class Trip extends Model
     public function albums(): BelongsToMany
     {
         return $this->belongsToMany(Album::class);
+    }
+
+    /**
+     * Donne les points du parcours, dans l'ordre.
+     *
+     * @return HasMany<CoursePoint, $this>
+     */
+    public function coursePoints(): HasMany
+    {
+        return $this->hasMany(CoursePoint::class)->orderBy('position');
+    }
+
+    /**
+     * Découpe le parcours en journées, dans l'ordre. Une journée part du dernier point de la précédente
+     * puis passe par ses propres points ; sa distance va d'un point au suivant, à vol d'oiseau.
+     *
+     * @return Collection<int, array{day: int, date: CarbonInterface, points: Collection<int, CoursePoint>, distance: float}>
+     */
+    public function courseDays(): Collection
+    {
+        $courseDays = new Collection;
+        $previousDayLastPoint = null;
+
+        foreach ($this->coursePoints->groupBy('day')->sortKeys() as $day => $points) {
+            $route = $points->toBase()->values();
+            if ($previousDayLastPoint !== null) {
+                $route->prepend($previousDayLastPoint);
+            }
+            $previousDayLastPoint = $points->last();
+
+            $courseDays->push([
+                'day' => (int) $day,
+                'date' => $this->start_date->copy()->addDays((int) $day - 1),
+                'points' => $route,
+                'distance' => $route->sliding(2)->sum(
+                    fn (Collection $leg): float => $leg->first()->distanceInNauticalMilesTo($leg->last())
+                ),
+            ]);
+        }
+
+        return $courseDays;
     }
 
     /**

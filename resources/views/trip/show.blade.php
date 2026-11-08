@@ -70,6 +70,10 @@
                     @endif
                 </div>
 
+                @if ($trip->coursePoints->isNotEmpty())
+                    <x-course-map :trip="$trip" class="mt-16" />
+                @endif
+
                 @if ($trip->boats->isNotEmpty())
                     <section aria-labelledby="trip-boats-title" class="mt-16">
                         <h2 id="trip-boats-title" class="text-2xl font-bold text-gray-900">

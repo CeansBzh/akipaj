@@ -68,6 +68,14 @@
 
         <hr>
 
+        <fieldset>
+            <legend class="text-lg font-medium text-gray-900">Parcours (facultatif)</legend>
+            <p class="mt-1 text-gray-600">Les étapes de la sortie, jour par jour. Elles s'affichent sur une carte dans la page de la sortie.</p>
+            <x-course-input class="mt-4" :points="old('course', $trip->coursePoints->map->only(['name', 'day', 'latitude', 'longitude'])->all())" error-bag="updateTrip" />
+        </fieldset>
+
+        <hr>
+
         <div>
             <x-input-label for="albums_input" value="Lier un ou plusieurs albums (facultatif)" />
             <x-multi-select-input id="albums_input" name="albums[]" search="true">
