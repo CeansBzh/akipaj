@@ -1,12 +1,13 @@
 {{--
-    Frise des sorties, à gauche des cartes sur grand écran. Elle reste à l'écran et glisse sous la ligne de lecture
-    au rythme des cartes : chaque carte, chaque année et le jour présent ont leur repère (data-timeline-anchor
-    dans la liste, data-timeline-mark ici). Un repère touché mène à sa carte ou à son année.
+    Frise des sorties, à gauche des cartes sur grand écran, sur un fond qui atténue la mer dessinée derrière elle.
+    Elle reste à l'écran et glisse sous la ligne de lecture au rythme des cartes : chaque carte, chaque année
+    et le jour présent ont leur repère (data-timeline-anchor dans la liste, data-timeline-mark ici).
+    Un repère touché mène à sa carte ou à son année.
 --}}
 
 <nav aria-label="Frise des sorties" data-trip-timeline {{ $attributes }}>
     <div data-timeline-viewport
-        class="sticky top-0 h-dvh overflow-hidden mask-[linear-gradient(to_bottom,#000_85%,transparent)]">
+        class="sticky top-0 h-dvh overflow-hidden bg-linear-to-r from-primary-50 from-75% to-primary-50/0 mask-[linear-gradient(to_bottom,#000_85%,transparent)]">
         {{-- Ligne de lecture, sur l'axe : la frise y place le moment de la carte en haut de l'écran --}}
         <div data-timeline-reading aria-hidden="true"
             class="pointer-events-none absolute top-[30%] left-0 z-20 flex w-9 -translate-y-1/2 items-center">
@@ -33,7 +34,7 @@
                     ])>
                         @switch($mark['type'])
                             @case('year')
-                                <div class="-translate-y-1/2 py-2 pl-10 group-data-pinned/year:bg-white group-data-pinned/year:shadow-[0_0.5rem_0.75rem_0.25rem_white]">
+                                <div class="-translate-y-1/2 py-2 pl-10 group-data-pinned/year:bg-primary-50 group-data-pinned/year:shadow-[0_0.5rem_0.75rem_0.25rem_var(--color-primary-50)]">
                                     @if ($mark['hasTrips'])
                                         <a href="#annee-{{ $mark['year'] }}"
                                             class="font-merriweather text-2xl font-bold text-gray-900 hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
