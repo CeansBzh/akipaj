@@ -24,24 +24,19 @@ class TripController extends Controller
     }
 
     /**
-     * Affiche les sorties, rangées par année.
-     *
-     * Le sélecteur d'années s'ouvre sur l'année en cours. Si elle n'a pas de sortie, il s'ouvre sur
-     * la dernière année passée qui en a, et à défaut sur la première année à venir.
+     * Affiche les sorties de la plus récente à la plus ancienne, rangées par année, avec leur frise.
      */
     public function index(): View
     {
-        $tripsByYear = Trip::orderBy('start_date')->get()
-            ->groupBy([
-                function ($val) {
-                    return $val->start_date->format('Y');
-                },
-            ]);
-        $years = $tripsByYear->keys();
+        $trips = Trip::query()
+            ->withCount('users')
+            ->with(['albums' => fn ($query) => $query->withCount('photos')])
+            ->orderByDesc('start_date')
+            ->get();
 
         return view('trip.index')->with([
-            'tripsByYear' => $tripsByYear,
-            'initialYear' => $years->filter(fn ($year) => $year <= today()->year)->last() ?? $years->first(),
+            'trips' => $trips,
+            'tripsByYear' => $trips->groupBy(fn (Trip $trip): int => $trip->start_date->year),
         ]);
     }
 

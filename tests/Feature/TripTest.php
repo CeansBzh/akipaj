@@ -38,47 +38,31 @@ class TripTest extends TestCase
         ];
     }
 
-    public function test_index_groups_trips_by_year(): void
+    public function test_index_lists_trips_newest_first_grouped_by_year(): void
     {
         $this->actingAsMember();
-        Trip::factory()->create(['start_date' => '2021-05-01', 'end_date' => '2021-05-02']);
-        Trip::factory()->create(['start_date' => '2023-05-01', 'end_date' => '2023-05-02']);
-        Trip::factory()->create(['start_date' => '2023-08-01', 'end_date' => '2023-08-02']);
+        Trip::factory()->create(['title' => 'Sortie de 2021', 'start_date' => '2021-05-01', 'end_date' => '2021-05-02']);
+        Trip::factory()->create(['title' => 'Printemps 2023', 'start_date' => '2023-05-01', 'end_date' => '2023-05-02']);
+        Trip::factory()->create(['title' => 'Été 2023', 'start_date' => '2023-08-01', 'end_date' => '2023-08-02']);
 
         $tripsByYear = $this->get(route('trips.index'))->assertOk()->viewData('tripsByYear');
 
-        $this->assertEquals([2021, 2023], $tripsByYear->keys()->all());
-        $this->assertCount(2, $tripsByYear[2023]);
+        $this->assertSame([2023, 2021], $tripsByYear->keys()->all());
+        $this->assertSame(['Été 2023', 'Printemps 2023'], $tripsByYear[2023]->pluck('title')->all());
     }
 
-    /**
-     * @param  array<int, int>  $years
-     */
-    #[DataProvider('yearsWithTrips')]
-    public function test_index_opens_the_year_selector_on_the_current_year(array $years, int $initialYear): void
+    public function test_index_separates_upcoming_trips_from_past_ones_and_offers_only_them_the_agenda(): void
     {
         $this->actingAsMember();
         $this->travelTo('2026-11-08');
-        Trip::factory()
-            ->count(count($years))
-            ->sequence(...array_map(fn (int $year) => ['start_date' => "$year-06-01", 'end_date' => "$year-06-02"], $years))
-            ->create();
+        Trip::factory()->create(['title' => 'Tour de Groix', 'start_date' => '2026-12-12', 'end_date' => '2026-12-14']);
+        Trip::factory()->create(['title' => 'Belle-Île', 'start_date' => '2026-06-01', 'end_date' => '2026-06-03']);
 
-        $this->get(route('trips.index'))
+        $response = $this->get(route('trips.index'))
             ->assertOk()
-            ->assertViewHas('initialYear', $initialYear);
-    }
+            ->assertSeeInOrder(['Tour de Groix', 'Ajouter à mon agenda', "Aujourd'hui", 'Belle-Île'], false);
 
-    /**
-     * @return array<string, array{array<int, int>, int}>
-     */
-    public static function yearsWithTrips(): array
-    {
-        return [
-            'the current year' => [[2025, 2026, 2027], 2026],
-            'the last past year when the current one has no trip' => [[2023, 2024, 2027], 2024],
-            'the first year when every trip is upcoming' => [[2027, 2028], 2027],
-        ];
+        $this->assertSame(1, substr_count((string) $response->getContent(), 'Ajouter à mon agenda'));
     }
 
     public function test_members_can_see_a_trip(): void

@@ -211,3 +211,10 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
         background-position: center;
     }
 }
+
+/* Défilement doux vers une année ou une sortie choisie dans la liste des sorties */
+@media (prefers-reduced-motion: no-preference) {
+    html:has([data-trip-timeline]) {
+        scroll-behavior: smooth;
+    }
+}

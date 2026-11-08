@@ -34,6 +34,8 @@ Le titre et la description passent après.
 
 Sur l'accueil, seule la sortie à venir la plus proche a la forme d'un billet (composant `x-trip-ticket`, encoches dessinées par la classe `.ticket` de `resources/css/app.css`). Les suivants sont de petites cartes sans style de billet, sur deux colonnes à partir de `sm` (composant `x-trip-card`) : photo en plein cadre, date et statut sur fond de verre, nom, dates et lieu sur un flou progressif, bouton d'agenda rond en icône seule. Les cartes des dernières sorties n'ont pas de coins arrondis. Les dates d'une sortie s'écrivent avec le composant `x-date-range` (« Du 12 au 14 juin 2026 »).
 
+La page des sorties les présente de la plus récente à la plus ancienne, rangées par année, en grandes cartes (composant `x-trip-entry`), sous une houle dessinée au trait (`x-sea-swell`). Sur grand écran, une frise (`x-trip-timeline`) les accompagne à gauche : elle suit la lecture, mène à une année ou à une sortie, et espace les sorties selon le temps écoulé. Sur téléphone, les années se choisissent en haut de la liste.
+
 ## Albums photo
 
 - Un album contient de 10 à plus de 1 000 photos. Ne jamais les charger toutes d'un coup : la galerie (`App\Livewire\Gallery`) les charge par pages de 100.
