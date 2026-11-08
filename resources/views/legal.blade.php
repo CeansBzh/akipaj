@@ -61,7 +61,7 @@
     </section>
 
     <section class="mx-auto max-w-(--breakpoint-lg)">
-        <h2 class="mb-5 font-sans text-2xl">Mentions légales</h2>
+        <h2 class="mb-5 text-2xl">Mentions légales</h2>
         <div class="mb-5">
             <p class="mb-2 font-semibold">Informations sur l'association Akipaj :</p>
             <ul class="mb-4">

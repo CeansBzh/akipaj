@@ -40,7 +40,26 @@ import Flickity from 'flickity';
 import 'flickity/dist/flickity.min.css';
 window.Flickity = Flickity;
 
-// The default button style is bundled; other styles or languages would need their own import
-import { atcb_action } from 'add-to-calendar-button';
-import 'add-to-calendar-button/i18n/fr';
-window.atcb_action = atcb_action;
+/**
+ * Ouvre la liste des agendas où ajouter un événement, sous le bouton cliqué.
+ * La bibliothèque add-to-calendar-button est lourde : elle n'est téléchargée qu'au premier clic,
+ * et le bouton reste désactivé pendant ce téléchargement.
+ *
+ * @param {object} config Options d'add-to-calendar-button décrivant l'événement
+ * @param {HTMLButtonElement} button Bouton cliqué, sous lequel la liste s'affiche
+ */
+window.addToAgenda = async (config, button) => {
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+
+    try {
+        const [{ atcb_action }] = await Promise.all([
+            import('add-to-calendar-button'),
+            import('add-to-calendar-button/i18n/fr'),
+        ]);
+        atcb_action(config, button);
+    } finally {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+    }
+};

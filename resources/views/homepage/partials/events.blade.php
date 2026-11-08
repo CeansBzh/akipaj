@@ -1,75 +1,27 @@
 @php
-    $events = App\Models\Event::where('start_time', '>=', now())
+    // Les événements en cours restent affichés jusqu'à la fin de leur dernier jour
+    $events = App\Models\Event::where('end_time', '>=', today())
         ->orderBy('start_time')
-        ->limit(3)
         ->get();
 @endphp
 
-<section class="mx-auto max-w-3xl">
-    <ul class="flex max-w-full flex-col space-y-6">
-        @forelse ($events as $event)
-            <li id="event-item-{{ $event->id }}" class="event-item relative cursor-pointer shadow-lg">
-                <x-event-to-agenda :event="$event" />
-                @if ($event->imagePath)
-                    <img src="{{ $event->imagePath }}" alt="Image de couverture de l'événement {{ $event->name }}"
-                        class="h-64 w-full rounded-xl object-cover">
-                @endif
-                <div
-                    class="{{ $event->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur-sm bg-white/60 rounded-md' : 'rounded-xl bg-white' }} flex w-full flex-row gap-4 p-3">
-                    <div
-                        class="flex min-w-fit flex-col items-center justify-around rounded-md bg-sky-100 p-2 text-lg font-bold md:justify-center">
-                        {{ $event->start_time != $event->end_time ? $event->start_time->format('d') . ' - ' : '' }}{{ $event->end_time->translatedFormat('d M') }}
-                        <x-primary-button type="button" class="add-to-agenda event-item-clickable max-w-min md:hidden"
-                            onclick="event.stopPropagation()">
-                            Agenda
-                        </x-primary-button>
-                    </div>
-                    <div class="max-h-28 grow basis-1/2 overflow-hidden">
-                        <a href="{{ route('events.show', $event) }}" class="event-item-clickable event_item_link">
-                            <h3 class="truncate whitespace-nowrap text-lg font-bold leading-6 text-gray-900">
-                                {{ $event->name }}
-                            </h3>
-                        </a>
-                        <p class="mt-1 line-clamp-4 max-w-2xl text-sm text-gray-600">
-                            {{ $event->description_text }}
-                        </p>
-                    </div>
-                    <div class="hidden max-w-min self-center md:block lg:max-w-fit">
-                        <x-primary-button type="button" class="add-to-agenda event-item-clickable">
-                            + Ajouter à l'agenda
-                        </x-primary-button>
-                    </div>
-                </div>
-            </li>
-        @empty
-            <li class="flex flex-col items-center justify-center p-12">
-                <p class="text-center text-gray-500">Aucun événement à venir</p>
-            </li>
-        @endforelse
-    </ul>
+<section class="mx-auto flex max-w-4xl flex-col gap-8">
+    @if ($events->isEmpty())
+        <p class="p-12 text-center text-gray-600">Aucun événement à venir.</p>
+    @else
+        {{-- Le prochain événement en grand, les suivants en petit --}}
+        <div class="drop-shadow-md">
+            <x-event-ticket :event="$events->first()" :eager="true" />
+        </div>
+
+        @if ($events->count() > 1)
+            <ul class="grid gap-6 sm:grid-cols-2">
+                @foreach ($events->slice(1) as $event)
+                    <li class="min-w-0">
+                        <x-event-card :event="$event" />
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+    @endif
 </section>
-
-@push('scripts')
-    <script type="text/javascript">
-        const eventItems = document.querySelectorAll("li.event-item");
-        const clickableElements = document.querySelectorAll("li.event-item > event-item-clickable");
-
-        clickableElements.forEach((ele) =>
-            ele.addEventListener("click", (e) => e.stopPropagation())
-        );
-
-        function handleClick(event) {
-            const noTextSelected = !window.getSelection().toString();
-            if (noTextSelected && event.target.nodeName !== 'BUTTON') {
-                const link = event.target.closest("li.event-item").querySelector("a.event_item_link");
-                if (link) {
-                    link.click();
-                }
-            }
-        }
-
-        document.querySelectorAll('.event-item').forEach(item => {
-            item.addEventListener('click', handleClick);
-        })
-    </script>
-@endpush

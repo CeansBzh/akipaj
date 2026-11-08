@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\RichText;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,6 +29,16 @@ class Trip extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    /**
+     * Description sans sa mise en forme, pour les cartes de sortie.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function descriptionText(): Attribute
+    {
+        return Attribute::get(fn (): string => RichText::toPlainText($this->description));
+    }
 
     /**
      * Get the users for the trip.

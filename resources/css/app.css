@@ -12,6 +12,19 @@
 @theme {
     --breakpoint-xs: 29.6875rem;
 
+    /* Couleur principale du site (classes `primary-*`) : remplacer `sky` ici suffit à changer de bleu partout */
+    --color-primary-50: var(--color-sky-50);
+    --color-primary-100: var(--color-sky-100);
+    --color-primary-200: var(--color-sky-200);
+    --color-primary-300: var(--color-sky-300);
+    --color-primary-400: var(--color-sky-400);
+    --color-primary-500: var(--color-sky-500);
+    --color-primary-600: var(--color-sky-600);
+    --color-primary-700: var(--color-sky-700);
+    --color-primary-800: var(--color-sky-800);
+    --color-primary-900: var(--color-sky-900);
+    --color-primary-950: var(--color-sky-950);
+
     --font-sans: Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 }
@@ -105,31 +118,39 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
     -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
 }
 
+/* Tous les titres sont en Merriweather */
 @layer base {
-    /* Police web : Guttie-Regular */
-    @font-face {
-        font-family: "Guttie";
-        src: url("fonts/Guttie.eot");
-        /* Modes de compatibilité d'IE9 */
-        src: url("fonts/Guttie.eot?#iefix") format("embedded-opentype"),
-            /* IE6-IE8 */ url("fonts/Guttie.woff") format("woff"),
-            /* Navigateurs modernes */ url("fonts/Guttie.ttf") format("truetype");
-        /* Safari, Android, iOS */
-        font-style: normal;
-        font-weight: normal;
-        text-rendering: optimizeLegibility;
-    }
-
-    h1 {
-        font-family: "Guttie", Georgia;
-    }
-
+    h1,
     h2,
     h3,
     h4,
     h5,
     h6 {
-        font-family: "Merriweather", serif;
+        font-family: var(--font-merriweather);
+    }
+}
+
+/*
+ * Billet (cartes d'événement) : deux encoches rondes découpées aux bouts de la ligne de perforation.
+ * Sur téléphone, la ligne est horizontale, sous la photo haute de --ticket-photo-height.
+ * À partir de md, elle est verticale, à droite de la photo large de --ticket-photo-width.
+ */
+@layer components {
+    .ticket {
+        --ticket-notch: 0.75rem;
+        --ticket-photo-height: 14rem;
+        --ticket-photo-width: 60%;
+
+        mask-image:
+            radial-gradient(circle at 0 var(--ticket-photo-height), transparent var(--ticket-notch), #000 calc(var(--ticket-notch) + 0.5px)),
+            radial-gradient(circle at 100% var(--ticket-photo-height), transparent var(--ticket-notch), #000 calc(var(--ticket-notch) + 0.5px));
+        mask-composite: intersect;
+
+        @variant md {
+            mask-image:
+                radial-gradient(circle at var(--ticket-photo-width) 0, transparent var(--ticket-notch), #000 calc(var(--ticket-notch) + 0.5px)),
+                radial-gradient(circle at var(--ticket-photo-width) 100%, transparent var(--ticket-notch), #000 calc(var(--ticket-notch) + 0.5px));
+        }
     }
 }
 

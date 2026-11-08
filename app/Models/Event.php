@@ -35,4 +35,12 @@ class Event extends Model
     {
         return Attribute::get(fn (): string => RichText::toPlainText($this->description));
     }
+
+    /**
+     * Indique si l'événement a lieu aujourd'hui. Ses dates n'ont pas d'heure : il est en cours de son premier à son dernier jour inclus.
+     */
+    public function isOngoing(): bool
+    {
+        return today()->between($this->start_time->copy()->startOfDay(), $this->end_time->copy()->startOfDay());
+    }
 }

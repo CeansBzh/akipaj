@@ -8,7 +8,7 @@
 @push('scripts')
     <script type="text/javascript">
         document.getElementById("event-item-{{ $event->id }}").querySelectorAll('.add-to-agenda').forEach((button) => {
-            button.addEventListener('click', () => atcb_action({
+            button.addEventListener('click', () => addToAgenda({
                     name: @js($event->name),
                     description: @js($event->description_text . '.[br]Voir sur le site → [url]' . route('events.show', $event) . '[/url]'),
                     startDate: "{{ $event->start_time->format('Y-m-d') }}",
