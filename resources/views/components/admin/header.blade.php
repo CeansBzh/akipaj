@@ -3,9 +3,7 @@
     <div class="hidden py-2 sm:ml-5 sm:flex sm:items-center">
         <x-dropdown align="right" width="48">
             <x-slot name="trigger">
-                <img class="h-8 w-8 rounded-full"
-                    src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
-                    alt="Photo de profil">
+                <x-user-avatar :user="Auth::user()" class="size-8" />
                 <button
                     class="flex items-center font-medium text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-hidden">
                     {{ Auth::user()->name }}

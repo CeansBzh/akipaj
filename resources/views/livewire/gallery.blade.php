@@ -5,6 +5,20 @@
         @include('livewire.partials.gallery-search-sort')
     </div>
 
+    {{-- Rappelle le filtre sur les matelots, même replié, par exemple en venant du lien « Voir ses photos » d'un profil --}}
+    @if ($filteredUserNames->isNotEmpty())
+        <div class="mx-3 mb-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-3xl bg-primary-50 px-5 py-3">
+            <p class="text-gray-900">
+                {{ $photos->total() }} {{ $photos->total() > 1 ? 'photos envoyées' : 'photo envoyée' }} par
+                <strong>{{ $filteredUserNames->join(', ', ' et ') }}</strong>
+            </p>
+            <button type="button" wire:click="$dispatch('resetFilters')"
+                class="inline-flex min-h-11 items-center rounded-full bg-white px-5 py-2 font-semibold text-primary-800 shadow-sm ring-1 ring-gray-200 ring-inset transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                Voir toutes les photos
+            </button>
+        </div>
+    @endif
+
     <div class="hidden" data-role="mass-selection-menu">
         @include('livewire.partials.gallery-mass-selection-menu')
     </div>

@@ -38,7 +38,9 @@ La page des sorties les présente de la plus récente à la plus ancienne, rang�
 
 ## Matelots
 
-La liste des matelots sert à retrouver quelqu'un. Une recherche par nom, en haut, filtre les cartes pendant la frappe sans tenir compte des accents, des majuscules ni des tirets, et son champ reste à l'écran pendant le défilement. Chaque carte montre la photo de profil, le nom et le nombre de sorties faites (commencées). Le matelot connecté vient en premier, marqué « Vous », puis les autres du plus grand au plus petit nombre de sorties. Peu de membres ont une photo de profil : le composant `x-user-avatar` affiche alors les initiales des deux premiers mots du nom, sur une teinte de bleu tirée du nom. L'utiliser partout où un matelot apparaît, à la place de l'ancienne silhouette `default-pfp.png`.
+La liste des matelots sert à retrouver quelqu'un. Une recherche par nom, en haut, filtre les cartes pendant la frappe sans tenir compte des accents, des majuscules ni des tirets, et son champ reste à l'écran pendant le défilement. Chaque carte montre la photo de profil, le nom et le nombre de sorties faites (commencées). Le matelot connecté vient en premier, marqué « Vous », puis les autres du plus grand au plus petit nombre de sorties. Peu de membres ont une photo de profil : le composant `x-user-avatar` affiche alors les initiales des deux premiers mots du nom, sur une teinte de bleu tirée du nom. L'utiliser partout où un matelot apparaît, administration comprise (il n'y a plus d'autre image par défaut).
+
+La page de profil met d'abord en avant les sorties du matelot : en tête, la photo de sa dernière sortie (ou la mer au trait), sa photo de profil, son nom, sa ville et trois chiffres (sorties, jours à bord, photos), puis sa prochaine sortie (`x-trip-card`) et son carnet de bord, les sorties faites rangées par année, de la plus récente à la plus ancienne. Viennent ensuite ses six dernières photos, avec un lien vers la galerie filtrée sur lui (`photos.index` avec `auteurs[]`), puis les commentaires. Sur son propre profil, un petit lien mène aux réglages du compte.
 
 ## Albums photo
 

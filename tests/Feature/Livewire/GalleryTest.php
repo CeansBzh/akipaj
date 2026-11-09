@@ -78,6 +78,20 @@ class GalleryTest extends TestCase
         $this->assertSame([$boat->id], $this->displayedIds($component));
     }
 
+    public function test_it_can_be_filtered_on_a_user_from_the_url(): void
+    {
+        $this->actingAsMember();
+        $album = Album::factory()->create();
+        $sailor = User::factory()->create(['name' => 'Henry']);
+        $photo = Photo::factory()->for($album)->for($sailor)->create();
+        Photo::factory()->for($album)->for(User::factory())->create();
+
+        $component = Livewire::withQueryParams(['auteurs' => [$sailor->id]])->test(Gallery::class);
+
+        $this->assertSame([$photo->id], $this->displayedIds($component));
+        $component->assertSee('Voir toutes les photos');
+    }
+
     public function test_it_can_be_sorted_by_number_of_comments(): void
     {
         $this->actingAsMember();

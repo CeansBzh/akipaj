@@ -1,158 +1,211 @@
+{{--
+    Profil d'un matelot. En tête, la photo de sa dernière sortie (ou la mer au trait), sa photo de profil, son nom,
+    sa ville et quelques chiffres. Puis, par ordre d'importance : sa prochaine sortie, son carnet de bord (les sorties
+    faites, rangées par année), ses dernières photos avec le lien vers la galerie filtrée sur lui, et les commentaires.
+    Sur grand écran, la prochaine sortie et les photos passent dans une colonne à droite du carnet de bord.
+--}}
+
 <x-member-layout>
-    <div class="mx-auto flex max-w-(--breakpoint-xl) flex-col space-y-5 py-12 px-5 sm:flex-row sm:space-y-0 sm:space-x-5">
-        <div class="h-full grow space-y-5">
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    xmlns:svgjs="http://svgjs.com/svgjs" width="950" height="300" preserveAspectRatio="none"
-                    viewBox="0 0 950 300" class="h-32 w-full object-cover md:h-52">
-                    <g mask="url(&quot;#SvgjsMask1793&quot;)" fill="none">
-                        <rect width="950" height="300" x="0" y="0"
-                            fill="url(#SvgjsRadialGradient1794)"></rect>
-                        <path d="M0 0L27.75 0L0 83.17z" fill="rgba(255, 255, 255, .1)"></path>
-                        <path d="M0 83.17L27.75 0L215.47 0L0 188.12z" fill="rgba(255, 255, 255, .075)"></path>
-                        <path d="M0 188.12L215.47 0L569.93 0L0 251.5z" fill="rgba(255, 255, 255, .05)"></path>
-                        <path d="M0 251.5L569.93 0L776.76 0L0 255.06z" fill="rgba(255, 255, 255, .025)"></path>
-                        <path d="M950 300L926.02 300L950 241.69z" fill="rgba(0, 0, 0, .1)"></path>
-                        <path d="M950 241.69L926.02 300L675.38 300L950 218.86z" fill="rgba(0, 0, 0, .075)"></path>
-                        <path d="M950 218.86L675.38 300L354.75 300L950 176.52z" fill="rgba(0, 0, 0, .05)"></path>
-                        <path d="M950 176.51999999999998L354.75 300L142.57 300L950 55.55999999999999z"
-                            fill="rgba(0, 0, 0, .025)"></path>
-                    </g>
-                    <defs>
-                        <mask id="SvgjsMask1793">
-                            <rect width="950" height="300" fill="#ffffff"></rect>
-                        </mask>
-                        <radialGradient cx="100%" cy="0%" r="996.24" gradientUnits="userSpaceOnUse"
-                            id="SvgjsRadialGradient1794">
-                            <stop stop-color="rgba(0, 90, 184, 1)" offset="0"></stop>
-                            <stop stop-color="rgba(14, 165, 233, 1)" offset="1"></stop>
-                        </radialGradient>
-                    </defs>
-                </svg>
-                <div class="flex flex-col sm:flex-row">
-                    <div class="flex justify-center sm:justify-start sm:pl-5 md:mb-5 md:pl-10 lg:pl-16">
-                        <img class="-mt-20 h-24 w-24 rounded-full border-4 border-solid border-white object-cover md:h-32 md:w-32 lg:-mt-24 lg:h-48 lg:w-48"
-                            src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
-                            alt="Photo de profil">
-                    </div>
-                    <div class="flex grow justify-between p-5">
-                        <div class="font-semibold text-gray-900">
-                            <h3 class="text-xl">{{ $user->name }}</h3>
-                            @if ($user->city)
-                                <p class="mt-2 w-min whitespace-nowrap rounded-full bg-gray-200 px-3 text-sm">
-                                    {{ $user->city }}</p>
-                            @endif
-                        </div>
-                        <div class="flex justify-center pb-3 text-gray-800">
-                            <div class="flex items-center space-x-2">
-                                @if ($user->photos_count > 0)
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="h-6 text-gray-600">
-                                        <path
-                                            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
-                                        </path>
-                                        <circle cx="12" cy="13" r="4"></circle>
-                                    </svg>
-                                    <p class="text-sm text-gray-800">{{ $user->photos_count }} photos</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+    <div class="bg-white pb-20">
+        {{-- Bannière : la photo de sa dernière sortie, ou la mer dessinée au trait s'il n'en a pas encore fait --}}
+        <div class="relative lg:mx-auto lg:max-w-6xl lg:px-8 lg:pt-6">
+            @if ($coverImage)
+                <img src="{{ $coverImage }}" alt="" width="1600" height="500" fetchpriority="high" decoding="async"
+                    class="h-44 w-full bg-primary-100 object-cover sm:h-60 lg:h-72 lg:rounded-3xl">
+            @else
+                <div class="relative h-44 overflow-hidden bg-primary-100 sm:h-60 lg:h-72 lg:rounded-3xl">
+                    <x-sea-swell class="absolute inset-x-0 bottom-0 h-4/5 text-primary-900/20" />
                 </div>
-            </div>
-            <div class="rounded-lg bg-white p-5">
-                <h2 class="mb-5 text-md">Laisser un message</h2>
-                <div class="py-6">
-                    <div class="mx-auto max-w-7xl flex-col space-y-4 sm:px-6 lg:px-8">
+            @endif
+            @unless (auth()->user()->isGuest())
+                <a href="{{ route('profile.index') }}"
+                    class="absolute top-4 left-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-white/85 py-2 pr-5 pl-3 font-semibold text-gray-900 shadow-sm backdrop-blur-md transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:top-10 lg:left-12">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                        <path d="m15 18-6-6 6-6" />
+                    </svg>
+                    Tous les matelots
+                </a>
+            @endunless
+        </div>
 
-                        <div class="mx-auto max-w-3xl bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
-                            <livewire:comments :comments="$user->comments" :commentable="$user" />
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="rounded-lg bg-white p-5">
-                <h2 class="mb-5 text-center text-xl">Sorties</h2>
-                <ul class="mx-auto max-w-xl">
-                    @forelse ($tripsByYear->keys() as $year)
-                        <li class="mb-2">
-                            <p class="my-2 text-center font-bold">{{ $year }}</p>
-                            <ul>
-                                @foreach ($tripsByYear[$year] as $trip)
-                                    <li>
-                                        <a href="{{ route('trips.show', $trip) }}">{{ $trip->title }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </li>
-                    @empty
-                        <li class="text-center">
-                            <p class="text-gray-500">Aucune sortie</p>
-                        </li>
-                    @endforelse
-                </ul>
-            </div>
-            <div class="rounded-lg bg-white p-5">
-                <h2 class="mb-5 text-center text-xl">Photos</h2>
-                <ul class="mx-auto max-w-xl columns-4 gap-2">
-                    @forelse ($user->photos as $index => $photo)
-                        @if ($index > 2 && $user->photos_count > 3)
-                            <li class="relative mb-2 overflow-hidden rounded-lg">
-                                <img class="aspect-square h-32 w-full object-cover" src="{{ $photo->thumb_path }}"
-                                    alt="Photo">
-                                <div class="absolute inset-0 flex h-full items-center bg-gray-600/75 px-2 py-1">
-                                    <p class="w-full text-center text-2xl text-white">
-                                        +{{ $user->photos_count - 3 }}</p>
-                                </div>
-                            </li>
-                        @break
-
-                    @else
-                        <li class="mb-2">
-                            <a href="{{ route('photos.show', $photo) }}">
-                                <img class="aspect-square h-32 w-full rounded-lg object-cover"
-                                    src="{{ $photo->thumb_path }}" alt="Photo">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <header class="relative flex flex-col items-start gap-4 sm:flex-row sm:gap-6 lg:px-8">
+                <x-user-avatar :user="$user" class="-mt-14 size-28 shadow-lg ring-4 ring-white sm:-mt-20 sm:size-40" />
+                <div class="min-w-0 flex-1 sm:pt-5">
+                    <h1 class="text-3xl leading-tight font-bold break-words text-gray-900 sm:text-4xl">{{ $user->name }}</h1>
+                    <div class="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+                        @if ($user->city)
+                            <p class="inline-flex items-center gap-1.5 text-lg text-gray-700">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                                    <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+                                    <circle cx="12" cy="9.5" r="2.5" />
+                                </svg>
+                                <span class="sr-only">Ville :</span>
+                                {{ $user->city }}
+                            </p>
+                        @endif
+                        @if ($isOwnProfile)
+                            <a href="{{ route('settings.edit') }}"
+                                class="inline-flex min-h-11 items-center gap-2 rounded-full px-4 py-2 font-semibold text-primary-800 ring-1 ring-gray-300 ring-inset transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0">
+                                    <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z" />
+                                    <path d="m13.5 6.5 4 4" />
+                                </svg>
+                                Modifier mon profil
                             </a>
-                        </li>
+                        @endif
+                    </div>
+                </div>
+            </header>
+
+            <dl class="mt-8 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:ml-8">
+                @foreach ([
+                    [$tripCount, $tripCount > 1 ? 'Sorties' : 'Sortie'],
+                    [$daysAboard, $daysAboard > 1 ? 'Jours à bord' : 'Jour à bord'],
+                    [$user->photos_count, $user->photos_count > 1 ? 'Photos' : 'Photo'],
+                ] as [$figure, $label])
+                    <div class="flex flex-col-reverse items-center rounded-2xl bg-primary-50 px-2 py-3 text-center">
+                        <dt class="text-sm leading-tight text-gray-700">{{ $label }}</dt>
+                        <dd class="text-2xl font-bold text-primary-800">{{ $figure }}</dd>
+                    </div>
+                @endforeach
+            </dl>
+
+            @if ($isOwnProfile && $user->isGuest())
+                <p class="mt-8 max-w-prose rounded-2xl bg-yellow-50 px-5 py-4 text-yellow-900 ring-1 ring-yellow-200 ring-inset">
+                    Votre inscription n'a pas encore été validée par un administrateur.
+                    En attendant, certaines pages du site ne vous sont pas encore ouvertes.
+                </p>
+            @endif
+
+            <div class="mt-14 grid gap-y-14 lg:grid-cols-[minmax(0,1fr)_22rem] lg:grid-rows-[auto_1fr_auto] lg:gap-x-16">
+                @if ($nextTrip)
+                    <section aria-labelledby="next-trip-title" class="lg:col-start-2 lg:row-start-1">
+                        <h2 id="next-trip-title" class="text-2xl font-bold text-gray-900">Prochaine sortie</h2>
+                        {{-- La carte prend toute la hauteur de son parent : elle ne doit pas prendre celle de la section --}}
+                        <div class="mt-4">
+                            <x-trip-card :trip="$nextTrip" />
+                        </div>
+                    </section>
+                @endif
+
+                <section aria-labelledby="logbook-title" class="lg:col-start-1 lg:row-span-2 lg:row-start-1">
+                    <h2 id="logbook-title" class="text-2xl font-bold text-gray-900">Carnet de bord</h2>
+                    @if ($tripsByYear->isEmpty())
+                        <p class="mt-4 max-w-prose rounded-3xl bg-gray-50 px-5 py-6 text-gray-700">
+                            {{ $isOwnProfile ? 'Vous n\'avez' : $user->name . ' n\'a' }} pas encore fait de sortie avec le club.
+                        </p>
+                    @else
+                        <p class="mt-1 text-gray-700">
+                            {{ $tripCount }} {{ $tripCount > 1 ? 'sorties' : 'sortie' }}, de la plus récente à la plus ancienne.
+                        </p>
+
+                        <div class="mt-6 flex flex-col gap-10">
+                            @foreach ($tripsByYear as $year => $yearTrips)
+                                <section aria-labelledby="logbook-{{ $year }}">
+                                    <h3 id="logbook-{{ $year }}" class="flex items-baseline gap-3 border-b border-gray-200 pb-2">
+                                        <span class="text-2xl font-bold text-gray-900">{{ $year }}</span>
+                                        <span class="font-sans text-gray-700">
+                                            {{ $yearTrips->count() }} {{ $yearTrips->count() > 1 ? 'sorties' : 'sortie' }}
+                                        </span>
+                                    </h3>
+                                    <ol class="mt-2 flex flex-col gap-1">
+                                        @foreach ($yearTrips as $trip)
+                                            <li>
+                                                <a href="{{ route('trips.show', $trip) }}"
+                                                    class="group -mx-3 flex items-center gap-4 rounded-2xl px-3 py-3 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-primary-700">
+                                                    <span aria-hidden="true"
+                                                        class="flex w-20 shrink-0 flex-col items-center rounded-2xl bg-primary-50 py-2 leading-none text-primary-800 transition-colors group-hover:bg-white">
+                                                        <span class="text-2xl font-bold">{{ $trip->start_date->isoFormat('D') }}</span>
+                                                        <span class="mt-1 text-sm">{{ $trip->start_date->isoFormat('MMMM') }}</span>
+                                                    </span>
+                                                    <span class="min-w-0 flex-1">
+                                                        <span class="block text-lg leading-snug font-bold break-words text-gray-900 group-hover:underline">
+                                                            {{ $trip->title }}
+                                                        </span>
+                                                        <span class="mt-0.5 block text-gray-700">
+                                                            <x-date-range :start="$trip->start_date" :end="$trip->end_date" />
+                                                        </span>
+                                                        @if ($trip->location)
+                                                            <span class="mt-0.5 flex items-start gap-1.5 text-gray-700">
+                                                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round" class="mt-1 size-4 shrink-0">
+                                                                    <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+                                                                    <circle cx="12" cy="9.5" r="2.5" />
+                                                                </svg>
+                                                                <span class="sr-only">Lieu :</span>
+                                                                <span class="min-w-0 break-words">{{ $trip->location }}</span>
+                                                            </span>
+                                                        @endif
+                                                    </span>
+                                                    @if ($trip->isOngoing())
+                                                        <span class="shrink-0 rounded-full bg-primary-700 px-3 py-1 text-sm font-bold text-white">
+                                                            En cours
+                                                        </span>
+                                                    @endif
+                                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="size-5 shrink-0 text-gray-500 transition-transform motion-safe:group-hover:translate-x-0.5">
+                                                        <path d="m9 18 6-6-6-6" />
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ol>
+                                </section>
+                            @endforeach
+                        </div>
                     @endif
-                @empty
-                    <li class="text-center col-span-4">
-                        <p class="text-gray-500">Aucune photo</p>
-                    </li>
-                @endforelse
-            </ul>
-        </div>
-    </div>
-    {{-- Sidebar --}}
-    <div class="space-y-4 sm:w-1/4">
-        @if (auth()->user()->isGuest())
-            <div x-data="{ animation: false }" class="px-1">
-                <div role="alert"
-                    class="relative mb-6 scale-90 rounded-lg bg-yellow-200 p-4 text-sm text-yellow-800 transition duration-500 ease-in-out md:scale-100"
-                    :class="animation ? '-translate-y-1 scale-100 ring-offset-2 ring-3 ring-yellow-300' : ''"
-                    x-init="$nextTick(() => {
-                        animation = true;
-                        setTimeout(() => { animation = false; }, 500);
-                    })">
-                    Votre inscription n'a pas encore été validée par un administrateur. Vous ne pouvez pas
-                    encore
-                    accéder à toutes les pages du site.
+                </section>
+
+                <section aria-labelledby="photos-title" @class([
+                    'lg:col-start-2 lg:self-start',
+                    'lg:row-start-2' => $nextTrip,
+                    'lg:row-start-1' => !$nextTrip,
+                ])>
+                    <h2 id="photos-title" class="text-2xl font-bold text-gray-900">{{ $isOwnProfile ? 'Vos photos' : 'Ses photos' }}</h2>
+                    @if ($latestPhotos->isEmpty())
+                        <p class="mt-4 max-w-prose rounded-3xl bg-gray-50 px-5 py-6 text-gray-700">
+                            {{ $isOwnProfile ? 'Vous n\'avez' : $user->name . ' n\'a' }} pas encore partagé de photo.
+                        </p>
+                    @else
+                        <ul class="mt-4 grid grid-cols-3 gap-1.5 overflow-hidden rounded-3xl sm:grid-cols-6 lg:grid-cols-3">
+                            @foreach ($latestPhotos as $photo)
+                                <li>
+                                    <a href="{{ route('photos.show', $photo) }}"
+                                        class="block focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-primary-700">
+                                        <img src="{{ $photo->thumb_path }}"
+                                            alt="{{ $photo->legend ? Str::limit($photo->legend, 120) : 'Photo de l\'album « ' . $photo->album?->title . ' »' }}"
+                                            width="{{ $photo->thumb_width }}" height="{{ $photo->thumb_height }}"
+                                            loading="lazy" decoding="async"
+                                            class="aspect-square w-full bg-gray-100 object-cover transition-opacity hover:opacity-85">
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <a href="{{ route('photos.index', ['auteurs' => [$user->id]]) }}"
+                            class="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-primary-700 px-5 py-2 font-semibold text-white transition-colors hover:bg-primary-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                            @if ($user->photos_count > 1)
+                                Voir {{ $isOwnProfile ? 'mes' : 'ses' }} {{ $user->photos_count }} photos
+                            @else
+                                Voir {{ $isOwnProfile ? 'ma' : 'sa' }} photo dans la galerie
+                            @endif
+                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                                <path d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </a>
+                    @endif
+                </section>
+
+                <div class="lg:col-start-1 lg:row-start-3">
+                    <livewire:comments :comments="$user->comments" :commentable="$user" />
                 </div>
             </div>
-        @endif
-
-        <div class="rounded-lg bg-white p-4 shadow-sm sm:p-8">
-            <div class="mx-auto max-w-3xl">
-                <section class="flex flex-col items-center justify-between space-y-4 xs:space-y-0 lg:flex-row">
-                    <h2 class="text-lg font-medium text-gray-900">Gestion du compte</h2>
-                    <x-primary-link class="" href="{{ route('settings.edit') }}">
-                        Paramètres
-                    </x-primary-link>
-                </section>
-            </div>
         </div>
     </div>
-</div>
 </x-member-layout>

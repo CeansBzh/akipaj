@@ -1,13 +1,16 @@
-<section x-data="updateProfile()" x-init="init()">
+<section x-data="updateProfile()">
     <form method="post" action="{{ route('admin.users.update', $user) }}" enctype="multipart/form-data"
         class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
         <div class="flex items-center space-x-2 sm:space-x-5">
-            <div class="overflow-hidden">
-                <img id="profile_picture_preview" :src="imageUrl" class="mb-1 w-16 rounded-full object-contain">
-                <button type="button" class="w-full text-sm text-gray-500 underline underline-offset-2"
+            <div class="flex flex-col items-center">
+                {{-- Les initiales se voient tant qu'aucune photo n'est enregistrée ni choisie --}}
+                <x-user-avatar :user="$user" class="size-16">
+                    <img x-show="imageUrl" :src="imageUrl" alt="" class="absolute inset-0 size-full object-cover">
+                </x-user-avatar>
+                <button type="button" x-show="imageUrl" class="mt-1 text-sm text-gray-700 underline underline-offset-2"
                     @click="removeImage">Retirer</button>
             </div>
 
@@ -177,15 +180,12 @@
 
         function updateProfile() {
             return {
-                imageUrl: @js($user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png')),
+                imageUrl: @js($user->profile_picture_path ?? ''),
                 imageRemoved: false,
-                init() {
-                    this.imageRemoved = document.getElementById('profile_picture_preview').getAttribute('src') == '';
-                },
                 removeImage: function() {
                     this.imageRemoved = confirm('Supprimer votre image de profil ?');
                     if (this.imageRemoved) {
-                        this.imageUrl = @js(Vite::asset('resources/images/default-pfp.png'));
+                        this.imageUrl = '';
                         document.getElementById('profile_picture_input').value = '';
                     }
                 },

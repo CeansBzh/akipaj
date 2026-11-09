@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Photo;
 use App\Models\User;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,6 +24,11 @@ class Gallery extends Component
 
     public $sortTerm;
 
+    /**
+     * Identifiants des matelots dont on montre les photos, lus dans l'adresse (?auteurs[]=12) :
+     * le lien « Voir ses photos » d'un profil ouvre ainsi la galerie déjà filtrée sur ce matelot.
+     */
+    #[Url(as: 'auteurs')]
     public $usersFilter;
 
     public $albumsFilter;
@@ -118,6 +124,7 @@ class Gallery extends Component
         $sortBy = $this->getSorting($this->sortTerm);
 
         return view('livewire.gallery', [
+            'filteredUserNames' => $this->usersFilter ? $this->users->whereIn('id', $this->usersFilter)->pluck('name') : collect(),
             'photos' => Photo::when($this->photoIds, function ($query) {
                 return $query->whereIn('id', $this->photoIds);
             })

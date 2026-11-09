@@ -77,6 +77,17 @@ class Trip extends Model
     }
 
     /**
+     * Garde les sorties qui n'ont pas encore commencé.
+     *
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function notStarted(Builder $query): void
+    {
+        $query->whereDate('start_date', '>', today());
+    }
+
+    /**
      * Indique si la sortie a lieu aujourd'hui. Ses dates n'ont pas d'heure : elle est en cours de son premier à son dernier jour inclus.
      */
     public function isOngoing(): bool

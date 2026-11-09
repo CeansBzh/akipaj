@@ -17,7 +17,7 @@
                         <x-input-label for="users_filter" value="Envoyées par" />
                         <x-multi-select-input id="users_filter" name="users[]" search="true" wire:model.live="usersFilter">
                             @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                <option value="{{ $user->id }}" @selected(in_array($user->id, $usersFilter ?? []))>{{ $user->name }}</option>
                             @endforeach
                         </x-multi-select-input>
                     </div>
