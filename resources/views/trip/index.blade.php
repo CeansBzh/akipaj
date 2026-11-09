@@ -14,13 +14,11 @@
 <x-member-layout>
     <div class="relative bg-primary-50 pb-24">
         {{-- La mer en fond de page : elle reste à l'écran pendant que les cartes défilent par-dessus --}}
-        <div aria-hidden="true" class="pointer-events-none sticky top-0 -mb-[100dvh] h-dvh overflow-hidden">
+        <div aria-hidden="true" class="pointer-events-none sticky top-0 mb-[-100dvh] h-dvh overflow-hidden">
             <x-sea-swell class="absolute inset-x-0 bottom-0 h-[72%] text-primary-900/25" />
         </div>
 
         <div class="relative mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8 lg:pt-12">
-            <h1 class="sr-only">Les sorties</h1>
-
             @if ($trips->isEmpty())
                 <p class="text-center text-lg text-gray-700">Aucune sortie pour l'instant.</p>
                 @can('create', App\Models\Trip::class)
@@ -32,7 +30,8 @@
 
                     <div class="w-full">
                         {{-- Sur téléphone, les années se choisissent ici ; sur grand écran, dans la frise --}}
-                        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 lg:justify-end">
+                        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+                            <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">Les sorties</h1>
                             <nav aria-label="Années" class="lg:hidden">
                                 <ul class="flex flex-wrap gap-2">
                                     @foreach ($tripsByYear as $year => $yearTrips)
@@ -60,7 +59,7 @@
                                 aria-labelledby="annee-{{ $year }}-titre" class="mt-10 scroll-mt-4 lg:mt-20 lg:first-of-type:mt-12">
                                 {{-- Sur téléphone, le titre de l'année reste en haut de l'écran pendant qu'on lit ses sorties --}}
                                 <h2 id="annee-{{ $year }}-titre"
-                                    class="sticky top-0 z-20 -mx-4 flex items-baseline gap-3 bg-primary-50/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+                                    class="sticky top-0 z-20 -mx-4 flex items-baseline gap-3 bg-primary-50/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:p-0 lg:backdrop-blur-none">
                                     <span class="text-4xl font-bold text-gray-900 lg:text-7xl">{{ $year }}</span>
                                     <span class="font-sans text-gray-700">
                                         {{ $yearTrips->count() }} {{ $yearTrips->count() > 1 ? 'sorties' : 'sortie' }}

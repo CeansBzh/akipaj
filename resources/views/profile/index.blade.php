@@ -10,10 +10,6 @@
 
         <header class="mx-auto max-w-2xl px-4 text-center sm:px-6">
             <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">Les matelots</h1>
-            <p class="mt-4 text-lg text-gray-700">
-                {{ $members->count() }} {{ $members->count() > 1 ? 'membres' : 'membre' }} du club.
-                Vous en premier, puis ceux qui ont fait le plus de sorties.
-            </p>
         </header>
 
         <div class="mx-auto mt-8 max-w-2xl px-4 sm:px-6">
@@ -32,7 +28,7 @@
                     {{-- La liste se filtre pendant la frappe : la touche Entrée ferme seulement le clavier du téléphone --}}
                     <input type="search" id="member-search" x-ref="search" x-model="query"
                         x-on:keydown.enter.prevent="$el.blur()" autocomplete="off" spellcheck="false"
-                        enterkeyhint="search" placeholder="Prénom ou nom" aria-describedby="member-search-result"
+                        enterkeyhint="search" placeholder="Pseudonyme" aria-describedby="member-search-result"
                         class="block min-h-14 w-full rounded-full border-0 bg-white py-3 pr-32 pl-13 text-lg text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-500 focus:ring-2 focus:ring-primary-700 [&::-webkit-search-cancel-button]:appearance-none">
                     <button type="button" x-cloak x-show="query !== ''" x-on:click="clear()"
                         class="absolute top-1/2 right-1.5 inline-flex min-h-11 -translate-y-1/2 items-center gap-1.5 rounded-full px-4 font-semibold text-primary-800 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-primary-700">
@@ -96,7 +92,7 @@
 
             <div x-cloak x-show="count === 0" class="mx-auto mt-6 max-w-md rounded-3xl bg-white px-6 py-10 text-center shadow-sm">
                 <p class="text-lg font-bold text-gray-900">Aucun matelot ne porte ce nom.</p>
-                <p class="mt-2 text-gray-700">Vérifiez l'orthographe, ou tapez seulement le début du prénom ou du nom.</p>
+                <p class="mt-2 text-gray-700">Vérifiez l'orthographe, ou tapez seulement le début du pseudo.</p>
                 <button type="button" x-on:click="clear()"
                     class="mt-6 inline-flex min-h-11 items-center rounded-full bg-primary-700 px-5 py-2 font-semibold text-white transition-colors hover:bg-primary-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
                     Effacer la recherche

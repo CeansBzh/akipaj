@@ -7,7 +7,7 @@
 --}}
 
 <nav aria-label="Frise des sorties" data-trip-timeline {{ $attributes }}>
-    <div data-timeline-box class="sticky top-0 h-dvh bg-linear-to-r from-primary-50 from-75% to-primary-50/0 py-4">
+    <div data-timeline-box class="sticky top-0 h-dvh bg-linear-to-r bg-radial to-transparent from-primary-50 from-20% py-4">
         <div class="relative h-full">
             <span aria-hidden="true" class="absolute inset-y-0 left-3 w-px bg-gray-300"></span>
 
