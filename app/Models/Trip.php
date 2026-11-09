@@ -66,6 +66,17 @@ class Trip extends Model
     }
 
     /**
+     * Garde les sorties commencées, terminées ou en cours : celles que leurs matelots ont déjà faites.
+     *
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function started(Builder $query): void
+    {
+        $query->whereDate('start_date', '<=', today());
+    }
+
+    /**
      * Indique si la sortie a lieu aujourd'hui. Ses dates n'ont pas d'heure : elle est en cours de son premier à son dernier jour inclus.
      */
     public function isOngoing(): bool

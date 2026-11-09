@@ -59,9 +59,7 @@
                             <ul class="mt-4 flex flex-wrap gap-3">
                                 @foreach ($trip->users as $user)
                                     <li class="flex min-w-0 items-center gap-3 rounded-full bg-gray-100 py-1 pr-5 pl-1">
-                                        <img src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
-                                            alt="" width="40" height="40" loading="lazy"
-                                            class="size-10 shrink-0 rounded-full object-cover">
+                                        <x-user-avatar :user="$user" class="size-10" />
                                         <span class="truncate text-gray-900">{{ $user->name }}</span>
                                     </li>
                                 @endforeach

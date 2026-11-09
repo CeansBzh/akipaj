@@ -21,9 +21,7 @@
                     <button type="button" id="user-menu-button"
                         class="flex rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-primary-200">
                         <span class="sr-only">Ouvrir le menu utilisateur</span>
-                        <img class="h-8 w-8 rounded-full"
-                            src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
-                            alt="Photo de profil">
+                        <x-user-avatar :user="Auth::user()" class="size-8" />
                     </button>
                 </x-slot>
                 <x-slot name="content">

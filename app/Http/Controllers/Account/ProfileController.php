@@ -12,13 +12,20 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user profile.
-     *
-     * @return View
+     * Affiche les matelots du club avec le nombre de sorties qu'ils ont faites :
+     * le matelot connecté en premier, puis les autres du plus grand au plus petit nombre de sorties.
      */
-    public function index()
+    public function index(Request $request): View
     {
-        return view('profile.index')->with('users', User::where('level', '>=', UserLevelEnum::MEMBER)->get());
+        $members = User::query()
+            ->where('level', '>=', UserLevelEnum::MEMBER)
+            ->withCount(['trips' => fn ($query) => $query->started()])
+            ->orderByRaw('users.id = ? desc', [$request->user()->id])
+            ->orderByDesc('trips_count')
+            ->orderBy('name')
+            ->get();
+
+        return view('profile.index')->with('members', $members);
     }
 
     /**

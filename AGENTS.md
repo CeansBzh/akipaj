@@ -9,7 +9,7 @@
 - Objectif principal : annoncer les prochaines sorties et permettre de consulter les photos (albums réservés aux membres).
 - Objectif secondaire : garder l'historique des sorties passées du club.
 - Les événements ont été fusionnés dans les sorties (`trips`) : un événement est désormais une sortie à venir. Concevoir une seule carte et une seule page de sortie qui couvrent les deux cas.
-- Les fonctionnalités sociales (pages de profil `profile.*`, commentaires sous les photos) vont être supprimées : ne pas les redessiner et ne pas en ajouter de nouvelles.
+- Les commentaires sous les photos vont être supprimés : ne pas les redessiner et ne pas ajouter d'autres fonctionnalités sociales. La liste des matelots et les pages de profil (`profile.*`) restent et sont redessinées.
 - Hors périmètre pour l'instant : l'administration (`resources/views/admin`, `resources/views/components/admin`, `layouts/admin.blade.php`). Ne pas la modifier.
 
 ## Direction visuelle
@@ -38,6 +38,10 @@ Le titre et la description passent après.
 Sur l'accueil, seule la sortie à venir la plus proche a la forme d'un billet (composant `x-trip-ticket`, encoches dessinées par la classe `.ticket` de `resources/css/app.css`). Les suivants sont de petites cartes sans style de billet, sur deux colonnes à partir de `sm` (composant `x-trip-card`) : photo en plein cadre, date et statut sur fond de verre, nom, dates et lieu sur un flou progressif, bouton d'agenda rond en icône seule. Les cartes des dernières sorties n'ont pas de coins arrondis. Les dates d'une sortie s'écrivent avec le composant `x-date-range` (« Du 12 au 14 juin 2026 »).
 
 La page des sorties les présente de la plus récente à la plus ancienne, rangées par année, en grandes cartes photo sur le modèle des petites cartes de l'accueil (composant `x-trip-entry`), sur une mer dessinée au trait qui reste en fond de page (`x-sea-swell`). Sur grand écran, une frise (`x-trip-timeline`) accompagne les cartes à gauche, sur toute la hauteur de l'écran : elle montre toutes les années, déplie seulement celle en cours de lecture sur ses sorties espacées selon le temps écoulé, suit la lecture et mène à une année ou à une sortie. Sur téléphone, les années se choisissent en haut de la liste.
+
+## Matelots
+
+La liste des matelots sert à retrouver quelqu'un. Une recherche par nom, en haut, filtre les cartes pendant la frappe sans tenir compte des accents, des majuscules ni des tirets, et son champ reste à l'écran pendant le défilement. Chaque carte montre la photo de profil, le nom et le nombre de sorties faites (commencées). Le matelot connecté vient en premier, marqué « Vous », puis les autres du plus grand au plus petit nombre de sorties. Peu de membres ont une photo de profil : le composant `x-user-avatar` affiche alors les initiales des deux premiers mots du nom, sur une teinte de bleu tirée du nom. L'utiliser partout où un matelot apparaît, à la place de l'ancienne silhouette `default-pfp.png`.
 
 ## Albums photo
 

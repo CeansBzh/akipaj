@@ -35,6 +35,13 @@ class UserTest extends TestCase
         $this->assertSame(UserLevelEnum::GUEST, $user->fresh()?->level);
     }
 
+    public function test_initials_are_the_first_letters_of_the_first_two_words_of_the_name(): void
+    {
+        $this->assertSame('ÉD', (new User(['name' => 'élise de la Tour']))->initials);
+        $this->assertSame('JM', (new User(['name' => ' Jean-Pierre   Martin ']))->initials);
+        $this->assertSame('M', (new User(['name' => 'Michel']))->initials);
+    }
+
     public function test_find_by_username(): void
     {
         $user = $this->createUser(attributes: ['name' => 'Henry']);

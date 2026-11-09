@@ -19,9 +19,32 @@ class ProfileTest extends TestCase
 
         $response = $this->get(route('profile.index'))->assertOk()->assertViewIs('profile.index');
 
-        $users = $response->viewData('users');
-        $this->assertTrue($users->contains($member));
-        $this->assertFalse($users->contains($guest));
+        $members = $response->viewData('members');
+        $this->assertTrue($members->contains($member));
+        $this->assertFalse($members->contains($guest));
+    }
+
+    public function test_members_list_shows_the_current_user_first_then_the_members_with_the_most_trips_done(): void
+    {
+        $this->travelTo('2026-06-15');
+        $currentUser = $this->actingAsLevel(UserLevelEnum::MEMBER, ['name' => 'Michel']);
+        $alice = $this->createUser(UserLevelEnum::MEMBER, ['name' => 'Alice']);
+        $bruno = $this->createUser(UserLevelEnum::MEMBER, ['name' => 'Bruno']);
+        $henry = $this->createUser(UserLevelEnum::MEMBER, ['name' => 'Henry']);
+        $this->createUser(UserLevelEnum::MEMBER, ['name' => 'Chloé']);
+        $finishedTrip = Trip::factory()->create(['start_date' => '2026-05-01', 'end_date' => '2026-05-03']);
+        $ongoingTrip = Trip::factory()->create(['start_date' => '2026-06-14', 'end_date' => '2026-06-16']);
+        $upcomingTrip = Trip::factory()->create(['start_date' => '2026-06-16', 'end_date' => '2026-06-18']);
+        $alice->trips()->attach([$finishedTrip->id, $ongoingTrip->id]);
+        $bruno->trips()->attach([$finishedTrip->id, $upcomingTrip->id]);
+        $henry->trips()->attach($ongoingTrip);
+        $currentUser->trips()->attach($upcomingTrip);
+
+        $response = $this->get(route('profile.index'))->assertOk();
+
+        $members = $response->viewData('members');
+        $this->assertSame(['Michel', 'Alice', 'Bruno', 'Henry', 'Chloé'], $members->pluck('name')->all());
+        $this->assertSame([0, 2, 1, 1, 0], $members->pluck('trips_count')->all());
     }
 
     public function test_members_can_see_any_profile(): void
