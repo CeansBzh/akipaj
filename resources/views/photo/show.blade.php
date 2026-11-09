@@ -27,7 +27,7 @@
                         @if (isset($photo->taken_at))
                             <p class="mt-4">Prise le : {{ $photo->taken_at->format('d/m/Y') }}</p>
                         @endif
-                        <p class="mt-1">Album : <a href="{{ route('albums.show', $photo->album) }}"
+                        <p class="mt-1">Album : <a href="{{ route('photos.index', ['albums' => [$photo->album_id]]) }}"
                                 class="text-blue-500 hover:text-blue-700">{{ $photo->album->title }}</a>
                         </p>
                     </div>

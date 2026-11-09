@@ -45,7 +45,7 @@ class PhotoTest extends TestCase
                 UploadedFile::fake()->image('paysage.jpg', 1200, 900),
                 UploadedFile::fake()->image('portrait.png', 300, 600),
             ],
-        ])->assertSessionHasNoErrors()->assertRedirect(route('albums.show', $album));
+        ])->assertSessionHasNoErrors()->assertRedirect(route('photos.index', ['albums' => [$album->id]]));
 
         $photos = Photo::orderBy('id')->get();
         $this->assertSame(['paysage.jpg', 'portrait.png'], $photos->pluck('title')->all());
@@ -88,12 +88,12 @@ class PhotoTest extends TestCase
             $this->postJson(route('photos.store'), [
                 'album' => $album->id,
                 'files' => [UploadedFile::fake()->image($fileName, 800, 600)],
-            ])->assertOk()->assertExactJson(['redirect' => route('albums.show', $album)]);
+            ])->assertOk()->assertExactJson(['redirect' => route('photos.index', ['albums' => [$album->id]])]);
         }
 
         $this->assertSame(2, $album->photos()->count());
         // The success alert survives the batch requests until the form redirects to the album
-        $this->get(route('albums.show', $album))->assertSee('Photos ajoutées avec succès !');
+        $this->get(route('photos.index', ['albums' => [$album->id]]))->assertSee('Photos ajoutées avec succès !');
     }
 
     public function test_members_can_see_a_photo_and_its_comments(): void

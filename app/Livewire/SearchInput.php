@@ -45,7 +45,7 @@ class SearchInput extends Component
             $this->searchResults['Albums'] = $albums->map(function ($album) {
                 return [
                     'title' => $album->title,
-                    'url' => route('albums.show', $album),
+                    'url' => route('photos.index', ['albums' => [$album->id]]),
                 ];
             })->toArray();
         }

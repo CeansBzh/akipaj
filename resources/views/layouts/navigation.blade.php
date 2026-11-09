@@ -86,41 +86,9 @@
                     </x-nav-link>
                 </li>
                 <li>
-                    <div class="relative" x-data="{ open: false }" @click.outside="open = false"
-                        @close.stop="open = false">
-                        <div class="flex items-center space-x-3" @click="open = ! open" :aria-expanded="open">
-                            <x-nav-button id="gallery-menu-button" class="flex w-full items-center justify-between"
-                                :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
-                                <span>Galerie</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="ml-1 h-4 w-4">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </x-nav-button>
-                        </div>
-                        <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="transform opacity-0 scale-95"
-                            x-transition:enter-end="transform opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="transform opacity-100 scale-100"
-                            x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute left-0 z-50 mt-2 w-full min-w-40 origin-top-left rounded-md shadow-lg"
-                            style="display: none;" @click="open = false">
-                            <div class="rounded-md bg-white py-1 ring-1 ring-black/5">
-                                <ul class="py-1" aria-labelledby="gallery-menu-button">
-                                    <li>
-                                        <x-dropdown-link :href="route('albums.index')" :aria-current="request()->routeIs('albums.index') ? 'page' : ''">
-                                            Albums
-                                        </x-dropdown-link>
-                                        <x-dropdown-link :href="route('photos.index')" :aria-current="request()->routeIs('photos.index') ? 'page' : ''">
-                                            Toutes les photos
-                                        </x-dropdown-link>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    <x-nav-link :href="route('photos.index')" :active="request()->routeIs('photos.*')">
+                        Photos
+                    </x-nav-link>
                 </li>
                 <li>
                     <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">

@@ -18,7 +18,7 @@
 - Élégant et un peu ludique, mais simple : la clarté passe avant l'effet. Une seule touche marquante par page, le reste reste calme.
 - C'est un site de voile : les touches marines sont bienvenues (vagues, voiles, cordages, pavillons, bouées, cartes marines…). Elles sont dessinées en SVG léger directement dans la page, purement décoratives (`aria-hidden="true"`), une ou deux par page, et ne gênent jamais la lecture.
 - Logo : SVG dans `layouts/navigation.blade.php`, version plus grande dans `components/application-logo.blade.php`, et favicon (`public/favicon*`, `public/apple-touch-icon.png`…). Il est bleu `#0ea5e9` (le `sky-500` de Tailwind 3) et blanc.
-- Thème clair uniquement : pas de variantes `dark:`.
+- Thème clair uniquement : pas de variantes `dark:`. Seule la visionneuse des photos a un fond noir.
 - Couleur principale : les classes `primary-*`, déclarées dans le bloc `@theme` de `resources/css/app.css` et aujourd'hui égales à la palette `sky`. Ne pas écrire de `sky-*` dans du nouveau code, et remplacer les `sky-*` par `primary-*` dans les fichiers modifiés. Neutres en `gray`. Rouge, vert, jaune et bleu sont réservés aux messages d'état (composant `x-alert`).
 - Les photos du club sont le meilleur décor : les mettre en avant plutôt que des illustrations ou des dégradés décoratifs.
 - Verre (fond translucide et `backdrop-blur`) : bienvenu sur une photo, pour y poser un badge, un bouton ou du texte lisible (voir `x-trip-card`). Pas sur un fond uni, où il n'apporte rien.
@@ -45,10 +45,13 @@ La liste des matelots sert à retrouver quelqu'un. Une recherche par nom, en hau
 
 La page de profil met d'abord en avant les sorties du matelot : en tête, la photo de sa dernière sortie (ou la mer au trait), sa photo de profil, son nom, sa ville et trois chiffres (sorties, jours à bord, photos), puis sa prochaine sortie (`x-trip-card`) et son carnet de bord, les sorties faites rangées par année, de la plus récente à la plus ancienne. Viennent ensuite ses six dernières photos, avec un lien vers la galerie filtrée sur lui (`photos.index` avec `auteurs[]`), puis les commentaires. Sur son propre profil, un petit lien mène aux réglages du compte.
 
-## Albums photo
+## Galerie photo
 
-- Un album contient de 10 à plus de 1 000 photos. Ne jamais les charger toutes d'un coup : la galerie (`App\Livewire\Gallery`) les charge par pages de 100.
-- Réserver la place de chaque vignette (`aspect-ratio` ou `width`/`height`) pour que la page ne saute pas pendant le chargement, et afficher le nombre de photos de l'album.
+- La galerie (`photos.index`, `App\Livewire\Gallery`) est la seule page des photos : les anciennes pages des albums mènent à elle, filtrée sur l'album. En haut, le bandeau des albums qui ont des photos, du plus récent au plus ancien, défile à l'horizontale et filtre la galerie sur l'album touché. Viennent ensuite le regroupement (par jour, par défaut, par album ou aucun), l'ordre, les filtres « Envoyées par » et « Albums », puis la mosaïque sur toute la largeur. Un album choisi seul est présenté au-dessus de ses photos (description, sorties, modification).
+- Un album contient de 10 à plus de 1 000 photos. Ne jamais les charger toutes d'un coup : la galerie les charge par pages de 100, chacune ajoutée à la fin de l'îlot Livewire « photos » sans renvoyer les précédentes.
+- La mosaïque est une seule grille CSS (`.photo-masonry` dans `resources/css/app.css`) : chaque vignette s'étend sur un nombre de lignes calculé côté serveur à partir de `thumb_width` et `thumb_height`. La page ne saute pas pendant le chargement, et l'ordre de lecture reste celui de la visionneuse. Afficher le nombre de photos.
+- La visionneuse est faite avec PhotoSwipe (`resources/js/gallery.js`, sa propre entrée Vite). On glisse la photo au doigt ou à la souris et la voisine arrive pendant le geste ; les flèches du clavier et les bords gauche et droit de l'écran changent aussi de photo ; le haut et le bas de l'écran cachent les commandes ; un clic zoome là où l'on clique (au doigt : pincer ou toucher deux fois). En haut à droite, « Plus d'actions » (télécharger, copier le lien, page de la photo, modifier quand c'est permis) et « Fermer » ; en bas à droite, le matelot qui a envoyé la photo. Jamais le titre de la photo, qui est le nom du fichier. Le bouton retour du téléphone la ferme.
+- La sélection de plusieurs photos, pour les supprimer, reviendra plus tard : garder des vignettes qui peuvent recevoir une case à cocher (`Gallery::deleteSelected` existe toujours).
 
 ## Typographie
 
@@ -63,8 +66,8 @@ La page de profil met d'abord en avant les sorties du matelot : en tête, la pho
 
 - Contraste WCAG AA au minimum : texte bleu sur fond clair en `primary-700` ou plus foncé, texte blanc sur un fond `primary-700` ou plus foncé (`primary-500` et `primary-600` ne suffisent pas pour du texte). Texte gris en `gray-600` ou plus foncé, `gray-500` seulement sur fond blanc. Sur une photo, garder un fond assez opaque derrière le texte.
 - Cibles tactiles d'au moins 44 × 44 px, bien espacées.
-- Toute action porte un libellé texte : une icône seule ne suffit pas. Seule exception, voulue : le bouton d'agenda des petites cartes de sortie à venir, avec un `aria-label` et un `title`. Les liens dans un texte sont soulignés.
-- Rien ne dépend du survol (inexistant sur téléphone) ni d'un geste caché (balayage, appui long) : chaque action a un bouton visible. Pas de défilement automatique, carrousels compris.
+- Toute action porte un libellé texte : une icône seule ne suffit pas. Exceptions voulues, toutes avec un `aria-label` et un `title` : le bouton d'agenda des petites cartes de sortie à venir, et les flèches de la visionneuse et du bandeau des albums de la galerie. Les liens dans un texte sont soulignés.
+- Rien ne dépend du survol (inexistant sur téléphone) ni d'un geste caché (balayage, appui long) : chaque action a un bouton visible. Seule exception, voulue : sur téléphone, la visionneuse des photos change de photo en glissant ou en touchant les bords de l'écran, sans flèches. Pas de défilement automatique, carrousels compris.
 - Dates écrites en toutes lettres au format français (« samedi 14 juin 2026 ») plutôt qu'en chiffres (« 14/06 »).
 - Focus clavier visible, `prefers-reduced-motion` respecté, animations rares et courtes, seulement en réponse à une action.
 - La mise en page supporte un zoom du texte à 200 % sans contenu coupé ni défilement horizontal.

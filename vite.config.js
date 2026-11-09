@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/add-photo-form.js',
                 'resources/js/rich-text-editor.js',
                 'resources/js/course-map.js',
+                'resources/js/gallery.js',
             ],
             refresh: true,
         }),

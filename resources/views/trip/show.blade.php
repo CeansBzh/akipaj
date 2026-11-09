@@ -93,7 +93,7 @@
                                 @php($cover = $album->imagePath ?? $album->oldestPhoto?->thumb_path)
                                 <li class="min-w-0">
                                     {{-- Toute la carte mène à l'album ; le bouton « Voir l'album » montre qu'elle se touche --}}
-                                    <a href="{{ route('albums.show', $album) }}"
+                                    <a href="{{ route('photos.index', ['albums' => [$album->id]]) }}"
                                         class="group flex h-full flex-col overflow-hidden rounded-3xl bg-gray-100 transition-colors hover:bg-gray-200/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-700">
                                         @if ($cover)
                                             <img src="{{ $cover }}" alt="" width="480" height="320" loading="lazy"

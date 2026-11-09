@@ -271,8 +271,8 @@ class TripTest extends TestCase
         $this->get(route('trips.show', $trip))
             ->assertOk()
             ->assertSeeInOrder(['Les photos', 'Escale à Groix', '3 photos', 'Retour à Lorient', "Aucune photo pour l'instant"])
-            ->assertSee(route('albums.show', $album))
-            ->assertSee(route('albums.show', $emptyAlbum));
+            ->assertSee(route('photos.index', ['albums' => [$album->id]]))
+            ->assertSee(route('photos.index', ['albums' => [$emptyAlbum->id]]));
     }
 
     #[DataProvider('oldEventLinks')]

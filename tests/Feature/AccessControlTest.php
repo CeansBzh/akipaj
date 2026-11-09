@@ -22,7 +22,7 @@ class AccessControlTest extends TestCase
     public static function memberPagesProvider(): array
     {
         return [
-            'albums' => ['/albums'],
+            'album creation' => ['/albums/create'],
             'trips' => ['/trips'],
             'photos' => ['/photos'],
             'members list' => ['/matelots'],

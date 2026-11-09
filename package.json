@@ -23,6 +23,7 @@
         "flickity": "^3.0.0",
         "imagesloaded": "^5.0.0",
         "leaflet": "^1.9.4",
+        "photoswipe": "^5.4.4",
         "trix": "^2.1.19"
     },
     "allowScripts": {

@@ -96,10 +96,6 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
     display: none;
 }
 
-@utility selected {
-    @apply scale-[0.95] rounded-sm outline-8 -outline-offset-8 outline-primary-500 outline-solid;
-}
-
 @utility text-shadow-outline {
     text-shadow:
         1px 1px 0 var(--tw-shadow-color),
@@ -225,6 +221,45 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
         mask-size: auto 100%;
         mask-repeat: repeat-x;
         mask-position: center bottom;
+    }
+}
+
+/*
+ * Mosaïque de la galerie, sur toute la largeur : une grille dont chaque colonne est large de 32 lignes.
+ * Chaque vignette s'étend sur le nombre de lignes qui garde ses proportions (calculé dans livewire/partials/gallery-photo),
+ * sans attendre le chargement des images. Le placement automatique de la grille met alors chaque photo
+ * dans la colonne la plus courte, en gardant l'ordre de lecture, de gauche à droite puis de haut en bas.
+ * Les titres des groupes prennent toute la largeur et une ligne à la hauteur de leur texte.
+ * Le parent de la grille doit être un conteneur (classe @container) : les lignes sont calculées sur sa largeur.
+ */
+@layer components {
+    .photo-masonry {
+        --masonry-columns: 2;
+        --masonry-gap: 3px;
+
+        display: grid;
+        grid-template-columns: repeat(var(--masonry-columns), minmax(0, 1fr));
+        grid-auto-rows: minmax(
+            calc((100cqw - (var(--masonry-columns) - 1) * var(--masonry-gap)) / var(--masonry-columns) / 32),
+            auto
+        );
+        column-gap: var(--masonry-gap);
+
+        @variant sm {
+            --masonry-columns: 3;
+        }
+
+        @variant md {
+            --masonry-columns: 4;
+        }
+
+        @variant lg {
+            --masonry-columns: 5;
+        }
+
+        @variant 2xl {
+            --masonry-columns: 6;
+        }
     }
 }
 

@@ -100,11 +100,13 @@ class PhotoController extends Controller
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
 
+        $albumGallery = route('photos.index', ['albums' => [$album->id]]);
+
         if ($request->expectsJson()) {
-            return response()->json(['redirect' => route('albums.show', $album)]);
+            return response()->json(['redirect' => $albumGallery]);
         }
 
-        return redirect()->route('albums.show', $album);
+        return redirect($albumGallery);
     }
 
     /**

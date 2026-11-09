@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TripController;
+use App\Models\Album;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -33,10 +34,12 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('level:'.UserLevelEnum::MEMBER->value)->group(function () {
         Route::get('matelots', [ProfileController::class, 'index'])->name('profile.index');
-        Route::resources([
-            'albums' => AlbumController::class,
-            'trips' => TripController::class,
-        ]);
+        Route::resource('trips', TripController::class);
+        Route::resource('albums', AlbumController::class)->except(['index', 'show']);
+        // Les albums n'ont plus de pages à eux : leurs anciens liens mènent à la galerie, filtrée sur l'album
+        Route::get('albums', fn () => redirect()->route('photos.index', status: 301));
+        Route::get('albums/{album}', fn (Album $album) => redirect()->route('photos.index', ['albums' => [$album->id]], 301))
+            ->whereNumber('album');
         Route::resource('photos', PhotoController::class)->except(['create']);
         Route::get('/photos/create/{album}', [PhotoController::class, 'create'])->name('photos.create');
         // Keeps the URL of the photos uploaded when they were in the public storage

@@ -6,7 +6,6 @@ use App\Enums\UserLevelEnum;
 use App\Events\RegistrationValidated;
 use App\Livewire\Admin\RegistrationValidation;
 use App\Livewire\Admin\User\Catalog;
-use App\Livewire\Album\AlbumList;
 use App\Livewire\SearchInput;
 use App\Livewire\ThreadSubscribeButton;
 use App\Livewire\Trip\Boats;
@@ -44,7 +43,7 @@ class ComponentsTest extends TestCase
         $results = Livewire::test(SearchInput::class)->set('searchTerm', 'bretagne')->get('searchResults');
 
         $this->assertSame([['title' => $trip->title, 'url' => route('trips.show', $trip)]], $results['Sorties']);
-        $this->assertSame([['title' => $album->title, 'url' => route('albums.show', $album)]], $results['Albums']);
+        $this->assertSame([['title' => $album->title, 'url' => route('photos.index', ['albums' => [$album->id]])]], $results['Albums']);
         $this->assertSame([['title' => $photo->title, 'url' => route('photos.show', $photo)]], $results['Photos']);
     }
 
@@ -120,25 +119,6 @@ class ComponentsTest extends TestCase
 
         $component->set('searchTerm', '')->set('level', UserLevelEnum::GUEST->value);
         $this->assertSame([$lucien->id], $component->viewData('users')->pluck('id')->all());
-    }
-
-    public function test_album_list_only_shows_albums_with_photos_and_can_be_sorted(): void
-    {
-        $this->actingAsMember();
-        $old = Album::factory()->create(['date' => '2019-01-01']);
-        $recent = Album::factory()->create(['date' => '2022-01-01']);
-        Album::factory()->create();
-        Photo::factory()->for($old)->create();
-        Photo::factory()->for($recent)->create();
-
-        $component = Livewire::test(AlbumList::class);
-        $this->assertSame([$recent->id, $old->id], $component->viewData('albums')->pluck('id')->all());
-
-        $component->set('sortTerm', 'date_asc');
-        $this->assertSame([$old->id, $recent->id], $component->viewData('albums')->pluck('id')->all());
-
-        $component->set('sortTerm', 'date_desc');
-        $this->assertSame([$recent->id, $old->id], $component->viewData('albums')->pluck('id')->all());
     }
 
     public function test_boats_can_be_added_and_removed_in_the_trip_form(): void

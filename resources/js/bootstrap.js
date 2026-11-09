@@ -33,13 +33,6 @@
 //     enabledTransports: ['ws', 'wss'],
 // });
 
-import imagesLoaded from 'imagesloaded';
-window.imagesLoaded = imagesLoaded;
-
-import Flickity from 'flickity';
-import 'flickity/dist/flickity.min.css';
-window.Flickity = Flickity;
-
 /**
  * Ouvre la liste des agendas où ajouter un événement, sous le bouton cliqué.
  * La bibliothèque add-to-calendar-button est lourde : elle n'est téléchargée qu'au premier clic,
