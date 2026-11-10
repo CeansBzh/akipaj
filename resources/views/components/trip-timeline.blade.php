@@ -7,7 +7,7 @@
 --}}
 
 <nav aria-label="Frise des sorties" data-trip-timeline {{ $attributes }}>
-    <div data-timeline-box class="sticky top-0 h-dvh bg-linear-to-r bg-radial to-transparent from-primary-50 from-20% py-4">
+    <div data-timeline-box class="sticky top-below-nav-0 h-dvh bg-linear-to-r bg-radial to-transparent from-primary-50 from-20% py-4">
         <div class="relative h-full">
             <span aria-hidden="true" class="absolute inset-y-0 left-3 w-px bg-gray-300"></span>
 
@@ -156,9 +156,11 @@
                     if (anchors.length === 0 || !timeline.checkVisibility()) {
                         return;
                     }
-                    // La frise tient dans la partie visible de sa colonne, en haut de page comme en fin de liste
+                    // La frise tient dans la partie visible de sa colonne, sous la barre de navigation quand elle est là,
+                    // en haut de page comme en fin de liste
                     const column = timeline.getBoundingClientRect();
-                    box.style.height = `${Math.max(0, Math.min(innerHeight, column.bottom) - Math.max(0, column.top))}px`;
+                    const boxTop = Math.max(parseFloat(getComputedStyle(box).top) || 0, column.top);
+                    box.style.height = `${Math.max(0, Math.min(innerHeight, column.bottom) - boxTop)}px`;
 
                     const line = innerHeight * readingLine;
                     const section = sections.findLast((element) => element.getBoundingClientRect().top <= line) ?? sections[0];
@@ -190,6 +192,13 @@
 
                 addEventListener('scroll', schedule, { passive: true });
                 addEventListener('resize', schedule);
+                // La frise glisse avec la barre de navigation qui se range ou revient : sa hauteur la suit
+                box.addEventListener('transitionrun', (event) => {
+                    if (event.target === box) {
+                        animatedUntil = performance.now() + 400;
+                        schedule();
+                    }
+                });
                 update();
             })();
         </script>

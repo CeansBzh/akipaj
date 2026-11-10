@@ -46,7 +46,7 @@
 <section aria-labelledby="trip-course-title" data-course-component x-ignore x-data="courseMap(@js($mapDays))" {{ $attributes }}>
 
     <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-10">
-        <div x-ref="map" role="region" aria-label="Carte du parcours" class="course-map isolate lg:sticky lg:top-6">
+        <div class="course-map isolate lg:sticky lg:top-below-nav-6">
             <h2 id="trip-course-title" class="text-2xl font-bold text-gray-900">Le parcours</h2>
             @if ($totalDistance > 0)
                 <p class="my-2 max-w-prose text-gray-700">
@@ -56,7 +56,7 @@
                 </p>
             @endif
             <div x-ref="map" role="region" aria-label="Carte du parcours"
-                class="course-map isolate h-80 rounded-3xl bg-primary-50 sm:h-96 lg:sticky lg:top-6 lg:h-128">
+                class="course-map isolate h-80 rounded-3xl bg-primary-50 sm:h-96 lg:sticky lg:top-below-nav-6 lg:h-128">
             </div>
         </div>
 

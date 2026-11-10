@@ -42,7 +42,7 @@
                         </h1>
                     </header>
 
-                    <aside class="lg:sticky lg:top-6 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-start">
+                    <aside class="lg:sticky lg:top-below-nav-6 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-start">
                         @include('trip.partials.trip-facts')
                     </aside>
 

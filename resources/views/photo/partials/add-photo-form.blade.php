@@ -25,7 +25,7 @@
     </div>
 
     {{-- Carte de départ, sur papier quadrillé : la flotte du club au trait, puis le bouton pour choisir les photos --}}
-    <div class="blueprint rounded-3xl px-5 pt-8 pb-7 text-center ring-1 ring-primary-100 ring-inset sm:px-10 sm:pt-10 sm:pb-9"
+    <div class="blueprint rounded-3xl px-5 pt-8 pb-7 text-center ring-primary-600 ring-2 ring-inset sm:px-10 sm:pt-10 sm:pb-9"
         data-drop-card>
         <div aria-hidden="true" class="flex h-36 items-end justify-center gap-3 text-primary-900 sm:h-56 sm:gap-10">
             <x-boat-drawing.catamaran class="h-[78%] w-auto" />
@@ -42,7 +42,7 @@
             </svg>
             Choisir des photos
         </button>
-        <p class="mt-3 hidden text-gray-800 pointer-fine:block">ou faites-les glisser n'importe où sur cette page</p>
+        <p class="mt-3 hidden text-gray-800 pointer-fine:block">ou faites-les glisser</p>
         <p class="mx-auto mt-3 max-w-prose text-sm text-gray-700">
             JPG, PNG ou GIF. Vos photos seront compressées, Akipaj ne sauvegarde pas les photos en qualité originale.
         </p>
@@ -62,7 +62,7 @@
                 </button>
                 <button type="button"
                     class="inline-flex min-h-11 items-center rounded-full px-3 font-semibold text-primary-800 underline underline-offset-4 hover:text-primary-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
-                    x-on:click="$dispatch('open-modal', 'confirm-clear-photos')">
+                    x-data="" x-on:click="$dispatch('open-modal', 'confirm-clear-photos')">
                     Tout retirer
                 </button>
             </div>

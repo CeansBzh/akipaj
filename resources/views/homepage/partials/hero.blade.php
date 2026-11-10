@@ -1,46 +1,45 @@
 <section class="relative">
-    <div class="absolute inset-0 hidden overflow-hidden md:block">
+    {{-- Fond de la couleur moyenne de la photo, le temps qu'elle arrive --}}
+    <div class="absolute inset-0 hidden overflow-hidden bg-[#7a94ad] md:block">
         <picture>
+            {{-- Téléphone : image vide, pour ne pas télécharger cette photo qui y est cachée --}}
+            <source srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                media="(max-width: 767px)">
             {{-- XL (1536px to infinite) --}}
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.avif') }}" media="(min-width: 1536px)"
-                width="2600" height="700" type="image/avif">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.webp') }}" media="(min-width: 1536px)"
                 width="2600" height="700" type="image/webp">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.jpg') }}"
                 media="(min-width: 1536px)" width="2600" height="700" type="image/jpeg">
             {{-- Large (1024px to 1535px) --}}
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.avif') }}"
-                media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/avif">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.webp') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/webp">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.jpg') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/jpeg">
             {{-- Medium (768px to 1023px) --}}
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-md.avif') }}"
-                media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="575" type="image/avif">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-md.webp') }}"
                 media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="575" type="image/webp">
             {{-- Fallback image = medium JPG --}}
-            <img class="h-full w-full object-cover"
+            <img class="h-full w-full object-cover text-transparent"
                 src="{{ Vite::asset('resources/views/homepage/images/hero-md.jpg') }}"
                 alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
-                width="1023" height="575" loading="lazy" decoding="async">
+                width="1023" height="575" fetchpriority="high">
         </picture>
     </div>
     <div class="relative md:bg-neutral-900/20">
         <div class="relative mx-auto min-h-108 max-w-(--breakpoint-2xl) md:flex">
             {{-- Left/Top side --}}
             <div class="relative md:grow">
-                <div class="absolute inset-0 overflow-hidden md:hidden">
+                <div class="absolute inset-0 overflow-hidden bg-[#668baf] md:hidden">
                     <picture>
-                        <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.avif') }}"
-                            type="image/avif">
+                        {{-- Grand écran : image vide, pour ne pas télécharger cette photo qui y est cachée --}}
+                        <source srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            media="(min-width: 768px)">
                         <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.webp') }}"
                             type="image/webp">
-                        <img class="h-full w-full object-cover"
+                        <img class="h-full w-full object-cover text-transparent"
                             src="{{ Vite::asset('resources/views/homepage/images/hero.jpg') }}"
                             alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
-                            width="767" height="511" loading="lazy" decoding="async">
+                            width="767" height="511" fetchpriority="high">
                     </picture>
                 </div>
                 <div class="relative mx-auto h-full min-h-84 max-w-(--breakpoint-xl) bg-neutral-900/20 md:bg-transparent">

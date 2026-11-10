@@ -1,4 +1,9 @@
-<nav x-data="{ open: false }" class="border-gray-200 bg-white">
+{{--
+    Collée en haut de l'écran, la barre se range quand on descend dans la page et revient dès qu'on remonte
+    (resources/js/navigation.js). Sans transform pour la ranger : la fenêtre de recherche, fixe, est dans la barre.
+--}}
+<nav x-data="mainNavigation" x-bind:data-hidden="isHidden" x-bind:data-scrolled="isScrolled"
+    class="sticky top-0 z-40 bg-white transition-[top,box-shadow] duration-300 ease-out motion-reduce:transition-none data-hidden:top-[calc(var(--nav-height)*-1)] data-scrolled:not-data-hidden:shadow-sm">
     <div class="container mx-auto flex flex-wrap items-center justify-between px-2 py-2.5 sm:px-4">
         {{-- Logo --}}
         <a href="{{ url('/') }}" class="flex items-center">
@@ -59,7 +64,7 @@
             {{-- Main menu burger button --}}
             <button type="button" @click="open = !open"
                 class="inline-flex items-center rounded-lg text-sm text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 md:hidden"
-                aria-controls="mobile-menu" aria-expanded="false">
+                aria-controls="mobile-menu" x-bind:aria-expanded="open">
                 <span class="sr-only">Open main menu</span>
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22 22" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"

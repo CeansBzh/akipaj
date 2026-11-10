@@ -16,7 +16,7 @@
             <label for="member-search" class="block font-semibold text-gray-900">Chercher un matelot</label>
         </div>
         {{-- Seul le champ reste en haut de l'écran pendant qu'on fait défiler les cartes --}}
-        <div role="search" class="sticky top-0 z-20 bg-primary-50/90 py-2 backdrop-blur-md">
+        <div role="search" class="sticky top-below-nav-0 z-20 bg-primary-50/90 py-2 backdrop-blur-md">
             <div class="mx-auto max-w-2xl px-4 sm:px-6">
                 <div class="relative">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

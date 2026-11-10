@@ -1,7 +1,10 @@
 import './bootstrap';
 
 // Livewire bundles Alpine (with the collapse plugin) and exposes window.Livewire and window.Alpine
-import { Livewire } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import mainNavigation from './navigation';
+
+Alpine.data('mainNavigation', mainNavigation);
 
 Livewire.start();
 

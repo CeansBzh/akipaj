@@ -59,7 +59,7 @@
                                 aria-labelledby="annee-{{ $year }}-titre" class="mt-10 scroll-mt-4 lg:mt-20 lg:first-of-type:mt-12">
                                 {{-- Sur téléphone, le titre de l'année reste en haut de l'écran pendant qu'on lit ses sorties --}}
                                 <h2 id="annee-{{ $year }}-titre"
-                                    class="sticky top-0 z-20 -mx-4 flex items-baseline gap-3 bg-primary-50/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:p-0 lg:backdrop-blur-none">
+                                    class="sticky top-below-nav-0 z-20 -mx-4 flex items-baseline gap-3 bg-primary-50/90 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:p-0 lg:backdrop-blur-none">
                                     <span class="text-4xl font-bold text-gray-900 lg:text-7xl">{{ $year }}</span>
                                     <span class="font-sans text-gray-700">
                                         {{ $yearTrips->count() }} {{ $yearTrips->count() > 1 ? 'sorties' : 'sortie' }}

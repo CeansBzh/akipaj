@@ -124,6 +124,20 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
     -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
 }
 
+/*
+ * Collé en haut de l'écran, juste sous la barre de navigation : l'élément descend quand elle revient et remonte quand
+ * elle se range, au même rythme qu'elle. top-below-nav-0 le colle à elle, top-below-nav-6 laisse 1,5 rem de plus.
+ * --nav-offset, la place que la barre occupe en haut de l'écran, est tenue à jour par resources/js/navigation.js.
+ */
+@utility top-below-nav-* {
+    top: calc(var(--nav-offset, 0px) + var(--spacing) * --value(integer));
+    transition: top 300ms var(--ease-out);
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
 /* Tous les titres sont en Merriweather */
 @layer base {
     h1,
