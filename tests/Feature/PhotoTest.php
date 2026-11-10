@@ -96,16 +96,13 @@ class PhotoTest extends TestCase
         $this->get(route('photos.index', ['albums' => [$album->id]]))->assertSee('Photos ajoutées avec succès !');
     }
 
-    public function test_members_can_see_a_photo_and_its_comments(): void
+    public function test_the_link_of_a_photo_opens_the_gallery_on_its_album(): void
     {
         $this->actingAsMember();
         $photo = Photo::factory()->create();
-        $comment = Comment::factory()->for($photo, 'commentable')->create();
 
         $this->get(route('photos.show', $photo))
-            ->assertOk()
-            ->assertSee($photo->title)
-            ->assertSee($comment->content);
+            ->assertRedirect(route('photos.index', ['albums' => [$photo->album_id], 'photo' => $photo->id]));
     }
 
     public function test_members_can_see_the_files_of_a_photo(): void

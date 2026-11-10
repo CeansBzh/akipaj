@@ -86,6 +86,23 @@ class Gallery extends Component
      */
     protected ?int $appendedPage = null;
 
+    /**
+     * Un lien vers une photo (?photo=12, où mène l'adresse d'une photo) charge assez de pages pour qu'elle soit
+     * dans la mosaïque : la visionneuse s'ouvre alors sur elle (resources/js/gallery.js).
+     */
+    public function mount(): void
+    {
+        $linkedPhotoId = request()->integer('photo');
+
+        if ($linkedPhotoId > 0) {
+            $position = $this->orderedPhotos()->pluck('photos.id')->search($linkedPhotoId);
+
+            if ($position !== false) {
+                $this->loadedPages = intdiv($position, self::PER_PAGE) + 1;
+            }
+        }
+    }
+
     public function updated(): void
     {
         // Seuls les filtres, le regroupement et l'ordre se modifient depuis la page
@@ -243,6 +260,7 @@ class Gallery extends Component
         // La photo d'avant la page dit si son premier groupe continue celui de la page précédente
         $photos = $this->orderedPhotos()
             ->with('user')
+            ->withCount('comments')
             ->when($this->groupingOption() === GalleryGroupingEnum::ALBUM, fn (Builder $query) => $query->with('album'))
             ->offset(max(0, $offset - 1))
             ->limit($offset > 0 ? $limit + 1 : $limit)

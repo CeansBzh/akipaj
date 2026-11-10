@@ -4,6 +4,7 @@ namespace Tests\Feature\Livewire;
 
 use App\Livewire\Gallery;
 use App\Models\Album;
+use App\Models\Comment;
 use App\Models\Photo;
 use App\Models\Trip;
 use App\Models\User;
@@ -250,6 +251,33 @@ class GalleryTest extends TestCase
         $component->set('sort', 'anciennes');
         $this->assertCount(100, $this->displayedPhotoIds($component));
         $component->assertSet('loadedPages', 1);
+    }
+
+    public function test_a_linked_photo_loads_the_pages_up_to_it(): void
+    {
+        $this->actingAsMember();
+        $oldestId = $this->createPhotos(101, ['taken_at' => '2025-06-14 10:00'])->first()->id;
+
+        $linked = Livewire::withQueryParams(['photo' => $oldestId])->test(Gallery::class);
+        $unknown = Livewire::withQueryParams(['photo' => $oldestId + 1000])->test(Gallery::class);
+
+        $linked->assertSet('loadedPages', 2);
+        $this->assertContains($oldestId, $this->displayedPhotoIds($linked));
+        $unknown->assertSet('loadedPages', 1);
+    }
+
+    public function test_tiles_tell_the_lightbox_how_many_comments_each_photo_has(): void
+    {
+        $this->actingAsMember();
+        $commented = Photo::factory()->create();
+        Comment::factory()->count(2)->for($commented, 'commentable')->create();
+        Comment::factory()->for($commented, 'commentable')->create()->delete();
+        $uncommented = Photo::factory()->create();
+
+        $html = Livewire::test(Gallery::class)->html();
+
+        $this->assertStringContainsString('data-photo-id="'.$commented->id.'" data-comment-count="2"', $html);
+        $this->assertStringContainsString('data-photo-id="'.$uncommented->id.'" data-comment-count="0"', $html);
     }
 
     public function test_lightbox_offers_to_edit_only_the_viewers_own_photos(): void

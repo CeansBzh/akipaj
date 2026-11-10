@@ -110,14 +110,11 @@ class PhotoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Les photos n'ont plus de page à elles : leur adresse ouvre la galerie sur leur album, visionneuse ouverte sur elles.
      */
-    public function show(Photo $photo): View
+    public function show(Photo $photo): RedirectResponse
     {
-        return view('photo.show', [
-            'photo' => $photo,
-            'comments' => $photo->comments,
-        ]);
+        return redirect()->route('photos.index', ['albums' => [$photo->album_id], 'photo' => $photo->id]);
     }
 
     /**

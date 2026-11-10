@@ -1,15 +1,29 @@
 @php
     // Pilule de verre posée sur la photo : un fond sombre assez opaque pour que le texte blanc reste lisible
     $glass = 'inline-flex min-h-11 items-center gap-2 rounded-full bg-gray-950/60 px-4 py-2 font-semibold text-white ring-1 ring-white/15 backdrop-blur-md';
+    $focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+    // Bouton rond en verre, une icône seule : son nom est dans aria-label et title
+    $glassIcon = 'inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-950/60 text-white ring-1 ring-white/15 backdrop-blur-md transition-colors hover:bg-gray-950/80 '.$focusRing;
     $menuItem = 'flex min-h-12 w-full items-center gap-3 rounded-xl px-3 py-2 text-left font-semibold text-gray-900 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-700';
 @endphp
 
 {{-- Commandes de la visionneuse, copiées dans PhotoSwipe par resources/js/gallery.js --}}
 <template data-gallery-lightbox-actions>
     <div class="flex items-start gap-2">
+        {{-- Commentaires : une icône, avec un point quand la photo en a (son libellé dit combien) --}}
+        <button type="button" data-lightbox-comments aria-expanded="false" aria-controls="photo-drawer"
+            aria-label="Commentaires" title="Commentaires"
+            class="{{ $glassIcon }} relative aria-expanded:bg-white aria-expanded:text-gray-950 aria-expanded:hover:bg-gray-200">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                stroke-linecap="round" stroke-linejoin="round" class="size-6">
+                <path d="M20 11.5c0 4.1-3.6 7.5-8 7.5a8.6 8.6 0 0 1-3.3-.6L4 20l1.4-3.7A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5Z" />
+            </svg>
+            <span data-lightbox-comments-dot hidden
+                class="absolute top-1.5 right-1.5 size-3 rounded-full bg-primary-400 ring-2 ring-gray-950"></span>
+        </button>
         <div class="relative">
             <button type="button" data-lightbox-menu-button aria-expanded="false" aria-controls="gallery-lightbox-menu"
-                class="{{ $glass }} transition-colors hover:bg-gray-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                class="{{ $glass }} transition-colors hover:bg-gray-950/80 {{ $focusRing }}">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-5 shrink-0">
                     <circle cx="5" cy="12" r="1.75" />
                     <circle cx="12" cy="12" r="1.75" />
@@ -19,6 +33,14 @@
             </button>
             <div id="gallery-lightbox-menu" data-lightbox-menu hidden
                 class="absolute top-full right-0 mt-2 w-max max-w-[calc(100vw-2rem)] min-w-64 rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5">
+                <button type="button" data-lightbox-details aria-controls="photo-drawer" class="{{ $menuItem }}">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                        stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0 text-primary-700">
+                        <circle cx="12" cy="12" r="8.5" />
+                        <path d="M12 11v5.5M12 7.5v.5" />
+                    </svg>
+                    Détails
+                </button>
                 <a href="#" data-lightbox-download download class="{{ $menuItem }}">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
                         stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0 text-primary-700">
@@ -34,14 +56,6 @@
                     </svg>
                     <span data-lightbox-copy-label>Copier le lien</span>
                 </button>
-                <a href="#" data-lightbox-page class="{{ $menuItem }}">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-                        stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0 text-primary-700">
-                        <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
-                        <path d="M7.5 9.5h9M7.5 13h9M7.5 16.5h5" />
-                    </svg>
-                    Voir la page de la photo
-                </a>
                 <a href="#" data-lightbox-edit class="{{ $menuItem }}">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
                         stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0 text-primary-700">
@@ -52,13 +66,11 @@
                 </a>
             </div>
         </div>
-        <button type="button" data-lightbox-close
-            class="{{ $glass }} transition-colors hover:bg-gray-950/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+        <button type="button" data-lightbox-close aria-label="Fermer" title="Fermer" class="{{ $glassIcon }}">
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                stroke-linecap="round" stroke-linejoin="round" class="size-5">
                 <path d="M6 6l12 12M18 6 6 18" />
             </svg>
-            Fermer
         </button>
     </div>
     <p data-lightbox-status class="sr-only" aria-live="polite"></p>

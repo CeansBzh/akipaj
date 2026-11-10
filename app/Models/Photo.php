@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Photo extends Model
 {
@@ -49,5 +50,16 @@ class Photo extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Poids du fichier de la photo, en octets, ou null s'il est introuvable.
+     */
+    public function fileSize(): ?int
+    {
+        $disk = Storage::disk('photos');
+        $fileName = basename($this->path);
+
+        return $disk->fileExists($fileName) ? $disk->size($fileName) : null;
     }
 }

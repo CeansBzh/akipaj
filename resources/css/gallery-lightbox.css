@@ -13,11 +13,18 @@ html.gallery-lightbox-open {
     font-family: var(--font-sans);
 }
 
-/* « Plus d'actions » et « Fermer » en haut à droite, le matelot en bas à droite, hors des zones du bord de l'écran */
+/*
+ * Commentaires, « Plus d'actions » et « Fermer » en haut à droite, le matelot en bas à droite, hors des zones du bord
+ * de l'écran. Sur grand écran, ils se rangent à gauche du panneau ouvert, dont resources/js/gallery.js donne la largeur.
+ */
+.gallery-lightbox {
+    --gallery-drawer-offset: 0px;
+}
+
 .gallery-lightbox .pswp__gallery-actions,
 .gallery-lightbox .pswp__gallery-uploader {
     position: absolute;
-    right: max(0.75rem, env(safe-area-inset-right));
+    right: calc(var(--gallery-drawer-offset) + max(0.75rem, env(safe-area-inset-right)));
     z-index: 20;
 }
 
@@ -27,13 +34,13 @@ html.gallery-lightbox-open {
 
 .gallery-lightbox .pswp__gallery-uploader {
     bottom: max(0.75rem, env(safe-area-inset-bottom));
-    max-width: calc(100% - 1.5rem);
+    max-width: calc(100% - var(--gallery-drawer-offset) - 1.5rem);
 }
 
 @media (min-width: 40rem) {
     .gallery-lightbox .pswp__gallery-actions,
     .gallery-lightbox .pswp__gallery-uploader {
-        right: 1.25rem;
+        right: calc(var(--gallery-drawer-offset) + 1.25rem);
     }
 
     .gallery-lightbox .pswp__gallery-actions {
@@ -78,6 +85,10 @@ html.gallery-lightbox-open {
     background: rgb(3 7 18 / 0.6);
     color: #fff;
     backdrop-filter: blur(12px);
+}
+
+.gallery-lightbox .pswp__button--arrow--next {
+    right: var(--gallery-drawer-offset);
 }
 
 .gallery-lightbox .pswp__button--arrow--next .pswp__icn {

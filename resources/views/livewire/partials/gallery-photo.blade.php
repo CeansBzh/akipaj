@@ -12,8 +12,12 @@
         : trim('Photo'.($uploaderName ? ' de '.$uploaderName : '').($photo->taken_at ? ', '.$photo->taken_at->isoFormat('D MMMM YYYY') : ''));
 @endphp
 
-{{-- Lien vers la page de la photo : la visionneuse s'ouvre à la place (resources/js/gallery.js), sauf ouverture dans un nouvel onglet --}}
+{{--
+    Lien de la photo, qui ouvre la galerie sur elle : la visionneuse s'ouvre directement (resources/js/gallery.js),
+    sauf ouverture dans un nouvel onglet
+--}}
 <a href="{{ route('photos.show', $photo) }}" wire:key="photo-{{ $photo->id }}" data-gallery-photo
+    data-photo-id="{{ $photo->id }}" data-comment-count="{{ $photo->comments_count ?? 0 }}"
     data-pswp-src="{{ $photo->path }}" data-pswp-width="{{ $width }}" data-pswp-height="{{ $height }}"
     data-pswp-cropped="true" data-uploader="{{ $photo->user_id }}"
     data-download-name="{{ pathinfo($photo->title, PATHINFO_FILENAME) ?: 'photo' }}.jpg"
