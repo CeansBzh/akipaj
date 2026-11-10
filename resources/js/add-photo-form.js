@@ -1,166 +1,381 @@
-// Script to drag and drop, resize, rewrite exif data, preview and upload images
-// Assembled using different sources
-// Speed for 100 images (average size 3.3MB): 15.6s
+/*
+ * Formulaire d'ajout de photos à un album (photo/partials/add-photo-form.blade.php).
+ *
+ * Les photos se choisissent avec les boutons « Choisir des photos », ou se déposent n'importe où sur la page.
+ * Chacune est réduite en JPEG dans le navigateur, avec ses données EXIF (date, position), puis montrée en vignette,
+ * retirable jusqu'à l'envoi. L'envoi se fait par lots ; un voilier avance sur la barre de progression.
+ */
 
 // PHP ignore les fichiers au-delà de max_file_uploads (20 par défaut) dans une même requête :
 // les photos sont donc envoyées par lots
 const FILES_PER_REQUEST = 20;
 const MAX_WIDTH = 1920;
 const MAX_HEIGHT = 1080;
-const PREVIEW_SIZE = 70;
 const MIME_TYPE = 'image/jpeg';
 const QUALITY = 0.7;
+// Photos préparées en même temps : en ouvrir des dizaines d'un coup peut épuiser la mémoire d'un téléphone
+const PREPARE_CONCURRENCY = 4;
 
-const dataTransfer = new DataTransfer();
-const loadedFileNames = [];
+const form = document.querySelector('[data-upload-form]');
+const fileInput = form.querySelector('[data-file-input]');
+const dropCard = form.querySelector('[data-drop-card]');
+const selection = form.querySelector('[data-selection]');
+const tileList = form.querySelector('[data-tiles]');
+const actionBar = form.querySelector('[data-action-bar]');
+const readyRow = form.querySelector('[data-ready]');
+const submitButton = form.querySelector('[data-submit]');
+const progress = form.querySelector('[data-progress]');
+const dropOverlay = document.querySelector('[data-drop-overlay]');
+const tileTemplate = document.getElementById('photo-tile-template');
 
-const inputElement = document.getElementById('dropbox-file');
-const previewContainer = document.getElementById('previewContainer');
+/**
+ * Photos choisies, dans l'ordre de la grille.
+ *
+ * @type {{name: string, file: File|null, tile: HTMLLIElement, state: 'preparing'|'ready'|'sent'}[]}
+ */
+let photos = [];
+let isUploading = false;
 
-inputElement.addEventListener('change', () => handleFiles(inputElement.files));
-inputElement.form.addEventListener('submit', uploadFiles);
+form.querySelectorAll('[data-pick-files]').forEach((button) => {
+    button.addEventListener('click', () => fileInput.click());
+});
+fileInput.addEventListener('change', () => {
+    addFiles(fileInput.files);
+    // Vide le champ, pour que choisir de nouveau les mêmes fichiers soit bien pris en compte
+    fileInput.value = '';
+});
+document.querySelector('[data-confirm-clear]').addEventListener('click', () => {
+    [...photos].forEach(removePhoto);
+});
+form.addEventListener('submit', upload);
+window.addEventListener('beforeunload', (event) => {
+    if (isUploading) {
+        event.preventDefault();
+    }
+});
 
-const dragAndDropSupported = (() => {
-    const div = document.createElement('div');
-    return ('draggable' in div || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window;
-})();
-if (dragAndDropSupported) {
-    document.getElementById('draggableMsg').classList.remove('hidden');
+/*
+ * Glisser-déposer sur toute la page. Le compteur suit les entrées et sorties successives au-dessus des éléments
+ * de la page : le voile ne disparaît que lorsque les fichiers quittent vraiment la fenêtre.
+ */
+let dragDepth = 0;
 
-    const dropbox = document.getElementById('dropbox');
-    dropbox.addEventListener('dragover', (e) => {
-        // prevent default to allow drop
-        e.preventDefault();
-    });
-
-    dropbox.addEventListener('dragenter', () => {
-        // highlight potential drop target using svg icon
-        document.getElementById('dropbox-body').classList.add('invisible');
-        document.getElementById('drag-over-icon').classList.remove('hidden');
-    });
-
-    dropbox.addEventListener('dragleave', () => {
-        // remove highlight for potential drop target
-        document.getElementById('dropbox-body').classList.remove('invisible');
-        document.getElementById('drag-over-icon').classList.add('hidden');
-    });
-
-    dropbox.addEventListener('drop', (e) => {
-        // prevent default action
-        e.preventDefault();
-        // remove highlight for potential drop target
-        document.getElementById('dropbox-body').classList.remove('invisible');
-        document.getElementById('drag-over-icon').classList.add('hidden');
-        handleFiles(e.dataTransfer.files);
-    });
+function isFileDrag(event) {
+    return event.dataTransfer?.types.includes('Files');
 }
 
-function handleFiles(files) {
-    const startTime = performance.now();
-    document.getElementById('dropbox-body').classList.add('invisible');
-    document.getElementById('loading-spinner').classList.remove('hidden');
-    document.getElementById('info')?.remove();
-    // Pour chaque fichier on vérifie qu'il s'agit bien d'une image, et qu'il n'est pas déjà chargé
-    const imageFiles = Array.from(files).filter(
-        (file) => !loadedFileNames.includes(file.name) && file.type.startsWith('image/'),
+window.addEventListener('dragenter', (event) => {
+    if (!isFileDrag(event)) {
+        return;
+    }
+    event.preventDefault();
+    dragDepth++;
+    if (!isUploading) {
+        dropOverlay.classList.remove('hidden');
+    }
+});
+
+window.addEventListener('dragover', (event) => {
+    if (!isFileDrag(event)) {
+        return;
+    }
+    // Sans cela, le navigateur ouvrirait la photo déposée à la place de la page
+    event.preventDefault();
+    event.dataTransfer.dropEffect = isUploading ? 'none' : 'copy';
+});
+
+window.addEventListener('dragleave', (event) => {
+    if (!isFileDrag(event)) {
+        return;
+    }
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) {
+        dropOverlay.classList.add('hidden');
+    }
+});
+
+window.addEventListener('drop', (event) => {
+    if (!isFileDrag(event)) {
+        return;
+    }
+    event.preventDefault();
+    dragDepth = 0;
+    dropOverlay.classList.add('hidden');
+    addFiles(event.dataTransfer.files);
+});
+
+/**
+ * Ajoute des fichiers à la grille : une vignette d'attente apparaît tout de suite pour chacun,
+ * puis la photo s'y affiche dès qu'elle est prête.
+ *
+ * @param {FileList} fileList
+ */
+async function addFiles(fileList) {
+    if (isUploading) {
+        return;
+    }
+
+    const files = Array.from(fileList);
+    const notImageNames = files.filter((file) => !file.type.startsWith('image/')).map((file) => file.name);
+    // Une photo déjà choisie (même nom) n'est pas ajoutée une seconde fois
+    const newFiles = files.filter(
+        (file) => file.type.startsWith('image/') && !photos.some((photo) => photo.name === file.name),
     );
-    Promise.all(imageFiles.map((file) => loadImage(file))).then((loaded) => {
-        document.getElementById('dropbox-body').classList.remove('invisible');
-        document.getElementById('loading-spinner').classList.add('hidden');
-        console.log(`Temps d'exécution : ${(performance.now() - startTime) / 1000} secondes`);
-        const unreadableFileNames = imageFiles.filter((file, i) => !loaded[i]).map((file) => file.name);
-        if (unreadableFileNames.length > 0) {
-            showErrors([`Ces fichiers n'ont pas pu être lus : ${unreadableFileNames.join(', ')}.`]);
-        }
+    const messages =
+        notImageNames.length > 0 ? [`Ces fichiers ne sont pas des photos : ${notImageNames.join(', ')}.`] : [];
+    showErrors(messages);
+
+    const added = newFiles.map((file) => {
+        const photo = { name: file.name, file: null, tile: createTile(file.name), state: 'preparing' };
+        photo.tile.querySelector('[data-remove]').addEventListener('click', () => removePhoto(photo));
+        photos.push(photo);
+        tileList.append(photo.tile);
+        return { photo, file };
     });
+    render();
+
+    const unreadableNames = [];
+    await eachWithConcurrency(added, PREPARE_CONCURRENCY, async ({ photo, file }) => {
+        const preparedFile = await prepareImage(file, photo.tile.querySelector('canvas'));
+        // La photo a pu être retirée pendant sa préparation
+        if (!photos.includes(photo)) {
+            return;
+        }
+        if (preparedFile) {
+            photo.file = preparedFile;
+            setState(photo, 'ready');
+        } else {
+            unreadableNames.push(file.name);
+            removePhoto(photo);
+        }
+        render();
+    });
+
+    if (unreadableNames.length > 0) {
+        showErrors([...messages, `Ces photos n'ont pas pu être lues : ${unreadableNames.join(', ')}.`]);
+    }
 }
 
 /**
- * Redimensionne l'image en JPEG et l'ajoute à la sélection. La promesse est résolue à false si l'image est illisible.
+ * @param {string} name
+ * @returns {HTMLLIElement}
  */
-function loadImage(file) {
+function createTile(name) {
+    const tile = tileTemplate.content.firstElementChild.cloneNode(true);
+    tile.querySelector('canvas').setAttribute('aria-label', name);
+    tile.querySelector('[data-remove-name]').textContent = ` ${name}`;
+    return tile;
+}
+
+function removePhoto(photo) {
+    photos = photos.filter((other) => other !== photo);
+    photo.tile.remove();
+    render();
+}
+
+function setState(photo, state) {
+    photo.state = state;
+    photo.tile.dataset.state = state;
+}
+
+/**
+ * Met la page à jour d'après les photos choisies : carte de départ ou grille, compteurs, bouton d'envoi.
+ */
+function render() {
+    const preparingCount = photos.filter((photo) => photo.state === 'preparing').length;
+    const readyCount = photos.filter((photo) => photo.state === 'ready').length;
+    const hasPhotos = photos.length > 0;
+
+    dropCard.classList.toggle('hidden', hasPhotos);
+    selection.classList.toggle('hidden', !hasPhotos);
+    actionBar.classList.toggle('hidden', !hasPhotos);
+
+    form.querySelector('[data-selection-title]').textContent = countLabel(
+        photos.length,
+        'photo choisie',
+        'photos choisies',
+    );
+    form.querySelector('[data-preparing]').textContent =
+        preparingCount > 0 ? `Préparation en cours, encore ${countLabel(preparingCount, 'photo', 'photos')}…` : '';
+    form.querySelector('[data-submit-label]').textContent = submitLabel(preparingCount, readyCount);
+    submitButton.disabled = isUploading || preparingCount > 0 || readyCount === 0;
+}
+
+/**
+ * Le bouton d'envoi dit combien de photos il ajoute.
+ */
+function submitLabel(preparingCount, readyCount) {
+    if (preparingCount > 0) {
+        return 'Préparation des photos…';
+    }
+    if (readyCount > 1) {
+        return `Ajouter mes ${readyCount} photos`;
+    }
+    return readyCount === 1 ? 'Ajouter ma photo' : 'Ajouter mes photos';
+}
+
+/**
+ * @param {number} count
+ * @param {string} singular
+ * @param {string} plural
+ */
+function countLabel(count, singular, plural) {
+    return `${count} ${count > 1 ? plural : singular}`;
+}
+
+/**
+ * Lance worker sur chaque élément, au plus limit à la fois.
+ */
+async function eachWithConcurrency(items, limit, worker) {
+    let next = 0;
+    const run = async () => {
+        while (next < items.length) {
+            await worker(items[next++]);
+        }
+    };
+    await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
+}
+
+/**
+ * Dessine la vignette, puis réduit la photo en JPEG en gardant ses EXIF. Résolue à null si la photo est illisible.
+ *
+ * @param {File} file
+ * @param {HTMLCanvasElement} previewCanvas
+ * @returns {Promise<File|null>}
+ */
+function prepareImage(file, previewCanvas) {
     return new Promise((resolve) => {
         const img = new Image();
-        img.src = URL.createObjectURL(file);
         img.onerror = () => {
             URL.revokeObjectURL(img.src);
-            resolve(false);
+            resolve(null);
         };
         img.onload = () => {
             URL.revokeObjectURL(img.src);
-            const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+            drawPreview(img, previewCanvas);
+
+            const [width, height] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
             const canvas = document.createElement('canvas');
-            canvas.width = newWidth;
-            canvas.height = newHeight;
+            canvas.width = width;
+            canvas.height = height;
             const ctx = canvas.getContext('2d');
             // Fond blanc pour les images transparentes (PNG, GIF), dont la transparence deviendrait noire en JPEG
             ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, newWidth, newHeight);
-            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
             canvas.toBlob(
                 async (blob) => {
                     if (!blob) {
-                        resolve(false);
+                        resolve(null);
                         return;
                     }
-                    dataTransfer.items.add(new File([await copyExif(file, blob)], file.name, { type: MIME_TYPE }));
-                    inputElement.files = dataTransfer.files;
-                    loadedFileNames.push(file.name);
-                    addPreview(img, file.name);
-                    resolve(true);
+                    resolve(new File([await copyExif(file, blob)], file.name, { type: MIME_TYPE }));
                 },
                 MIME_TYPE,
                 QUALITY,
             );
         };
+        img.src = URL.createObjectURL(file);
     });
+}
+
+/**
+ * Vignette carrée : le centre de la photo, recadré pour remplir le carré.
+ */
+function drawPreview(img, canvas) {
+    const side = Math.min(img.naturalWidth, img.naturalHeight);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(
+        img,
+        (img.naturalWidth - side) / 2,
+        (img.naturalHeight - side) / 2,
+        side,
+        side,
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+    );
 }
 
 function calculateSize(img, maxWidth, maxHeight) {
     const ratio = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);
-    return [img.naturalWidth * ratio, img.naturalHeight * ratio];
+    return [Math.round(img.naturalWidth * ratio), Math.round(img.naturalHeight * ratio)];
 }
 
-async function uploadFiles(e) {
-    if (dataTransfer.files.length === 0) {
-        // Envoi classique du formulaire pour afficher l'erreur de validation
+/**
+ * Envoie les photos prêtes par lots. Celles d'un lot réussi sont marquées « Envoyée » : après une erreur,
+ * un nouvel envoi ne reprend que les autres.
+ */
+async function upload(event) {
+    event.preventDefault();
+    const photosToSend = photos.filter((photo) => photo.state === 'ready');
+    if (isUploading || photosToSend.length === 0) {
         return;
     }
-    e.preventDefault();
-    const form = e.target;
-    const submitButton = form.querySelector('button[type="submit"]');
-    const fileNb = document.getElementById('fileNb');
-    const totalCount = dataTransfer.files.length;
-    let uploadedCount = 0;
-    let response;
-    submitButton.disabled = true;
+
+    isUploading = true;
+    form.dataset.uploading = '';
     showErrors([]);
-    while (dataTransfer.files.length > 0) {
-        fileNb.textContent = `Envoi des photos : ${uploadedCount}/${totalCount}`;
-        const batch = Array.from(dataTransfer.files).slice(0, FILES_PER_REQUEST);
+    readyRow.classList.add('hidden');
+    progress.classList.remove('hidden');
+    setProgress(0, photosToSend.length);
+    render();
+
+    let response = null;
+    for (let start = 0; start < photosToSend.length; start += FILES_PER_REQUEST) {
+        const batch = photosToSend.slice(start, start + FILES_PER_REQUEST);
         const formData = new FormData(form);
         formData.delete('files[]');
-        batch.forEach((file) => formData.append('files[]', file));
+        batch.forEach((photo) => formData.append('files[]', photo.file));
         try {
             response = await fetch(form.action, {
                 method: 'POST',
                 headers: { Accept: 'application/json' },
                 body: formData,
             });
-        } catch (error) {
+        } catch {
             response = null;
         }
         if (!response?.ok) {
-            await showUploadErrors(response, uploadedCount);
-            submitButton.disabled = false;
+            await showUploadErrors(response, start);
+            stopUploading();
             return;
         }
-        // Les photos envoyées sont retirées de la sélection, pour ne pas les renvoyer en cas d'erreur sur un lot suivant
-        batch.forEach((file) => removeFileByName(file.name));
-        uploadedCount += batch.length;
+        batch.forEach((photo) => {
+            setState(photo, 'sent');
+            photo.file = null;
+        });
+        setProgress(start + batch.length, photosToSend.length);
     }
-    fileNb.textContent = `Envoi des photos : ${uploadedCount}/${totalCount}`;
-    window.location.href = (await response.json()).redirect;
+
+    const { redirect } = await response.json();
+    isUploading = false;
+    window.location.href = redirect;
+}
+
+function stopUploading() {
+    isUploading = false;
+    delete form.dataset.uploading;
+    progress.classList.add('hidden');
+    readyRow.classList.remove('hidden');
+    render();
+}
+
+/**
+ * Avance le voilier et la barre de progression.
+ */
+function setProgress(sentCount, totalCount) {
+    // La piste va de 1,25 rem du bord gauche jusqu'à la bouée, large de 1,75 rem
+    const distance = `(100% - 3rem) * ${totalCount > 0 ? sentCount / totalCount : 0}`;
+    const bar = progress.querySelector('[data-progress-bar]');
+    progress.querySelector('[data-progress-fill]').style.width = `calc(${distance})`;
+    progress.querySelector('[data-progress-boat]').style.left = `calc(1.25rem + ${distance})`;
+    bar.setAttribute('aria-valuemax', totalCount);
+    bar.setAttribute('aria-valuenow', sentCount);
+    progress.querySelector('[data-progress-label]').textContent = `${sentCount} sur ${totalCount}`;
 }
 
 async function showUploadErrors(response, uploadedCount) {
@@ -169,52 +384,26 @@ async function showUploadErrors(response, uploadedCount) {
         messages = Object.values((await response.json()).errors).flat();
     }
     if (uploadedCount > 0) {
-        messages.push(`${uploadedCount} photos ont déjà été ajoutées à l'album.`);
+        messages.push(
+            `${countLabel(uploadedCount, 'photo a', 'photos ont')} déjà été ${uploadedCount > 1 ? 'ajoutées' : 'ajoutée'} à l'album ; un nouvel envoi ne reprendra que les autres.`,
+        );
     }
     showErrors(messages);
 }
 
 function showErrors(messages) {
-    document.getElementById('uploadErrors').replaceChildren(
+    const errors = form.querySelector('[data-errors]');
+    errors.querySelector('ul').replaceChildren(
         ...messages.map((message) => {
             const li = document.createElement('li');
             li.textContent = message;
             return li;
         }),
     );
-}
-
-function removeFile(e) {
-    const canvas = e.target.closest('div').previousElementSibling;
-    removeFileByName(canvas.getAttribute('data-filename'));
-}
-
-function removeFileByName(filename) {
-    for (let i = 0; i < dataTransfer.items.length; i++) {
-        if (dataTransfer.items[i].getAsFile().name == filename) {
-            dataTransfer.items.remove(i);
-            break;
-        }
+    errors.classList.toggle('hidden', messages.length === 0);
+    if (messages.length > 0) {
+        errors.scrollIntoView({ block: 'nearest' });
     }
-    document.getElementById('fileNb').textContent = `${dataTransfer.files.length} fichiers sélectionnés`;
-    inputElement.files = dataTransfer.files;
-    previewContainer
-        .querySelector(`canvas[data-filename="${CSS.escape(filename)}"]`)
-        ?.closest('div')
-        .remove();
-}
-
-function addPreview(img, fileName) {
-    const clone = document.getElementById('previewElement').content.cloneNode(true);
-    const canvas = clone.querySelector('canvas');
-    canvas.width = PREVIEW_SIZE;
-    canvas.height = PREVIEW_SIZE;
-    canvas.getContext('2d').drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
-    canvas.setAttribute('data-filename', fileName);
-    clone.querySelector('span').textContent = fileName;
-    clone.querySelector('button').addEventListener('click', removeFile);
-    previewContainer.appendChild(clone);
-    document.getElementById('fileNb').textContent = `${dataTransfer.files.length} fichiers sélectionnés`;
 }
 
 const SOI = 0xffd8;

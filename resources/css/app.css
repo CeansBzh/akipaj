@@ -27,6 +27,16 @@
 
     --font-sans: Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+    /* Le voilier qui entre quand on fait glisser des photos au-dessus de la page d'ajout */
+    --animate-sail-in: sail-in 0.5s ease-out;
+
+    @keyframes sail-in {
+        from {
+            opacity: 0;
+            transform: translateX(-3rem) rotate(-4deg);
+        }
+    }
 }
 
 /* Défauts de Tailwind v3 gardés pour conserver l'apparence : bordures grises et curseur pointeur sur les boutons */

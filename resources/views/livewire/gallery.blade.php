@@ -12,7 +12,7 @@
 @endphp
 
 {{--
-    Galerie : les albums en bandeau, les filtres, puis toutes les photos en mosaïque sur toute la largeur.
+    Galerie : les albums en bandeau, les filtres, puis toutes les photos en mosaïque, aux marges de la page.
     La visionneuse (resources/js/gallery.js) s'ouvre sur la vignette touchée et parcourt les photos chargées.
 --}}
 <div class="pb-16" x-data="{
@@ -63,7 +63,7 @@
 
     {{-- Bandeau des albums, du plus récent au plus ancien : un album touché filtre la galerie --}}
     @if ($this->albums->isNotEmpty())
-        <section aria-labelledby="gallery-albums-title" class="mt-6 sm:mt-8" x-data="{
+        <section aria-labelledby="gallery-albums-title" class="mt-6 sm:mt-8 border-b" x-data="{
             atStart: true,
             atEnd: false,
             update() {
@@ -100,49 +100,50 @@
             </div>
 
             <ul x-ref="strip" x-on:scroll.debounce.50ms="update()" x-on:resize.window.debounce.100ms="update()"
-                class="mt-3 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pt-1 pb-3 sm:mt-4 sm:scroll-px-6 sm:gap-4 sm:px-6 lg:scroll-px-8 lg:px-8">
+                class="mt-3 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pt-1 pb-3 sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8">
                 @foreach ($this->albums as $album)
                     @php
                         $isSelected = count($albumsFilter) === 1 && (int) reset($albumsFilter) === $album->id;
                         $cover = $album->imagePath ?? $album->oldestPhoto?->thumb_path;
                     @endphp
-                    <li class="w-32 shrink-0 snap-start sm:w-44" wire:key="strip-album-{{ $album->id }}">
+                    <li class="w-60 shrink-0 snap-start sm:w-64" wire:key="strip-album-{{ $album->id }}">
                         <button type="button" wire:click="selectAlbum({{ $album->id }})"
                             aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
-                            class="group flex w-full flex-col text-left focus-visible:outline-none">
-                            <span @class([
-                                'relative block aspect-square overflow-hidden rounded-2xl bg-gray-200 ring-offset-2 group-focus-visible:ring-4 group-focus-visible:ring-primary-700',
-                                'ring-4 ring-primary-700' => $isSelected,
+                            @class([
+                                'flex h-full w-full items-center gap-3 rounded-2xl p-2 pr-3 text-left ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700',
+                                'bg-white ring-1 ring-gray-200 hover:bg-primary-50' => ! $isSelected,
+                                'bg-primary-50 ring-2 ring-primary-700' => $isSelected,
                             ])>
+                            <span class="relative size-16 shrink-0 overflow-hidden rounded-xl bg-gray-200">
                                 @if ($cover)
-                                    <img src="{{ $cover }}" alt="" width="176" height="176" loading="lazy"
-                                        decoding="async"
-                                        class="size-full object-cover motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-105">
+                                    <img src="{{ $cover }}" alt="" width="64" height="64" loading="lazy"
+                                        decoding="async" class="size-full object-cover">
                                 @endif
                                 @if ($isSelected)
-                                    <span
-                                        class="absolute top-2 right-2 inline-flex size-8 items-center justify-center rounded-full bg-primary-700 text-white shadow-md">
+                                    <span class="absolute inset-0 flex items-center justify-center bg-primary-900/50 text-white">
                                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-7">
                                             <path d="m5 12.5 4.5 4.5L19 7.5" />
                                         </svg>
                                     </span>
                                 @endif
                             </span>
-                            <span class="mt-2 line-clamp-2 leading-snug font-bold break-words text-gray-900">{{ $album->title }}</span>
-                            <span class="mt-0.5 text-sm text-gray-700">
-                                {{ ucfirst($album->date->isoFormat('MMMM YYYY')) }} ·
-                                {{ $album->photos_count }} {{ $album->photos_count > 1 ? 'photos' : 'photo' }}
+                            <span class="min-w-0">
+                                <span class="line-clamp-2 leading-tight font-bold break-words text-gray-900">{{ $album->title }}</span>
+                                <span class="mt-1 block text-sm leading-tight text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
+                                <span class="block text-sm leading-tight text-gray-700">
+                                    {{ $album->photos_count }} {{ $album->photos_count > 1 ? 'photos' : 'photo' }}
+                                </span>
                             </span>
                         </button>
                     </li>
                 @endforeach
                 @can('create', Album::class)
-                    <li class="w-32 shrink-0 snap-start sm:w-44">
+                    <li class="shrink-0 snap-start">
                         <a href="{{ route('albums.create') }}"
-                            class="flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 p-4 text-center font-semibold text-primary-800 transition-colors hover:border-primary-700 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
-                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-                                stroke-linecap="round" stroke-linejoin="round" class="size-8">
+                            class="flex h-full min-h-20 items-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 px-5 font-semibold whitespace-nowrap text-primary-800 transition-colors hover:border-primary-700 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
                                 <path d="M12 5v14M5 12h14" />
                             </svg>
                             Créer un album
@@ -154,7 +155,7 @@
     @endif
 
     {{-- Regroupement, ordre et filtres --}}
-    <div class="mt-4 flex flex-wrap items-center gap-3 px-4 sm:mt-6 sm:px-6 lg:px-8">
+    <div class="mt-5 flex flex-wrap items-center gap-3 px-4 sm:mt-6 sm:px-6 lg:px-8">
         <fieldset>
             <legend class="sr-only">Regrouper les photos</legend>
             <div class="inline-flex rounded-full bg-gray-100 p-1">
@@ -347,13 +348,13 @@
         Mosaïque : une seule grille pour toutes les photos et les titres des groupes, qui prennent toute la largeur.
         Chaque page chargée s'ajoute à la fin de l'îlot, donc de la grille.
     --}}
-    <div class="mt-6 @container">
+    <div class="mx-4 mt-6 @container sm:mx-6 lg:mx-8">
         <div class="photo-masonry" data-gallery-grid>
             @island(name: 'photos', always: true)
                 @foreach ($this->photoGroups as $group)
                     @if ($group['title'])
                         <h2 wire:key="group-{{ $group['key'] }}"
-                            class="col-span-full flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 pt-8 pb-3 first:pt-2 sm:px-6 lg:px-8">
+                            class="col-span-full flex flex-wrap items-baseline gap-x-3 gap-y-1 pt-8 pb-3 first:pt-2">
                             <span class="text-xl font-bold break-words text-gray-900">{{ $group['title'] }}</span>
                             <span class="font-sans text-base font-normal text-gray-700">{{ $group['details'] }}</span>
                         </h2>
