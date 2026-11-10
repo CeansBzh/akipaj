@@ -11,7 +11,7 @@ const MultiSelectDropdown = (params) => {
         maxWidth: '100%',
         maxHeight: '180px',
         borderRadius: 6,
-        ...params
+        ...params,
     };
 
     const newElement = (tag, params) => {
@@ -22,8 +22,8 @@ const MultiSelectDropdown = (params) => {
                     Array.isArray(params[key])
                         ? params[key].forEach((o) => (o !== '' ? element.classList.add(o) : 0))
                         : params[key] !== ''
-                            ? element.classList.add(params[key])
-                            : 0;
+                          ? element.classList.add(params[key])
+                          : 0;
                 } else if (key === 'style') {
                     Object.keys(params[key]).forEach((value) => {
                         element.style[value] = params[key][value];
@@ -49,9 +49,9 @@ const MultiSelectDropdown = (params) => {
             class: ['multiselect-dropdown-search'].concat([config.searchInput?.class ?? 'form-control']),
             style: {
                 width: '100%',
-                display: config.search ? 'block' : multiSelect.attributes.search?.value === 'true' ? 'block' : 'none'
+                display: config.search ? 'block' : multiSelect.attributes.search?.value === 'true' ? 'block' : 'none',
             },
-            placeholder: config.txtSearch
+            placeholder: config.txtSearch,
         });
         dropdownListWrapper.appendChild(search);
         div.appendChild(dropdownListWrapper);
@@ -75,7 +75,10 @@ const MultiSelectDropdown = (params) => {
             }
 
             function createOption(option) {
-                let optionElement = newElement('div', { class: option.selected ? ['checked', 'option'] : 'option', srcElement: option });
+                let optionElement = newElement('div', {
+                    class: option.selected ? ['checked', 'option'] : 'option',
+                    srcElement: option,
+                });
                 let optionCheckbox = newElement('input', { type: 'checkbox', checked: option.selected });
                 optionElement.appendChild(optionCheckbox);
                 optionElement.appendChild(newElement('label', { text: option.text }));
@@ -101,21 +104,23 @@ const MultiSelectDropdown = (params) => {
                 dropdownList.querySelectorAll(':scope div.option').forEach((div) => {
                     div.style.display = 'flex';
                 });
-                div.querySelectorAll('span.optext, span.placeholder').forEach((placeholder) => div.removeChild(placeholder));
+                div.querySelectorAll('span.optext, span.placeholder').forEach((placeholder) =>
+                    div.removeChild(placeholder),
+                );
                 let selected = Array.from(multiSelect.selectedOptions);
                 if (selected.length > (multiSelect.attributes['max-items']?.value ?? 3)) {
                     div.appendChild(
                         newElement('span', {
                             class: ['optext', 'maxselected'],
-                            text: selected.length + ' ' + config.txtSelected
-                        })
+                            text: selected.length + ' ' + config.txtSelected,
+                        }),
                     );
                 } else {
                     selected.map((option) => {
                         let span = newElement('span', {
                             class: 'optext',
                             text: option.text,
-                            srcElement: option
+                            srcElement: option,
                         });
                         if (!config.hideX) {
                             span.appendChild(
@@ -127,8 +132,8 @@ const MultiSelectDropdown = (params) => {
                                         span.srcElement.optionElement.dispatchEvent(new Event('click'));
                                         div.refresh();
                                         e.stopPropagation();
-                                    }
-                                })
+                                    },
+                                }),
                             );
                         }
                         div.appendChild(span);
@@ -138,8 +143,8 @@ const MultiSelectDropdown = (params) => {
                     div.appendChild(
                         newElement('span', {
                             class: 'placeholder',
-                            text: multiSelect.attributes?.placeholder?.value ?? config.placeholder
-                        })
+                            text: multiSelect.attributes?.placeholder?.value ?? config.placeholder,
+                        }),
                     );
                 }
             };
@@ -188,7 +193,7 @@ const MultiSelectDropdown = (params) => {
                 '--color-text--red': '#cc6666',
                 '--color-text--placeholder': '#ced4da',
                 '--border-radius--base': `${parseInt(config.borderRadius)}px` || '6px',
-                '--border-radius--small': `${parseInt(config.borderRadius) * 0.75}px` || '4px'
+                '--border-radius--small': `${parseInt(config.borderRadius) * 0.75}px` || '4px',
             },
             '.multiselect-dropdown': {
                 position: 'relative',
@@ -205,14 +210,14 @@ const MultiSelectDropdown = (params) => {
                 'background-position': 'right 6px center',
                 'background-size': '16px 12px',
                 'min-width': `${config.minWidth}` ?? '140px',
-                'width': '100%'
+                width: '100%',
             },
             'span.optext, span.placeholder': {
                 display: 'inline-flex',
                 'justify-content': 'center',
                 'align-items': 'center',
                 'font-size': '16px',
-                'border-radius': 'var(--border-radius--small)'
+                'border-radius': 'var(--border-radius--small)',
             },
             'span.optext': {
                 'background-color': 'var(--color-background--option)',
@@ -221,17 +226,17 @@ const MultiSelectDropdown = (params) => {
                 '-webkit-user-select': 'none',
                 '-moz-user-select': 'none',
                 '-ms-user-select': 'none',
-                'user-select': 'none'
+                'user-select': 'none',
             },
             'span.optext .optdel': {
                 float: 'right',
                 margin: '0 -6px 1px 6px',
                 'font-size': '12px',
                 cursor: 'pointer',
-                color: 'var(--color-text--grey)'
+                color: 'var(--color-text--grey)',
             },
             'span.optext .optdel:hover': {
-                color: 'var(--color-text--red)'
+                color: 'var(--color-text--red)',
             },
             'span.placeholder': {
                 color: 'rgba(0, 0, 0, 0.7)',
@@ -246,21 +251,21 @@ const MultiSelectDropdown = (params) => {
                 top: 0,
                 left: 0,
                 right: 0,
-                background: 'var(--color-background)'
+                background: 'var(--color-background)',
             },
             '.multiselect-dropdown-list-wrapper.searching .multiselect-dropdown-list .option-group': {
-                display: 'none'
+                display: 'none',
             },
             '.multiselect-dropdown-search': {
                 padding: '0.5rem 0.75rem',
                 'border-radius': 'var(--border-radius--base)',
                 border: 'solid 1px transparent',
                 'border-bottom': 'solid 1px var(--color-border)',
-                'font-size': 'inherit'
+                'font-size': 'inherit',
             },
             '.multiselect-dropdown-search::placeholder': {
                 color: 'rgba(0, 0, 0, 0.7)',
-                'font-size': '16px'
+                'font-size': '16px',
             },
             '.multiselect-dropdown-search:focus, .multiselect-dropdown-search:focus-visible': {
                 outline: 'none',
@@ -271,20 +276,20 @@ const MultiSelectDropdown = (params) => {
                 'overflow-y': 'auto',
                 'overflow-x': 'hidden',
                 height: '100%',
-                'max-height': `${config.maxHeight}` ?? '160px'
+                'max-height': `${config.maxHeight}` ?? '160px',
             },
             '.multiselect-dropdown-list::-webkit-scrollbar': {
-                width: '4px'
+                width: '4px',
             },
             '.multiselect-dropdown-list::-webkit-scrollbar-thumb': {
                 'background-color': 'var(--color-background--option)',
-                'border-radius': '1000px'
+                'border-radius': '1000px',
             },
             '.multiselect-dropdown-list .option, .multiselect-dropdown-list div > input, .multiselect-dropdown-list div > label':
-            {
-                cursor: 'pointer',
-                'border-radius': 'var(--border-radius--base)'
-            },
+                {
+                    cursor: 'pointer',
+                    'border-radius': 'var(--border-radius--base)',
+                },
             '.multiselect-dropdown-list .option-group': {
                 'font-weight': 'bold',
             },
@@ -298,20 +303,20 @@ const MultiSelectDropdown = (params) => {
                 'column-gap': '6px',
                 padding: '1px 6px',
                 margin: '6px 8px 6px 6px',
-                transition: '100ms cubic-bezier(0.455, 0.03, 0.515, 0.955)'
+                transition: '100ms cubic-bezier(0.455, 0.03, 0.515, 0.955)',
             },
             '.multiselect-dropdown-list .option:hover': {
-                'background-color': 'var(--color-background--option--hover)'
+                'background-color': 'var(--color-background--option--hover)',
             },
             '.multiselect-dropdown-list-input': {
                 height: '14px',
                 width: '14px',
                 border: 'solid 1px var(--color-text--grey)',
-                margin: 0
+                margin: 0,
             },
             '.multiselect-dropdown-all-selector': {
-                'border-bottom': 'solid 1px var(--color-border)'
-            }
+                'border-bottom': 'solid 1px var(--color-border)',
+            },
         };
         const style = document.createElement('style');
         style.setAttribute('type', 'text/css');
@@ -320,7 +325,7 @@ const MultiSelectDropdown = (params) => {
                 (selector) =>
                     `${selector} { ${Object.keys(styles[selector])
                         .map((property) => `${property}: ${styles[selector][property]}`)
-                        .join('; ')} }`
+                        .join('; ')} }`,
             )
             .join('\n')}`;
         document.head.appendChild(style);

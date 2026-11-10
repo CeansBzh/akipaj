@@ -8,7 +8,7 @@
 
         <div class="mb-4 text-sm text-gray-600">
             {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the
-                                    link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+                                                link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
         </div>
 
         @if (session('status') == 'verification-link-sent')
@@ -32,7 +32,7 @@
                 @csrf
 
                 <button type="submit"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                    class="focus:outline-hidden rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                     {{ __('Log Out') }}
                 </button>
             </form>

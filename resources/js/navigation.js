@@ -29,7 +29,9 @@ export default () => ({
         let isJumping = false;
         let jumpTimer = null;
 
-        new ResizeObserver(() => root.style.setProperty('--nav-height', `${this.$el.offsetHeight}px`)).observe(this.$el);
+        new ResizeObserver(() => root.style.setProperty('--nav-height', `${this.$el.offsetHeight}px`)).observe(
+            this.$el,
+        );
         const publishOffset = () => root.style.setProperty('--nav-offset', this.isHidden ? '0px' : 'var(--nav-height)');
         publishOffset();
         this.$watch('isHidden', publishOffset);

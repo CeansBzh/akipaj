@@ -5,10 +5,11 @@
 @php
     $selectedAlbum = $this->selectedAlbum;
     $activeFilterCount = count($usersFilter) + count($albumsFilter);
-    $pill = 'inline-flex min-h-11 items-center gap-2 rounded-full py-2 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700';
+    $pill =
+        'inline-flex min-h-11 items-center gap-2 rounded-full py-2 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700';
     $primaryColors = 'bg-primary-700 text-white hover:bg-primary-800';
-    $primaryPill = $pill.' px-5 '.$primaryColors;
-    $secondaryPill = $pill.' px-5 bg-white text-primary-800 ring-1 ring-gray-300 ring-inset hover:bg-primary-50';
+    $primaryPill = $pill . ' px-5 ' . $primaryColors;
+    $secondaryPill = $pill . ' px-5 bg-white text-primary-800 ring-1 ring-gray-300 ring-inset hover:bg-primary-50';
 @endphp
 
 {{--
@@ -43,7 +44,8 @@
             </p>
         </div>
         @if ($selectedAlbum)
-            <a href="{{ route('photos.create', $selectedAlbum) }}" class="{{ $pill }} {{ $primaryColors }} px-4 sm:px-5">
+            <a href="{{ route('photos.create', $selectedAlbum) }}"
+                class="{{ $pill }} {{ $primaryColors }} px-4 sm:px-5">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
                     <path d="M12 5v14M5 12h14" />
@@ -51,7 +53,8 @@
                 Ajouter mes photos
             </a>
         @else
-            <button type="button" x-on:click="$dispatch('open-modal', 'choose-upload-album')" class="{{ $pill }} {{ $primaryColors }} px-4 sm:px-5">
+            <button type="button" x-on:click="$dispatch('open-modal', 'choose-upload-album')"
+                class="{{ $pill }} {{ $primaryColors }} px-4 sm:px-5">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
                     <path d="M12 5v14M5 12h14" />
@@ -63,7 +66,7 @@
 
     {{-- Bandeau des albums, du plus récent au plus ancien : un album touché filtre la galerie --}}
     @if ($this->albums->isNotEmpty())
-        <section aria-labelledby="gallery-albums-title" class="mt-6 sm:mt-8 border-b" x-data="{
+        <section aria-labelledby="gallery-albums-title" class="mt-6 border-b sm:mt-8" x-data="{
             atStart: true,
             atEnd: false,
             update() {
@@ -76,23 +79,24 @@
                 const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
                 strip.scrollBy({ left: direction * strip.clientWidth * 0.8, behavior });
             },
-        }" x-init="update()">
+        }"
+            x-init="update()">
             <div class="flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <h2 id="gallery-albums-title" class="text-xl font-bold text-gray-900">Albums</h2>
                 <div class="hidden gap-2 sm:flex">
-                    <button type="button" x-on:click="scroll(-1)" x-bind:disabled="atStart" aria-label="Albums précédents"
-                        title="Albums précédents"
-                        class="inline-flex size-11 items-center justify-center rounded-full text-gray-900 ring-1 ring-gray-300 ring-inset transition-colors hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 disabled:opacity-40 disabled:hover:bg-transparent">
-                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                    <button type="button" x-on:click="scroll(-1)" x-bind:disabled="atStart"
+                        aria-label="Albums précédents" title="Albums précédents"
+                        class="focus-visible:outline-primary-700 inline-flex size-11 items-center justify-center rounded-full text-gray-900 ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-40 disabled:hover:bg-transparent">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5">
                             <path d="m15 6-6 6 6 6" />
                         </svg>
                     </button>
-                    <button type="button" x-on:click="scroll(1)" x-bind:disabled="atEnd" aria-label="Albums suivants"
-                        title="Albums suivants"
-                        class="inline-flex size-11 items-center justify-center rounded-full text-gray-900 ring-1 ring-gray-300 ring-inset transition-colors hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 disabled:opacity-40 disabled:hover:bg-transparent">
-                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                    <button type="button" x-on:click="scroll(1)" x-bind:disabled="atEnd"
+                        aria-label="Albums suivants" title="Albums suivants"
+                        class="focus-visible:outline-primary-700 inline-flex size-11 items-center justify-center rounded-full text-gray-900 ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-40 disabled:hover:bg-transparent">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5">
                             <path d="m9 6 6 6-6 6" />
                         </svg>
                     </button>
@@ -100,7 +104,7 @@
             </div>
 
             <ul x-ref="strip" x-on:scroll.debounce.50ms="update()" x-on:resize.window.debounce.100ms="update()"
-                class="mt-3 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pt-1 pb-3 sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8">
+                class="mt-3 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pb-3 pt-1 sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8">
                 @foreach ($this->albums as $album)
                     @php
                         $isSelected = count($albumsFilter) === 1 && (int) reset($albumsFilter) === $album->id;
@@ -108,29 +112,32 @@
                     @endphp
                     <li class="w-60 shrink-0 snap-start sm:w-64" wire:key="strip-album-{{ $album->id }}">
                         <button type="button" wire:click="selectAlbum({{ $album->id }})"
-                            aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
-                            @class([
+                            aria-pressed="{{ $isSelected ? 'true' : 'false' }}" @class([
                                 'flex h-full w-full items-center gap-3 rounded-2xl p-2 pr-3 text-left ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700',
-                                'bg-white ring-1 ring-gray-200 hover:bg-primary-50' => ! $isSelected,
+                                'bg-white ring-1 ring-gray-200 hover:bg-primary-50' => !$isSelected,
                                 'bg-primary-50 ring-2 ring-primary-700' => $isSelected,
                             ])>
                             <span class="relative size-16 shrink-0 overflow-hidden rounded-xl bg-gray-200">
                                 @if ($cover)
-                                    <img src="{{ $cover }}" alt="" width="64" height="64" loading="lazy"
-                                        decoding="async" class="size-full object-cover">
+                                    <img src="{{ $cover }}" alt="" width="64" height="64"
+                                        loading="lazy" decoding="async" class="size-full object-cover">
                                 @endif
                                 @if ($isSelected)
-                                    <span class="absolute inset-0 flex items-center justify-center bg-primary-900/50 text-white">
+                                    <span
+                                        class="bg-primary-900/50 absolute inset-0 flex items-center justify-center text-white">
                                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-7">
+                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                            class="size-7">
                                             <path d="m5 12.5 4.5 4.5L19 7.5" />
                                         </svg>
                                     </span>
                                 @endif
                             </span>
                             <span class="min-w-0">
-                                <span class="line-clamp-2 leading-tight font-bold break-words text-gray-900">{{ $album->title }}</span>
-                                <span class="mt-1 block text-sm leading-tight text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
+                                <span
+                                    class="line-clamp-2 wrap-break-word font-bold leading-tight text-gray-900">{{ $album->title }}</span>
+                                <span
+                                    class="mt-1 block text-sm leading-tight text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
                                 <span class="block text-sm leading-tight text-gray-700">
                                     {{ $album->photos_count }} {{ $album->photos_count > 1 ? 'photos' : 'photo' }}
                                 </span>
@@ -141,9 +148,9 @@
                 @can('create', Album::class)
                     <li class="shrink-0 snap-start">
                         <a href="{{ route('albums.create') }}"
-                            class="flex h-full min-h-20 items-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 px-5 font-semibold whitespace-nowrap text-primary-800 transition-colors hover:border-primary-700 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
-                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                            class="text-primary-800 hover:border-primary-700 hover:bg-primary-50 focus-visible:outline-primary-700 flex h-full min-h-20 items-center gap-2 whitespace-nowrap rounded-2xl border-2 border-dashed border-gray-300 px-5 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
                                 <path d="M12 5v14M5 12h14" />
                             </svg>
                             Créer un album
@@ -164,7 +171,7 @@
                         <input type="radio" wire:model.live="grouping" value="{{ $groupingOption->value }}"
                             class="peer sr-only">
                         <span
-                            class="inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-semibold text-gray-700 transition-colors peer-checked:bg-white peer-checked:text-gray-900 peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-primary-700 hover:text-gray-900">
+                            class="peer-focus-visible:outline-primary-700 inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-semibold text-gray-700 transition-colors hover:text-gray-900 peer-checked:bg-white peer-checked:text-gray-900 peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1">
                             {{ $groupingOption->label() }}
                         </span>
                     </label>
@@ -176,7 +183,7 @@
             <label class="flex items-center gap-2">
                 <span class="font-semibold text-gray-900">Trier</span>
                 <select wire:model.live="sort"
-                    class="min-h-11 rounded-full border-0 bg-white py-2 pr-9 pl-4 text-gray-900 ring-1 ring-gray-300 ring-inset focus:ring-2 focus:ring-primary-700">
+                    class="focus:ring-primary-700 min-h-11 rounded-full border-0 bg-white py-2 pl-4 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2">
                     @foreach (GallerySortEnum::cases() as $sortOption)
                         <option value="{{ $sortOption->value }}">{{ $sortOption->label() }}</option>
                     @endforeach
@@ -191,7 +198,8 @@
                 </svg>
                 Filtres
                 @if ($activeFilterCount > 0)
-                    <span class="rounded-full bg-primary-700 px-2 text-sm font-bold text-white">{{ $activeFilterCount }}</span>
+                    <span
+                        class="bg-primary-700 rounded-full px-2 text-sm font-bold text-white">{{ $activeFilterCount }}</span>
                 @endif
             </button>
         </div>
@@ -208,11 +216,12 @@
                             <input type="checkbox" wire:model.live="usersFilter" value="{{ $uploader->id }}"
                                 class="peer sr-only">
                             <span
-                                class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-3xl bg-white py-1 pr-4 pl-1 text-gray-900 ring-1 ring-gray-300 ring-inset transition-colors peer-checked:bg-primary-700 peer-checked:text-white peer-checked:ring-primary-700 peer-checked:[&>svg]:block peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-700 hover:bg-primary-50 peer-checked:hover:bg-primary-800">
+                                class="peer-checked:bg-primary-700 peer-checked:ring-primary-700 peer-focus-visible:outline-primary-700 hover:bg-primary-50 peer-checked:hover:bg-primary-800 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-3xl bg-white py-1 pl-1 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 transition-colors peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-checked:[&>svg]:block">
                                 <x-user-avatar :user="$uploader" class="size-9" />
                                 {{ $uploader->name }}
-                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                    stroke-linecap="round" stroke-linejoin="round" class="hidden size-5 shrink-0">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                    class="hidden size-5 shrink-0">
                                     <path d="m5 12.5 4.5 4.5L19 7.5" />
                                 </svg>
                             </span>
@@ -224,20 +233,21 @@
             <fieldset class="min-w-0">
                 <legend class="text-lg font-bold text-gray-900">Albums</legend>
                 <div class="mt-3 max-h-80 overflow-y-auto p-1">
-                    @foreach ($this->albums->groupBy(fn (Album $album) => $album->date->year) as $year => $albumsOfYear)
+                    @foreach ($this->albums->groupBy(fn(Album $album) => $album->date->year) as $year => $albumsOfYear)
                         <p class="mt-3 text-sm font-bold text-gray-700 first:mt-0">{{ $year }}</p>
                         <div class="mt-2 flex flex-wrap gap-2">
                             @foreach ($albumsOfYear as $album)
                                 <label class="relative" wire:key="filter-album-{{ $album->id }}">
-                                    <input type="checkbox" wire:model.live="albumsFilter" value="{{ $album->id }}"
-                                        class="peer sr-only">
+                                    <input type="checkbox" wire:model.live="albumsFilter"
+                                        value="{{ $album->id }}" class="peer sr-only">
                                     <span
-                                        class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-3xl bg-white px-4 py-2 text-gray-900 ring-1 ring-gray-300 ring-inset transition-colors peer-checked:bg-primary-700 peer-checked:text-white peer-checked:ring-primary-700 peer-checked:[&>svg]:block peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-700 hover:bg-primary-50 peer-checked:hover:bg-primary-800">
+                                        class="peer-checked:bg-primary-700 peer-checked:ring-primary-700 peer-focus-visible:outline-primary-700 hover:bg-primary-50 peer-checked:hover:bg-primary-800 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-3xl bg-white px-4 py-2 text-gray-900 ring-1 ring-inset ring-gray-300 transition-colors peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-checked:[&>svg]:block">
                                         {{ $album->title }}
-                                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                    stroke-linecap="round" stroke-linejoin="round" class="hidden size-5 shrink-0">
-                                    <path d="m5 12.5 4.5 4.5L19 7.5" />
-                                </svg>
+                                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                            stroke-linejoin="round" class="hidden size-5 shrink-0">
+                                            <path d="m5 12.5 4.5 4.5L19 7.5" />
+                                        </svg>
                                     </span>
                                 </label>
                             @endforeach
@@ -254,11 +264,12 @@
             @foreach ($filteredUsers as $filteredUser)
                 <button type="button" wire:click="removeUserFilter({{ $filteredUser->id }})"
                     wire:key="chip-user-{{ $filteredUser->id }}"
-                    class="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary-50 py-1 pr-3 pl-1 text-gray-900 ring-1 ring-primary-200 ring-inset transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                    class="bg-primary-50 ring-primary-200 hover:bg-primary-100 focus-visible:outline-primary-700 inline-flex min-h-11 items-center gap-2 rounded-full py-1 pl-1 pr-3 text-gray-900 ring-1 ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                     <x-user-avatar :user="$filteredUser" class="size-9" />
                     <span>Envoyées par <strong>{{ $filteredUser->name }}</strong></span>
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0 text-gray-700">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="size-5 shrink-0 text-gray-700">
                         <path d="M6 6l12 12M18 6 6 18" />
                     </svg>
                     <span class="sr-only">(retirer ce filtre)</span>
@@ -267,17 +278,18 @@
             @foreach ($filteredAlbums as $filteredAlbum)
                 <button type="button" wire:click="removeAlbumFilter({{ $filteredAlbum->id }})"
                     wire:key="chip-album-{{ $filteredAlbum->id }}"
-                    class="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary-50 py-2 pr-3 pl-4 text-gray-900 ring-1 ring-primary-200 ring-inset transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                    class="bg-primary-50 ring-primary-200 hover:bg-primary-100 focus-visible:outline-primary-700 inline-flex min-h-11 items-center gap-2 rounded-full py-2 pl-4 pr-3 text-gray-900 ring-1 ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                     <span>Album <strong>{{ $filteredAlbum->title }}</strong></span>
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0 text-gray-700">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="size-5 shrink-0 text-gray-700">
                         <path d="M6 6l12 12M18 6 6 18" />
                     </svg>
                     <span class="sr-only">(retirer ce filtre)</span>
                 </button>
             @endforeach
             <button type="button" wire:click="resetFilters"
-                class="inline-flex min-h-11 items-center rounded-full px-3 font-semibold text-primary-800 underline underline-offset-4 hover:text-primary-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                class="text-primary-800 hover:text-primary-900 focus-visible:outline-primary-700 inline-flex min-h-11 items-center rounded-full px-3 font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">
                 Voir toutes les photos
             </button>
         </div>
@@ -286,42 +298,49 @@
     {{-- L'album choisi seul est présenté au-dessus de ses photos : il remplace l'ancienne page de l'album --}}
     @if ($selectedAlbum)
         <section aria-labelledby="gallery-album-title"
-            class="mx-4 mt-6 rounded-3xl bg-primary-50 p-5 sm:mx-6 sm:p-8 lg:mx-8">
-            <h2 id="gallery-album-title" class="text-2xl font-bold break-words text-gray-900">{{ $selectedAlbum->title }}</h2>
+            class="bg-primary-50 mx-4 mt-6 rounded-3xl p-5 sm:mx-6 sm:p-8 lg:mx-8">
+            <h2 id="gallery-album-title" class="wrap-break-word text-2xl font-bold text-gray-900">
+                {{ $selectedAlbum->title }}</h2>
             <p class="mt-1 text-gray-700">
                 {{ ucfirst($selectedAlbum->date->isoFormat('MMMM YYYY')) }} ·
                 {{ $selectedAlbum->photos_count }} {{ $selectedAlbum->photos_count > 1 ? 'photos' : 'photo' }}
             </p>
             @if ($selectedAlbum->description)
-                <p class="mt-4 max-w-prose leading-relaxed break-words text-gray-800">{{ $selectedAlbum->description }}</p>
+                <p class="mt-4 max-w-prose wrap-break-word leading-relaxed text-gray-800">
+                    {{ $selectedAlbum->description }}</p>
             @endif
             @if ($selectedAlbum->trips->isNotEmpty())
                 <p class="mt-4 text-gray-800">
                     {{ $selectedAlbum->trips->count() > 1 ? 'Sorties' : 'Sortie' }} :
                     @foreach ($selectedAlbum->trips as $trip)
                         <a href="{{ route('trips.show', $trip) }}"
-                            class="font-semibold text-primary-800 underline underline-offset-4 hover:text-primary-900">{{ $trip->title }}</a>{{ $loop->last ? '' : ', ' }}
+                            class="text-primary-800 hover:text-primary-900 font-semibold underline underline-offset-4">{{ $trip->title }}</a>{{ $loop->last ? '' : ', ' }}
                     @endforeach
                 </p>
             @endif
             <div class="mt-5 flex flex-wrap gap-3">
                 @can('update', $selectedAlbum)
-                    <a href="{{ route('albums.edit', $selectedAlbum) }}" class="{{ $secondaryPill }}">Modifier l'album</a>
+                    <a href="{{ route('albums.edit', $selectedAlbum) }}" class="{{ $secondaryPill }}">Modifier
+                        l'album</a>
                 @endcan
                 @can('delete', $selectedAlbum)
                     <button type="button" x-on:click="$dispatch('open-modal', 'confirm-album-deletion')"
-                        class="{{ $pill }} px-5 bg-white text-red-700 ring-1 ring-gray-300 ring-inset hover:bg-red-50">
+                        class="{{ $pill }} bg-white px-5 text-red-700 ring-1 ring-inset ring-gray-300 hover:bg-red-50">
                         Supprimer l'album
                     </button>
                     <x-modal name="confirm-album-deletion" max-width="md" focusable>
                         <form method="post" action="{{ route('albums.destroy', $selectedAlbum) }}" class="p-6">
                             @csrf
                             @method('delete')
-                            <h2 class="text-lg font-bold text-gray-900">Supprimer l'album « {{ $selectedAlbum->title }} » ?</h2>
+                            <h2 class="text-lg font-bold text-gray-900">Supprimer l'album « {{ $selectedAlbum->title }} »
+                                ?</h2>
                             <p class="mt-2 text-gray-700">Ses photos seront supprimées avec lui.</p>
                             <div class="mt-6 flex flex-wrap justify-end gap-3">
-                                <button type="button" x-on:click="$dispatch('close')" class="{{ $secondaryPill }}">Annuler</button>
-                                <button type="submit" class="{{ $pill }} px-5 bg-red-700 text-white hover:bg-red-800">Supprimer l'album</button>
+                                <button type="button" x-on:click="$dispatch('close')"
+                                    class="{{ $secondaryPill }}">Annuler</button>
+                                <button type="submit"
+                                    class="{{ $pill }} bg-red-700 px-5 text-white hover:bg-red-800">Supprimer
+                                    l'album</button>
                             </div>
                         </form>
                     </x-modal>
@@ -348,14 +367,14 @@
         Mosaïque : une seule grille pour toutes les photos et les titres des groupes, qui prennent toute la largeur.
         Chaque page chargée s'ajoute à la fin de l'îlot, donc de la grille.
     --}}
-    <div class="mx-4 mt-6 @container sm:mx-6 lg:mx-8">
+    <div class="@container mx-4 mt-6 sm:mx-6 lg:mx-8">
         <div class="photo-masonry" data-gallery-grid>
             @island(name: 'photos', always: true)
                 @foreach ($this->photoGroups as $group)
                     @if ($group['title'])
                         <h2 wire:key="group-{{ $group['key'] }}"
-                            class="col-span-full flex flex-wrap items-baseline gap-x-3 gap-y-1 pt-8 pb-3 first:pt-2">
-                            <span class="text-xl font-bold break-words text-gray-900">{{ $group['title'] }}</span>
+                            class="col-span-full flex flex-wrap items-baseline gap-x-3 gap-y-1 pb-3 pt-8 first:pt-2">
+                            <span class="wrap-break-word text-xl font-bold text-gray-900">{{ $group['title'] }}</span>
                             <span class="font-sans text-base font-normal text-gray-700">{{ $group['details'] }}</span>
                         </h2>
                     @endif
@@ -370,9 +389,10 @@
         </div>
     </div>
 
-    <div x-ref="galleryEnd" x-show="$wire.loadedPages < $wire.lastPage" x-cloak x-intersect.margin.1200px="loadMore()"
-        class="flex justify-center px-4 pt-10">
-        <button type="button" x-on:click="loadMore()" x-bind:disabled="loading" class="{{ $secondaryPill }} disabled:cursor-wait">
+    <div x-ref="galleryEnd" x-show="$wire.loadedPages < $wire.lastPage" x-cloak
+        x-intersect.margin.1200px="loadMore()" class="flex justify-center px-4 pt-10">
+        <button type="button" x-on:click="loadMore()" x-bind:disabled="loading"
+            class="{{ $secondaryPill }} disabled:cursor-wait">
             <span x-show="! loading">Afficher plus de photos</span>
             <span x-show="loading" x-cloak>Chargement des photos…</span>
         </button>
@@ -388,9 +408,10 @@
                     @foreach ($this->uploadAlbums as $album)
                         <li wire:key="upload-album-{{ $album->id }}">
                             <a href="{{ route('photos.create', $album) }}"
-                                class="flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-primary-700">
-                                <span class="font-semibold break-words text-gray-900">{{ $album->title }}</span>
-                                <span class="text-sm text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
+                                class="hover:bg-primary-50 focus-visible:outline-primary-700 flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 transition-colors focus-visible:outline-2">
+                                <span class="wrap-break-word font-semibold text-gray-900">{{ $album->title }}</span>
+                                <span
+                                    class="text-sm text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
                             </a>
                         </li>
                     @endforeach

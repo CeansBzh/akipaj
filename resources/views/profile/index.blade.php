@@ -16,12 +16,12 @@
             <label for="member-search" class="block font-semibold text-gray-900">Chercher un matelot</label>
         </div>
         {{-- Seul le champ reste en haut de l'écran pendant qu'on fait défiler les cartes --}}
-        <div role="search" class="sticky top-below-nav-0 z-20 bg-primary-50/90 py-2 backdrop-blur-md">
+        <div role="search" class="top-below-nav-0 bg-primary-50/90 sticky z-20 py-2 backdrop-blur-md">
             <div class="mx-auto max-w-2xl px-4 sm:px-6">
                 <div class="relative">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"
-                        class="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-gray-600">
+                        class="pointer-events-none absolute left-5 top-1/2 size-5 -translate-y-1/2 text-gray-600">
                         <circle cx="11" cy="11" r="7" />
                         <path d="m20 20-4-4" />
                     </svg>
@@ -29,11 +29,11 @@
                     <input type="search" id="member-search" x-ref="search" x-model="query"
                         x-on:keydown.enter.prevent="$el.blur()" autocomplete="off" spellcheck="false"
                         enterkeyhint="search" placeholder="Pseudonyme" aria-describedby="member-search-result"
-                        class="block min-h-14 w-full rounded-full border-0 bg-white py-3 pr-32 pl-13 text-lg text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-500 focus:ring-2 focus:ring-primary-700 [&::-webkit-search-cancel-button]:appearance-none">
+                        class="pl-13 focus:ring-primary-700 block min-h-14 w-full rounded-full border-0 bg-white py-3 pr-32 text-lg text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 [&::-webkit-search-cancel-button]:appearance-none">
                     <button type="button" x-cloak x-show="query !== ''" x-on:click="clear()"
-                        class="absolute top-1/2 right-1.5 inline-flex min-h-11 -translate-y-1/2 items-center gap-1.5 rounded-full px-4 font-semibold text-primary-800 transition-colors hover:bg-primary-100 focus-visible:outline-2 focus-visible:outline-primary-700">
-                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0">
+                        class="text-primary-800 hover:bg-primary-100 focus-visible:outline-primary-700 absolute right-1.5 top-1/2 inline-flex min-h-11 -translate-y-1/2 items-center gap-1.5 rounded-full px-4 font-semibold transition-colors focus-visible:outline-2">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0">
                             <path d="M6 6l12 12M18 6 6 18" />
                         </svg>
                         Effacer
@@ -59,12 +59,14 @@
                             <span class="relative">
                                 <x-user-avatar :user="$member" class="size-20 sm:size-24" />
                                 @if ($isCurrentUser)
-                                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-primary-700 px-2.5 py-0.5 text-sm font-bold text-white ring-2 ring-white">
+                                    <span
+                                        class="bg-primary-700 absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-full px-2.5 py-0.5 text-sm font-bold text-white ring-2 ring-white">
                                         Vous
                                     </span>
                                 @endif
                             </span>
-                            <span class="mt-4 text-lg leading-snug font-bold text-balance break-words text-gray-900 group-hover:underline">
+                            <span
+                                class="mt-4 text-balance wrap-break-word text-lg font-bold leading-snug text-gray-900 group-hover:underline">
                                 {{ $member->name }}
                             </span>
                             <span class="mt-auto pt-3">
@@ -76,7 +78,8 @@
                                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
                                         class="size-4 shrink-0">
-                                        <path d="M11 3 4.5 15.5H11V3ZM14 6.5l5.5 9H14v-9ZM3 18.5h18l-2.5 2.5h-13L3 18.5Z" />
+                                        <path
+                                            d="M11 3 4.5 15.5H11V3ZM14 6.5l5.5 9H14v-9ZM3 18.5h18l-2.5 2.5h-13L3 18.5Z" />
                                     </svg>
                                     @if ($tripCount === 0)
                                         Aucune sortie
@@ -90,11 +93,12 @@
                 @endforeach
             </ul>
 
-            <div x-cloak x-show="count === 0" class="mx-auto mt-6 max-w-md rounded-3xl bg-white px-6 py-10 text-center shadow-sm">
+            <div x-cloak x-show="count === 0"
+                class="mx-auto mt-6 max-w-md rounded-3xl bg-white px-6 py-10 text-center shadow-sm">
                 <p class="text-lg font-bold text-gray-900">Aucun matelot ne porte ce nom.</p>
                 <p class="mt-2 text-gray-700">Vérifiez l'orthographe, ou tapez seulement le début du pseudo.</p>
                 <button type="button" x-on:click="clear()"
-                    class="mt-6 inline-flex min-h-11 items-center rounded-full bg-primary-700 px-5 py-2 font-semibold text-white transition-colors hover:bg-primary-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                    class="bg-primary-700 hover:bg-primary-800 focus-visible:outline-primary-700 mt-6 inline-flex min-h-11 items-center rounded-full px-5 py-2 font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                     Effacer la recherche
                 </button>
             </div>
@@ -113,11 +117,11 @@
                     // Sans accents, en minuscules, et les tirets ou apostrophes comme des espaces : « jean-rene » trouve « Jean René »
                     const simplify = (text) =>
                         text
-                            .normalize('NFD')
-                            .replace(/\p{Diacritic}/gu, '')
-                            .toLowerCase()
-                            .replace(/[^\p{L}\p{N}]+/gu, ' ')
-                            .trim();
+                        .normalize('NFD')
+                        .replace(/\p{Diacritic}/gu, '')
+                        .toLowerCase()
+                        .replace(/[^\p{L}\p{N}]+/gu, ' ')
+                        .trim();
                     const searchableNames = names.map(simplify);
 
                     return {
@@ -127,7 +131,8 @@
                         init() {
                             this.$watch('query', () => {
                                 const words = simplify(this.query).split(' ').filter(Boolean);
-                                this.visible = searchableNames.map((name) => words.every((word) => name.includes(word)));
+                                this.visible = searchableNames.map((name) => words.every((word) => name
+                                    .includes(word)));
                             });
                         },
 

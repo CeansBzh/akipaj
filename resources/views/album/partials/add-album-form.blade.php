@@ -70,11 +70,11 @@
 
         <div class="relative w-fit" x-show="showDisplay">
             <img id="image_display" src="" alt="Image de couverture de la sortie"
-                class="h-[250px] w-[250px] rounded-xl object-cover">
+                class="h-62.5 w-62.5 rounded-xl object-cover">
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 motion-safe:group-focus:animate-pulse">
+                    class="absolute right-3 top-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-sky-500 motion-safe:group-focus:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

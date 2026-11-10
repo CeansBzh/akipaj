@@ -14,26 +14,29 @@
         default => 'sloop',
     };
 
-    $facts = array_filter([
-        'Année' => $boat->year,
-        'Constructeur' => $boat->builder,
-        'Loueur' => $boat->renter,
-        'Port' => $boat->city,
-        'Équipage' => $boat->crew === null ? null : $boat->crew.' '.($boat->crew > 1 ? 'personnes' : 'personne'),
-    ], fn ($value) => filled($value));
+    $facts = array_filter(
+        [
+            'Année' => $boat->year,
+            'Constructeur' => $boat->builder,
+            'Loueur' => $boat->renter,
+            'Port' => $boat->city,
+            'Équipage' =>
+                $boat->crew === null ? null : $boat->crew . ' ' . ($boat->crew > 1 ? 'personnes' : 'personne'),
+        ],
+        fn($value) => filled($value),
+    );
 @endphp
 
 <article {{ $attributes->class(['@container']) }}>
-    <div class="grid items-center gap-5 @2xl:grid-cols-[minmax(0,22rem)_1fr] @2xl:gap-10">
-        <div class="blueprint aspect-4/5 max-h-[28rem] w-full rounded-3xl p-5 ring-1 ring-primary-100 ring-inset">
-            <x-dynamic-component :component="'boat-drawing.'.$rig" :mirrored="$index % 2 === 1"
-                class="size-full text-primary-900" />
+    <div class="@2xl:grid-cols-[minmax(0,22rem)_1fr] @2xl:gap-10 grid items-center gap-5">
+        <div class="blueprint aspect-4/5 ring-primary-100 max-h-112 w-full rounded-3xl p-5 ring-1 ring-inset">
+            <x-dynamic-component :component="'boat-drawing.' . $rig" :mirrored="$index % 2 === 1" class="text-primary-900 size-full" />
         </div>
 
         <div>
-            <h3 class="text-xl font-bold break-words text-gray-900">{{ $boat->name }}</h3>
+            <h3 class="wrap-break-word text-xl font-bold text-gray-900">{{ $boat->name }}</h3>
             @if ($boat->type)
-                <p class="mt-1 break-words text-gray-600">{{ $boat->type }}</p>
+                <p class="mt-1 wrap-break-word text-gray-600">{{ $boat->type }}</p>
             @endif
 
             @if ($facts)
@@ -41,7 +44,7 @@
                     @foreach ($facts as $label => $value)
                         <div class="min-w-0">
                             <dt class="text-sm text-gray-600">{{ $label }}</dt>
-                            <dd class="font-semibold break-words text-gray-900">{{ $value }}</dd>
+                            <dd class="wrap-break-word font-semibold text-gray-900">{{ $value }}</dd>
                         </div>
                     @endforeach
                 </dl>

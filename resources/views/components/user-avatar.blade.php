@@ -18,12 +18,13 @@
     $tone = $tones[crc32($user->name) % count($tones)];
 @endphp
 
-<span aria-hidden="true" {{ $attributes->class(['@container relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full select-none', $tone]) }}>
-    <span class="text-[38cqi] leading-none font-bold">{{ $user->initials }}</span>
+<span aria-hidden="true"
+    {{ $attributes->class(['@container relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full select-none', $tone]) }}>
+    <span class="text-[38cqi] font-bold leading-none">{{ $user->initials }}</span>
     @if ($slot->isNotEmpty())
         {{ $slot }}
     @elseif ($user->profile_picture_path)
-        <img src="{{ $user->profile_picture_path }}" alt="" width="96" height="96" loading="lazy" decoding="async"
-            class="absolute inset-0 size-full object-cover">
+        <img src="{{ $user->profile_picture_path }}" alt="" width="96" height="96" loading="lazy"
+            decoding="async" class="absolute inset-0 size-full object-cover">
     @endif
 </span>

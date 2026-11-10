@@ -7,7 +7,8 @@
     countText(editor) {
         this.length = Array.from(editor.getDocument().toString().replace(/\s+/g, ' ').trim()).length;
     },
-}" x-on:trix-initialize="countText($event.target.editor)" x-on:trix-change="countText($event.target.editor)">
+}" x-on:trix-initialize="countText($event.target.editor)"
+    x-on:trix-change="countText($event.target.editor)">
     <input type="hidden" id="{{ $id }}_value" name="{{ $name }}" value="{{ $value }}">
     <trix-editor id="{{ $id }}" input="{{ $id }}_value" class="rich-text rich-text-input"
         {{ $attributes->except('class') }}></trix-editor>

@@ -1,8 +1,11 @@
 @php
-    $pill = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-full font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700';
-    $primaryPill = $pill.' px-5 bg-primary-700 text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-gray-400';
-    $secondaryPill = $pill.' px-5 bg-white text-primary-800 ring-1 ring-gray-300 ring-inset hover:bg-primary-50';
-    $plusIcon = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0"><path d="M12 5v14M5 12h14" /></svg>';
+    $pill =
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-full font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700';
+    $primaryPill =
+        $pill . ' px-5 bg-primary-700 text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-gray-400';
+    $secondaryPill = $pill . ' px-5 bg-white text-primary-800 ring-1 ring-gray-300 ring-inset hover:bg-primary-50';
+    $plusIcon =
+        '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0"><path d="M12 5v14M5 12h14" /></svg>';
 @endphp
 
 {{--
@@ -12,11 +15,12 @@
 <form action="{{ route('photos.store', ['album' => $album]) }}" method="POST" enctype="multipart/form-data"
     class="mt-6 sm:mt-8" data-upload-form>
     @csrf
-    <input type="file" name="files[]" multiple accept="image/png, image/jpeg, image/gif" class="hidden"
-        data-file-input>
+    <input type="file" name="files[]" multiple accept="image/png, image/jpeg, image/gif" class="hidden" data-file-input>
 
-    <div role="alert" @class(['mb-6 rounded-2xl bg-red-50 p-4 text-red-800 ring-1 ring-red-200 ring-inset', 'hidden' => ! $errors->any()])
-        data-errors>
+    <div role="alert" @class([
+        'mb-6 rounded-2xl bg-red-50 p-4 text-red-800 ring-1 ring-red-200 ring-inset',
+        'hidden' => !$errors->any(),
+    ]) data-errors>
         <ul class="space-y-1">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -25,9 +29,9 @@
     </div>
 
     {{-- Carte de départ, sur papier quadrillé : la flotte du club au trait, puis le bouton pour choisir les photos --}}
-    <div class="blueprint rounded-3xl px-5 pt-8 pb-7 text-center ring-primary-600 ring-2 ring-inset sm:px-10 sm:pt-10 sm:pb-9"
+    <div class="blueprint ring-primary-600 rounded-3xl px-5 pb-7 pt-8 text-center ring-2 ring-inset sm:px-10 sm:pb-9 sm:pt-10"
         data-drop-card>
-        <div aria-hidden="true" class="flex h-36 items-end justify-center gap-3 text-primary-900 sm:h-56 sm:gap-10">
+        <div aria-hidden="true" class="text-primary-900 flex h-36 items-end justify-center gap-3 sm:h-56 sm:gap-10">
             <x-boat-drawing.catamaran class="h-[78%] w-auto" />
             <x-boat-drawing.sloop class="h-full w-auto" />
             <x-boat-drawing.ketch mirrored class="h-[88%] w-auto" />
@@ -42,7 +46,7 @@
             </svg>
             Choisir des photos
         </button>
-        <p class="mt-3 hidden text-gray-800 pointer-fine:block">ou faites-les glisser</p>
+        <p class="pointer-fine:block mt-3 hidden text-gray-800">ou faites-les glisser</p>
         <p class="mx-auto mt-3 max-w-prose text-sm text-gray-700">
             JPG, PNG ou GIF. Vos photos seront compressées, Akipaj ne sauvegarde pas les photos en qualité originale.
         </p>
@@ -55,13 +59,13 @@
                 <h2 id="upload-selection-title" class="text-xl font-bold text-gray-900" data-selection-title></h2>
                 <p class="mt-0.5 text-gray-700" aria-live="polite" data-preparing></p>
             </div>
-            <div class="flex flex-wrap items-center gap-2 in-data-uploading:hidden">
+            <div class="in-data-uploading:hidden flex flex-wrap items-center gap-2">
                 <button type="button" class="{{ $secondaryPill }}" data-pick-files>
                     {!! $plusIcon !!}
                     Ajouter d'autres photos
                 </button>
                 <button type="button"
-                    class="inline-flex min-h-11 items-center rounded-full px-3 font-semibold text-primary-800 underline underline-offset-4 hover:text-primary-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700"
+                    class="text-primary-800 hover:text-primary-900 focus-visible:outline-primary-700 inline-flex min-h-11 items-center rounded-full px-3 font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
                     x-data="" x-on:click="$dispatch('open-modal', 'confirm-clear-photos')">
                     Tout retirer
                 </button>
@@ -73,10 +77,10 @@
     </section>
 
     {{-- Barre d'envoi, en bas de l'écran pendant qu'on parcourt les vignettes --}}
-    <div class="sticky bottom-0 z-30 hidden pt-6 pb-3 sm:pb-6" data-action-bar>
+    <div class="sticky bottom-0 z-30 hidden pb-3 pt-6 sm:pb-6" data-action-bar>
         <div class="rounded-3xl bg-white p-2 shadow-xl ring-1 ring-gray-200 sm:p-4 sm:pl-6">
             <div class="flex items-center gap-3" data-ready>
-                <x-sailboat class="hidden h-10 w-12 shrink-0 text-primary-700 sm:block" />
+                <x-sailboat class="text-primary-700 hidden h-10 w-12 shrink-0 sm:block" />
                 <div class="hidden min-w-0 grow sm:block">
                     <p class="text-sm text-gray-700">Cap sur l'album</p>
                     <p class="truncate font-bold text-gray-900">«&nbsp;{{ $album->title }}&nbsp;»</p>
@@ -98,13 +102,14 @@
                 </div>
                 <div role="progressbar" aria-label="Envoi des photos" aria-valuemin="0" class="relative mt-1 h-11"
                     data-progress-bar>
-                    <div class="absolute right-7 bottom-2 left-5 h-1.5 rounded-full bg-primary-100"></div>
-                    <div class="absolute bottom-2 left-5 h-1.5 w-0 rounded-full bg-primary-700 motion-safe:transition-[width] motion-safe:duration-500"
+                    <div class="bg-primary-100 absolute bottom-2 left-5 right-7 h-1.5 rounded-full"></div>
+                    <div class="bg-primary-700 absolute bottom-2 left-5 h-1.5 w-0 rounded-full motion-safe:transition-[width] motion-safe:duration-500"
                         data-progress-fill></div>
                     <x-sailboat :waves="false" data-progress-boat
-                        class="absolute bottom-3 left-5 h-8 w-10 -translate-x-1/2 text-primary-800 motion-safe:transition-[left] motion-safe:duration-500" />
+                        class="text-primary-800 absolute bottom-3 left-5 h-8 w-10 -translate-x-1/2 motion-safe:transition-[left] motion-safe:duration-500" />
                     <svg aria-hidden="true" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.75"
-                        stroke-linecap="round" stroke-linejoin="round" class="absolute right-0 bottom-0.5 h-8 w-6 text-primary-700">
+                        stroke-linecap="round" stroke-linejoin="round"
+                        class="text-primary-700 absolute bottom-0.5 right-0 h-8 w-6">
                         <path d="M12 3v17" />
                         <path d="M12 3h8l-2.5 3 2.5 3h-8" fill="currentColor" />
                         <path d="M6 23q6-7 12 0Z" fill="currentColor" fill-opacity=".15" />
@@ -121,7 +126,8 @@
         <h2 class="text-xl font-bold text-gray-900">Retirer toutes les photos ?</h2>
         <p class="mt-2 text-gray-700">Elles ne seront pas ajoutées à l'album. Vous pourrez en choisir d'autres.</p>
         <div class="mt-6 flex flex-wrap justify-end gap-3">
-            <button type="button" x-on:click="$dispatch('close')" class="{{ $secondaryPill }}">Garder mes photos</button>
+            <button type="button" x-on:click="$dispatch('close')" class="{{ $secondaryPill }}">Garder mes
+                photos</button>
             <button type="button" x-on:click="$dispatch('close')" class="{{ $primaryPill }}" data-confirm-clear>
                 Tout retirer
             </button>
@@ -130,26 +136,30 @@
 </x-modal>
 
 {{-- Pendant qu'on fait glisser des fichiers au-dessus de la page --}}
-<div class="fixed inset-0 z-50 hidden bg-primary-900/95 p-3 sm:p-6" data-drop-overlay>
-    <div class="flex size-full flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-white/70 px-6 text-center text-white">
-        <x-sailboat class="h-36 w-auto motion-safe:animate-sail-in sm:h-52" />
+<div class="bg-primary-900/95 fixed inset-0 z-50 hidden p-3 sm:p-6" data-drop-overlay>
+    <div
+        class="flex size-full flex-col items-center justify-center rounded-4xl border-2 border-dashed border-white/70 px-6 text-center text-white">
+        <x-sailboat class="motion-safe:animate-sail-in h-36 w-auto sm:h-52" />
         <p class="mt-6 text-3xl font-bold">Déposez vos photos</p>
-        <p class="mt-2 max-w-prose text-lg break-words">Elles rejoindront l'album «&nbsp;{{ $album->title }}&nbsp;».</p>
+        <p class="mt-2 max-w-prose wrap-break-word text-lg">Elles rejoindront l'album «&nbsp;{{ $album->title }}&nbsp;».
+        </p>
     </div>
 </div>
 
 {{-- Vignette d'une photo choisie : data-state vaut preparing, ready ou sent --}}
 <template id="photo-tile-template">
-    <li class="group/tile relative aspect-square overflow-hidden rounded-xl bg-primary-100" data-state="preparing">
+    <li class="group/tile bg-primary-100 relative aspect-square overflow-hidden rounded-xl" data-state="preparing">
         <canvas width="240" height="240" role="img" class="size-full"></canvas>
-        <span class="absolute inset-0 hidden items-center justify-center bg-primary-100 group-data-[state=preparing]/tile:flex">
+        <span
+            class="bg-primary-100 absolute inset-0 hidden items-center justify-center group-data-[state=preparing]/tile:flex">
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" class="size-7 text-primary-700 motion-safe:animate-spin">
+                stroke-linecap="round" class="text-primary-700 size-7 motion-safe:animate-spin">
                 <path d="M12 3a9 9 0 1 0 9 9" />
             </svg>
             <span class="sr-only">En préparation</span>
         </span>
-        <span class="absolute inset-0 hidden flex-col items-center justify-center gap-1 bg-primary-900/60 font-semibold text-white group-data-[state=sent]/tile:flex">
+        <span
+            class="bg-primary-900/60 absolute inset-0 hidden flex-col items-center justify-center gap-1 font-semibold text-white group-data-[state=sent]/tile:flex">
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round" class="size-7">
                 <path d="m5 12.5 4.5 4.5L19 7.5" />
@@ -157,7 +167,7 @@
             Envoyée
         </span>
         <button type="button"
-            class="absolute top-1 right-1 inline-flex min-h-9 items-center gap-1 rounded-full bg-gray-900/60 py-1 pr-3 pl-2 text-sm font-semibold text-white backdrop-blur-md transition-colors before:absolute before:-inset-1 hover:bg-gray-900/80 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white in-data-uploading:hidden group-data-[state=sent]/tile:hidden"
+            class="in-data-uploading:hidden absolute right-1 top-1 inline-flex min-h-9 items-center gap-1 rounded-full bg-gray-900/60 py-1 pl-2 pr-3 text-sm font-semibold text-white backdrop-blur-md transition-colors before:absolute before:-inset-1 hover:bg-gray-900/80 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white group-data-[state=sent]/tile:hidden"
             data-remove>
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0">

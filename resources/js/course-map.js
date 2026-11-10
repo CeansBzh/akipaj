@@ -101,13 +101,19 @@ Alpine.data('courseMap', (days) => {
                         if (index > 0 && pointIndex === 0) {
                             return;
                         }
-                        const marker = L.marker(toLatLng(point), { icon: numberedIcon(point.number), title: point.name })
+                        const marker = L.marker(toLatLng(point), {
+                            icon: numberedIcon(point.number),
+                            title: point.name,
+                        })
                             .bindPopup(() => textPopup(point.name, label))
                             .addTo(map);
                         markers.push({ marker, number: point.number });
                     });
                 });
-                fitPoints(map, days.flatMap(({ points }) => points));
+                fitPoints(
+                    map,
+                    days.flatMap(({ points }) => points),
+                );
             });
         },
 
@@ -128,7 +134,11 @@ Alpine.data('courseMap', (days) => {
             this.selectedDay = null;
             routes.forEach((route) => route.setStyle({ opacity: 1, weight: 4 }));
             markers.forEach(({ marker }) => marker.setOpacity(1));
-            fitPoints(map, days.flatMap(({ points }) => points), true);
+            fitPoints(
+                map,
+                days.flatMap(({ points }) => points),
+                true,
+            );
         },
     };
 });
@@ -170,9 +180,7 @@ Alpine.data('courseInput', ({ points, startInput, endInput }) => {
                 );
                 this.startDate = startDate;
                 this.dayCount =
-                    startDate && endDate && endDate >= startDate
-                        ? Math.round((endDate - startDate) / 86400000) + 1
-                        : 1;
+                    startDate && endDate && endDate >= startDate ? Math.round((endDate - startDate) / 86400000) + 1 : 1;
             };
             readDates();
             start?.addEventListener('change', readDates);
@@ -183,7 +191,9 @@ Alpine.data('courseInput', ({ points, startInput, endInput }) => {
                 layer = L.layerGroup().addTo(map);
                 map.on('click', (event) => this.placeAt(event.latlng));
                 fitPoints(map, this.points);
-                Alpine.effect(() => this.draw(this.points.map((point) => [point.key, point.latitude, point.longitude])));
+                Alpine.effect(() =>
+                    this.draw(this.points.map((point) => [point.key, point.latitude, point.longitude])),
+                );
             });
         },
 
@@ -310,7 +320,7 @@ Alpine.data('courseInput', ({ points, startInput, endInput }) => {
                     this.searchMessage = 'Aucun lieu trouvé. Essayez un autre nom, ou touchez la carte.';
                 }
             } catch {
-                this.searchMessage = 'La recherche n\'a pas abouti. Réessayez, ou touchez la carte.';
+                this.searchMessage = "La recherche n'a pas abouti. Réessayez, ou touchez la carte.";
             } finally {
                 this.searching = false;
             }

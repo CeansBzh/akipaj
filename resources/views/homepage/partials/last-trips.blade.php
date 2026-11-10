@@ -1,8 +1,5 @@
 @php
-    $trips = App\Models\Trip::finished()
-        ->orderByDesc('end_date')
-        ->limit(3)
-        ->get();
+    $trips = App\Models\Trip::finished()->orderByDesc('end_date')->limit(3)->get();
     $defaultImage = Vite::asset('resources/images/index_2.jpg');
 @endphp
 
@@ -11,7 +8,7 @@
         <div class="flex flex-col items-center gap-2 p-12 text-center">
             <p class="text-gray-600">Aucune sortie terminée pour l'instant.</p>
             @can('create', App\Models\Trip::class)
-                <a href="{{ route('trips.create') }}" class="font-semibold text-primary-700 underline">Créer une sortie</a>
+                <a href="{{ route('trips.create') }}" class="text-primary-700 font-semibold underline">Créer une sortie</a>
             @endcan
         </div>
     @else
@@ -24,15 +21,15 @@
                     <img src="{{ $latestTrip->imagePath ?? $defaultImage }}" alt=""
                         class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
                         loading="lazy" decoding="async">
-                    <div class="absolute inset-0 -z-10 bg-linear-to-t from-gray-950/85 via-gray-950/40 to-transparent">
+                    <div class="bg-linear-to-t absolute inset-0 -z-10 from-gray-950/85 via-gray-950/40 to-transparent">
                     </div>
 
                     <p class="font-semibold">
                         <x-date-range :start="$latestTrip->start_date" :end="$latestTrip->end_date" />
                     </p>
-                    <h3 class="text-2xl font-bold text-balance">
+                    <h3 class="text-balance text-2xl font-bold">
                         <a href="{{ route('trips.show', $latestTrip) }}"
-                            class="after:absolute after:inset-0 group-hover:underline focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 focus-visible:after:outline-primary-400">
+                            class="focus-visible:after:outline-primary-400 after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 group-hover:underline">
                             {{ $latestTrip->title }}
                         </a>
                     </h3>
@@ -53,12 +50,12 @@
                                 loading="lazy" decoding="async">
                         </div>
                         <div class="flex grow flex-col gap-2 p-5">
-                            <p class="font-semibold text-primary-700">
+                            <p class="text-primary-700 font-semibold">
                                 <x-date-range :start="$trip->start_date" :end="$trip->end_date" />
                             </p>
-                            <h3 class="text-xl font-bold text-balance text-gray-900">
+                            <h3 class="text-balance text-xl font-bold text-gray-900">
                                 <a href="{{ route('trips.show', $trip) }}"
-                                    class="after:absolute after:inset-0 group-hover:underline focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 focus-visible:after:outline-primary-400">
+                                    class="focus-visible:after:outline-primary-400 after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 group-hover:underline">
                                     {{ $trip->title }}
                                 </a>
                             </h3>

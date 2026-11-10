@@ -1,11 +1,11 @@
 <!-- Desktop Header -->
-<header class="hidden w-full items-center bg-white py-2 px-6 sm:flex sm:flex-row-reverse">
+<header class="hidden w-full items-center bg-white px-6 py-2 sm:flex sm:flex-row-reverse">
     <div class="hidden py-2 sm:ml-5 sm:flex sm:items-center">
         <x-dropdown align="right" width="48">
             <x-slot name="trigger">
                 <x-user-avatar :user="Auth::user()" class="size-8" />
                 <button
-                    class="flex items-center font-medium text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700 focus:outline-hidden">
+                    class="focus:outline-hidden flex items-center font-medium text-gray-500 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700">
                     {{ Auth::user()->name }}
 
                     <div class="ml-1">
@@ -37,11 +37,11 @@
 </header>
 
 <!-- Mobile Header & Nav -->
-<header x-data="{ open: false }" class="w-full bg-sky-700 py-5 px-6 sm:hidden">
+<header x-data="{ open: false }" class="w-full bg-sky-700 px-6 py-5 sm:hidden">
     <div class="flex items-center justify-between">
         <a href="{{ url('/') }}" class="text-3xl font-semibold uppercase text-white hover:text-gray-300">Akipaj</a>
         <button @click="open = !open"
-            class="rounded-md p-1 text-white transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden">
+            class="focus:outline-hidden rounded-md p-1 text-white transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500">
             <svg class="h-8 w-8" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                 <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round"
                     stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />

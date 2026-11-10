@@ -12,11 +12,11 @@
     <x-trip-to-agenda :trip="$trip" />
 
     <a href="{{ route('trips.show', $trip) }}"
-        class="group relative isolate flex h-(--ticket-photo-height) flex-col justify-between gap-3 overflow-hidden p-4 focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-primary-400 md:h-auto md:min-h-72">
+        class="h-(--ticket-photo-height) focus-visible:outline-primary-400 group relative isolate flex flex-col justify-between gap-3 overflow-hidden p-4 focus-visible:outline-4 focus-visible:-outline-offset-4 md:h-auto md:min-h-72">
         <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
             class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
             loading="{{ $eager ? 'eager' : 'lazy' }}" decoding="async">
-        <div class="absolute inset-0 -z-10 bg-linear-to-t from-gray-950/80 via-gray-950/20 to-transparent"></div>
+        <div class="bg-linear-to-t absolute inset-0 -z-10 from-gray-950/80 via-gray-950/20 to-transparent"></div>
 
         <p @class([
             'w-fit rounded-full px-3 py-1 text-sm font-bold shadow-sm',
@@ -26,16 +26,16 @@
             <x-trip-status :trip="$trip" />
         </p>
 
-        <h3 class="text-xl font-bold text-balance text-white group-hover:underline">
+        <h3 class="text-balance text-xl font-bold text-white group-hover:underline">
             {{ $trip->title }}
         </h3>
     </a>
 
     <div
-        class="relative isolate flex flex-col gap-5 border-t-2 border-dashed border-gray-300 p-5 md:border-t-0 md:border-l-2">
+        class="relative isolate flex flex-col gap-5 border-t-2 border-dashed border-gray-300 p-5 md:border-l-2 md:border-t-0">
         {{-- Voile du logo en filigrane, comme la marque de la compagnie sur un billet --}}
         <svg aria-hidden="true" viewBox="0 0 48 58" fill="currentColor"
-            class="pointer-events-none absolute -top-2 -right-6 -z-10 h-44 text-primary-50">
+            class="text-primary-50 pointer-events-none absolute -right-6 -top-2 -z-10 h-44">
             <path fill-opacity="0.5"
                 d="M36.3885 6.14278L6.06381 55.2067C8.03098 55.3719 10.6753 55.4709 13.6326 55.4058C23.1945 43.0471 30.2202 28.9267 34.2935 13.8812L36.3885 6.14278Z" />
             <path
@@ -59,7 +59,7 @@
         </dl>
 
         <button type="button"
-            class="add-to-agenda mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary-700 px-4 py-2 font-semibold text-white transition-colors hover:bg-primary-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 disabled:cursor-wait disabled:opacity-60">
+            class="add-to-agenda bg-primary-700 hover:bg-primary-800 focus-visible:outline-primary-700 mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-4 py-2 font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-wait disabled:opacity-60">
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
                 <rect x="3" y="4.5" width="18" height="16.5" rx="2" />

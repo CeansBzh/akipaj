@@ -428,7 +428,10 @@ function setUpActions(pswp, element, currentTile, drawer) {
     const updateComments = () => {
         const count = Number(currentTile().dataset.commentCount ?? 0);
         commentsDot.hidden = count === 0;
-        comments.setAttribute('aria-label', count > 0 ? `Commentaires (${count})` : 'Commentaires, aucun pour l’instant');
+        comments.setAttribute(
+            'aria-label',
+            count > 0 ? `Commentaires (${count})` : 'Commentaires, aucun pour l’instant',
+        );
     };
 
     menuButton.addEventListener('click', () => toggleMenu(menu.hidden));

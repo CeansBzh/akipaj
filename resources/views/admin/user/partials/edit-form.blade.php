@@ -8,7 +8,8 @@
             <div class="flex flex-col items-center">
                 {{-- Les initiales se voient tant qu'aucune photo n'est enregistrée ni choisie --}}
                 <x-user-avatar :user="$user" class="size-16">
-                    <img x-show="imageUrl" :src="imageUrl" alt="" class="absolute inset-0 size-full object-cover">
+                    <img x-show="imageUrl" :src="imageUrl" alt=""
+                        class="absolute inset-0 size-full object-cover">
                 </x-user-avatar>
                 <button type="button" x-show="imageUrl" class="mt-1 text-sm text-gray-700 underline underline-offset-2"
                     @click="removeImage">Retirer</button>
@@ -45,7 +46,7 @@
             <span class="relative inline-block text-sm text-gray-800">Informations personelles</span>
         </div>
 
-        <div class="flex w-full flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-3">
+        <div class="flex w-full flex-col space-y-6 sm:flex-row sm:space-x-3 sm:space-y-0">
             <div class="sm:w-1/2">
                 <x-input-label for="lastname" value="Nom" />
                 <x-text-input id="lastname" name="lastname" type="text" class="mt-1 block w-full" :value="old('lastname', $user->lastname)"
@@ -94,7 +95,7 @@
         <div>
             <x-input-label for="mobile_phone" value="N° de téléphone portable" />
             <div class="relative">
-                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
+                <p class="absolute left-2 top-[0.55rem] text-gray-600">+33</p>
                 <x-text-input id="mobile_phone" name="mobile_phone" type="tel" class="mt-1 block w-full pl-11"
                     :value="old('mobile_phone', chunk_split($user->mobile_phone, 2, ' '))" autocomplete="tel" pattern="0[1-9](?: [0-9]{2}){4}"
                     title="Numéro de téléphone en format français, 10 chiffres de long" />
@@ -105,7 +106,7 @@
         <div>
             <x-input-label for="home_phone" value="N° de téléphone fixe" />
             <div class="relative">
-                <p class="absolute top-[0.55rem] left-2 text-gray-600">+33</p>
+                <p class="absolute left-2 top-[0.55rem] text-gray-600">+33</p>
                 <x-text-input id="home_phone" name="home_phone" type="tel" class="mt-1 block w-full pl-11"
                     :value="old('home_phone', chunk_split($user->home_phone, 2, ' '))" autocomplete="tel" pattern="0[1-9](?: [0-9]{2}){4}"
                     title="Numéro de téléphone en format français, 10 chiffres de long" />

@@ -10,7 +10,8 @@
     stroke-linecap="round" stroke-linejoin="round" {{ $attributes }}>
     <path vector-effect="non-scaling-stroke" d="M74 10v84" />
     <path vector-effect="non-scaling-stroke" fill="currentColor" fill-opacity=".12" d="M74 14v72H30q12-38 44-72Z" />
-    <path vector-effect="non-scaling-stroke" stroke-width="1" stroke-opacity=".6" d="m37 67 37-2m-27-16 27-1.5M59 31l15-1" />
+    <path vector-effect="non-scaling-stroke" stroke-width="1" stroke-opacity=".6"
+        d="m37 67 37-2m-27-16 27-1.5M59 31l15-1" />
     <path vector-effect="non-scaling-stroke" stroke-width="2.5" d="M75 86H28" />
     <path vector-effect="non-scaling-stroke" fill="currentColor" fill-opacity=".12" d="m78 17 60 66-52 5q4-36-8-71Z" />
     <path vector-effect="non-scaling-stroke" stroke-width="1" d="m74 12 72 80" />

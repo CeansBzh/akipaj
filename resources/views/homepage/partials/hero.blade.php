@@ -8,8 +8,8 @@
             {{-- XL (1536px to infinite) --}}
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.webp') }}" media="(min-width: 1536px)"
                 width="2600" height="700" type="image/webp">
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.jpg') }}"
-                media="(min-width: 1536px)" width="2600" height="700" type="image/jpeg">
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.jpg') }}" media="(min-width: 1536px)"
+                width="2600" height="700" type="image/jpeg">
             {{-- Large (1024px to 1535px) --}}
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.webp') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/webp">
@@ -26,7 +26,7 @@
         </picture>
     </div>
     <div class="relative md:bg-neutral-900/20">
-        <div class="relative mx-auto min-h-108 max-w-(--breakpoint-2xl) md:flex">
+        <div class="min-h-108 max-w-(--breakpoint-2xl) relative mx-auto md:flex">
             {{-- Left/Top side --}}
             <div class="relative md:grow">
                 <div class="absolute inset-0 overflow-hidden bg-[#668baf] md:hidden">
@@ -42,13 +42,14 @@
                             width="767" height="511" fetchpriority="high">
                     </picture>
                 </div>
-                <div class="relative mx-auto h-full min-h-84 max-w-(--breakpoint-xl) bg-neutral-900/20 md:bg-transparent">
+                <div
+                    class="min-h-84 max-w-(--breakpoint-xl) relative mx-auto h-full bg-neutral-900/20 md:bg-transparent">
                     <div class="pt-12 text-center md:ml-12 md:pt-40 md:text-left lg:ml-24">
                         <div class="mx-auto w-fit md:m-0">
                             <x-application-logo class="mx-auto mb-3 h-20 md:mx-0 md:h-28" />
                             <p class="text-shadow mb-3 text-2xl text-white shadow-gray-800">Bienvenue à bord !</p>
                             <a href="{{ route('profile.show', Auth::user()->name) }}"
-                                class="text-shadow-outline inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-xs shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-25">
+                                class="text-shadow-outline shadow-xs focus:outline-hidden focus:ring-primary-500 inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:ring-2 focus:ring-offset-2 disabled:opacity-25">
                                 Mon profil
                             </a>
                         </div>

@@ -7,40 +7,47 @@
 --}}
 
 <nav aria-label="Frise des sorties" data-trip-timeline {{ $attributes }}>
-    <div data-timeline-box class="sticky top-below-nav-0 h-dvh bg-linear-to-r bg-radial to-transparent from-primary-50 from-20% py-4">
+    <div data-timeline-box
+        class="top-below-nav-0 bg-linear-to-r bg-radial from-primary-50 sticky h-dvh from-20% to-transparent py-4">
         <div class="relative h-full">
             <span aria-hidden="true" class="absolute inset-y-0 left-3 w-px bg-gray-300"></span>
 
             {{-- Marque de lecture, sur l'axe : la frise y place le moment de la carte en haut de l'écran --}}
             <div data-timeline-reading aria-hidden="true"
-                class="pointer-events-none absolute top-0 left-0 z-10 flex w-9 -translate-y-1/2 items-center">
-                <span class="h-0.5 grow rounded-full bg-primary-700"></span>
-                <span class="size-3 shrink-0 rounded-full bg-primary-700 ring-4 ring-primary-100"></span>
+                class="pointer-events-none absolute left-0 top-0 z-10 flex w-9 -translate-y-1/2 items-center">
+                <span class="bg-primary-700 h-0.5 grow rounded-full"></span>
+                <span class="bg-primary-700 ring-primary-100 size-3 shrink-0 rounded-full ring-4"></span>
             </div>
 
             <ol class="flex h-full flex-col">
                 @foreach ($years as $year)
                     @php($isFirst = $loop->first)
-                    <li data-timeline-year="{{ $year['year'] }}" @if ($isFirst) data-current @endif @class([
-                        'group/year flex min-h-0 basis-10 flex-col',
-                        'grow-0 overflow-hidden transition-[flex-grow] duration-300 ease-out motion-reduce:transition-none data-current:grow' => $year['tripCount'] > 0,
-                        'shrink-0' => $year['tripCount'] === 0,
-                    ])>
-                        <div data-timeline-mark="year-{{ $year['year'] }}" class="relative flex h-10 shrink-0 items-center gap-3 pl-10">
-                            <span aria-hidden="true" data-timeline-point class="absolute top-1/2 left-3 h-px w-5 bg-gray-400"></span>
+                    <li data-timeline-year="{{ $year['year'] }}" @if ($isFirst) data-current @endif
+                        @class([
+                            'group/year flex min-h-0 basis-10 flex-col',
+                            'grow-0 overflow-hidden transition-[flex-grow] duration-300 ease-out motion-reduce:transition-none data-current:grow' =>
+                                $year['tripCount'] > 0,
+                            'shrink-0' => $year['tripCount'] === 0,
+                        ])>
+                        <div data-timeline-mark="year-{{ $year['year'] }}"
+                            class="relative flex h-10 shrink-0 items-center gap-3 pl-10">
+                            <span aria-hidden="true" data-timeline-point
+                                class="absolute left-3 top-1/2 h-px w-5 bg-gray-400"></span>
                             @if ($year['tripCount'] > 0)
                                 <a href="#annee-{{ $year['year'] }}"
-                                    class="font-merriweather text-xl font-bold text-gray-900 hover:text-primary-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700 group-data-current/year:text-2xl group-data-current/year:text-primary-900">
+                                    class="font-merriweather hover:text-primary-800 focus-visible:outline-primary-700 group-data-current/year:text-2xl group-data-current/year:text-primary-900 text-xl font-bold text-gray-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">
                                     {{ $year['year'] }}
                                 </a>
-                                <span class="text-sm text-gray-600 group-data-current/year:hidden">
+                                <span class="group-data-current/year:hidden text-sm text-gray-600">
                                     {{ $year['tripCount'] }} {{ $year['tripCount'] > 1 ? 'sorties' : 'sortie' }}
                                 </span>
                             @else
-                                <span class="font-merriweather text-xl font-bold text-gray-400">{{ $year['year'] }}</span>
+                                <span
+                                    class="font-merriweather text-xl font-bold text-gray-400">{{ $year['year'] }}</span>
                                 <span class="text-sm text-gray-600">Aucune sortie</span>
                                 @if ($year['hasToday'])
-                                    <span data-timeline-mark="today" class="rounded-full bg-primary-700 px-3 py-0.5 text-sm font-bold text-white">Aujourd'hui</span>
+                                    <span data-timeline-mark="today"
+                                        class="bg-primary-700 rounded-full px-3 py-0.5 text-sm font-bold text-white">Aujourd'hui</span>
                                 @endif
                             @endif
                         </div>
@@ -48,32 +55,40 @@
                         @if ($year['tripCount'] > 0)
                             {{-- Les sorties de l'année, dépliées quand on la lit : les écarts se partagent la place selon les jours --}}
                             <ol data-timeline-trips @unless ($isFirst) inert @endunless
-                                class="invisible flex min-h-0 grow flex-col overflow-y-auto pb-2 [scrollbar-width:thin] group-data-current/year:visible">
+                                class="group-data-current/year:visible invisible flex min-h-0 grow flex-col overflow-y-auto pb-2 scrollbar-thin">
                                 @foreach ($year['entries'] as $entry)
                                     @switch($entry['type'])
                                         @case('gap')
-                                            <li aria-hidden="true" class="min-h-0 basis-0" style="flex-grow: {{ $entry['days'] }}"></li>
+                                            <li aria-hidden="true" class="min-h-0 basis-0"
+                                                style="grow: {{ $entry['days'] }}"></li>
                                         @break
 
                                         @case('today')
-                                            <li data-timeline-mark="today" class="relative flex shrink-0 items-center gap-3 py-1">
-                                                <span aria-hidden="true" data-timeline-point class="ml-1.5 size-3 rounded-full bg-white ring-2 ring-primary-700"></span>
-                                                <span class="rounded-full bg-primary-700 px-3 py-0.5 text-sm font-bold text-white">Aujourd'hui</span>
+                                            <li data-timeline-mark="today"
+                                                class="relative flex shrink-0 items-center gap-3 py-1">
+                                                <span aria-hidden="true" data-timeline-point
+                                                    class="ring-primary-700 ml-1.5 size-3 rounded-full bg-white ring-2"></span>
+                                                <span
+                                                    class="bg-primary-700 rounded-full px-3 py-0.5 text-sm font-bold text-white">Aujourd'hui</span>
                                             </li>
                                         @break
 
                                         @case('trip')
                                             @php($trip = $entry['trip'])
                                             <li data-timeline-mark="trip-{{ $trip->id }}" class="relative shrink-0">
-                                                <span aria-hidden="true" data-timeline-point @class([
-                                                    'absolute top-3 left-3 size-2.5 -translate-1/2 rounded-full',
-                                                    'bg-primary-700' => $trip->isFinished(),
-                                                    'bg-white ring-2 ring-primary-700' => !$trip->isFinished(),
-                                                ])></span>
-                                                <a href="#trip-item-{{ $trip->id }}" data-timeline-trip="trip-item-{{ $trip->id }}"
-                                                    class="group/mark block rounded-lg py-0.5 pr-2 pl-10 text-gray-700 transition-colors hover:text-gray-900 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-700 aria-[current=location]:font-bold aria-[current=location]:text-primary-900">
-                                                    <span class="line-clamp-1 leading-snug group-hover/mark:underline">{{ $trip->title }}</span>
-                                                    <span class="block text-sm font-normal text-gray-600">{{ $shortDates($trip) }}</span>
+                                                <span aria-hidden="true" data-timeline-point
+                                                    @class([
+                                                        'absolute top-3 left-3 size-2.5 -translate-1/2 rounded-full',
+                                                        'bg-primary-700' => $trip->isFinished(),
+                                                        'bg-white ring-2 ring-primary-700' => !$trip->isFinished(),
+                                                    ])></span>
+                                                <a href="#trip-item-{{ $trip->id }}"
+                                                    data-timeline-trip="trip-item-{{ $trip->id }}"
+                                                    class="group/mark focus-visible:outline-primary-700 aria-[current=location]:text-primary-900 block rounded-lg py-0.5 pl-10 pr-2 text-gray-700 transition-colors hover:text-gray-900 focus-visible:outline-2 focus-visible:-outline-offset-2 aria-[current=location]:font-bold">
+                                                    <span
+                                                        class="line-clamp-1 leading-snug group-hover/mark:underline">{{ $trip->title }}</span>
+                                                    <span
+                                                        class="block text-sm font-normal text-gray-600">{{ $shortDates($trip) }}</span>
                                                 </a>
                                             </li>
                                         @break
@@ -101,8 +116,11 @@
                 const box = timeline.querySelector('[data-timeline-box]');
                 const reading = timeline.querySelector('[data-timeline-reading]');
                 const years = [...timeline.querySelectorAll('[data-timeline-year]')];
-                const marks = new Map([...timeline.querySelectorAll('[data-timeline-mark]')].map((mark) => [mark.dataset.timelineMark, mark]));
-                const anchors = [...document.querySelectorAll('[data-timeline-anchor]')].filter((anchor) => marks.has(anchor.dataset.timelineAnchor));
+                const marks = new Map([...timeline.querySelectorAll('[data-timeline-mark]')].map((mark) => [mark.dataset
+                    .timelineMark, mark
+                ]));
+                const anchors = [...document.querySelectorAll('[data-timeline-anchor]')].filter((anchor) => marks.has(anchor
+                    .dataset.timelineAnchor));
                 const sections = anchors.filter((anchor) => anchor.dataset.timelineAnchor.startsWith('year-'));
                 const readingLine = 0.3;
                 let currentYear = null;
@@ -147,7 +165,8 @@
                     const list = link?.closest('[data-timeline-trips]');
                     if (list && list.scrollHeight > list.clientHeight) {
                         const [listBox, linkBox] = [list.getBoundingClientRect(), link.getBoundingClientRect()];
-                        list.scrollTop += Math.min(0, linkBox.top - listBox.top) + Math.max(0, linkBox.bottom - listBox.bottom);
+                        list.scrollTop += Math.min(0, linkBox.top - listBox.top) + Math.max(0, linkBox.bottom - listBox
+                            .bottom);
                     }
                 }
 
@@ -163,7 +182,8 @@
                     box.style.height = `${Math.max(0, Math.min(innerHeight, column.bottom) - boxTop)}px`;
 
                     const line = innerHeight * readingLine;
-                    const section = sections.findLast((element) => element.getBoundingClientRect().top <= line) ?? sections[0];
+                    const section = sections.findLast((element) => element.getBoundingClientRect().top <= line) ?? sections[
+                        0];
                     openYear(section.dataset.timelineAnchor.replace('year-', ''));
 
                     const tops = anchors.map((anchor) => anchor.getBoundingClientRect().top);
@@ -178,7 +198,8 @@
                     reading.style.top = `${y - box.firstElementChild.getBoundingClientRect().top}px`;
 
                     // La sortie lue : la dernière carte de l'année passée sous la ligne de lecture
-                    const card = anchors.slice(0, index + 1).findLast((anchor) => anchor.id.startsWith('trip-item-') && section.contains(anchor));
+                    const card = anchors.slice(0, index + 1).findLast((anchor) => anchor.id.startsWith('trip-item-') &&
+                        section.contains(anchor));
                     setCurrentLink(card ? timeline.querySelector(`[data-timeline-trip="${card.id}"]`) : null);
 
                     if (performance.now() < animatedUntil) {
@@ -190,7 +211,9 @@
                     frame ??= requestAnimationFrame(update);
                 }
 
-                addEventListener('scroll', schedule, { passive: true });
+                addEventListener('scroll', schedule, {
+                    passive: true
+                });
                 addEventListener('resize', schedule);
                 // La frise glisse avec la barre de navigation qui se range ou revient : sa hauteur la suit
                 box.addEventListener('transitionrun', (event) => {
@@ -200,7 +223,8 @@
                     }
                 });
                 update();
-            })();
+            })
+            ();
         </script>
     @endpush
 @endonce

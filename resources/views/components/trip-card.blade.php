@@ -16,9 +16,9 @@
         loading="lazy" decoding="async">
     {{-- Flou progressif et dégradé sombre sous le texte, pour qu'il reste lisible sur n'importe quelle photo --}}
     <div
-        class="absolute inset-x-0 bottom-0 -z-10 h-3/4 backdrop-blur-lg mask-[linear-gradient(to_top,#000_45%,transparent)]">
+        class="mask-[linear-gradient(to_top,#000_45%,transparent)] absolute inset-x-0 bottom-0 -z-10 h-3/4 backdrop-blur-lg">
     </div>
-    <div class="absolute inset-0 -z-10 bg-linear-to-t from-gray-950/85 via-gray-950/40 via-45% to-transparent">
+    <div class="bg-linear-to-t absolute inset-0 -z-10 from-gray-950/85 via-gray-950/40 via-45% to-transparent">
     </div>
 
     <div class="flex items-start justify-between gap-3">
@@ -29,8 +29,7 @@
         ])>
             <x-trip-status :trip="$trip" />
         </p>
-        <p
-            class="flex min-w-16 flex-col items-center rounded-2xl px-3 py-2 leading-none bg-white text-primary-800">
+        <p class="text-primary-800 flex min-w-16 flex-col items-center rounded-2xl bg-white px-3 py-2 leading-none">
             <span class="text-2xl font-bold">{{ $trip->start_date->isoFormat('D') }}</span>
             <span class="mt-1 text-sm">{{ $trip->start_date->isoFormat('MMMM') }}</span>
         </p>
@@ -38,14 +37,15 @@
 
     <div class="flex flex-col gap-3">
         <div class="flex items-end justify-between gap-4">
-            <h3 class="line-clamp-2 text-xl leading-snug font-bold text-balance">
+            <h3 class="line-clamp-2 text-balance text-xl font-bold leading-snug">
                 <a href="{{ route('trips.show', $trip) }}"
-                    class="after:absolute after:inset-0 after:rounded-3xl hover:underline focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 focus-visible:after:outline-primary-300">
+                    class="focus-visible:after:outline-primary-300 after:absolute after:inset-0 after:rounded-3xl hover:underline focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4">
                     {{ $trip->title }}
                 </a>
             </h3>
-            <button type="button" aria-label="Ajouter « {{ $trip->title }} » à mon agenda" title="Ajouter à mon agenda"
-                class="add-to-agenda relative z-10 inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-primary-700 shadow-md transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-60">
+            <button type="button" aria-label="Ajouter « {{ $trip->title }} » à mon agenda"
+                title="Ajouter à mon agenda"
+                class="add-to-agenda text-primary-700 hover:bg-primary-50 relative z-10 inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-white shadow-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-60">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" class="size-5">
                     <rect x="3" y="4.5" width="18" height="16.5" rx="2" />

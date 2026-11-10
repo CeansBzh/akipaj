@@ -46,7 +46,7 @@
 <section aria-labelledby="trip-course-title" data-course-component x-ignore x-data="courseMap(@js($mapDays))" {{ $attributes }}>
 
     <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-10">
-        <div class="course-map isolate lg:sticky lg:top-below-nav-6">
+        <div class="course-map lg:top-below-nav-6 isolate lg:sticky">
             <h2 id="trip-course-title" class="text-2xl font-bold text-gray-900">Le parcours</h2>
             @if ($totalDistance > 0)
                 <p class="my-2 max-w-prose text-gray-700">
@@ -56,19 +56,19 @@
                 </p>
             @endif
             <div x-ref="map" role="region" aria-label="Carte du parcours"
-                class="course-map isolate h-80 rounded-3xl bg-primary-50 sm:h-96 lg:sticky lg:top-below-nav-6 lg:h-128">
+                class="course-map bg-primary-50 lg:top-below-nav-6 lg:h-128 isolate h-80 rounded-3xl sm:h-96 lg:sticky">
             </div>
         </div>
 
         <div class="flex flex-col items-start gap-4">
             <button type="button" hidden x-bind:hidden="selectedDay === null" x-on:click="showAll()"
-                class="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2 font-semibold text-gray-900 ring-1 ring-gray-300 transition-colors ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                class="focus-visible:outline-primary-700 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2 font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2">
                 Voir tout le parcours
             </button>
 
             <ol class="flex w-full flex-col gap-4">
                 @foreach ($courseDays as $courseDay)
-                    <li class="rounded-3xl p-5 ring-1 ring-gray-200 transition-colors ring-inset"
+                    <li class="rounded-3xl p-5 ring-1 ring-inset ring-gray-200 transition-colors"
                         x-bind:class="selectedDay === {{ $courseDay['day'] }} && 'bg-primary-50 ring-primary-200'">
                         @if ($isSeveralDays)
                             <h3 class="font-bold text-gray-900">
@@ -88,7 +88,7 @@
                                             'bg-primary-700 text-white' => !$isDeparture,
                                             'bg-white text-primary-800 ring-1 ring-primary-300 ring-inset' => $isDeparture,
                                         ])>{{ $pointNumbers[$point->id] }}</span>
-                                    <span class="min-w-0 wrap-break-word text-gray-900">
+                                    <span class="wrap-break-word min-w-0 text-gray-900">
                                         @if ($isDeparture)
                                             <span class="text-gray-700">Départ de</span>
                                         @endif
@@ -105,7 +105,7 @@
                         @if ($isSeveralDays)
                             <button type="button" hidden x-bind:hidden="false"
                                 x-on:click="showDay({{ $courseDay['day'] }})"
-                                class="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2 font-semibold text-primary-800 ring-1 ring-gray-300 transition-colors ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700">
+                                class="text-primary-800 focus-visible:outline-primary-700 mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2 font-semibold ring-1 ring-inset ring-gray-300 transition-colors hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2">
                                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                     class="size-5 shrink-0">

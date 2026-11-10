@@ -17,7 +17,8 @@
             <div class="flex flex-col items-center">
                 {{-- Les initiales se voient tant qu'aucune photo n'est enregistrée ni choisie --}}
                 <x-user-avatar :user="$user" class="size-16">
-                    <img x-show="imageUrl" :src="imageUrl" alt="" class="absolute inset-0 size-full object-cover">
+                    <img x-show="imageUrl" :src="imageUrl" alt=""
+                        class="absolute inset-0 size-full object-cover">
                 </x-user-avatar>
                 <button type="button" x-show="imageUrl" class="mt-1 text-sm text-gray-700 underline underline-offset-2"
                     @click="removeImage">Retirer</button>
@@ -55,7 +56,7 @@
                         Votre adresse mail n'a pas été confirmée.
 
                         <button form="send-verification"
-                            class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+                            class="focus:outline-hidden rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                             Cliquer ici pour recevoir à nouveau le lien de confirmation.
                         </button>
                     </p>

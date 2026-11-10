@@ -22,15 +22,15 @@
     @endunless
 
     {{-- La photo et ses voiles sont découpés à part : la carte garde ses proportions, mais s'allonge si son texte le demande --}}
-    <div class="absolute inset-0 -z-10 overflow-hidden rounded-3xl bg-primary-100">
+    <div class="bg-primary-100 absolute inset-0 -z-10 overflow-hidden rounded-3xl">
         <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt="" width="1200"
             height="900" loading="lazy" decoding="async"
             class="size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03]">
         {{-- Flou progressif et dégradé sombre sous le texte, pour qu'il reste lisible sur n'importe quelle photo --}}
         <div
-            class="absolute inset-x-0 bottom-0 h-3/5 backdrop-blur-lg mask-[linear-gradient(to_top,#000_50%,transparent)]">
+            class="mask-[linear-gradient(to_top,#000_50%,transparent)] absolute inset-x-0 bottom-0 h-3/5 backdrop-blur-lg">
         </div>
-        <div class="absolute inset-0 bg-linear-to-t from-gray-950/85 via-gray-950/45 via-40% to-transparent to-75%">
+        <div class="bg-linear-to-t absolute inset-0 from-gray-950/85 via-gray-950/45 via-40% to-transparent to-75%">
         </div>
     </div>
 
@@ -44,23 +44,22 @@
             <x-trip-status :trip="$trip" />
         </p>
         @if (!$isFinished)
-        <p
-            class="flex min-w-16 flex-col items-center rounded-2xl px-3 py-2 leading-none bg-white text-primary-800">
-            <span class="text-2xl font-bold">{{ $trip->start_date->isoFormat('D') }}</span>
-            <span class="mt-1 text-sm">{{ $trip->start_date->isoFormat('MMMM') }}</span>
-        </p>
+            <p class="text-primary-800 flex min-w-16 flex-col items-center rounded-2xl bg-white px-3 py-2 leading-none">
+                <span class="text-2xl font-bold">{{ $trip->start_date->isoFormat('D') }}</span>
+                <span class="mt-1 text-sm">{{ $trip->start_date->isoFormat('MMMM') }}</span>
+            </p>
         @endif
     </div>
 
     <div>
-        <h3 class="text-2xl leading-tight font-bold text-balance wrap-break-word sm:text-3xl mb-3">
+        <h3 class="wrap-break-word mb-3 text-balance text-2xl font-bold leading-tight sm:text-3xl">
             <a href="{{ route('trips.show', $trip) }}"
-                class="after:absolute after:inset-0 after:rounded-3xl group-hover:underline focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 focus-visible:after:outline-primary-300">
+                class="focus-visible:after:outline-primary-300 after:absolute after:inset-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:outline-4 focus-visible:after:-outline-offset-4 group-hover:underline">
                 {{ $trip->title }}
             </a>
         </h3>
 
-        <div class="flex justify-between w-full">
+        <div class="flex w-full justify-between">
             <ul class="flex flex-col gap-1.5 text-white/90">
                 <li class="flex items-center gap-2">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -80,7 +79,7 @@
                             <circle cx="12" cy="9.5" r="2.5" />
                         </svg>
                         <span class="sr-only">Lieu :</span>
-                        <span class="line-clamp-2 min-w-0 break-words">{{ $trip->location }}</span>
+                        <span class="line-clamp-2 min-w-0 wrap-break-word">{{ $trip->location }}</span>
                     </li>
                 @endif
                 <li class="flex flex-wrap gap-x-4 gap-y-1">
@@ -96,7 +95,7 @@
 
             @unless ($isFinished)
                 <button type="button"
-                    class="add-to-agenda relative z-10 inline-flex items-center rounded-full bg-white p-4 h-min mt-auto font-semibold text-primary-800 shadow-md transition-colors hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-60">
+                    class="add-to-agenda text-primary-800 hover:bg-primary-50 relative z-10 mt-auto inline-flex h-min items-center rounded-full bg-white p-4 font-semibold shadow-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-wait disabled:opacity-60">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
                         <rect x="3" y="4.5" width="18" height="16.5" rx="2" />

@@ -6,7 +6,7 @@
                 return $val->date->format('Y');
             },
         ]);
-    
+
     $users = \App\Models\User::all();
 @endphp
 
@@ -54,8 +54,8 @@
 
         <div>
             <x-input-label for="location_input" value="Lieu (facultatif)" />
-            <x-text-input id="location_input" name="location" type="text" class="mt-1 block w-full"
-                :value="old('location')" placeholder="Port de plaisance de Horta, Portugal" maxlength="255" />
+            <x-text-input id="location_input" name="location" type="text" class="mt-1 block w-full" :value="old('location')"
+                placeholder="Port de plaisance de Horta, Portugal" maxlength="255" />
             <x-input-error class="mt-2" :messages="$errors->get('location')" />
         </div>
 
@@ -70,7 +70,8 @@
 
         <fieldset>
             <legend class="text-lg font-medium text-gray-900">Parcours (facultatif)</legend>
-            <p class="mt-1 text-gray-600">Les étapes de la sortie, jour par jour. Elles s'affichent sur une carte dans la page de la sortie.</p>
+            <p class="mt-1 text-gray-600">Les étapes de la sortie, jour par jour. Elles s'affichent sur une carte dans
+                la page de la sortie.</p>
             <x-course-input class="mt-4" :points="old('course', [])" />
         </fieldset>
 
@@ -119,7 +120,7 @@
             <button type="button" class="group" x-on:click.prevent="removeImage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="absolute top-3 right-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 group-focus:stroke-primary-500 motion-safe:group-focus:animate-pulse">
+                    class="group-focus:stroke-primary-500 absolute right-3 top-3 h-6 text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)] hover:text-gray-100 motion-safe:group-focus:animate-pulse">
                     <path d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

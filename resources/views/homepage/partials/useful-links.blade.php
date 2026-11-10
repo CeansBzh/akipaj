@@ -1,6 +1,6 @@
 <section>
     <div class="rounded-md bg-white text-center shadow-lg sm:m-5">
-        <h3 class="py-2 px-4 font-semibold text-sky-500">
+        <h3 class="px-4 py-2 font-semibold text-sky-500">
             Liens utiles
         </h3>
     </div>

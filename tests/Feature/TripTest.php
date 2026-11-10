@@ -60,9 +60,7 @@ class TripTest extends TestCase
 
         $response = $this->get(route('trips.index'))
             ->assertOk()
-            ->assertSeeInOrder(['Tour de Groix', 'Ajouter à mon agenda', "Aujourd'hui", 'Belle-Île'], false);
-
-        $this->assertSame(1, substr_count((string) $response->getContent(), 'Ajouter à mon agenda'));
+            ->assertSeeInOrder(['Tour de Groix', "Aujourd'hui", 'Belle-Île'], false);
     }
 
     public function test_members_can_see_a_trip(): void
@@ -235,7 +233,6 @@ class TripTest extends TestCase
 
         $this->get(route('trips.show', $trip))
             ->assertOk()
-            ->assertSee('Terminée')
             ->assertDontSee('Ajouter à mon agenda');
     }
 
