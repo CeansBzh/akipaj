@@ -8,6 +8,7 @@ use App\Traits\Commentable;
 
 use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -106,6 +108,21 @@ class User extends Authenticatable
     public function threadSubscriptions(): HasMany
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    /**
+     * Initiales des deux premiers mots du nom, affichées à la place de la photo de profil quand il n'y en a pas.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function initials(): Attribute
+    {
+        return Attribute::get(fn (): string => Str::of($this->name)
+            ->squish()
+            ->explode(' ')
+            ->take(2)
+            ->map(fn (string $word): string => Str::upper(Str::substr($word, 0, 1)))
+            ->implode(''));
     }
 
     public static function findByUsername(string $username): self

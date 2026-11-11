@@ -100,22 +100,21 @@ class PhotoController extends Controller
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Photos ajoutées avec succès !');
 
+        $albumGallery = route('photos.index', ['albums' => [$album->id]]);
+
         if ($request->expectsJson()) {
-            return response()->json(['redirect' => route('albums.show', $album)]);
+            return response()->json(['redirect' => $albumGallery]);
         }
 
-        return redirect()->route('albums.show', $album);
+        return redirect($albumGallery);
     }
 
     /**
-     * Display the specified resource.
+     * Les photos n'ont plus de page à elles : leur adresse ouvre la galerie sur leur album, visionneuse ouverte sur elles.
      */
-    public function show(Photo $photo): View
+    public function show(Photo $photo): RedirectResponse
     {
-        return view('photo.show', [
-            'photo' => $photo,
-            'comments' => $photo->comments,
-        ]);
+        return redirect()->route('photos.index', ['albums' => [$photo->album_id], 'photo' => $photo->id]);
     }
 
     /**
@@ -123,14 +122,7 @@ class PhotoController extends Controller
      */
     public function file(string $path): StreamedResponse
     {
-        $disk = Storage::disk('photos');
-
-        abort_unless($disk->fileExists($path), 404);
-
-        // The file names are unique, so the browser can keep them, but shared caches must not
-        return $disk->response($path, headers: [
-            'Cache-Control' => 'private, max-age=31536000, immutable',
-        ]);
+        return Photo::fileResponse($path);
     }
 
     /**

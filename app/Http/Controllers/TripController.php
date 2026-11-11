@@ -8,6 +8,7 @@ use App\Http\Requests\Trip\UpdateTripRequest;
 use App\Models\Trip;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class TripController extends Controller
@@ -23,19 +24,20 @@ class TripController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Affiche les sorties de la plus récente à la plus ancienne, rangées par année, avec leur frise.
      */
     public function index(): View
     {
-        return view('trip.index')->with(
-            'tripsByYear',
-            Trip::orderBy('start_date')->get()
-                ->groupBy([
-                    function ($val) {
-                        return $val->start_date->format('Y');
-                    },
-                ])
-        );
+        $trips = Trip::query()
+            ->withCount('users')
+            ->with(['albums' => fn ($query) => $query->withCount('photos')])
+            ->orderByDesc('start_date')
+            ->get();
+
+        return view('trip.index')->with([
+            'trips' => $trips,
+            'tripsByYear' => $trips->groupBy(fn (Trip $trip): int => $trip->start_date->year),
+        ]);
     }
 
     /**
@@ -43,7 +45,6 @@ class TripController extends Controller
      */
     public function create(): View
     {
-        // TODO import données depuis évenement programme existant (titre, dates, description ?)
         return view('trip.create');
     }
 
@@ -57,6 +58,7 @@ class TripController extends Controller
         $trip->description = $request->description;
         $trip->start_date = $request->start_date;
         $trip->end_date = $request->end_date;
+        $trip->location = $request->location;
         $trip->uuid = $request->uuid;
         if ($request->hasFile('image')) {
             $imageName = time().'.'.$request->image->extension();
@@ -76,6 +78,7 @@ class TripController extends Controller
         if ($request->has('boats') && is_array($request->boats)) {
             $trip->boats()->createMany($request->boats);
         }
+        $this->saveCourse($trip, $request);
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Sortie créée avec succès.');
 
@@ -83,11 +86,16 @@ class TripController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Affiche une sortie, avec son parcours, ses bateaux, ses matelots et ses albums, même ceux qui n'ont pas encore de photo.
      */
     public function show(Trip $trip): View
     {
-        return view('trip.show')->with('trip', Trip::findOrFail($trip->id));
+        return view('trip.show')->with('trip', $trip->load([
+            'boats',
+            'users',
+            'albums' => fn ($query) => $query->withCount('photos')->with('oldestPhoto')->orderBy('date'),
+            'coursePoints',
+        ]));
     }
 
     /**
@@ -95,7 +103,7 @@ class TripController extends Controller
      */
     public function edit(Trip $trip): View
     {
-        return view('trip.edit')->with('trip', $trip->load('boats'));
+        return view('trip.edit')->with('trip', $trip->load(['boats', 'coursePoints']));
     }
 
     /**
@@ -108,6 +116,7 @@ class TripController extends Controller
         $trip->description = $request->description;
         $trip->start_date = $request->start_date;
         $trip->end_date = $request->end_date;
+        $trip->location = $request->location;
         $trip->uuid = $request->uuid;
         // Suppression de l'image actuelle si demandée, ou si une autre image a été uploadée
         if (($request->remove_image || $request->hasFile('image')) && $trip->imagePath) {
@@ -148,6 +157,7 @@ class TripController extends Controller
         }
 
         $trip->save();
+        $this->saveCourse($trip, $request);
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Sortie modifiée avec succès.');
 
@@ -175,5 +185,36 @@ class TripController extends Controller
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Sortie supprimée avec succès.');
 
         return redirect()->route('trips.index');
+    }
+
+    /**
+     * Remplace le parcours de la sortie par celui du formulaire, quand le formulaire en contient un.
+     * Les points sont rangés par jour, sans changer leur ordre au sein d'une même journée.
+     */
+    private function saveCourse(Trip $trip, StoreTripRequest|UpdateTripRequest $request): void
+    {
+        if (! $request->has('course')) {
+            return;
+        }
+
+        /** @var list<array{name: string, day: int|string, latitude: float|string, longitude: float|string}> $points */
+        $points = $request->validated('course') ?? [];
+
+        DB::transaction(function () use ($trip, $points): void {
+            $trip->coursePoints()->delete();
+            $trip->coursePoints()->createMany(
+                collect($points)
+                    ->sortBy(fn (array $point): int => (int) $point['day'])
+                    ->values()
+                    ->map(fn (array $point, int $index): array => [
+                        'position' => $index + 1,
+                        'day' => (int) $point['day'],
+                        'name' => $point['name'],
+                        'latitude' => $point['latitude'],
+                        'longitude' => $point['longitude'],
+                    ])
+                    ->all()
+            );
+        });
     }
 }

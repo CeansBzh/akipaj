@@ -3,7 +3,6 @@
 namespace Tests\Feature\Models;
 
 use App\Models\Album;
-use App\Models\Article;
 use App\Models\Boat;
 use App\Models\Comment;
 use App\Models\Photo;
@@ -73,12 +72,5 @@ class RelationsTest extends TestCase
         $boat = Boat::factory()->for($trip)->create();
 
         $this->assertTrue($boat->trip->is($trip));
-    }
-
-    public function test_articles_use_their_slug_as_route_key(): void
-    {
-        $article = Article::factory()->create(['slug' => 'un-slug']);
-
-        $this->assertSame('un-slug', $article->getRouteKey());
     }
 }

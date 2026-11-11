@@ -16,7 +16,7 @@
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
 
             <button
-                class="leading-0 absolute top-8 right-2 block h-7 w-7 rounded-sm text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 focus:outline-hidden motion-safe:focus:animate-pulse"
+                class="leading-0 focus:outline-hidden absolute right-2 top-8 block h-7 w-7 rounded-sm text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 motion-safe:focus:animate-pulse"
                 @click.prevent="showOldPasswordField=!showOldPasswordField">
                 <span x-show="showOldPasswordField">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -43,7 +43,7 @@
             <x-input-label for="password" value="Nouveau mot de passe" />
             <x-text-input id="password" name="password" ::type="showNewPasswordField ? 'password' : 'text'" class="mt-1 block w-full"
                 autocomplete="new-password" x-model="password" @input="checkStrength()" />
-            <div class="-mx-1 mt-2 mb-4 flex">
+            <div class="-mx-1 mb-4 mt-2 flex">
                 <template x-for="(v,i) in 5">
                     <div class="w-1/5 px-1">
                         <div class="h-2 rounded-xl transition-colors"
@@ -56,7 +56,7 @@
             <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
 
             <button
-                class="leading-0 absolute top-8 right-2 block h-7 w-7 text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 focus:outline-hidden motion-safe:focus:animate-pulse"
+                class="leading-0 focus:outline-hidden absolute right-2 top-8 block h-7 w-7 text-center text-xl text-gray-400 transition-colors hover:text-sky-500 focus:text-sky-500 motion-safe:focus:animate-pulse"
                 @click.prevent="showNewPasswordField=!showNewPasswordField">
                 <span x-show="showNewPasswordField">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

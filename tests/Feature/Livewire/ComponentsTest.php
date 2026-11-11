@@ -6,13 +6,10 @@ use App\Enums\UserLevelEnum;
 use App\Events\RegistrationValidated;
 use App\Livewire\Admin\RegistrationValidation;
 use App\Livewire\Admin\User\Catalog;
-use App\Livewire\Album\AlbumList;
 use App\Livewire\SearchInput;
 use App\Livewire\ThreadSubscribeButton;
 use App\Livewire\Trip\Boats;
 use App\Models\Album;
-use App\Models\Article;
-use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Trip;
 use App\Models\User;
@@ -41,17 +38,13 @@ class ComponentsTest extends TestCase
         $trip = Trip::factory()->create(['title' => 'Croisière en Bretagne']);
         $album = Album::factory()->create(['title' => 'Photos de Bretagne']);
         $photo = Photo::factory()->for($album)->create(['title' => 'Phare', 'legend' => 'Un phare breton en Bretagne']);
-        $article = Article::factory()->create(['title' => 'Bretagne 2023']);
-        $event = Event::factory()->create(['name' => 'Fête de la Bretagne']);
         Trip::factory()->create(['title' => 'Méditerranée', 'description' => 'Au soleil']);
 
         $results = Livewire::test(SearchInput::class)->set('searchTerm', 'bretagne')->get('searchResults');
 
         $this->assertSame([['title' => $trip->title, 'url' => route('trips.show', $trip)]], $results['Sorties']);
-        $this->assertSame([['title' => $album->title, 'url' => route('albums.show', $album)]], $results['Albums']);
+        $this->assertSame([['title' => $album->title, 'url' => route('photos.index', ['albums' => [$album->id]])]], $results['Albums']);
         $this->assertSame([['title' => $photo->title, 'url' => route('photos.show', $photo)]], $results['Photos']);
-        $this->assertSame([['title' => $article->title, 'url' => route('articles.show', $article)]], $results['Articles']);
-        $this->assertSame([['title' => $event->name, 'url' => route('events.show', $event)]], $results['Événements']);
     }
 
     public function test_subscribe_button_reflects_and_toggles_the_subscription(): void
@@ -126,25 +119,6 @@ class ComponentsTest extends TestCase
 
         $component->set('searchTerm', '')->set('level', UserLevelEnum::GUEST->value);
         $this->assertSame([$lucien->id], $component->viewData('users')->pluck('id')->all());
-    }
-
-    public function test_album_list_only_shows_albums_with_photos_and_can_be_sorted(): void
-    {
-        $this->actingAsMember();
-        $old = Album::factory()->create(['date' => '2019-01-01']);
-        $recent = Album::factory()->create(['date' => '2022-01-01']);
-        Album::factory()->create();
-        Photo::factory()->for($old)->create();
-        Photo::factory()->for($recent)->create();
-
-        $component = Livewire::test(AlbumList::class);
-        $this->assertSame([$recent->id, $old->id], $component->viewData('albums')->pluck('id')->all());
-
-        $component->set('sortTerm', 'date_asc');
-        $this->assertSame([$old->id, $recent->id], $component->viewData('albums')->pluck('id')->all());
-
-        $component->set('sortTerm', 'date_desc');
-        $this->assertSame([$recent->id, $old->id], $component->viewData('albums')->pluck('id')->all());
     }
 
     public function test_boats_can_be_added_and_removed_in_the_trip_form(): void

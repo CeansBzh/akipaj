@@ -1,0 +1,141 @@
+/* Visionneuse de la galerie (resources/js/gallery.js), par-dessus les styles de PhotoSwipe */
+
+/* La page ne défile pas derrière la visionneuse, et sa barre de défilement ne se voit pas à côté de la photo */
+html.gallery-lightbox-open {
+    overflow: hidden;
+    scrollbar-width: none;
+}
+
+.gallery-lightbox {
+    --pswp-bg: #000;
+    --pswp-icon-color: #fff;
+    --pswp-icon-color-secondary: #fff;
+    font-family: var(--font-sans);
+}
+
+/*
+ * Commentaires, « Plus d'actions » et « Fermer » en haut à droite, le matelot en bas à droite, hors des zones du bord
+ * de l'écran. Sur grand écran, ils se rangent à gauche du panneau ouvert, dont resources/js/gallery.js donne la largeur.
+ */
+.gallery-lightbox {
+    --gallery-drawer-offset: 0px;
+}
+
+.gallery-lightbox .pswp__gallery-actions,
+.gallery-lightbox .pswp__gallery-uploader {
+    position: absolute;
+    right: calc(var(--gallery-drawer-offset) + max(0.75rem, env(safe-area-inset-right)));
+    z-index: 20;
+}
+
+.gallery-lightbox .pswp__gallery-actions {
+    top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.gallery-lightbox .pswp__gallery-uploader {
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    max-width: calc(100% - var(--gallery-drawer-offset) - 1.5rem);
+}
+
+/* Nom du club, en haut à gauche de la visionneuse des liens de partage (resources/js/shared-photos.js) */
+.gallery-lightbox .pswp__gallery-brand {
+    position: absolute;
+    top: max(0.75rem, env(safe-area-inset-top));
+    left: max(0.75rem, env(safe-area-inset-left));
+    z-index: 20;
+}
+
+@media (min-width: 40rem) {
+    .gallery-lightbox .pswp__gallery-brand {
+        top: 1.25rem;
+        left: 1.25rem;
+    }
+
+    .gallery-lightbox .pswp__gallery-actions,
+    .gallery-lightbox .pswp__gallery-uploader {
+        right: calc(var(--gallery-drawer-offset) + 1.25rem);
+    }
+
+    .gallery-lightbox .pswp__gallery-actions {
+        top: 1.25rem;
+    }
+
+    .gallery-lightbox .pswp__gallery-uploader {
+        bottom: 1.25rem;
+    }
+}
+
+/* Cachées d'une touche, les commandes s'effacent en glissant vers le bord le plus proche */
+@media (prefers-reduced-motion: no-preference) {
+    .gallery-lightbox .pswp__gallery-actions,
+    .gallery-lightbox .pswp__gallery-uploader {
+        transition:
+            opacity var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1),
+            transform var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1);
+    }
+
+    .gallery-lightbox .pswp__gallery-brand {
+        transition:
+            opacity var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1),
+            transform var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1);
+    }
+
+    .gallery-lightbox:not(.pswp--ui-visible) .pswp__gallery-brand,
+    .gallery-lightbox:not(.pswp--ui-visible) .pswp__gallery-actions {
+        transform: translateY(-0.75rem);
+    }
+
+    .gallery-lightbox:not(.pswp--ui-visible) .pswp__gallery-uploader {
+        transform: translateY(0.75rem);
+    }
+}
+
+/* Petites flèches rondes en verre, posées dans les zones des bords qui changent aussi de photo */
+.gallery-lightbox .pswp__button--arrow {
+    width: 5rem;
+}
+
+.gallery-lightbox .pswp__button--arrow .pswp__icn {
+    top: 50%;
+    left: 1.25rem;
+    width: 3rem;
+    height: 3rem;
+    margin-top: -1.5rem;
+    border-radius: 9999px;
+    background: rgb(3 7 18 / 0.6);
+    color: #fff;
+    backdrop-filter: blur(12px);
+}
+
+.gallery-lightbox .pswp__button--arrow--next {
+    right: var(--gallery-drawer-offset);
+}
+
+.gallery-lightbox .pswp__button--arrow--next .pswp__icn {
+    left: auto;
+    right: 1.25rem;
+}
+
+.gallery-lightbox .pswp__button--arrow:hover .pswp__icn {
+    background: rgb(3 7 18 / 0.8);
+}
+
+.gallery-lightbox .pswp__button--arrow:focus-visible {
+    outline: none;
+}
+
+.gallery-lightbox .pswp__button--arrow:focus-visible .pswp__icn {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* PhotoSwipe cache les flèches sur un écran tactile : on les garde sur tablette, mais pas sur téléphone, où l'on glisse */
+.gallery-lightbox.pswp--touch .pswp__button--arrow {
+    visibility: visible;
+}
+
+@media (max-width: 39.99rem) {
+    .gallery-lightbox .pswp__button--arrow {
+        display: none;
+    }
+}

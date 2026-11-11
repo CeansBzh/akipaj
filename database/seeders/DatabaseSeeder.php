@@ -20,10 +20,8 @@ class DatabaseSeeder extends Seeder
         }
 
         // $this->call([
-        //     ArticleSeeder::class,
         //     PhotoSeeder::class,
         //     AlbumSeeder::class,
-        //     EventSeeder::class,
         //     TripSeeder::class,
         //     CommentSeeder::class,
         // ]);

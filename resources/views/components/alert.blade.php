@@ -14,7 +14,7 @@
         @if (is_array($message))
             <div>
                 <span class="font-medium">Plusieurs messages:</span>
-                <ul class="mt-1.5 ml-4 list-inside list-disc text-sm">
+                <ul class="ml-4 mt-1.5 list-inside list-disc text-sm">
                     @foreach ($message as $item)
                         <li>{{ $item }}</li>
                     @endforeach

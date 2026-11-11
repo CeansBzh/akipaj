@@ -27,10 +27,56 @@ class TripFactory extends Factory
         return [
             'title' => fake()->text(50), // Same limits as the form validation
             'description' => fake()->text(500),
+            'location' => fake()->boolean(70) ? fake()->city() : null,
             'start_date' => $start,
             'end_date' => fake()->boolean(10) ? $start : $end,
             'imagePath' => fake()->boolean(60) ? fake()->imageUrl(640, 480, 'cats') : null,
         ];
+    }
+
+    /**
+     * Sortie à venir : elle commence entre demain et dans un an.
+     *
+     * @return static
+     */
+    public function upcoming()
+    {
+        $start = fake()->dateTimeBetween('+1 day', '+1 year');
+        $end = fake()->dateTimeBetween($start->format('Y-m-d').' +1 day', $start->format('Y-m-d').' +10 days');
+
+        return $this->state(fn (array $attributes) => [
+            'start_date' => $start,
+            'end_date' => $end,
+        ]);
+    }
+
+    /**
+     * Sortie terminée : elle a commencé il y a un mois à deux ans.
+     *
+     * @return static
+     */
+    public function finished()
+    {
+        $start = fake()->dateTimeBetween('-2 years', '-1 month');
+        $end = fake()->dateTimeBetween($start->format('Y-m-d').' +1 day', $start->format('Y-m-d').' +10 days');
+
+        return $this->state(fn (array $attributes) => [
+            'start_date' => $start,
+            'end_date' => $end,
+        ]);
+    }
+
+    /**
+     * Sortie sans lieu ni image de couverture.
+     *
+     * @return static
+     */
+    public function withoutLocationOrImage()
+    {
+        return $this->state(fn (array $attributes) => [
+            'location' => null,
+            'imagePath' => null,
+        ]);
     }
 
     /**

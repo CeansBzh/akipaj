@@ -21,30 +21,15 @@ class AlbumTest extends TestCase
         Storage::fake('local');
     }
 
-    public function test_index_lists_empty_albums(): void
-    {
-        $this->actingAsMember();
-        $empty = Album::factory()->create();
-        $withPhotos = Album::factory()->create();
-        Photo::factory()->for($withPhotos)->create();
-
-        $emptyAlbums = $this->get(route('albums.index'))->assertOk()->viewData('emptyAlbums');
-
-        // Albums with photos are listed by the AlbumList Livewire component
-        $this->assertTrue($emptyAlbums->contains($empty));
-        $this->assertFalse($emptyAlbums->contains($withPhotos));
-    }
-
-    public function test_show_displays_the_album_photos(): void
+    public function test_old_album_links_lead_to_the_gallery(): void
     {
         $this->actingAsMember();
         $album = Album::factory()->create();
-        $photos = Photo::factory(2)->for($album)->create();
-        Photo::factory()->for(Album::factory())->create();
 
-        $response = $this->get(route('albums.show', $album))->assertOk()->assertViewIs('album.show');
-
-        $this->assertEqualsCanonicalizing($photos->pluck('id')->all(), $response->viewData('photoIds'));
+        $this->get('/albums')->assertMovedPermanently()->assertRedirect(route('photos.index'));
+        $this->get('/albums/'.$album->id)
+            ->assertMovedPermanently()
+            ->assertRedirect(route('photos.index', ['albums' => [$album->id]]));
     }
 
     public function test_members_can_create_an_album_linked_to_trips(): void
@@ -63,7 +48,7 @@ class AlbumTest extends TestCase
         ])->assertSessionHasNoErrors();
 
         $album = Album::where('title', 'Croisière 2023')->firstOrFail();
-        $response->assertRedirect(route('albums.show', $album));
+        $response->assertRedirect(route('photos.index', ['albums' => [$album->id]]));
         $this->assertSame('2023-07-01', $album->date->format('Y-m-d'));
         $this->assertEqualsCanonicalizing($trips->pluck('id')->all(), $album->trips()->pluck('trips.id')->all());
         Storage::disk('local')->assertExists('public/albums/'.basename((string) $album->imagePath));
@@ -97,7 +82,7 @@ class AlbumTest extends TestCase
             'month' => 2,
             'year' => 2020,
             'trips' => [$newTrip->id],
-        ])->assertSessionHasNoErrors()->assertRedirect(route('albums.show', $album));
+        ])->assertSessionHasNoErrors()->assertRedirect(route('photos.index', ['albums' => [$album->id]]));
 
         $album->refresh();
         $this->assertSame('Nouveau titre', $album->title);
@@ -131,7 +116,7 @@ class AlbumTest extends TestCase
         $album = Album::factory()->create();
         $photo = Photo::factory()->for($album)->create(['user_id' => $user->id]);
 
-        $this->delete(route('albums.destroy', $album))->assertRedirect(route('albums.index'));
+        $this->delete(route('albums.destroy', $album))->assertRedirect(route('photos.index'));
 
         $this->assertModelMissing($album);
         $this->assertSoftDeleted($photo);
@@ -153,7 +138,7 @@ class AlbumTest extends TestCase
         $this->actingAsAdmin();
         $album = Album::factory()->create();
 
-        $this->delete(route('albums.destroy', $album))->assertRedirect(route('albums.index'));
+        $this->delete(route('albums.destroy', $album))->assertRedirect(route('photos.index'));
 
         $this->assertModelMissing($album);
     }

@@ -1,4 +1,4 @@
-<section class="flex flex-col justify-around space-y-4 xs:flex-row xs:space-y-0">
+<section class="xs:flex-row xs:space-y-0 flex flex-col justify-around space-y-4">
     <header class="mx-auto flex items-center sm:mx-0">
         <h2 class="text-lg font-medium text-gray-900">Supprimer la photo</h2>
     </header>

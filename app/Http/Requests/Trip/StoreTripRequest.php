@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests\Trip;
 
+use App\Rules\RichTextLength;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTripRequest extends FormRequest
 {
+    use ValidatesCourse;
+
     /**
-     * Get the validation rules that apply to the request.
+     * Donne les règles de validation qui s'appliquent à la requête.
      *
      * @return array<string, mixed>
      */
@@ -15,9 +18,10 @@ class StoreTripRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:50',
-            'description' => 'required|string|max:500',
+            'description' => ['required', 'string', new RichTextLength(1000)],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
+            'location' => 'nullable|string|max:255',
             'albums' => 'nullable|array',
             'albums.*' => 'nullable|integer|distinct|exists:albums,id',
             'users' => 'nullable|array',
@@ -32,6 +36,17 @@ class StoreTripRequest extends FormRequest
             'boats.*.renter' => 'nullable|max:255',
             'boats.*.city' => 'nullable|max:255',
             'boats.*.crew' => 'nullable|integer',
+            ...$this->courseRules(),
         ];
+    }
+
+    /**
+     * Donne les messages d'erreur propres à cette requête.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return $this->courseMessages();
     }
 }

@@ -1,137 +1,182 @@
-<section class="mx-auto max-w-2xl">
-    <div class="mb-5 text-center">
-        <form action="{{ route('photos.store', ['album' => $album]) }}" method="POST" enctype="multipart/form-data">
-            @csrf
+@php
+    $pill =
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-full font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700';
+    $primaryPill =
+        $pill . ' px-5 bg-primary-700 text-white hover:bg-primary-800 disabled:cursor-not-allowed disabled:bg-gray-400';
+    $secondaryPill = $pill . ' px-5 bg-white text-primary-800 ring-1 ring-gray-300 ring-inset hover:bg-primary-50';
+    $plusIcon =
+        '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0"><path d="M12 5v14M5 12h14" /></svg>';
+@endphp
 
-            <div id="dropbox" class="flex w-full items-center justify-center">
-                <label for="dropbox-file"
-                    class="fixed bottom-26.25 cursor-pointer rounded-lg border-2 border-sky-300 bg-white p-3 hover:bg-sky-100 md:relative md:bottom-0 md:flex md:h-56 md:w-full md:items-center md:justify-center md:border-dashed md:p-8">
-                    <div id="loading-spinner" role="status"
-                        class="absolute bottom-[calc(50%-1.25rem)] left-[calc(50%-1.25rem)] hidden">
-                        <svg class="mr-2 inline h-10 w-10 fill-sky-500 text-gray-300 motion-safe:animate-spin"
-                            viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                fill="currentColor" />
-                            <path
-                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                fill="currentFill" />
-                        </svg>
-                        <span class="sr-only">Chargement...</span>
-                    </div>
-                    <div id="drag-over-icon" role="status"
-                        class="absolute bottom-[calc(50%-1.75rem)] left-[calc(50%-1.75rem)] hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="mr-2 inline h-14 w-14 text-sky-500 motion-safe:animate-bounce">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        <span class="sr-only">Relâcher pour déposer les fichiers</span>
-                    </div>
-                    <div id="dropbox-body" class="flex flex-row items-center justify-center text-sky-600 md:flex-col">
-                        <svg aria-hidden="true" class="mb-3 mr-3 h-10 w-10 text-sky-500" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
-                            </path>
-                        </svg>
-                        <div class="flex flex-col">
-                            <p class="mb-2 hidden text-sm text-gray-500 md:block"><span class="font-semibold">Cliquez
-                                    pour choisir
-                                    des
-                                    images</span><span id="draggableMsg" class="hidden"> ou faites-les glisser</span>
-                            </p>
-                            <p class="text-sm font-semibold md:hidden">Parcourir mes fichiers</p>
-                            <p class="text-xs md:text-gray-500">PNG, JPG ou GIF</p>
-                        </div>
-                    </div>
-                    <input id="dropbox-file" type="file" name="files[]" class="hidden" multiple accept="image/png, image/jpeg, image/gif" />
-                </label>
-            </div>
+{{--
+    Le script remplit la grille des vignettes à mesure que les photos sont prêtes, et les envoie par lots.
+    Sans photo choisie, seule la carte « Choisir des photos » est affichée ; ensuite, la grille et la barre d'envoi.
+--}}
+<form action="{{ route('photos.store', ['album' => $album]) }}" method="POST" enctype="multipart/form-data"
+    class="mt-6 sm:mt-8" data-upload-form>
+    @csrf
+    <input type="file" name="files[]" multiple accept="image/png, image/jpeg, image/gif" class="hidden" data-file-input>
 
-            <p id="fileNb" class="text-center"></p>
-            <ul id="uploadErrors" class="text-center text-red-500"></ul>
-            <div id="previewContainer" class="mt-4 pb-3">
-                <div id="info" class="px-5 sm:py-10">
-                    <div class="mx-auto max-w-xs text-sm text-gray-500">
-                        @if ($errors->any())
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="mx-auto mb-5 h-14 w-14 text-red-500">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="12"></line>
-                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                            </svg>
-                            <div class="text-red-500">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li class="mb-2">{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @else
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="mx-auto mb-5 h-14 w-14 text-gray-400">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                            <p>Toutes les photos importées seront redimensionnées pour réduire leur
-                                poids.</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <template id="previewElement">
-                <div class="mb-5 rounded-md">
-                    <div class="flex items-center justify-between">
-                        <canvas class="rounded-sm" width="25" height="25">
-                            Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
-                        </canvas>
-                        <div class="flex w-full flex-row justify-end rounded-r bg-white py-2 px-4 shadow-xs">
-                            <span class="truncate px-3 text-base font-medium text-[#07074D]">
-                                fichier.png
-                            </span>
-                            <button class="ml-4 text-[#07074D]">
-                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
-                                        fill="currentColor" />
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M0.279337 9.72066C-0.0931125 9.34821 -0.0931125 8.74435 0.279337 8.3719L8.3719 0.279338C8.74435 -0.0931127 9.34821 -0.0931123 9.72066 0.279338C10.0931 0.651787 10.0931 1.25565 9.72066 1.6281L1.6281 9.72066C1.25565 10.0931 0.651787 10.0931 0.279337 9.72066Z"
-                                        fill="currentColor" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </template>
-
-            <div class="fixed bottom-0 left-0 right-0">
-                <div class="mx-auto h-20 max-w-3xl rounded-t-xl bg-white p-5 shadow-2xl">
-                    <div class="flex items-center justify-between">
-                        <p class="mr-2 grow overflow-hidden text-ellipsis whitespace-nowrap text-left">Vos photos
-                            seront ajoutées à l'album "
-                            <span class="font-semibold">{{ $album->title }}</span>"
-                        </p>
-                        <div>
-                            <x-primary-button
-                                class="w-max bg-sky-500 py-3 hover:bg-sky-700 disabled:cursor-wait disabled:opacity-50">
-                                Ajouter mes photos
-                            </x-primary-button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+    <div role="alert" @class([
+        'mb-6 rounded-2xl bg-red-50 p-4 text-red-800 ring-1 ring-red-200 ring-inset',
+        'hidden' => !$errors->any(),
+    ]) data-errors>
+        <ul class="space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
-</section>
+
+    {{-- Carte de départ, sur papier quadrillé : la flotte du club au trait, puis le bouton pour choisir les photos --}}
+    <div class="blueprint ring-primary-600 rounded-3xl px-5 pb-7 pt-8 text-center ring-2 ring-inset sm:px-10 sm:pb-9 sm:pt-10"
+        data-drop-card>
+        <div aria-hidden="true" class="text-primary-900 flex h-36 items-end justify-center gap-3 sm:h-56 sm:gap-10">
+            <x-boat-drawing.catamaran class="h-[78%] w-auto" />
+            <x-boat-drawing.sloop class="h-full w-auto" />
+            <x-boat-drawing.ketch mirrored class="h-[88%] w-auto" />
+        </div>
+
+        <button type="button" class="{{ $primaryPill }} mt-7 min-h-14 px-7 text-lg shadow-md" data-pick-files>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="size-6 shrink-0">
+                <rect x="3" y="5" width="18" height="15" rx="3" />
+                <circle cx="9" cy="10.5" r="1.75" />
+                <path d="m21 16-4.5-4.5L8 20" />
+            </svg>
+            Choisir des photos
+        </button>
+        <p class="pointer-fine:block mt-3 hidden text-gray-800">ou faites-les glisser</p>
+        <p class="mx-auto mt-3 max-w-prose text-sm text-gray-700">
+            JPG, PNG ou GIF. Vos photos seront compressées, Akipaj ne sauvegarde pas les photos en qualité originale.
+        </p>
+    </div>
+
+    {{-- Photos choisies, en vignettes, chacune retirable avant l'envoi --}}
+    <section aria-labelledby="upload-selection-title" class="hidden" data-selection>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h2 id="upload-selection-title" class="text-xl font-bold text-gray-900" data-selection-title></h2>
+                <p class="mt-0.5 text-gray-700" aria-live="polite" data-preparing></p>
+            </div>
+            <div class="in-data-uploading:hidden flex flex-wrap items-center gap-2">
+                <button type="button" class="{{ $secondaryPill }}" data-pick-files>
+                    {!! $plusIcon !!}
+                    Ajouter d'autres photos
+                </button>
+                <button type="button"
+                    class="text-primary-800 hover:text-primary-900 focus-visible:outline-primary-700 inline-flex min-h-11 items-center rounded-full px-3 font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
+                    x-data="" x-on:click="$dispatch('open-modal', 'confirm-clear-photos')">
+                    Tout retirer
+                </button>
+            </div>
+        </div>
+
+        <ul class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))]"
+            data-tiles></ul>
+    </section>
+
+    {{-- Barre d'envoi, en bas de l'écran pendant qu'on parcourt les vignettes --}}
+    <div class="sticky bottom-0 z-30 hidden pb-3 pt-6 sm:pb-6" data-action-bar>
+        <div class="rounded-3xl bg-white p-2 shadow-xl ring-1 ring-gray-200 sm:p-4 sm:pl-6">
+            <div class="flex items-center gap-3" data-ready>
+                <x-sailboat class="text-primary-700 hidden h-10 w-12 shrink-0 sm:block" />
+                <div class="hidden min-w-0 grow sm:block">
+                    <p class="text-sm text-gray-700">Cap sur l'album</p>
+                    <p class="truncate font-bold text-gray-900">«&nbsp;{{ $album->title }}&nbsp;»</p>
+                </div>
+                <button type="submit" class="{{ $primaryPill }} min-h-12 w-full shrink-0 sm:w-auto" data-submit>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                        <path d="M12 16V4m-5 5 5-5 5 5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                    </svg>
+                    <span data-submit-label>Ajouter mes photos</span>
+                </button>
+            </div>
+
+            {{-- Pendant l'envoi : un voilier avance sur la barre jusqu'à la bouée d'arrivée --}}
+            <div class="hidden px-3 pt-1 sm:p-0" data-progress>
+                <div class="flex items-baseline justify-between gap-3">
+                    <p class="font-bold text-gray-900">Envoi des photos…</p>
+                    <p class="text-sm text-gray-700" data-progress-label></p>
+                </div>
+                <div role="progressbar" aria-label="Envoi des photos" aria-valuemin="0" class="relative mt-1 h-11"
+                    data-progress-bar>
+                    <div class="bg-primary-100 absolute bottom-2 left-5 right-7 h-1.5 rounded-full"></div>
+                    <div class="bg-primary-700 absolute bottom-2 left-5 h-1.5 w-0 rounded-full motion-safe:transition-[width] motion-safe:duration-500"
+                        data-progress-fill></div>
+                    <x-sailboat :waves="false" data-progress-boat
+                        class="text-primary-800 absolute bottom-3 left-5 h-8 w-10 -translate-x-1/2 motion-safe:transition-[left] motion-safe:duration-500" />
+                    <svg aria-hidden="true" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.75"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        class="text-primary-700 absolute bottom-0.5 right-0 h-8 w-6">
+                        <path d="M12 3v17" />
+                        <path d="M12 3h8l-2.5 3 2.5 3h-8" fill="currentColor" />
+                        <path d="M6 23q6-7 12 0Z" fill="currentColor" fill-opacity=".15" />
+                        <path d="M3 27q3-2 6 0t6 0 6 0" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<x-modal name="confirm-clear-photos" max-width="md" focusable>
+    <div class="p-6">
+        <h2 class="text-xl font-bold text-gray-900">Retirer toutes les photos ?</h2>
+        <p class="mt-2 text-gray-700">Elles ne seront pas ajoutées à l'album. Vous pourrez en choisir d'autres.</p>
+        <div class="mt-6 flex flex-wrap justify-end gap-3">
+            <button type="button" x-on:click="$dispatch('close')" class="{{ $secondaryPill }}">Garder mes
+                photos</button>
+            <button type="button" x-on:click="$dispatch('close')" class="{{ $primaryPill }}" data-confirm-clear>
+                Tout retirer
+            </button>
+        </div>
+    </div>
+</x-modal>
+
+{{-- Pendant qu'on fait glisser des fichiers au-dessus de la page --}}
+<div class="bg-primary-900/95 fixed inset-0 z-50 hidden p-3 sm:p-6" data-drop-overlay>
+    <div
+        class="flex size-full flex-col items-center justify-center rounded-4xl border-2 border-dashed border-white/70 px-6 text-center text-white">
+        <x-sailboat class="motion-safe:animate-sail-in h-36 w-auto sm:h-52" />
+        <p class="mt-6 text-3xl font-bold">Déposez vos photos</p>
+        <p class="mt-2 max-w-prose wrap-break-word text-lg">Elles rejoindront l'album «&nbsp;{{ $album->title }}&nbsp;».
+        </p>
+    </div>
+</div>
+
+{{-- Vignette d'une photo choisie : data-state vaut preparing, ready ou sent --}}
+<template id="photo-tile-template">
+    <li class="group/tile bg-primary-100 relative aspect-square overflow-hidden rounded-xl" data-state="preparing">
+        <canvas width="240" height="240" role="img" class="size-full"></canvas>
+        <span
+            class="bg-primary-100 absolute inset-0 hidden items-center justify-center group-data-[state=preparing]/tile:flex">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" class="text-primary-700 size-7 motion-safe:animate-spin">
+                <path d="M12 3a9 9 0 1 0 9 9" />
+            </svg>
+            <span class="sr-only">En préparation</span>
+        </span>
+        <span
+            class="bg-primary-900/60 absolute inset-0 hidden flex-col items-center justify-center gap-1 font-semibold text-white group-data-[state=sent]/tile:flex">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" class="size-7">
+                <path d="m5 12.5 4.5 4.5L19 7.5" />
+            </svg>
+            Envoyée
+        </span>
+        <button type="button"
+            class="in-data-uploading:hidden absolute right-1 top-1 inline-flex min-h-9 items-center gap-1 rounded-full bg-gray-900/60 py-1 pl-2 pr-3 text-sm font-semibold text-white backdrop-blur-md transition-colors before:absolute before:-inset-1 hover:bg-gray-900/80 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white group-data-[state=sent]/tile:hidden"
+            data-remove>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0">
+                <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+            Retirer<span class="sr-only" data-remove-name></span>
+        </button>
+    </li>
+</template>
 
 @push('scripts')
     @vite('resources/js/add-photo-form.js')
