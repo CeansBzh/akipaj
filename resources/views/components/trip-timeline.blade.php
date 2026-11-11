@@ -1,15 +1,15 @@
 {{--
     Frise des sorties, à gauche des cartes sur grand écran, sur un fond qui atténue la mer dessinée derrière elle.
-    Elle occupe toute la hauteur de l'écran et montre toutes les années ; seule l'année en cours de lecture est dépliée
-    sur ses sorties, espacées selon le temps qui les sépare. Une marque y suit la lecture des cartes : chaque carte,
+    Elle occupe toute la hauteur de l'écran et montre toutes les années, quitte à défiler quand elles n'y tiennent pas ;
+    seule l'année en cours de lecture est dépliée sur ses sorties, espacées selon le temps qui les sépare. Une marque y suit la lecture des cartes : chaque carte,
     chaque année et le jour présent ont leur repère (data-timeline-anchor dans la liste, data-timeline-mark ici).
     Toucher une année ou une sortie y mène.
 --}}
 
 <nav aria-label="Frise des sorties" data-trip-timeline {{ $attributes }}>
     <div data-timeline-box
-        class="top-below-nav-0 bg-linear-to-r bg-radial from-primary-50 sticky h-dvh from-20% to-transparent py-4">
-        <div class="relative h-full">
+        class="top-below-nav-0 bg-linear-to-r bg-radial from-primary-50 sticky h-dvh overflow-y-auto overscroll-contain from-20% to-transparent py-4 [scrollbar-width:thin]">
+        <div class="relative min-h-full">
             <span aria-hidden="true" class="absolute inset-y-0 left-3 w-px bg-gray-300"></span>
 
             {{-- Marque de lecture, sur l'axe : la frise y place le moment de la carte en haut de l'écran --}}
@@ -19,15 +19,14 @@
                 <span class="bg-primary-700 ring-primary-100 size-3 shrink-0 rounded-full ring-4"></span>
             </div>
 
-            <ol class="flex h-full flex-col">
+            <ol>
                 @foreach ($years as $year)
                     @php($isFirst = $loop->first)
                     <li data-timeline-year="{{ $year['year'] }}" @if ($isFirst) data-current @endif
                         @class([
-                            'group/year flex min-h-0 basis-10 flex-col',
-                            'grow-0 overflow-hidden transition-[flex-grow] duration-300 ease-out motion-reduce:transition-none data-current:grow' =>
+                            'group/year',
+                            'grid grid-rows-[2.5rem_0fr] transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none data-current:grid-rows-[2.5rem_1fr]' =>
                                 $year['tripCount'] > 0,
-                            'shrink-0' => $year['tripCount'] === 0,
                         ])>
                         <div data-timeline-mark="year-{{ $year['year'] }}"
                             class="relative flex h-10 shrink-0 items-center gap-3 pl-10">
@@ -53,19 +52,18 @@
                         </div>
 
                         @if ($year['tripCount'] > 0)
-                            {{-- Les sorties de l'année, dépliées quand on la lit : les écarts se partagent la place selon les jours --}}
+                            {{-- Les sorties de l'année, dépliées quand on la lit, séparées d'écarts à proportion des jours --}}
                             <ol data-timeline-trips @unless ($isFirst) inert @endunless
-                                class="group-data-current/year:visible invisible flex min-h-0 grow flex-col overflow-y-auto pb-2 scrollbar-thin">
+                                class="group-data-current/year:visible invisible min-h-0 overflow-hidden">
                                 @foreach ($year['entries'] as $entry)
                                     @switch($entry['type'])
                                         @case('gap')
-                                            <li aria-hidden="true" class="min-h-0 basis-0"
-                                                style="grow: {{ $entry['days'] }}"></li>
+                                            <li aria-hidden="true" style="height: {{ $gapHeight($entry['days']) }}"></li>
                                         @break
 
                                         @case('today')
                                             <li data-timeline-mark="today"
-                                                class="relative flex shrink-0 items-center gap-3 py-1">
+                                                class="relative flex items-center gap-3 py-1">
                                                 <span aria-hidden="true" data-timeline-point
                                                     class="ring-primary-700 ml-1.5 size-3 rounded-full bg-white ring-2"></span>
                                                 <span
@@ -75,7 +73,7 @@
 
                                         @case('trip')
                                             @php($trip = $entry['trip'])
-                                            <li data-timeline-mark="trip-{{ $trip->id }}" class="relative shrink-0">
+                                            <li data-timeline-mark="trip-{{ $trip->id }}" class="relative">
                                                 <span aria-hidden="true" data-timeline-point
                                                     @class([
                                                         'absolute top-3 left-3 size-2.5 -translate-1/2 rounded-full',
@@ -161,13 +159,13 @@
                     currentLink?.removeAttribute('aria-current');
                     link?.setAttribute('aria-current', 'location');
                     currentLink = link;
-                    // Dans une année trop remplie pour la place, la liste défile jusqu'à la sortie lue
-                    const list = link?.closest('[data-timeline-trips]');
-                    if (list && list.scrollHeight > list.clientHeight) {
-                        const [listBox, linkBox] = [list.getBoundingClientRect(), link.getBoundingClientRect()];
-                        list.scrollTop += Math.min(0, linkBox.top - listBox.top) + Math.max(0, linkBox.bottom - listBox
-                            .bottom);
-                    }
+                }
+
+                // Quand la frise ne tient pas à l'écran, elle défile pour garder la marque de lecture en vue
+                function keepInView(y) {
+                    const view = box.getBoundingClientRect();
+                    const [top, bottom] = [view.top + view.height * 0.2, view.top + view.height * 0.6];
+                    box.scrollTop += Math.min(0, y - top) + Math.max(0, y - bottom);
                 }
 
                 function update() {
@@ -196,6 +194,7 @@
                         y = markY(anchors[index]) + progress * (markY(anchors[index + 1]) - markY(anchors[index]));
                     }
                     reading.style.top = `${y - box.firstElementChild.getBoundingClientRect().top}px`;
+                    keepInView(y);
 
                     // La sortie lue : la dernière carte de l'année passée sous la ligne de lecture
                     const card = anchors.slice(0, index + 1).findLast((anchor) => anchor.id.startsWith('trip-item-') &&

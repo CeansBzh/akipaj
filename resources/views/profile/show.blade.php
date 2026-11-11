@@ -103,8 +103,7 @@
                         </p>
                     @else
                         <p class="mt-1 text-gray-700">
-                            {{ $tripCount }} {{ $tripCount > 1 ? 'sorties' : 'sortie' }}, de la plus récente à la
-                            plus ancienne.
+                            {{ $tripCount }} {{ $tripCount > 1 ? 'sorties' : 'sortie' }}
                         </p>
 
                         <div class="mt-6 flex flex-col gap-10">

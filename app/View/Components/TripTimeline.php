@@ -13,12 +13,17 @@ use Illuminate\View\Component;
  * Frise des sorties : toutes les années, de la plus récente à la plus ancienne, années sans sortie comprises.
  *
  * Seule l'année en cours de lecture est dépliée sur ses sorties et, s'il tombe dedans, sur le jour présent.
- * Entre deux repères d'une année, un écart compte les jours qui les séparent : la vue leur partage la place
- * à proportion, sans jamais faire se chevaucher les libellés.
+ * Entre deux repères d'une année, un écart compte les jours qui les séparent : la vue lui donne une hauteur
+ * à proportion, ajoutée à celle des libellés, qui ne se chevauchent donc jamais.
  */
 class TripTimeline extends Component
 {
     private const SECONDS_PER_DAY = 86400;
+
+    /**
+     * Hauteur totale, en rem, des écarts d'une année dépliée, en plus de ses libellés.
+     */
+    private const YEAR_GAPS_HEIGHT_REM = 6;
 
     /**
      * Années de la frise, de la plus récente à la plus ancienne. Leurs repères vont du 31 décembre au 1er janvier,
@@ -77,6 +82,14 @@ class TripTimeline extends Component
     private function gap(int $from, int $to): array
     {
         return ['type' => 'gap', 'days' => round(max(0, $from - $to) / self::SECONDS_PER_DAY, 1), 'trip' => null];
+    }
+
+    /**
+     * Donne la hauteur CSS d'un écart de la frise, à proportion des jours qu'il compte.
+     */
+    public function gapHeight(float $days): string
+    {
+        return round($days / 365 * self::YEAR_GAPS_HEIGHT_REM, 3).'rem';
     }
 
     /**
