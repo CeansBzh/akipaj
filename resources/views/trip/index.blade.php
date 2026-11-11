@@ -1,149 +1,96 @@
-<x-member-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Historique des sorties</h2>
-            @can('create', App\Models\Trip::class)
-                <x-primary-link href="{{ route('trips.create') }}">
-                    Nouvelle sortie
-                </x-primary-link>
-            @endcan
-        </div>
-    </x-slot>
+{{--
+    Les sorties du club, de la plus récente à la plus ancienne, rangées par année, sur une mer dessinée au trait
+    qui reste en fond pendant la lecture. Sur grand écran, la frise à gauche montre toutes les années, suit la lecture
+    et mène à une année ou à une sortie. Sur téléphone, les années se choisissent en haut de la liste et le titre
+    de l'année reste affiché pendant qu'on lit ses sorties.
+    Le repère « Aujourd'hui » sépare les sorties à venir ou en cours des sorties passées.
+--}}
 
-    <div x-data="trips()">
-        <div class="mb-8 bg-sky-500/90">
-            <div class="relative mx-auto grid max-w-5xl grid-cols-1 grid-rows-1">
-                <div class="carousel col-start-1 row-start-1" x-ref="carousel">
-                    @foreach ($tripsByYear as $year => $trips)
-                        <div class="mr-8 flex h-32 w-1/4 flex-col items-center justify-center rounded-sm sm:w-1/6">
-                            <p class="cursor-pointer font-merriweather text-4xl font-bold text-white"
-                                x-on:click="flkty.selectCell({{ $loop->index }})">{{ $year }}</p>
-                            <p class="mt-2 text-center text-lg text-gray-200">{{ $trips->count() }}
-                                sortie{{ $trips->count() > 1 ? 's' : '' }}</p>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <span class="h-28 w-28 rounded-lg border-2 border-white"></span>
-                </div>
-            </div>
+@php
+    $today = today();
+    $todayIsPlaced = false;
+@endphp
+
+<x-member-layout>
+    <div class="bg-primary-50 relative pb-24">
+        {{-- La mer en fond de page : elle reste à l'écran pendant que les cartes défilent par-dessus --}}
+        <div aria-hidden="true" class="pointer-events-none sticky top-0 mb-[-100dvh] h-dvh overflow-hidden">
+            <x-sea-swell class="text-primary-900/25 absolute inset-x-0 bottom-0 h-[72%]" />
         </div>
-        <div class="mx-auto max-w-4xl p-4">
-            @foreach ($tripsByYear->keys() as $index => $year)
-                <div x-show="active === {{ $index }}">
-                    <p class="mb-3 font-bold">Sorties en {{ $year }}</p>
-                    <ul class="flex max-w-full flex-col space-y-3">
-                        @forelse ($tripsByYear[$year] as $trip)
-                            @php
-                                $photoCount = $trip->albums->sum(function ($album) {
-                                    return $album->photos->count();
-                                });
-                            @endphp
-                            <li class="trip_item relative cursor-pointer shadow-lg">
-                                @if ($trip->imagePath)
-                                    <img src="{{ $trip->imagePath }}"
-                                        alt="Image de couverture de la sortie {{ $trip->title }}"
-                                        class="h-88 w-full rounded-xl object-cover">
-                                @endif
-                                <div
-                                    class="{{ $trip->imagePath ? 'absolute bottom-0 bg-clip-padding backdrop-filter backdrop-blur-sm bg-white/75 rounded-md' : 'rounded-xl bg-white' }} flex w-full flex-row justify-between gap-4 py-3 px-3 sm:px-8">
-                                    <div>
-                                        <a href="{{ route('trips.show', $trip) }}"
-                                            class="trip_item_clickable trip_item_link text-lg font-bold">
-                                            {{ $trip->title }}
-                                        </a>
-                                        <p class="text-sm text-gray-600">
-                                            {{ $trip->start_date->translatedFormat('d M') }}
-                                        </p>
-                                    </div>
-                                    <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
-                                        <div class="flex items-center space-x-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="h-6 text-gray-600">
-                                                <path
-                                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
-                                                </path>
-                                                <circle cx="12" cy="13" r="4"></circle>
-                                            </svg>
-                                            <p class="text-sm text-gray-800">{{ $photoCount }} photos</p>
-                                        </div>
-                                        <div class="flex items-center space-x-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="h-6 text-gray-600">
-                                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                                <circle cx="9" cy="7" r="4"></circle>
-                                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                            </svg>
-                                            <p class="text-sm text-gray-800">{{ $trip->users->count() }} équipiers</p>
-                                        </div>
-                                        <div class="flex items-center space-x-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="h-6 text-gray-600">
-                                                <rect x="3" y="4" width="18" height="18"
-                                                    rx="2" ry="2"></rect>
-                                                <line x1="16" y1="2" x2="16" y2="6">
-                                                </line>
-                                                <line x1="8" y1="2" x2="8" y2="6">
-                                                </line>
-                                                <line x1="3" y1="10" x2="21" y2="10">
-                                                </line>
-                                            </svg>
-                                            <p class="text-sm text-gray-800">
-                                                {{ date_diff($trip->start_date, $trip->end_date)->days + 1 }} jours</p>
-                                        </div>
-                                    </div>
+
+        <div class="relative mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8 lg:pt-12">
+            @if ($trips->isEmpty())
+                <p class="text-center text-lg text-gray-700">Aucune sortie pour l'instant.</p>
+                @can('create', App\Models\Trip::class)
+                    <p class="mt-6 text-center">@include('trip.partials.new-trip-link')</p>
+                @endcan
+            @else
+                <div
+                    class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-x-8 xl:grid-cols-[14rem_minmax(0,44rem)_14rem] xl:justify-center 2xl:grid-cols-[16rem_minmax(0,52rem)_16rem] 2xl:gap-x-12">
+                    <x-trip-timeline :trips="$trips" class="hidden lg:block" />
+
+                    <div class="w-full">
+                        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+                            <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">Les sorties</h1>
+                            @can('create', App\Models\Trip::class)
+                                @include('trip.partials.new-trip-link')
+                            @endcan
+                            {{--
+                                Sur téléphone, les années se choisissent ici, sur une seule ligne qui défile à l'horizontale
+                                jusqu'aux bords de l'écran ; sur grand écran, dans la frise
+                            --}}
+                            <nav aria-label="Années" class="w-full lg:hidden">
+                                <ul
+                                    class="-mx-4 flex scroll-px-4 gap-2 overflow-x-auto overscroll-x-contain px-4 pb-3 pt-1 sm:-mx-6 sm:scroll-px-6 sm:px-6">
+                                    @foreach ($tripsByYear as $year => $yearTrips)
+                                        <li class="shrink-0">
+                                            <a href="#annee-{{ $year }}"
+                                                class="hover:bg-primary-100 focus-visible:outline-primary-700 inline-flex min-h-11 items-center rounded-full bg-white px-4 py-2 font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
+                                                {{ $year }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </nav>
+                        </div>
+
+                        @foreach ($tripsByYear as $year => $yearTrips)
+                            @if (!$todayIsPlaced && $today->year > $year)
+                                @include('trip.partials.today-divider', ['class' => 'mt-14 lg:mt-20'])
+                                @php($todayIsPlaced = true)
+                            @endif
+
+                            <section id="annee-{{ $year }}" data-timeline-anchor="year-{{ $year }}"
+                                aria-labelledby="annee-{{ $year }}-titre"
+                                class="mt-10 scroll-mt-4 lg:mt-20 lg:first-of-type:mt-12">
+                                {{-- Sur téléphone, le titre de l'année reste en haut de l'écran pendant qu'on lit ses sorties --}}
+                                <h2 id="annee-{{ $year }}-titre"
+                                    class="top-below-nav-0 bg-primary-50/90 sticky z-20 -mx-4 flex items-baseline gap-3 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:p-0 lg:backdrop-blur-none">
+                                    <span
+                                        class="text-4xl font-bold text-gray-900 lg:text-7xl">{{ $year }}</span>
+                                    <span class="font-sans text-gray-700">
+                                        {{ $yearTrips->count() }} {{ $yearTrips->count() > 1 ? 'sorties' : 'sortie' }}
+                                    </span>
+                                </h2>
+
+                                <div class="mt-6 flex flex-col gap-10 lg:mt-10 lg:gap-16">
+                                    @foreach ($yearTrips as $trip)
+                                        @if (!$todayIsPlaced && $trip->start_date->lte($today))
+                                            @include('trip.partials.today-divider')
+                                            @php($todayIsPlaced = true)
+                                        @endif
+                                        <x-trip-entry :trip="$trip" />
+                                    @endforeach
                                 </div>
-                            </li>
-                        @empty
-                            <li class="flex flex-col items-center justify-center">
-                                <p class="text-center text-gray-500">Aucun sortie en {{ $year }}</p>
-                            </li>
-                        @endforelse
-                    </ul>
+                            </section>
+                        @endforeach
+
+                        @unless ($todayIsPlaced)
+                            @include('trip.partials.today-divider', ['class' => 'mt-14 lg:mt-20'])
+                        @endunless
+                    </div>
                 </div>
-            @endforeach
+            @endif
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            function trips() {
-                return {
-                    active: 0,
-                    init() {
-                        this.active = this.$refs.carousel.children.length - 1;
-                        this.flkty = new Flickity(this.$refs.carousel, {
-                            wrapAround: false,
-                            initialIndex: this.active,
-                        });
-                        this.flkty.on('change', i => this.active = i);
-                    }
-                }
-            }
-
-            // Manage clickable divs
-            const eventItems = document.querySelectorAll('li.trip_item');
-            const clickableElements = document.querySelectorAll('li.trip_item > trip_item_clickable');
-            clickableElements.forEach((ele) =>
-                ele.addEventListener('click', (e) => e.stopPropagation())
-            );
-
-            function handleClick(event) {
-                const noTextSelected = !window.getSelection().toString();
-                if (noTextSelected && event.target.nodeName !== 'BUTTON') {
-                    const link = event.target.closest('li.trip_item').querySelector('a.trip_item_link');
-                    if (link) {
-                        link.click();
-                    }
-                }
-            }
-            document.querySelectorAll('.trip_item').forEach(item => {
-                item.addEventListener('click', handleClick);
-            })
-        </script>
-    @endpush
 </x-member-layout>

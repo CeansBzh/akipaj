@@ -3,13 +3,13 @@
         @include('homepage.partials.hero')
     </div>
 
-    <div class="mx-auto max-w-(--breakpoint-xl)">
+    <div class="max-w-(--breakpoint-xl) mx-auto">
         <div>
             @include('homepage.partials.tabs')
         </div>
     </div>
 
-    <div class="mx-auto max-w-(--breakpoint-xl)">
+    <div class="max-w-(--breakpoint-xl) mx-auto">
         <div>
             @include('homepage.partials.useful-links')
         </div>

@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\UserLevelEnum;
 use App\Models\Album;
-use App\Models\Article;
 use App\Models\Comment;
-use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Trip;
 use App\Models\User;
@@ -28,10 +26,6 @@ class LocalEnvironmentSeeder extends Seeder
         $this->createUsersWithEmailUnverified();
         $this->createUsersWithoutPersonalInformation();
 
-        // Articles
-        $this->createDraftArticles();
-        $this->createPublishedArticles();
-
         // Albums and photos
         $this->createAlbumsWithoutPhotos();
         $this->createAlbumsWithPhotos();
@@ -40,11 +34,8 @@ class LocalEnvironmentSeeder extends Seeder
         // Trips
         $this->createTrips();
         $this->createTripsWithAllRelations();
-
-        // Events
-        $this->createEvents();
-        $this->createPassedEvents();
-        $this->createEventsWithoutImageOrLocation();
+        $this->createUpcomingTrips();
+        $this->createUpcomingTripsWithoutLocationOrImage();
     }
 
     protected function createDefaultUser(): self
@@ -119,22 +110,6 @@ class LocalEnvironmentSeeder extends Seeder
         return $this;
     }
 
-    protected function createPublishedArticles(): self
-    {
-        Article::factory(4)->create();
-
-        return $this;
-    }
-
-    protected function createDraftArticles(): self
-    {
-        Article::factory(2)
-            ->draft()
-            ->create();
-
-        return $this;
-    }
-
     protected function createAlbumsWithoutPhotos(): self
     {
         Album::factory(2)->create();
@@ -178,27 +153,18 @@ class LocalEnvironmentSeeder extends Seeder
         return $this;
     }
 
-    protected function createEvents(): self
+    protected function createUpcomingTrips(): self
     {
-        Event::factory(2)->create();
+        Trip::factory(2)->upcoming()->create();
 
         return $this;
     }
 
-    protected function createPassedEvents(): self
+    protected function createUpcomingTripsWithoutLocationOrImage(): self
     {
-        Event::factory(2)
-            ->passed()
-            ->create();
-
-        return $this;
-    }
-
-    protected function createEventsWithoutImageOrLocation(): self
-    {
-        Event::factory(2)
-            ->noImage()
-            ->noLocation()
+        Trip::factory(2)
+            ->upcoming()
+            ->withoutLocationOrImage()
             ->create();
 
         return $this;

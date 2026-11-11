@@ -23,15 +23,6 @@ class AlbumController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index(): View
-    {
-        // Gets all emptys albums (without photos). The listing of the albums is done in the view using Livewire.
-        return view('album.index', ['emptyAlbums' => Album::doesntHave('photos')->get()]);
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create(): View
@@ -75,18 +66,7 @@ class AlbumController extends Controller
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Album créé avec succès !');
 
-        return redirect()->route('albums.show', $album);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Album $album): View
-    {
-        return view('album.show', [
-            'album' => $album,
-            'photoIds' => $album->photos()->pluck('id')->toArray(),
-        ]);
+        return redirect()->route('photos.index', ['albums' => [$album->id]]);
     }
 
     /**
@@ -137,7 +117,7 @@ class AlbumController extends Controller
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Album modifié avec succès.');
 
-        return redirect()->route('albums.show', $album);
+        return redirect()->route('photos.index', ['albums' => [$album->id]]);
     }
 
     /**
@@ -158,6 +138,6 @@ class AlbumController extends Controller
 
         session()->flash('alert-'.AlertLevelEnum::SUCCESS->name, 'Album supprimé avec succès.');
 
-        return redirect()->route('albums.index');
+        return redirect()->route('photos.index');
     }
 }

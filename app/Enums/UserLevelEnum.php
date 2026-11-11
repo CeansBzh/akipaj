@@ -24,7 +24,7 @@ enum UserLevelEnum: int
         return match ($this) {
             UserLevelEnum::GUEST => 'Utilisateur n\'ayant pas un compte validé par l\'administrateur. Ne peut pas utiliser le site comme un membre.',
             UserLevelEnum::MEMBER => 'Est autorisé à consulter le site de manière complète (photos, commentaires, etc.).',
-            UserLevelEnum::CONTRIBUTOR => 'Un contributeur peut écrire des articles.',
+            UserLevelEnum::CONTRIBUTOR => 'A les mêmes droits qu\'un membre.',
             UserLevelEnum::ADMINISTRATOR => 'Le rôle le plus élevé, est autorisé à tout faire.',
         };
     }

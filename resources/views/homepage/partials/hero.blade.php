@@ -1,55 +1,55 @@
 <section class="relative">
-    <div class="absolute inset-0 hidden overflow-hidden md:block">
+    {{-- Fond de la couleur moyenne de la photo, le temps qu'elle arrive --}}
+    <div class="absolute inset-0 hidden overflow-hidden bg-[#7a94ad] md:block">
         <picture>
+            {{-- Téléphone : image vide, pour ne pas télécharger cette photo qui y est cachée --}}
+            <source srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                media="(max-width: 767px)">
             {{-- XL (1536px to infinite) --}}
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.avif') }}" media="(min-width: 1536px)"
-                width="2600" height="700" type="image/avif">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.webp') }}" media="(min-width: 1536px)"
                 width="2600" height="700" type="image/webp">
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.jpg') }}"
-                media="(min-width: 1536px)" width="2600" height="700" type="image/jpeg">
+            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-xl.jpg') }}" media="(min-width: 1536px)"
+                width="2600" height="700" type="image/jpeg">
             {{-- Large (1024px to 1535px) --}}
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.avif') }}"
-                media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/avif">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.webp') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/webp">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-lg.jpg') }}"
                 media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="559" type="image/jpeg">
             {{-- Medium (768px to 1023px) --}}
-            <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-md.avif') }}"
-                media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="575" type="image/avif">
             <source srcset="{{ Vite::asset('resources/views/homepage/images/hero-md.webp') }}"
                 media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="575" type="image/webp">
             {{-- Fallback image = medium JPG --}}
-            <img class="h-full w-full object-cover"
+            <img class="h-full w-full object-cover text-transparent"
                 src="{{ Vite::asset('resources/views/homepage/images/hero-md.jpg') }}"
                 alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
-                width="1023" height="575" loading="lazy" decoding="async">
+                width="1023" height="575" fetchpriority="high">
         </picture>
     </div>
     <div class="relative md:bg-neutral-900/20">
-        <div class="relative mx-auto min-h-108 max-w-(--breakpoint-2xl) md:flex">
+        <div class="min-h-108 max-w-(--breakpoint-2xl) relative mx-auto md:flex">
             {{-- Left/Top side --}}
             <div class="relative md:grow">
-                <div class="absolute inset-0 overflow-hidden md:hidden">
+                <div class="absolute inset-0 overflow-hidden bg-[#668baf] md:hidden">
                     <picture>
-                        <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.avif') }}"
-                            type="image/avif">
+                        {{-- Grand écran : image vide, pour ne pas télécharger cette photo qui y est cachée --}}
+                        <source srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            media="(min-width: 768px)">
                         <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.webp') }}"
                             type="image/webp">
-                        <img class="h-full w-full object-cover"
+                        <img class="h-full w-full object-cover text-transparent"
                             src="{{ Vite::asset('resources/views/homepage/images/hero.jpg') }}"
                             alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
-                            width="767" height="511" loading="lazy" decoding="async">
+                            width="767" height="511" fetchpriority="high">
                     </picture>
                 </div>
-                <div class="relative mx-auto h-full min-h-84 max-w-(--breakpoint-xl) bg-neutral-900/20 md:bg-transparent">
+                <div
+                    class="min-h-84 max-w-(--breakpoint-xl) relative mx-auto h-full bg-neutral-900/20 md:bg-transparent">
                     <div class="pt-12 text-center md:ml-12 md:pt-40 md:text-left lg:ml-24">
                         <div class="mx-auto w-fit md:m-0">
                             <x-application-logo class="mx-auto mb-3 h-20 md:mx-0 md:h-28" />
                             <p class="text-shadow mb-3 text-2xl text-white shadow-gray-800">Bienvenue à bord !</p>
                             <a href="{{ route('profile.show', Auth::user()->name) }}"
-                                class="text-shadow-outline inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-xs shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-25">
+                                class="text-shadow-outline shadow-xs focus:outline-hidden focus:ring-primary-500 inline-flex items-center rounded-sm border border-gray-100 px-4 py-2 text-sm font-semibold tracking-widest text-gray-100 shadow-gray-800 transition duration-150 ease-in-out hover:border-white hover:bg-gray-100/10 hover:text-white focus:ring-2 focus:ring-offset-2 disabled:opacity-25">
                                 Mon profil
                             </a>
                         </div>
@@ -63,17 +63,16 @@
                     <h2 class="text-2xl font-extrabold">Prochaines sorties</h2>
                     <hr class="my-5">
                     <ul class="list-disc px-5">
-                        @forelse(\App\Models\Event::where('start_time', '>=',
-                    date('Y-m-d'))->orderBy('start_time')->take(5)->get() as $event)
+                        @forelse (\App\Models\Trip::upcoming()->orderBy('start_date')->take(5)->get() as $trip)
                             <li class="mt-2 font-semibold">
-                                <a href="{{ route('events.show', $event) }}">
-                                    {{ $event->name }}
+                                <a href="{{ route('trips.show', $trip) }}">
+                                    {{ $trip->title }}
                                 </a>
-                                <p class="text-sky-600">{{ $event->start_time->translatedFormat('d M Y') }}</p>
+                                <p class="text-primary-700">{{ $trip->start_date->translatedFormat('d M Y') }}</p>
                             </li>
                         @empty
                             <li class="flex flex-col items-center justify-center">
-                                <p class="text-center text-gray-500">Aucun événement à venir</p>
+                                <p class="text-center text-gray-500">Aucune sortie à venir</p>
                             </li>
                         @endforelse
                     </ul>

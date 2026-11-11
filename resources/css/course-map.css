@@ -1,0 +1,42 @@
+/* Cartes du parcours d'une sortie (resources/js/course-map.js), par-dessus les styles de Leaflet */
+
+.course-map.leaflet-container {
+    font: inherit;
+}
+
+/* Boutons de zoom assez grands pour le doigt */
+.course-map.leaflet-container .leaflet-bar a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 22px;
+}
+
+.course-map.leaflet-container .leaflet-popup-content {
+    margin: 12px 16px;
+    font-size: 1rem;
+}
+
+.course-map.leaflet-container .leaflet-popup-content p {
+    margin: 0;
+}
+
+/* Pastille numérotée d'un point, comme dans la liste */
+.course-marker span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #fff;
+    border-radius: 9999px;
+    background-color: var(--color-primary-700);
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.course-route {
+    stroke: var(--color-primary-700);
+}

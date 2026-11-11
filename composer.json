@@ -16,6 +16,7 @@
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
         "symfony/brevo-mailer": "^7.4",
+        "symfony/html-sanitizer": "^7.4",
         "symfony/http-client": "^7.4"
     },
     "require-dev": {

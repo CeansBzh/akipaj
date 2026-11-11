@@ -1,7 +1,7 @@
 <div>
     <div class="flex">
         <button type="button"
-            class="w-full items-center rounded-md text-sm leading-6 text-gray-500 sm:flex sm:py-1.5 sm:pl-2 sm:pr-3 sm:text-slate-600 sm:shadow-xs sm:ring-1 sm:ring-slate-900/10 sm:hover:ring-slate-400/80"
+            class="sm:shadow-xs w-full items-center rounded-md text-sm leading-6 text-gray-500 sm:flex sm:py-1.5 sm:pl-2 sm:pr-3 sm:text-slate-600 sm:ring-1 sm:ring-slate-900/10 sm:hover:ring-slate-400/80"
             x-data="" x-on:click.prevent="$dispatch('open-modal', 'search-input')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round" class="h-7 sm:h-5">
@@ -14,10 +14,10 @@
 
     <x-modal name="search-input" focusable>
         <header class="flex items-center border-b">
-            <label id="search-label" for="search-input" class="p-0 xs:py-1.5 xs:px-3">
+            <label id="search-label" for="search-input" class="xs:py-1.5 xs:px-3 p-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="hidden h-6 text-gray-600 xs:block">
+                    class="xs:block hidden h-6 text-gray-600">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -25,10 +25,10 @@
             </label>
             <input type="search" id="search-input" aria-labelledby="search-label" autocomplete="off" autocorrect="off"
                 spellcheck="false" enterkeyhint="rechercher" placeholder="Rechercher..." autocapitalize="off"
-                maxlength="64" class="grow border-none py-3 focus:ring-0" autofocus wire:model.live.debounce.300ms="searchTerm"
-                x-ref="searchInput">
+                maxlength="64" class="grow border-none py-3 focus:ring-0" autofocus
+                wire:model.live.debounce.300ms="searchTerm" x-ref="searchInput">
             <button type="reset" aria-label="Annuler" x-on:click="$dispatch('close'),$wire.searchTerm=''"
-                class="py-1.5 px-3 text-gray-600">
+                class="px-3 py-1.5 text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="sm:hidden">
@@ -46,7 +46,7 @@
                         @foreach ($results as $result)
                             <li class="mt-1">
                                 <a href="{{ $result['url'] }}"
-                                    class="group block rounded-sm bg-gray-100 py-2 px-3 leading-6 text-gray-900 hover:bg-sky-500 hover:text-white">
+                                    class="group block rounded-sm bg-gray-100 px-3 py-2 leading-6 text-gray-900 hover:bg-sky-500 hover:text-white">
                                     <div class="flex items-center space-x-5">
                                         <div class="text-gray-500 group-hover:text-white">
                                             {!! $icons[$category] !!}

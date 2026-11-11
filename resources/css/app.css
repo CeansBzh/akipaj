@@ -4,7 +4,7 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-/* Alert component classes, built from AlertLevelEnum::color() */
+/* Classes du composant d'alerte, construites par AlertLevelEnum::color() */
 @source inline('{focus:,}ring-{red,green,blue,yellow}-400');
 @source inline('text-{red,green,blue,yellow}-{500,700}');
 @source inline('{hover:,}bg-{red,green,blue,yellow}-{100,200}');
@@ -12,11 +12,36 @@
 @theme {
     --breakpoint-xs: 29.6875rem;
 
-    --font-sans: Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Couleur principale du site (classes `primary-*`) : remplacer `sky` ici suffit à changer de bleu partout */
+    --color-primary-50: var(--color-sky-50);
+    --color-primary-100: var(--color-sky-100);
+    --color-primary-200: var(--color-sky-200);
+    --color-primary-300: var(--color-sky-300);
+    --color-primary-400: var(--color-sky-400);
+    --color-primary-500: var(--color-sky-500);
+    --color-primary-600: var(--color-sky-600);
+    --color-primary-700: var(--color-sky-700);
+    --color-primary-800: var(--color-sky-800);
+    --color-primary-900: var(--color-sky-900);
+    --color-primary-950: var(--color-sky-950);
+
+    --font-sans:
+        Nunito, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
     --font-merriweather: Merriweather, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+    /* Le voilier qui entre quand on fait glisser des photos au-dessus de la page d'ajout */
+    --animate-sail-in: sail-in 0.5s ease-out;
+
+    @keyframes sail-in {
+        from {
+            opacity: 0;
+            transform: translateX(-3rem) rotate(-4deg);
+        }
+    }
 }
 
-/* Tailwind v3 defaults kept to preserve the look: gray borders and pointer cursor on buttons */
+/* Défauts de Tailwind v3 gardés pour conserver l'apparence : bordures grises et curseur pointeur sur les boutons */
 @layer base {
     *,
     ::after,
@@ -31,15 +56,56 @@
         cursor: pointer;
     }
 
-    /* v4 preflight strips the native file input button, v3 only made it inherit the font */
+    /* Le preflight de la v4 retire le bouton natif du champ fichier, la v3 lui faisait juste hériter de la police */
     ::file-selector-button {
         all: revert;
         font: inherit;
     }
 }
 
-@utility selected {
-    @apply scale-[0.95] rounded-sm outline-8 -outline-offset-8 outline-sky-500 outline-solid;
+/* HTML écrit avec l'éditeur Trix, mis en forme de la même façon dans l'éditeur et là où il est affiché */
+@layer components {
+    .rich-text h2 {
+        @apply mt-2 text-lg font-bold first:mt-0;
+    }
+
+    .rich-text h3 {
+        @apply mt-2 font-bold first:mt-0;
+    }
+
+    .rich-text h4 {
+        @apply mt-2 text-sm font-bold uppercase first:mt-0;
+    }
+
+    .rich-text blockquote {
+        @apply my-1 border-l-4 border-gray-300 pl-3 italic;
+    }
+
+    .rich-text pre {
+        @apply my-1 overflow-x-auto rounded-sm bg-gray-100 p-2 font-mono text-sm;
+    }
+
+    .rich-text ul {
+        @apply list-disc pl-6;
+    }
+
+    .rich-text ol {
+        @apply list-decimal pl-6;
+    }
+
+    .rich-text a {
+        @apply text-primary-700 hover:text-primary-800 underline;
+    }
+}
+
+/* Hors de toute couche et plus spécifique que trix.css, qui n'est pas non plus dans une couche et est chargé après */
+trix-editor.rich-text-input {
+    @apply focus:border-primary-500 focus:ring-primary-500 min-h-32 rounded-md border-gray-300 bg-white px-3 py-2 shadow-xs focus:ring-1;
+}
+
+/* Les fichiers ne peuvent pas être joints (voir rich-text-editor.js) */
+trix-toolbar .trix-button-group.trix-button-group--file-tools {
+    display: none;
 }
 
 @utility text-shadow-outline {
@@ -60,31 +126,69 @@
     -webkit-svg-shadow: 0 0 20px var(--tw-shadow-color);
 }
 
+/*
+ * Collé en haut de l'écran, juste sous la barre de navigation : l'élément descend quand elle revient et remonte quand
+ * elle se range, au même rythme qu'elle. top-below-nav-0 le colle à elle, top-below-nav-6 laisse 1,5 rem de plus.
+ * --nav-offset, la place que la barre occupe en haut de l'écran, est tenue à jour par resources/js/navigation.js.
+ */
+@utility top-below-nav-* {
+    top: calc(var(--nav-offset, 0px) + var(--spacing) * --value(integer));
+    transition: top 300ms var(--ease-out);
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
+/* Tous les titres sont en Merriweather */
 @layer base {
-    /* Webfont: Guttie-Regular */
-    @font-face {
-        font-family: "Guttie";
-        src: url("fonts/Guttie.eot");
-        /* IE9 Compat Modes */
-        src: url("fonts/Guttie.eot?#iefix") format("embedded-opentype"),
-            /* IE6-IE8 */ url("fonts/Guttie.woff") format("woff"),
-            /* Modern Browsers */ url("fonts/Guttie.ttf") format("truetype");
-        /* Safari, Android, iOS */
-        font-style: normal;
-        font-weight: normal;
-        text-rendering: optimizeLegibility;
-    }
-
-    h1 {
-        font-family: "Guttie", Georgia;
-    }
-
+    h1,
     h2,
     h3,
     h4,
     h5,
     h6 {
-        font-family: "Merriweather", serif;
+        font-family: var(--font-merriweather);
+    }
+}
+
+/*
+ * Billet (prochaine sortie de l'accueil) : deux encoches rondes découpées aux bouts de la ligne de perforation.
+ * Sur téléphone, la ligne est horizontale, sous la photo haute de --ticket-photo-height.
+ * À partir de md, elle est verticale, à droite de la photo large de --ticket-photo-width.
+ */
+@layer components {
+    .ticket {
+        --ticket-notch: 0.75rem;
+        --ticket-photo-height: 14rem;
+        --ticket-photo-width: 60%;
+
+        mask-image:
+            radial-gradient(
+                circle at 0 var(--ticket-photo-height),
+                transparent var(--ticket-notch),
+                #000 calc(var(--ticket-notch) + 0.5px)
+            ),
+            radial-gradient(
+                circle at 100% var(--ticket-photo-height),
+                transparent var(--ticket-notch),
+                #000 calc(var(--ticket-notch) + 0.5px)
+            );
+        mask-composite: intersect;
+
+        @variant md {
+            mask-image:
+                radial-gradient(
+                    circle at var(--ticket-photo-width) 0,
+                    transparent var(--ticket-notch),
+                    #000 calc(var(--ticket-notch) + 0.5px)
+                ),
+                radial-gradient(
+                    circle at var(--ticket-photo-width) 100%,
+                    transparent var(--ticket-notch),
+                    #000 calc(var(--ticket-notch) + 0.5px)
+                );
+        }
     }
 }
 
@@ -95,7 +199,7 @@
         }
 
         * {
-            --scrollbar-color: --theme(--color-sky-600 / 75%);
+            --scrollbar-color: --theme(--color-primary-600 / 75%);
             scrollbar-width: thin;
             scrollbar-color: var(--scrollbar-color);
         }
@@ -114,7 +218,7 @@
         }
 
         ::-webkit-scrollbar-thumb:window-inactive {
-            --scrollbar-color: --theme(--color-sky-600 / 40%) !important;
+            --scrollbar-color: --theme(--color-primary-600 / 40%) !important;
             background: var(--scrollbar-color);
         }
 
@@ -131,5 +235,79 @@
         *::-webkit-scrollbar-track-piece {
             background-color: #ffffff44;
         }
+    }
+}
+
+/* Papier quadrillé sur lequel sont posés les plans des bateaux (composant x-boat-card) */
+@layer components {
+    .blueprint {
+        background-color: var(--color-primary-50);
+        background-image:
+            linear-gradient(to right, var(--color-primary-100) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--color-primary-100) 1px, transparent 1px);
+        background-size: 1.25rem 1.25rem;
+        background-position: center;
+    }
+}
+
+/*
+ * Mer dessinée au trait (composant x-sea-swell), répétée à l'horizontale comme un masque CSS.
+ * Le dessin est un masque en luminance : ses traits blancs laissent voir le fond, de la couleur du texte,
+ * et ses aplats noirs cachent à la fois ce fond et les lignes de mer de derrière.
+ */
+@layer components {
+    .sea-swell {
+        background-color: currentColor;
+        mask-image: url('../images/sea-swell.svg');
+        mask-mode: luminance;
+        mask-size: auto 100%;
+        mask-repeat: repeat-x;
+        mask-position: center bottom;
+    }
+}
+
+/*
+ * Mosaïque de la galerie, sur toute la largeur : une grille dont chaque colonne est large de 32 lignes.
+ * Chaque vignette s'étend sur le nombre de lignes qui garde ses proportions (calculé dans livewire/partials/gallery-photo),
+ * sans attendre le chargement des images. Le placement automatique de la grille met alors chaque photo
+ * dans la colonne la plus courte, en gardant l'ordre de lecture, de gauche à droite puis de haut en bas.
+ * Les titres des groupes prennent toute la largeur et une ligne à la hauteur de leur texte.
+ * Le parent de la grille doit être un conteneur (classe @container) : les lignes sont calculées sur sa largeur.
+ */
+@layer components {
+    .photo-masonry {
+        --masonry-columns: 2;
+        --masonry-gap: 3px;
+
+        display: grid;
+        grid-template-columns: repeat(var(--masonry-columns), minmax(0, 1fr));
+        grid-auto-rows: minmax(
+            calc((100cqw - (var(--masonry-columns) - 1) * var(--masonry-gap)) / var(--masonry-columns) / 32),
+            auto
+        );
+        column-gap: var(--masonry-gap);
+
+        @variant sm {
+            --masonry-columns: 3;
+        }
+
+        @variant md {
+            --masonry-columns: 4;
+        }
+
+        @variant lg {
+            --masonry-columns: 5;
+        }
+
+        @variant 2xl {
+            --masonry-columns: 6;
+        }
+    }
+}
+
+/* Défilement doux vers une année ou une sortie choisie dans la liste des sorties */
+@media (prefers-reduced-motion: no-preference) {
+    html:has([data-trip-timeline]) {
+        scroll-behavior: smooth;
     }
 }

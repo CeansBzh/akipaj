@@ -55,11 +55,7 @@
                         <tr>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex items-center">
-                                    <div class="h-10 w-10 shrink-0">
-                                        <img class="h-full w-full rounded-full"
-                                            src="{{ $user->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
-                                            alt="Photo de profil de {{ $user->name }}" />
-                                    </div>
+                                    <x-user-avatar :user="$user" class="size-10" />
                                     <div class="ml-3">
                                         <p class="whitespace-no-wrap text-gray-900">
                                             {{ $user->name }}

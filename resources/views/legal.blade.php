@@ -4,29 +4,21 @@
         <div class="absolute inset-0">
             <picture>
                 {{-- XL (1536px to infinite) --}}
-                <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.avif') }}" media="(min-width: 1536px)"
-                    width="2600" height="1733" type="image/avif">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.webp') }}" media="(min-width: 1536px)"
                     width="2600" height="1733" type="image/webp">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero-xl.jpg') }}" media="(min-width: 1536px)"
                     width="2600" height="1733" type="image/jpeg">
                 {{-- Large (1024px to 1535px) --}}
-                <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.avif') }}"
-                    media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/avif">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.webp') }}"
                     media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/webp">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero-lg.jpg') }}"
                     media="(min-width: 1024px) and (max-width: 1535px)" width="1535" height="1023" type="image/jpeg">
                 {{-- Medium (768px to 1023px) --}}
-                <source srcset="{{ Vite::asset('resources/images/hero/hero-md.avif') }}"
-                    media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/avif">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero-md.webp') }}"
                     media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/webp">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero-md.jpg') }}"
                     media="(min-width: 768px) and (max-width: 1023px)" width="1023" height="682" type="image/jpeg">
                 {{-- Small (to 767px) --}}
-                <source srcset="{{ Vite::asset('resources/images/hero/hero.avif') }}" media="(max-width: 767px)"
-                    width="767" height="511" type="image/avif">
                 <source srcset="{{ Vite::asset('resources/images/hero/hero.webp') }}" media="(max-width: 767px)"
                     width="767" height="511" type="image/webp">
                 {{-- Fallback image = small JPG --}}
@@ -36,7 +28,7 @@
             </picture>
         </div>
         <div
-            class="relative mx-auto flex h-96 max-w-(--breakpoint-xl) items-center justify-center px-4 py-32 sm:justify-start sm:px-6 lg:px-8">
+            class="max-w-(--breakpoint-xl) relative mx-auto flex h-96 items-center justify-center px-4 py-32 sm:justify-start sm:px-6 lg:px-8">
             <div class="max-w-xl text-center sm:text-left">
                 <div class="text-3xl">
                     <a href="{{ url('/') }}" class="text-white hover:underline">
@@ -48,11 +40,11 @@
 
                 <div class="mt-8 flex flex-wrap gap-4 text-center">
                     <a href="{{ route('register') }}"
-                        class="block w-full rounded-sm bg-sky-600 px-12 py-3 font-medium text-white shadow-sm hover:bg-sky-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500/50 active:bg-sky-600 sm:w-auto">
+                        class="focus:outline-hidden focus:ring-3 block w-full rounded-sm bg-sky-600 px-12 py-3 font-medium text-white shadow-sm hover:bg-sky-500 focus:ring-blue-500/50 active:bg-sky-600 sm:w-auto">
                         Créer un compte
                     </a>
                     <a href="{{ route('login') }}"
-                        class="block w-full rounded-sm bg-white px-12 py-3 font-medium text-sky-900 shadow-sm hover:text-sky-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500/50 active:text-sky-400 sm:w-auto">
+                        class="focus:outline-hidden focus:ring-3 block w-full rounded-sm bg-white px-12 py-3 font-medium text-sky-900 shadow-sm hover:text-sky-500 focus:ring-blue-500/50 active:text-sky-400 sm:w-auto">
                         Je suis déjà membre
                     </a>
                 </div>
@@ -60,8 +52,8 @@
         </div>
     </section>
 
-    <section class="mx-auto max-w-(--breakpoint-lg)">
-        <h2 class="mb-5 font-sans text-2xl">Mentions légales</h2>
+    <section class="max-w-(--breakpoint-lg) mx-auto">
+        <h2 class="mb-5 text-2xl">Mentions légales</h2>
         <div class="mb-5">
             <p class="mb-2 font-semibold">Informations sur l'association Akipaj :</p>
             <ul class="mb-4">

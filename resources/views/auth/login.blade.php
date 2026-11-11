@@ -1,64 +1,45 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="h-28 rounded-xl bg-sky-700 p-3" />
-            </a>
-        </x-slot>
+<x-auth-layout title="Connexion">
+    <x-slot name="intro">Connectez-vous pour voir les prochaines sorties et les photos du club.</x-slot>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-6" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+    <form method="POST" action="{{ route('login') }}" class="space-y-5">
+        @csrf
 
-            <!-- Email Address -->
-            <div>
-                <x-input-label for="email" :value="__('Email')" />
+        <div>
+            <x-input-label for="email" value="Adresse e-mail" />
+            <x-text-input id="email" class="mt-1.5 block w-full" type="email" name="email" :value="old('email')"
+                required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
 
-                <x-text-input id="email" class="mt-1 block w-full" type="email" name="email" :value="old('email')"
-                    required autofocus />
+        <div>
+            <x-input-label for="password" value="Mot de passe" />
+            <x-text-input id="password" class="mt-1.5 block w-full" type="password" name="password" required
+                autocomplete="current-password" />
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            @if (Route::has('password.request'))
+                <p class="mt-2 text-right">
+                    <a href="{{ route('password.request') }}"
+                        class="text-primary-800 decoration-primary-300 hover:decoration-primary-700 focus-visible:outline-primary-700 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">Mot
+                        de passe oublié ?</a>
+                </p>
+            @endif
+        </div>
 
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-            </div>
+        <label for="remember_me" class="-mx-2 flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-2">
+            <input id="remember_me" type="checkbox" name="remember"
+                class="text-primary-700 focus:ring-primary-600 size-5 rounded-md border-gray-400">
+            <span class="text-gray-800">Rester connecté sur cet appareil</span>
+        </label>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-input-label for="password" :value="__('Password')" />
+        <x-primary-button class="w-full">Se connecter</x-primary-button>
+    </form>
 
-                <x-text-input id="password" class="mt-1 block w-full" type="password" name="password" required
-                    autocomplete="current-password" />
-
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            </div>
-
-            <!-- Remember Me -->
-            <div class="mt-4 block">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox"
-                        class="rounded-sm border-gray-300 text-sky-600 shadow-xs focus:ring-sky-500" name="remember">
-                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
-
-            <div class="mt-4 flex flex-col items-center justify-end space-y-3">
-                <div>
-                    <a class="mr-5 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-                        href="{{ route('register') }}">
-                        {{ __('Créer un compte') }}
-                    </a>
-                    @if (Route::has('password.request'))
-                        <a class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-                            href="{{ route('password.request') }}">
-                            {{ __('Forgot your password?') }}
-                        </a>
-                    @endif
-                </div>
-
-                <x-primary-button class="ml-3">
-                    {{ __('Log in') }}
-                </x-primary-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout>
+    <x-slot name="footer">
+        Pas encore de compte ?
+        <a href="{{ route('register') }}"
+            class="text-primary-800 decoration-primary-300 hover:decoration-primary-700 focus-visible:outline-primary-700 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">Créer
+            un compte</a>
+    </x-slot>
+</x-auth-layout>

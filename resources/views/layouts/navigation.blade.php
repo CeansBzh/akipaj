@@ -1,4 +1,9 @@
-<nav x-data="{ open: false }" class="border-gray-200 bg-white">
+{{--
+    Collée en haut de l'écran, la barre se range quand on descend dans la page et revient dès qu'on remonte
+    (resources/js/navigation.js). Sans transform pour la ranger : la fenêtre de recherche, fixe, est dans la barre.
+--}}
+<nav x-data="mainNavigation" x-bind:data-hidden="isHidden" x-bind:data-scrolled="isScrolled"
+    class="data-hidden:-top-(--nav-height) data-scrolled:not-data-hidden:shadow-sm sticky top-0 z-40 bg-white transition-[top,box-shadow] duration-300 ease-out motion-reduce:transition-none">
     <div class="container mx-auto flex flex-wrap items-center justify-between px-2 py-2.5 sm:px-4">
         {{-- Logo --}}
         <a href="{{ url('/') }}" class="flex items-center">
@@ -19,11 +24,9 @@
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button type="button" id="user-menu-button"
-                        class="flex rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-sky-200">
+                        class="focus:ring-primary-200 flex rounded-full bg-gray-800 text-sm focus:ring-4">
                         <span class="sr-only">Ouvrir le menu utilisateur</span>
-                        <img class="h-8 w-8 rounded-full"
-                            src="{{ Auth::user()->profile_picture_path ?? Vite::asset('resources/images/default-pfp.png') }}"
-                            alt="Photo de profil">
+                        <x-user-avatar :user="Auth::user()" class="size-8" />
                     </button>
                 </x-slot>
                 <x-slot name="content">
@@ -60,8 +63,8 @@
             </x-dropdown>
             {{-- Main menu burger button --}}
             <button type="button" @click="open = !open"
-                class="inline-flex items-center rounded-lg text-sm text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 md:hidden"
-                aria-controls="mobile-menu" aria-expanded="false">
+                class="focus:outline-hidden inline-flex items-center rounded-lg text-sm text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 md:hidden"
+                aria-controls="mobile-menu" x-bind:aria-expanded="open">
                 <span class="sr-only">Open main menu</span>
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 22 22" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
@@ -83,56 +86,14 @@
                     </x-nav-link>
                 </li>
                 <li>
-                    <x-nav-link :href="route('articles.index')" :active="request()->routeIs('articles.*')">
-                        Articles
-                    </x-nav-link>
-                </li>
-                <li>
                     <x-nav-link :href="route('trips.index')" :active="request()->routeIs('trips.*')">
                         Sorties
                     </x-nav-link>
                 </li>
                 <li>
-                    <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.*')">
-                        Programme
+                    <x-nav-link :href="route('photos.index')" :active="request()->routeIs('photos.*')">
+                        Photos
                     </x-nav-link>
-                </li>
-                <li>
-                    <div class="relative" x-data="{ open: false }" @click.outside="open = false"
-                        @close.stop="open = false">
-                        <div class="flex items-center space-x-3" @click="open = ! open" :aria-expanded="open">
-                            <x-nav-button id="gallery-menu-button" class="flex w-full items-center justify-between"
-                                :active="request()->routeIs('photos.*') || request()->routeIs('albums.*')">
-                                <span>Galerie</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="ml-1 h-4 w-4">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </x-nav-button>
-                        </div>
-                        <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="transform opacity-0 scale-95"
-                            x-transition:enter-end="transform opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="transform opacity-100 scale-100"
-                            x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute left-0 z-50 mt-2 w-full min-w-40 origin-top-left rounded-md shadow-lg"
-                            style="display: none;" @click="open = false">
-                            <div class="rounded-md bg-white py-1 ring-1 ring-black/5">
-                                <ul class="py-1" aria-labelledby="gallery-menu-button">
-                                    <li>
-                                        <x-dropdown-link :href="route('albums.index')" :aria-current="request()->routeIs('albums.index') ? 'page' : ''">
-                                            Albums
-                                        </x-dropdown-link>
-                                        <x-dropdown-link :href="route('photos.index')" :aria-current="request()->routeIs('photos.index') ? 'page' : ''">
-                                            Toutes les photos
-                                        </x-dropdown-link>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </li>
                 <li>
                     <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
