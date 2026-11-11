@@ -43,6 +43,14 @@ class PhotoPolicy
     }
 
     /**
+     * Tout membre peut créer un lien qui ouvre la photo ou l'album à qui n'a pas de compte.
+     */
+    public function share(User $user, Photo $photo): bool
+    {
+        return $user->isMemberOrAbove();
+    }
+
+    /**
      * Determine whether the user can create models.
      *
      * @return Response|bool

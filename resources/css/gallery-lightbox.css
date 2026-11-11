@@ -37,7 +37,20 @@ html.gallery-lightbox-open {
     max-width: calc(100% - var(--gallery-drawer-offset) - 1.5rem);
 }
 
+/* Nom du club, en haut à gauche de la visionneuse des liens de partage (resources/js/shared-photos.js) */
+.gallery-lightbox .pswp__gallery-brand {
+    position: absolute;
+    top: max(0.75rem, env(safe-area-inset-top));
+    left: max(0.75rem, env(safe-area-inset-left));
+    z-index: 20;
+}
+
 @media (min-width: 40rem) {
+    .gallery-lightbox .pswp__gallery-brand {
+        top: 1.25rem;
+        left: 1.25rem;
+    }
+
     .gallery-lightbox .pswp__gallery-actions,
     .gallery-lightbox .pswp__gallery-uploader {
         right: calc(var(--gallery-drawer-offset) + 1.25rem);
@@ -61,6 +74,13 @@ html.gallery-lightbox-open {
             transform var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1);
     }
 
+    .gallery-lightbox .pswp__gallery-brand {
+        transition:
+            opacity var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1),
+            transform var(--pswp-transition-duration) cubic-bezier(0.4, 0, 0.22, 1);
+    }
+
+    .gallery-lightbox:not(.pswp--ui-visible) .pswp__gallery-brand,
     .gallery-lightbox:not(.pswp--ui-visible) .pswp__gallery-actions {
         transform: translateY(-0.75rem);
     }

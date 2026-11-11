@@ -6,6 +6,7 @@ use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TripController;
 use App\Models\Album;
 use Illuminate\Support\Facades\Artisan;
@@ -25,6 +26,14 @@ Route::permanentRedirect('events/{event?}', '/');
 
 // Profiles (access is checked in the controller)
 Route::get('profil/{username?}', [ProfileController::class, 'show'])->name('profile.show');
+
+// Liens de partage d'une photo ou d'un album, ouverts sans compte jusqu'à leur expiration
+Route::prefix('partage/{share}')->name('shares.')->controller(ShareController::class)->group(function () {
+    Route::get('/', 'show')->name('show');
+    Route::get('photos', 'photos')->name('photos');
+    Route::get('photos/{photo}', 'file')->whereNumber('photo')->name('file');
+    Route::get('photos/{photo}/vignette', 'thumbnail')->whereNumber('photo')->name('thumbnail');
+});
 
 Route::middleware('auth')->group(function () {
     // Settings

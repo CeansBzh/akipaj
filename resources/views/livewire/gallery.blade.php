@@ -135,7 +135,7 @@
                             </span>
                             <span class="min-w-0">
                                 <span
-                                    class="line-clamp-2 wrap-break-word font-bold leading-tight text-gray-900">{{ $album->title }}</span>
+                                    class="wrap-break-word line-clamp-2 font-bold leading-tight text-gray-900">{{ $album->title }}</span>
                                 <span
                                     class="mt-1 block text-sm leading-tight text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
                                 <span class="block text-sm leading-tight text-gray-700">
@@ -306,7 +306,7 @@
                 {{ $selectedAlbum->photos_count }} {{ $selectedAlbum->photos_count > 1 ? 'photos' : 'photo' }}
             </p>
             @if ($selectedAlbum->description)
-                <p class="mt-4 max-w-prose wrap-break-word leading-relaxed text-gray-800">
+                <p class="wrap-break-word mt-4 max-w-prose leading-relaxed text-gray-800">
                     {{ $selectedAlbum->description }}</p>
             @endif
             @if ($selectedAlbum->trips->isNotEmpty())
@@ -319,6 +319,46 @@
                 </p>
             @endif
             <div class="mt-5 flex flex-wrap gap-3">
+                @can('share', $selectedAlbum)
+                    <button type="button" x-on:click="$dispatch('open-modal', 'share-album')"
+                        class="{{ $secondaryPill }}">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
+                            <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
+                            <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+                        </svg>
+                        Partager l'album
+                    </button>
+                    @php
+                        $albumShareLink =
+                            ($albumShareLink['albumId'] ?? null) === $selectedAlbum->id ? $albumShareLink : null;
+                    @endphp
+                    <x-modal name="share-album" max-width="md" focusable>
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-gray-900">Partager l'album</h2>
+                            <p class="mt-2 leading-relaxed text-gray-700">
+                                Le lien montre les photos de « {{ $selectedAlbum->title }} » à une personne sans compte,
+                                sans le reste de la galerie. Toute personne qui l'a pourra les voir et les télécharger
+                                pendant {{ App\Models\Share::DEFAULT_EXPIRY_DAYS }} jours.
+                            </p>
+                            <button type="button" wire:click="shareAlbum" wire:loading.attr="disabled"
+                                wire:target="shareAlbum"
+                                class="{{ $albumShareLink ? $secondaryPill : $primaryPill }} mt-4 disabled:cursor-wait">
+                                {{ $albumShareLink ? 'Créer un autre lien' : 'Créer un lien de partage' }}
+                            </button>
+                            @if ($albumShareLink)
+                                <x-share-link :url="$albumShareLink['url']" class="mt-5"
+                                    wire:key="album-share-{{ $albumShareLink['url'] }}">
+                                    <p class="mt-2 text-gray-700">Valable jusqu'au {{ $albumShareLink['expiresAt'] }}.</p>
+                                </x-share-link>
+                            @endif
+                            <div class="mt-6 flex justify-end">
+                                <button type="button" x-on:click="$dispatch('close')"
+                                    class="{{ $secondaryPill }}">Fermer</button>
+                            </div>
+                        </div>
+                    </x-modal>
+                @endcan
                 @can('update', $selectedAlbum)
                     <a href="{{ route('albums.edit', $selectedAlbum) }}" class="{{ $secondaryPill }}">Modifier
                         l'album</a>

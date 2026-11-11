@@ -44,6 +44,14 @@ class PoliciesTest extends TestCase
         }
     }
 
+    public function test_photos_and_albums_are_shared_by_members(): void
+    {
+        $photo = Photo::factory()->for(Album::factory())->create();
+
+        $this->assertAbilities($photo, ['share'], ['GUEST' => false, 'MEMBER' => true, 'ADMINISTRATOR' => true]);
+        $this->assertAbilities($photo->album, ['share'], ['GUEST' => false, 'MEMBER' => true, 'ADMINISTRATOR' => true]);
+    }
+
     public function test_trips_are_managed_by_admins_only(): void
     {
         $trip = Trip::factory()->create();

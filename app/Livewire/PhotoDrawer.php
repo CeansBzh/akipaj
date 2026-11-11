@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Comment;
 use App\Models\Photo;
+use App\Models\Share;
 use App\Notifications\CommentPosted;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,10 +15,10 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 /**
- * Panneaux « Détails » et « Commentaires » de la visionneuse de la galerie, posés à sa droite.
+ * Panneaux « Détails », « Commentaires » et « Partager » de la visionneuse de la galerie, posés à sa droite.
  *
  * La visionneuse (resources/js/gallery.js) ouvre et ferme les panneaux, et demande la photo à montrer avec show().
- * Le composant rend les deux panneaux de la photo à la fois : passer de l'un à l'autre ne demande rien au serveur.
+ * Le composant rend les panneaux de la photo à la fois : passer de l'un à l'autre ne demande rien au serveur.
  *
  * @property-read ?Photo $photo
  * @property-read Collection<int, Comment> $comments
@@ -51,6 +52,14 @@ class PhotoDrawer extends Component
     public ?int $commentIdToDelete = null;
 
     /**
+     * Dernier lien de partage créé pour la photo montrée, et sa date d'expiration.
+     *
+     * @var array{url: string, expiresAt: string}|null
+     */
+    #[Locked]
+    public ?array $shareLink = null;
+
+    /**
      * Vrai si le matelot reçoit par e-mail les nouveaux commentaires de la photo.
      */
     public bool $isSubscribed = false;
@@ -64,7 +73,7 @@ class PhotoDrawer extends Component
         $this->authorize('view', $photo);
 
         $this->photoId = $photo->id;
-        $this->reset('isEditingLegend', 'legend', 'comment', 'commentIdToDelete');
+        $this->reset('isEditingLegend', 'legend', 'comment', 'commentIdToDelete', 'shareLink');
         $this->resetValidation();
         $this->isSubscribed = auth()->user()->isSubscribedTo($photo);
         unset($this->photo, $this->comments);
@@ -169,6 +178,22 @@ class PhotoDrawer extends Component
 
         $this->commentIdToDelete = null;
         $this->commentsChanged();
+    }
+
+    /**
+     * Crée un nouveau lien qui montre la photo à qui n'a pas de compte, jusqu'à son expiration.
+     */
+    public function createShareLink(): void
+    {
+        $photo = $this->shownPhoto();
+        $this->authorize('share', $photo);
+
+        $share = Share::createFor($photo, auth()->user());
+
+        $this->shareLink = [
+            'url' => route('shares.show', $share),
+            'expiresAt' => $share->expires_at->isoFormat('dddd D MMMM YYYY [à] H[h]mm'),
+        ];
     }
 
     public function updatedIsSubscribed(bool $isSubscribed): void

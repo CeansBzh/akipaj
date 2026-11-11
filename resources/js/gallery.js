@@ -1,6 +1,7 @@
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
 import '../css/gallery-lightbox.css';
+import { handleScreenZones, lightboxOptions, lockPageScroll } from './photo-lightbox';
 
 /*
  * Visionneuse de la galerie (composant Livewire Gallery), construite avec PhotoSwipe.
@@ -10,25 +11,12 @@ import '../css/gallery-lightbox.css';
  * photo chargée, elle demande la page suivante à la galerie et reprend les nouvelles vignettes dès qu'elles arrivent.
  * Le lien d'une photo (/photos/12) mène à la galerie avec ?photo=12 : la visionneuse s'ouvre alors sur elle.
  *
- * Les panneaux « Détails » et « Commentaires » (composant Livewire PhotoDrawer) s'ouvrent à droite et suivent la photo.
- *
- * Toucher ou cliquer :
- * - le bord gauche ou droit de l'écran (un huitième de la largeur) montre la photo précédente ou suivante ;
- * - le haut ou le bas de l'écran (un cinquième de la hauteur), ou le fond autour de la photo, cache ou montre les commandes ;
- * - la photo la zoome là où l'on clique à la souris ; au doigt, on zoome en pinçant ou en touchant deux fois.
- * Glisser la photo (au doigt ou à la souris) fait venir la suivante ou la précédente, les flèches du clavier aussi.
+ * Les panneaux « Détails », « Commentaires » et « Partager » (composant Livewire PhotoDrawer) s'ouvrent à droite et
+ * suivent la photo. Les gestes et les zones de l'écran sont ceux de resources/js/photo-lightbox.js.
  */
-
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 // À partir de cette largeur, la photo se range à gauche du panneau ouvert ; en dessous, le panneau couvre l'écran
 const wideScreen = window.matchMedia('(min-width: 48rem)');
-
-// Chevron au trait fin, dans la boîte de 60 × 60 des flèches de PhotoSwipe (retourné par sa feuille de style pour « suivante »)
-const ARROW_SVG =
-    '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 60 60" width="60" height="60">' +
-    '<path d="M34 21 25 30l9 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '</svg>';
 
 // Nombre de photos restantes à partir duquel on charge la page suivante
 const PRELOAD_THRESHOLD = 5;
@@ -98,35 +86,18 @@ function openLightbox(grid, openedTile) {
     const tiles = galleryTiles(grid);
     let drawer;
 
-    const pswp = new PhotoSwipe({
-        dataSource: tiles,
-        index: Math.max(0, tiles.indexOf(openedTile)),
-        loop: false,
-        bgOpacity: 1,
-        showHideAnimationType: reducedMotion.matches ? 'none' : 'zoom',
-        imageClickAction: 'zoom',
-        bgClickAction: 'toggle-controls',
-        tapAction: 'toggle-controls',
-        doubleTapAction: 'zoom',
-        // Zoom vers la taille réelle de la photo, et au moins ×2,5 pour une photo déjà affichée en entier
-        secondaryZoomLevel: (zoomLevel) => Math.max(zoomLevel.fit * 2.5, Math.min(1, zoomLevel.fit * 3)),
-        preload: [1, 2],
-        // Le panneau ouvert sur grand écran laisse la photo à sa gauche
-        paddingFn: () => ({ top: 0, bottom: 0, left: 0, right: drawer?.offset() ?? 0 }),
-        // Le focus reste dans la visionneuse, ou dans son panneau qui est hors d'elle (voir keepFocus)
-        trapFocus: false,
-        // Le focus revient sur la vignette de la dernière photo vue, pas sur celle de départ (voir plus bas)
-        returnFocus: false,
-        zoom: false,
-        close: false,
-        counter: false,
-        arrowPrevSVG: ARROW_SVG,
-        arrowNextSVG: ARROW_SVG,
-        arrowPrevTitle: 'Photo précédente',
-        arrowNextTitle: 'Photo suivante',
-        errorMsg: 'Cette photo n’a pas pu être chargée.',
-        mainClass: 'gallery-lightbox',
-    });
+    const pswp = new PhotoSwipe(
+        lightboxOptions({
+            dataSource: tiles,
+            index: Math.max(0, tiles.indexOf(openedTile)),
+            // Le panneau ouvert sur grand écran laisse la photo à sa gauche
+            paddingFn: () => ({ top: 0, bottom: 0, left: 0, right: drawer?.offset() ?? 0 }),
+            // Le focus reste dans la visionneuse, ou dans son panneau qui est hors d'elle (voir keepFocus)
+            trapFocus: false,
+            // Le focus revient sur la vignette de la dernière photo vue, pas sur celle de départ (voir plus bas)
+            returnFocus: false,
+        }),
+    );
 
     const currentTile = () => pswp.currSlide?.data.element ?? openedTile;
     drawer = createDrawer(pswp, currentTile);
@@ -145,65 +116,16 @@ function openLightbox(grid, openedTile) {
     });
 
     keepFocus(pswp, drawer);
-    handleScreenZones(pswp, drawer);
+    handleScreenZones(pswp, drawer.offset);
     handleHistory(pswp, drawer);
     loadMorePhotos(pswp, grid);
+    lockPageScroll(pswp);
 
-    pswp.on('openingAnimationEnd', () => {
-        document.documentElement.classList.add('gallery-lightbox-open');
-        // Sans barre de défilement, l'écran s'élargit sans événement « resize »
-        pswp.updateSize(true);
-    });
-    pswp.on('close', () => {
-        document.documentElement.classList.remove('gallery-lightbox-open');
-        // La photo se referme vers sa vignette : on l'amène à l'écran avant l'animation
-        currentTile().scrollIntoView({ block: 'nearest' });
-    });
-    pswp.on('destroy', () => {
-        document.documentElement.classList.remove('gallery-lightbox-open');
-        currentTile().focus({ preventScroll: true });
-    });
+    // La photo se referme vers sa vignette : on l'amène à l'écran avant l'animation
+    pswp.on('close', () => currentTile().scrollIntoView({ block: 'nearest' }));
+    pswp.on('destroy', () => currentTile().focus({ preventScroll: true }));
 
     pswp.init();
-}
-
-/**
- * Bord gauche ou droit : photo précédente ou suivante. Haut ou bas de l'écran : commandes cachées ou montrées.
- * Une photo zoomée garde le comportement de PhotoSwipe, pour la déplacer et la dézoomer sans changer de photo.
- * Le bord droit est celui de la place laissée par le panneau ouvert.
- *
- * @param {PhotoSwipe} pswp
- * @param {ReturnType<typeof createDrawer>} drawer
- */
-function handleScreenZones(pswp, drawer) {
-    const isZoomedIn = () => {
-        const slide = pswp.currSlide;
-        return slide && slide.currZoomLevel > slide.zoomLevels.initial + 0.01;
-    };
-
-    for (const action of ['imageClickAction', 'bgClickAction', 'tapAction']) {
-        pswp.on(action, (event) => {
-            if (isZoomedIn()) {
-                return;
-            }
-
-            const { clientX, clientY } = event.originalEvent;
-            const width = window.innerWidth - drawer.offset();
-            const height = window.innerHeight;
-            const edge = Math.max(44, width / 8);
-
-            if (clientY < height / 5 || clientY > height - height / 5) {
-                event.preventDefault();
-                pswp.element.classList.toggle('pswp--ui-visible');
-            } else if (clientX < edge) {
-                event.preventDefault();
-                pswp.prev();
-            } else if (clientX > width - edge) {
-                event.preventDefault();
-                pswp.next();
-            }
-        });
-    }
 }
 
 /**
@@ -259,7 +181,7 @@ function keepFocus(pswp, drawer) {
 }
 
 /**
- * Panneaux « Détails » et « Commentaires » (resources/views/livewire/photo-drawer.blade.php), à droite de la visionneuse.
+ * Panneaux « Détails », « Commentaires » et « Partager » (resources/views/livewire/photo-drawer.blade.php), à droite de la visionneuse.
  * Ils montrent la photo de la visionneuse et la suivent quand elle change. Sur grand écran, la photo et les commandes
  * se rangent à leur gauche ; sur téléphone, ils couvrent l'écran et la visionneuse dessous devient inerte.
  * Ouvrir un panneau ajoute une entrée à l'historique, pour que le bouton « retour » le referme.
@@ -269,7 +191,7 @@ function keepFocus(pswp, drawer) {
  */
 function createDrawer(pswp, currentTile) {
     const element = document.querySelector('[data-photo-drawer]');
-    /** @type {'details' | 'comments' | null} */
+    /** @type {'details' | 'comments' | 'share' | null} */
     let panel = null;
     /** @type {HTMLElement | null} */
     let opener = null;
@@ -287,7 +209,7 @@ function createDrawer(pswp, currentTile) {
         offset: () => appliedOffset,
 
         /**
-         * @param {'details' | 'comments'} newPanel
+         * @param {'details' | 'comments' | 'share'} newPanel
          * @param {HTMLElement} newOpener bouton qui retrouve le focus à la fermeture
          */
         open(newPanel, newOpener) {
@@ -397,7 +319,7 @@ function loadMorePhotos(pswp, grid) {
 }
 
 /**
- * Boutons des commentaires, « Plus d'actions » et « Fermer », en haut à droite.
+ * Boutons des commentaires, « Plus d'actions » (détails, téléchargement, partage, modification) et « Fermer », en haut à droite.
  *
  * @param {PhotoSwipe} pswp
  * @param {HTMLElement} element
@@ -413,11 +335,8 @@ function setUpActions(pswp, element, currentTile, drawer) {
     const menu = element.querySelector('[data-lightbox-menu]');
     const details = element.querySelector('[data-lightbox-details]');
     const download = element.querySelector('[data-lightbox-download]');
-    const copy = element.querySelector('[data-lightbox-copy]');
-    const copyLabel = element.querySelector('[data-lightbox-copy-label]');
+    const share = element.querySelector('[data-lightbox-share]');
     const edit = element.querySelector('[data-lightbox-edit]');
-    const status = element.querySelector('[data-lightbox-status]');
-    let copyTimer;
 
     const toggleMenu = (isOpen) => {
         menu.hidden = !isOpen;
@@ -463,19 +382,9 @@ function setUpActions(pswp, element, currentTile, drawer) {
     });
     pswp.on('destroy', () => stopListening?.());
 
-    copy.addEventListener('click', async () => {
-        try {
-            await navigator.clipboard.writeText(currentTile().href);
-            copyLabel.textContent = 'Lien copié';
-        } catch {
-            copyLabel.textContent = 'Le lien n’a pas pu être copié';
-        }
-        status.textContent = copyLabel.textContent;
-        clearTimeout(copyTimer);
-        copyTimer = setTimeout(() => {
-            copyLabel.textContent = 'Copier le lien';
-            status.textContent = '';
-        }, 2500);
+    share.addEventListener('click', () => {
+        toggleMenu(false);
+        drawer.open('share', menuButton);
     });
 
     // Les touches tapées dans le panneau lui reviennent. Échap ferme d'abord le menu, puis le panneau, puis la visionneuse.

@@ -61,13 +61,14 @@
             x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transition-transform duration-150 ease-in motion-reduce:transition-none"
             x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
-            class="z-100010 scheme-dark fixed inset-y-0 right-0 flex w-full flex-col bg-gray-950/90 font-sans text-gray-100 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl focus:outline-none md:w-104">
+            class="z-100010 scheme-dark md:w-104 fixed inset-y-0 right-0 flex w-full flex-col bg-gray-950/90 font-sans text-gray-100 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl focus:outline-none">
 
             <header
                 class="flex items-center justify-between gap-3 border-b border-white/10 py-3 pl-5 pr-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
                 <h2 id="photo-drawer-title" class="text-xl font-bold text-white">
                     <span x-show="panel === 'details'">Détails</span>
                     <span x-show="panel === 'comments'" x-cloak>Commentaires</span>
+                    <span x-show="panel === 'share'" x-cloak>Partager</span>
                 </h2>
                 <button type="button" x-on:click="$dispatch('photo-drawer-dismiss')" aria-label="Fermer le panneau"
                     title="Fermer le panneau"
@@ -128,7 +129,7 @@
                                 @else
                                     @if ($photo->legend)
                                         <p
-                                            class="mt-1 max-w-prose whitespace-pre-line wrap-break-word leading-relaxed text-gray-100">
+                                            class="wrap-break-word mt-1 max-w-prose whitespace-pre-line leading-relaxed text-gray-100">
                                             {{ $photo->legend }}</p>
                                     @else
                                         <p class="mt-1 text-gray-300">Pas encore de légende.</p>
@@ -261,7 +262,7 @@
                                                             {{ $comment->created_at->isoFormat('D MMMM YYYY') }}
                                                         </time>
                                                     </p>
-                                                    <p class="mt-1 whitespace-pre-line wrap-break-word text-gray-100">
+                                                    <p class="wrap-break-word mt-1 whitespace-pre-line text-gray-100">
                                                         {{ $comment->content }}</p>
                                                 </div>
 
@@ -302,6 +303,48 @@
                                     @endforeach
                                 </ol>
                             @endif
+                        </div>
+
+                        {{-- Partager : un lien pour qui n'a pas de compte, ou celui de la galerie pour un membre --}}
+                        <div x-show="panel === 'share'" x-cloak class="flex flex-col gap-8">
+                            <section aria-labelledby="photo-drawer-share-guest">
+                                <h3 id="photo-drawer-share-guest" class="text-lg font-bold text-white">Avec une personne
+                                    sans compte</h3>
+                                <p class="mt-2 leading-relaxed text-gray-300">
+                                    Le lien montre cette photo seule, sans le reste de la galerie. Toute personne qui
+                                    l'a pourra la voir et la télécharger pendant
+                                    {{ App\Models\Share::DEFAULT_EXPIRY_DAYS }}
+                                    jours.
+                                </p>
+                                @can('share', $photo)
+                                    <button type="button" wire:click="createShareLink" wire:loading.attr="disabled"
+                                        wire:target="createShareLink"
+                                        class="{{ $shareLink ? $secondaryButton : $primaryButton }} mt-4">
+                                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                                            class="size-5 shrink-0">
+                                            <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
+                                            <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+                                        </svg>
+                                        {{ $shareLink ? 'Créer un autre lien' : 'Créer un lien de partage' }}
+                                    </button>
+                                @endcan
+                                @if ($shareLink)
+                                    <x-share-link :url="$shareLink['url']" dark class="mt-5"
+                                        wire:key="photo-drawer-share-{{ $shareLink['url'] }}">
+                                        <p class="mt-2 text-gray-300">Valable jusqu'au {{ $shareLink['expiresAt'] }}.</p>
+                                    </x-share-link>
+                                @endif
+                            </section>
+
+                            <section aria-labelledby="photo-drawer-share-member" class="border-t border-white/10 pt-6">
+                                <h3 id="photo-drawer-share-member" class="text-lg font-bold text-white">Avec un membre
+                                    du club</h3>
+                                <p class="mt-2 leading-relaxed text-gray-300">Une fois connecté, il retrouve la photo
+                                    dans la galerie.</p>
+                                <x-share-link :url="route('photos.show', $photo)" label="Lien de la galerie" dark class="mt-4"
+                                    wire:key="photo-drawer-member-link-{{ $photo->id }}" />
+                            </section>
                         </div>
                     </div>
                 @endif

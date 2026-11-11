@@ -53,13 +53,13 @@
                     </svg>
                     Télécharger
                 </a>
-                <button type="button" data-lightbox-copy class="{{ $menuItem }}">
+                <button type="button" data-lightbox-share aria-controls="photo-drawer" class="{{ $menuItem }}">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
                         stroke-linecap="round" stroke-linejoin="round" class="text-primary-700 size-5 shrink-0">
                         <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
                         <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
                     </svg>
-                    <span data-lightbox-copy-label>Copier le lien</span>
+                    Partager la photo
                 </button>
                 <a href="#" data-lightbox-edit class="{{ $menuItem }}">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
@@ -78,7 +78,6 @@
             </svg>
         </button>
     </div>
-    <p data-lightbox-status class="sr-only" aria-live="polite"></p>
 </template>
 
 {{-- Matelot qui a envoyé la photo, en bas à droite --}}

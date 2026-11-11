@@ -6,10 +6,12 @@ use App\Enums\GalleryGroupingEnum;
 use App\Enums\GallerySortEnum;
 use App\Models\Album;
 use App\Models\Photo;
+use App\Models\Share;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -30,6 +32,8 @@ use Livewire\Component;
  */
 class Gallery extends Component
 {
+    use AuthorizesRequests;
+
     /**
      * Nombre de photos chargées à la fois.
      */
@@ -75,6 +79,14 @@ class Gallery extends Component
      */
     #[Locked]
     public int $lastPage = 1;
+
+    /**
+     * Dernier lien de partage créé pour un album, avec cet album et la date d'expiration du lien.
+     *
+     * @var array{albumId: int, url: string, expiresAt: string}|null
+     */
+    #[Locked]
+    public ?array $albumShareLink = null;
 
     /**
      * Vrai quand la requête ajoute une page à la suite des autres : l'îlot ne rend alors que cette page.
@@ -148,6 +160,23 @@ class Gallery extends Component
         if ($this->loadedPages < $this->lastPage) {
             $this->appendedPage = ++$this->loadedPages;
         }
+    }
+
+    /**
+     * Crée un nouveau lien qui montre les photos de l'album choisi à qui n'a pas de compte, jusqu'à son expiration.
+     */
+    public function shareAlbum(): void
+    {
+        $album = $this->selectedAlbum ?? abort(404);
+        $this->authorize('share', $album);
+
+        $share = Share::createFor($album, auth()->user());
+
+        $this->albumShareLink = [
+            'albumId' => $album->id,
+            'url' => route('shares.show', $share),
+            'expiresAt' => $share->expires_at->isoFormat('dddd D MMMM YYYY [à] H[h]mm'),
+        ];
     }
 
     /**

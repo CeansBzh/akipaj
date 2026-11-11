@@ -122,14 +122,7 @@ class PhotoController extends Controller
      */
     public function file(string $path): StreamedResponse
     {
-        $disk = Storage::disk('photos');
-
-        abort_unless($disk->fileExists($path), 404);
-
-        // The file names are unique, so the browser can keep them, but shared caches must not
-        return $disk->response($path, headers: [
-            'Cache-Control' => 'private, max-age=31536000, immutable',
-        ]);
+        return Photo::fileResponse($path);
     }
 
     /**

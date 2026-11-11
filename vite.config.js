@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/rich-text-editor.js',
                 'resources/js/course-map.js',
                 'resources/js/gallery.js',
+                'resources/js/shared-photos.js',
             ],
             refresh: true,
         }),
