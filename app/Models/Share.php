@@ -136,7 +136,7 @@ class Share extends Model
     /**
      * Les liens expirés depuis un mois sont supprimés (commande model:prune, planifiée chaque jour).
      *
-     * @return Builder<static>
+     * @return Builder
      */
     public function prunable(): Builder
     {
