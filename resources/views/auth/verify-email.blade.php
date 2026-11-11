@@ -1,41 +1,26 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="h-28 rounded-xl bg-sky-700 p-3" />
-            </a>
-        </x-slot>
+<x-auth-layout title="Vérifiez votre adresse e-mail">
+    <x-slot name="intro">Merci pour votre inscription ! Ouvrez le lien que nous venons de vous envoyer par e-mail
+        pour confirmer votre adresse.</x-slot>
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the
-                                                link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-        </div>
+    @if (session('status') == 'verification-link-sent')
+        <x-auth-session-status class="mb-6"
+            status="Un nouveau lien vient d'être envoyé à l'adresse e-mail de votre inscription." />
+    @endif
 
-        @if (session('status') == 'verification-link-sent')
-            <div class="mb-4 text-sm font-medium text-green-600">
-                {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-            </div>
-        @endif
+    <p class="leading-relaxed text-gray-700">Vous n'avez rien reçu ? Pensez à regarder dans les courriers indésirables,
+        ou demandez un nouveau lien.</p>
 
-        <div class="mt-4 flex items-center justify-between">
-            <form method="POST" action="{{ route('verification.send') }}">
-                @csrf
+    <form method="POST" action="{{ route('verification.send') }}" class="mt-5">
+        @csrf
+        <x-primary-button class="w-full">Recevoir un nouveau lien</x-primary-button>
+    </form>
 
-                <div>
-                    <x-primary-button>
-                        {{ __('Resend Verification Email') }}
-                    </x-primary-button>
-                </div>
-            </form>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-
-                <button type="submit"
-                    class="focus:outline-hidden rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-                    {{ __('Log Out') }}
-                </button>
-            </form>
-        </div>
-    </x-auth-card>
-</x-guest-layout>
+    <x-slot name="footer">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit"
+                class="text-primary-800 decoration-primary-300 hover:decoration-primary-700 focus-visible:outline-primary-700 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">Se
+                déconnecter</button>
+        </form>
+    </x-slot>
+</x-auth-layout>
