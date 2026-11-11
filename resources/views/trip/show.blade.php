@@ -128,7 +128,7 @@
                                                 @if ($album->photos_count === 0)
                                                     Aucune photo pour l'instant
                                                 @else
-                                                    {{ $album->photos_count . ($album->photos_count > 1 ? 'photos' : 'photo') }}
+                                                    {{ $album->photos_count . ($album->photos_count > 1 ? ' photos' : ' photo') }}
                                                 @endif
                                             </span>
                                             <span class="mt-auto pt-4">

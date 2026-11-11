@@ -215,8 +215,7 @@
                                         <div>
                                             <dt class="{{ $factLabel }}">Taille</dt>
                                             <dd class="tabular-nums text-gray-100">
-                                                {{ number_format($photo->width, 0, ',', "\u{202F}") }} ×
-                                                {{ number_format($photo->height, 0, ',', "\u{202F}") }} pixels
+                                                {{ number_format($photo->width, 0, ',', "\u{202F}") . ' × ' . number_format($photo->height, 0, ',', "\u{202F}") . ' pixels' }}
                                                 @if ($fileSize)
                                                     <span class="text-gray-300">·
                                                         {{ $fileSize >= 1048576 ? number_format($fileSize / 1048576, 1, ',', "\u{202F}") . ' Mo' : max(1, round($fileSize / 1024)) . ' ko' }}</span>
