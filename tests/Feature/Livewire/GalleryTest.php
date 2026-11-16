@@ -55,7 +55,7 @@ class GalleryTest extends TestCase
         return collect([$first])->concat(collect(range(2, $count))->map(fn (): Photo => tap($first->replicate())->save()));
     }
 
-    public function test_photos_are_grouped_by_day_newest_first_with_undated_photos_last(): void
+    public function test_photos_are_listed_newest_first_with_undated_photos_last(): void
     {
         $this->actingAsMember();
         $album = Album::factory()->create();
@@ -67,10 +67,6 @@ class GalleryTest extends TestCase
         $component = Livewire::test(Gallery::class);
 
         $this->assertSame([$nextDay->id, $evening->id, $morning->id, $undated->id], $this->displayedPhotoIds($component));
-        $this->assertSame(
-            ['Dimanche 15 juin 2025 1 photo', 'Samedi 14 juin 2025 2 photos', 'Date inconnue 1 photo'],
-            $this->displayedGroupHeadings($component),
-        );
     }
 
     public function test_oldest_first_order_keeps_undated_photos_last(): void
@@ -81,12 +77,12 @@ class GalleryTest extends TestCase
         $recent = Photo::factory()->for($album)->create(['taken_at' => '2025-06-15 10:00']);
         $old = Photo::factory()->for($album)->create(['taken_at' => '2024-06-14 10:00']);
 
-        $component = Livewire::test(Gallery::class)->set('sort', 'anciennes');
+        $component = Livewire::test(Gallery::class)->call('toggleSort');
 
         $this->assertSame([$old->id, $recent->id, $undated->id], $this->displayedPhotoIds($component));
     }
 
-    public function test_photos_can_be_grouped_by_album_in_the_order_of_the_album_dates(): void
+    public function test_photos_are_grouped_by_album_in_the_order_of_the_album_dates(): void
     {
         $this->actingAsMember();
         $olderAlbum = Album::factory()->create(['title' => 'Glénan', 'date' => '2024-07-01']);
@@ -95,7 +91,7 @@ class GalleryTest extends TestCase
         $firstDay = Photo::factory()->for($newerAlbum)->create(['taken_at' => '2025-06-02']);
         $secondDay = Photo::factory()->for($newerAlbum)->create(['taken_at' => '2025-06-03']);
 
-        $component = Livewire::test(Gallery::class)->set('grouping', 'album');
+        $component = Livewire::test(Gallery::class);
 
         $this->assertSame([$secondDay->id, $firstDay->id, $lateScan->id], $this->displayedPhotoIds($component));
         $this->assertSame(
@@ -104,30 +100,16 @@ class GalleryTest extends TestCase
         );
     }
 
-    public function test_ungrouped_photos_have_no_headings(): void
+    public function test_unknown_order_in_the_url_falls_back_to_the_default(): void
     {
         $this->actingAsMember();
         $album = Album::factory()->create();
         $old = Photo::factory()->for($album)->create(['taken_at' => '2024-06-14 10:00']);
         $recent = Photo::factory()->for($album)->create(['taken_at' => '2025-06-15 10:00']);
 
-        $component = Livewire::test(Gallery::class)->set('grouping', 'toutes');
+        $component = Livewire::withQueryParams(['tri' => 'hasard'])->test(Gallery::class);
 
         $this->assertSame([$recent->id, $old->id], $this->displayedPhotoIds($component));
-        $this->assertSame([], $this->displayedGroupHeadings($component));
-    }
-
-    public function test_unknown_grouping_and_order_in_the_url_fall_back_to_the_defaults(): void
-    {
-        $this->actingAsMember();
-        $album = Album::factory()->create();
-        $old = Photo::factory()->for($album)->create(['taken_at' => '2024-06-14 10:00']);
-        $recent = Photo::factory()->for($album)->create(['taken_at' => '2025-06-15 10:00']);
-
-        $component = Livewire::withQueryParams(['vue' => 'carte', 'tri' => 'hasard'])->test(Gallery::class);
-
-        $this->assertSame([$recent->id, $old->id], $this->displayedPhotoIds($component));
-        $this->assertSame(['Dimanche 15 juin 2025 1 photo', 'Vendredi 14 juin 2024 1 photo'], $this->displayedGroupHeadings($component));
     }
 
     public function test_photos_can_be_filtered_by_uploader_and_album(): void
@@ -213,32 +195,33 @@ class GalleryTest extends TestCase
             ->assertDontSee('Supprimer l\'album');
     }
 
-    public function test_adding_photos_without_a_chosen_album_offers_every_album_including_empty_ones(): void
+    public function test_navigation_button_offers_every_album_including_empty_ones(): void
     {
         $this->actingAsMember();
         $emptyAlbum = Album::factory()->create();
         $albumWithPhotos = Album::factory()->create();
         Photo::factory()->for($albumWithPhotos)->create();
 
-        $component = Livewire::test(Gallery::class);
-
-        $component->assertSee(route('photos.create', $emptyAlbum))->assertSee(route('photos.create', $albumWithPhotos));
+        $this->blade('<x-add-photos-button />')
+            ->assertSee(route('photos.create', $emptyAlbum))
+            ->assertSee(route('photos.create', $albumWithPhotos));
     }
 
-    public function test_photos_load_by_pages_and_a_day_continues_on_the_next_page(): void
+    public function test_photos_load_by_pages_and_an_album_continues_on_the_next_page(): void
     {
         $this->actingAsMember();
-        $photos = $this->createPhotos(101, ['taken_at' => '2025-06-14 10:00']);
+        $album = Album::factory()->create(['title' => 'Glénan', 'date' => '2025-06-01']);
+        $photos = $this->createPhotos(101, ['album_id' => $album->id, 'taken_at' => '2025-06-14 10:00']);
         $oldestId = $photos->first()->id;
         $component = Livewire::test(Gallery::class);
 
         $firstPage = $this->displayedPhotoIds($component);
         $this->assertCount(100, $firstPage);
         $this->assertNotContains($oldestId, $firstPage);
-        $this->assertSame(['Samedi 14 juin 2025 101 photos'], $this->displayedGroupHeadings($component));
+        $this->assertSame(['Glénan Juin 2025 · 101 photos'], $this->displayedGroupHeadings($component));
         $component->assertSet('lastPage', 2);
 
-        // La page ajoutée ne contient que les nouvelles photos, sans répéter le titre du jour commencé
+        // La page ajoutée ne contient que les nouvelles photos, sans répéter le titre de l'album commencé
         $component->call('loadMore');
         $this->assertSame([$oldestId], $this->displayedPhotoIds($component));
         $this->assertSame([], $this->displayedGroupHeadings($component));
@@ -248,7 +231,7 @@ class GalleryTest extends TestCase
         $this->assertSame([], $this->displayedPhotoIds($component));
         $component->assertSet('loadedPages', 2);
 
-        $component->set('sort', 'anciennes');
+        $component->call('toggleSort');
         $this->assertCount(100, $this->displayedPhotoIds($component));
         $component->assertSet('loadedPages', 1);
     }

@@ -2,8 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Enums\GalleryGroupingEnum;
-use App\Enums\GallerySortEnum;
 use App\Models\Album;
 use App\Models\Photo;
 use App\Models\Share;
@@ -25,7 +23,6 @@ use Livewire\Component;
  * sans les renvoyer ; un changement de filtre, de regroupement ou d'ordre repart de la première page.
  *
  * @property-read Collection<int, Album> $albums
- * @property-read Collection<int, Album> $uploadAlbums
  * @property-read Collection<int, User> $uploaders
  * @property-read ?Album $selectedAlbum
  * @property-read list<array{key: string, title: ?string, details: ?string, photos: list<Photo>}> $photoGroups
@@ -57,13 +54,7 @@ class Gallery extends Component
     public array $albumsFilter = [];
 
     /**
-     * Regroupement des photos, une valeur de GalleryGroupingEnum.
-     */
-    #[Url(as: 'vue', except: 'jour')]
-    public string $grouping = 'jour';
-
-    /**
-     * Ordre des photos, une valeur de GallerySortEnum.
+     * Ordre des photos selon la date de prise de vue : « recentes » (par défaut) ou « anciennes » (?tri=anciennes).
      */
     #[Url(as: 'tri', except: 'recentes')]
     public string $sort = 'recentes';
@@ -142,6 +133,15 @@ class Gallery extends Component
         $this->loadedPages = 1;
     }
 
+    /**
+     * Passe des plus récentes aux plus anciennes photos d'abord, et inversement.
+     */
+    public function toggleSort(): void
+    {
+        $this->sort = $this->isOldestFirst() ? 'recentes' : 'anciennes';
+        $this->loadedPages = 1;
+    }
+
     #[On('resetFilters')]
     public function resetFilters(): void
     {
@@ -205,14 +205,12 @@ class Gallery extends Component
         return ! $this->isAppending;
     }
 
-    public function groupingOption(): GalleryGroupingEnum
+    /**
+     * Vrai quand les plus anciennes photos viennent en premier ; toute autre valeur de l'adresse garde l'ordre par défaut.
+     */
+    public function isOldestFirst(): bool
     {
-        return GalleryGroupingEnum::tryFrom($this->grouping) ?? GalleryGroupingEnum::DAY;
-    }
-
-    public function sortOption(): GallerySortEnum
-    {
-        return GallerySortEnum::tryFrom($this->sort) ?? GallerySortEnum::NEWEST;
+        return $this->sort === 'anciennes';
     }
 
     /**
@@ -229,17 +227,6 @@ class Gallery extends Component
             ->orderByDesc('date')
             ->orderByDesc('id')
             ->get();
-    }
-
-    /**
-     * Tous les albums, vides compris, proposés par « Ajouter mes photos » quand la galerie n'est pas filtrée sur un album.
-     *
-     * @return Collection<int, Album>
-     */
-    #[Computed]
-    public function uploadAlbums(): Collection
-    {
-        return Album::orderByDesc('date')->orderByDesc('id')->get(['id', 'title', 'date']);
     }
 
     /**
@@ -290,7 +277,7 @@ class Gallery extends Component
         $photos = $this->orderedPhotos()
             ->with('user')
             ->withCount('comments')
-            ->when($this->groupingOption() === GalleryGroupingEnum::ALBUM, fn (Builder $query) => $query->with('album'))
+            ->with('album')
             ->offset(max(0, $offset - 1))
             ->limit($offset > 0 ? $limit + 1 : $limit)
             ->get();
@@ -336,14 +323,13 @@ class Gallery extends Component
      */
     protected function orderedPhotos(): Builder
     {
-        $direction = $this->sortOption()->direction();
+        $direction = $this->isOldestFirst() ? 'asc' : 'desc';
 
         return $this->filteredPhotos()
             ->select('photos.*')
-            ->when($this->groupingOption() === GalleryGroupingEnum::ALBUM, fn (Builder $query) => $query
-                ->join('albums', 'albums.id', '=', 'photos.album_id')
-                ->orderBy('albums.date', $direction)
-                ->orderBy('albums.id', $direction))
+            ->join('albums', 'albums.id', '=', 'photos.album_id')
+            ->orderBy('albums.date', $direction)
+            ->orderBy('albums.id', $direction)
             ->orderByRaw('photos.taken_at is null')
             ->orderBy('photos.taken_at', $direction)
             ->orderBy('photos.id', $direction);
@@ -351,55 +337,34 @@ class Gallery extends Component
 
     protected function groupKey(Photo $photo): string
     {
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $photo->taken_at?->toDateString() ?? 'inconnue',
-            GalleryGroupingEnum::ALBUM => 'album-'.$photo->album_id,
-            GalleryGroupingEnum::NONE => 'toutes',
-        };
+        return 'album-'.$photo->album_id;
     }
 
-    protected function groupTitle(Photo $photo): ?string
+    protected function groupTitle(Photo $photo): string
     {
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $photo->taken_at ? ucfirst($photo->taken_at->isoFormat('dddd Do MMMM YYYY')) : 'Date inconnue',
-            GalleryGroupingEnum::ALBUM => $photo->album->title,
-            GalleryGroupingEnum::NONE => null,
-        };
+        return $photo->album->title;
     }
 
-    protected function groupDetails(Photo $photo, int $count): ?string
+    protected function groupDetails(Photo $photo, int $count): string
     {
         $photoCount = $count.' '.($count > 1 ? 'photos' : 'photo');
 
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $photoCount,
-            GalleryGroupingEnum::ALBUM => ucfirst($photo->album->date->isoFormat('MMMM YYYY')).' · '.$photoCount,
-            GalleryGroupingEnum::NONE => null,
-        };
+        return ucfirst($photo->album->date->isoFormat('MMMM YYYY')).' · '.$photoCount;
     }
 
     /**
-     * Nombre de photos filtrées de chaque groupe, indexé par la clé du groupe.
+     * Nombre de photos filtrées de chaque album, indexé par la clé du groupe.
      *
      * @return array<string, int>
      */
     protected function groupCounts(): array
     {
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $this->filteredPhotos()
-                ->selectRaw("coalesce(date(photos.taken_at), 'inconnue') as day, count(*) as total")
-                ->groupBy('day')
-                ->pluck('total', 'day')
-                ->map(fn ($total): int => (int) $total)
-                ->all(),
-            GalleryGroupingEnum::ALBUM => $this->filteredPhotos()
-                ->selectRaw('photos.album_id, count(*) as total')
-                ->groupBy('photos.album_id')
-                ->pluck('total', 'photos.album_id')
-                ->mapWithKeys(fn ($total, $albumId): array => ['album-'.$albumId => (int) $total])
-                ->all(),
-            GalleryGroupingEnum::NONE => [],
-        };
+        return $this->filteredPhotos()
+            ->selectRaw('photos.album_id, count(*) as total')
+            ->groupBy('photos.album_id')
+            ->pluck('total', 'photos.album_id')
+            ->mapWithKeys(fn ($total, $albumId): array => ['album-'.$albumId => (int) $total])
+            ->all();
     }
 
     public function render(): View

@@ -1,5 +1,3 @@
-@use('App\Enums\GalleryGroupingEnum')
-@use('App\Enums\GallerySortEnum')
 @use('App\Models\Album')
 
 @php
@@ -16,7 +14,7 @@
     Galerie : les albums en bandeau, les filtres, puis toutes les photos en mosaïque, aux marges de la page.
     La visionneuse (resources/js/gallery.js) s'ouvre sur la vignette touchée et parcourt les photos chargées.
 --}}
-<div class="pb-16" x-data="{
+<div class="pb-28 sm:pb-16" x-data="{
     filtersOpen: false,
     loading: false,
     async loadMore() {
@@ -36,37 +34,11 @@
     },
 }" x-on:gallery-load-more.window="loadMore()">
 
-    <header class="flex flex-wrap items-center justify-between gap-x-3 gap-y-3 px-4 pt-6 sm:px-6 sm:pt-8 lg:px-8">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Photos</h1>
-            <p class="mt-1 text-gray-700">
-                {{ number_format($photoCount, 0, ',', "\u{202F}") }} {{ $photoCount > 1 ? 'photos' : 'photo' }}
-            </p>
-        </div>
-        @if ($selectedAlbum)
-            <a href="{{ route('photos.create', $selectedAlbum) }}"
-                class="{{ $pill }} {{ $primaryColors }} px-4 sm:px-5">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
-                    <path d="M12 5v14M5 12h14" />
-                </svg>
-                Ajouter mes photos
-            </a>
-        @else
-            <button type="button" x-on:click="$dispatch('open-modal', 'choose-upload-album')"
-                class="{{ $pill }} {{ $primaryColors }} px-4 sm:px-5">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
-                    <path d="M12 5v14M5 12h14" />
-                </svg>
-                Ajouter mes photos
-            </button>
-        @endif
-    </header>
+    <h1 class="sr-only">Photos</h1>
 
     {{-- Bandeau des albums, du plus récent au plus ancien : un album touché filtre la galerie --}}
     @if ($this->albums->isNotEmpty())
-        <section aria-labelledby="gallery-albums-title" class="mt-6 border-b sm:mt-8" x-data="{
+        <section aria-labelledby="gallery-albums-title" class="mt-4 border-b sm:mt-8" x-data="{
             atStart: true,
             atEnd: false,
             update() {
@@ -161,47 +133,62 @@
         </section>
     @endif
 
-    {{-- Regroupement, ordre et filtres --}}
-    <div class="mt-5 flex flex-wrap items-center gap-3 px-4 sm:mt-6 sm:px-6 lg:px-8">
-        <fieldset>
-            <legend class="sr-only">Regrouper les photos</legend>
-            <div class="inline-flex rounded-full bg-gray-100 p-1">
-                @foreach (GalleryGroupingEnum::cases() as $groupingOption)
-                    <label class="relative">
-                        <input type="radio" wire:model.live="grouping" value="{{ $groupingOption->value }}"
-                            class="peer sr-only">
-                        <span
-                            class="peer-focus-visible:outline-primary-700 inline-flex min-h-11 cursor-pointer items-center rounded-full px-4 font-semibold text-gray-700 transition-colors hover:text-gray-900 peer-checked:bg-white peer-checked:text-gray-900 peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1">
-                            {{ $groupingOption->label() }}
-                        </span>
-                    </label>
-                @endforeach
-            </div>
-        </fieldset>
-
-        <div class="flex flex-wrap items-center gap-x-2 gap-y-3 sm:gap-x-3">
-            <label class="flex items-center gap-2">
-                <span class="font-semibold text-gray-900">Trier</span>
-                <select wire:model.live="sort"
-                    class="focus:ring-primary-700 min-h-11 rounded-full border-0 bg-white py-2 pl-4 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2">
-                    @foreach (GallerySortEnum::cases() as $sortOption)
-                        <option value="{{ $sortOption->value }}">{{ $sortOption->label() }}</option>
-                    @endforeach
-                </select>
-            </label>
-
+    {{-- Ordre et filtres --}}
+    <div class="mt-3 px-4 sm:mt-6 sm:px-6 lg:px-8">
+        {{--
+            Sur téléphone : filtres et nombre de photos à gauche, ordre en icône à droite.
+            À partir de sm : ordre, filtres et nombre de photos, puis « Ajouter mes photos » à droite.
+        --}}
+        <div class="flex items-center gap-2 sm:gap-3">
             <button type="button" x-on:click="filtersOpen = ! filtersOpen" x-bind:aria-expanded="filtersOpen"
-                aria-controls="gallery-filters" class="{{ $secondaryPill }}">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" class="size-5 shrink-0">
-                    <path d="M4 6h16M7 12h10M10 18h4" />
+                aria-controls="gallery-filters" title="Filtres"
+                class="focus-visible:outline-primary-700 -ml-2 inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-full text-gray-500 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:ml-0 sm:bg-white sm:px-5 sm:py-2 sm:font-semibold sm:text-primary-800 sm:ring-1 sm:ring-inset sm:ring-gray-300 sm:hover:bg-primary-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 5h20" />
+                    <path d="M6 12h12" />
+                    <path d="M9 19h6" />
                 </svg>
-                Filtres
+                <span class="sr-only sm:not-sr-only">Filtres</span>
                 @if ($activeFilterCount > 0)
-                    <span
-                        class="bg-primary-700 rounded-full px-2 text-sm font-bold text-white">{{ $activeFilterCount }}</span>
+                    <span class="bg-primary-700 rounded-full px-2 text-sm font-bold text-white">
+                        {{ $activeFilterCount }}<span class="sr-only"> actifs</span>
+                    </span>
                 @endif
             </button>
+
+            <p class="min-w-0 text-gray-700">
+                {{ number_format($photoCount, 0, ',', "\u{202F}") }} {{ $photoCount > 1 ? 'photos' : 'photo' }}
+            </p>
+
+            {{-- L'ordre en un bouton : il montre l'ordre actuel et passe à l'autre --}}
+            <button type="button" wire:click="toggleSort"
+                title="{{ $this->isOldestFirst() ? 'Afficher les plus récentes d\'abord' : 'Afficher les plus anciennes d\'abord' }}"
+                class="focus-visible:outline-primary-700 order-last -mr-2 ml-auto inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-full text-gray-500 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:order-first sm:mr-0 sm:ml-0 sm:bg-white sm:px-5 sm:py-2 sm:font-semibold sm:text-primary-800 sm:ring-1 sm:ring-inset sm:ring-gray-300 sm:hover:bg-primary-50">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="size-6 shrink-0 sm:size-5">
+                    @if ($this->isOldestFirst())
+                        <path d="m3 8 4-4 4 4" />
+                        <path d="M7 4v16" />
+                        <path d="M11 12h4" />
+                        <path d="M11 16h7" />
+                        <path d="M11 20h10" />
+                    @else
+                        <path d="m3 16 4 4 4-4" />
+                        <path d="M7 20V4" />
+                        <path d="M11 4h10" />
+                        <path d="M11 8h7" />
+                        <path d="M11 12h4" />
+                    @endif
+                </svg>
+                <span class="sr-only sm:not-sr-only">
+                    {{ $this->isOldestFirst() ? 'Plus anciennes d\'abord' : 'Plus récentes d\'abord' }}
+                </span>
+            </button>
+
+            <div class="sm:ml-auto">
+                <x-add-photos-button />
+            </div>
         </div>
     </div>
 
@@ -437,34 +424,6 @@
             <span x-show="loading" x-cloak>Chargement des photos…</span>
         </button>
     </div>
-
-    {{-- « Ajouter mes photos » sans album choisi : on choisit d'abord l'album, vides compris --}}
-    @unless ($selectedAlbum)
-        <x-modal name="choose-upload-album" max-width="md" focusable>
-            <div class="p-6">
-                <h2 class="text-xl font-bold text-gray-900">Dans quel album ?</h2>
-                <p class="mt-2 text-gray-700">Choisissez l'album où ajouter vos photos.</p>
-                <ul class="mt-4 max-h-[60dvh] divide-y divide-gray-200 overflow-y-auto">
-                    @foreach ($this->uploadAlbums as $album)
-                        <li wire:key="upload-album-{{ $album->id }}">
-                            <a href="{{ route('photos.create', $album) }}"
-                                class="hover:bg-primary-50 focus-visible:outline-primary-700 flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 transition-colors focus-visible:outline-2">
-                                <span class="wrap-break-word font-semibold text-gray-900">{{ $album->title }}</span>
-                                <span
-                                    class="text-sm text-gray-700">{{ ucfirst($album->date->isoFormat('MMMM YYYY')) }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-                <div class="mt-6 flex flex-wrap justify-end gap-3">
-                    <button type="button" x-on:click="$dispatch('close')" class="{{ $secondaryPill }}">Annuler</button>
-                    @can('create', Album::class)
-                        <a href="{{ route('albums.create') }}" class="{{ $primaryPill }}">Créer un album</a>
-                    @endcan
-                </div>
-            </div>
-        </x-modal>
-    @endunless
 
     @include('livewire.partials.gallery-lightbox')
 </div>
