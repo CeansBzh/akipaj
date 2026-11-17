@@ -35,16 +35,16 @@ export const matchesSearch = (text, query) => {
 
 /**
  * Liste déroulante « Envoyées par » : des cases à cocher reliées à Livewire, et une recherche par nom.
- *
- * @param {string[]} names Noms des matelots proposés
+ * Les matelots proposés sont lus dans la liste (attribut data-uploader-name), rendue une seule fois par Livewire.
  */
-export const uploaderSelect = (names) => ({
-    names,
+export const uploaderSelect = () => ({
     open: false,
     query: '',
 
     get matchCount() {
-        return this.names.filter((name) => this.matches(name)).length;
+        const names = Array.from(this.$root.querySelectorAll('[data-uploader-name]'), (item) => item.dataset.uploaderName);
+
+        return names.filter((name) => this.matches(name)).length;
     },
 
     toggle() {
@@ -65,6 +65,24 @@ export const uploaderSelect = (names) => ({
 
     matches(name) {
         return matchesSearch(name, this.query);
+    },
+
+    /**
+     * Matelots choisis, d'après Livewire : la liste suit aussi « Réinitialiser » et l'adresse.
+     *
+     * @returns {string[]}
+     */
+    chosenIds() {
+        return (this.$wire.usersFilter ?? []).map(String);
+    },
+
+    isChosen(id) {
+        return this.chosenIds().includes(String(id));
+    },
+
+    choose(id, chosen) {
+        const others = this.chosenIds().filter((chosenId) => chosenId !== String(id));
+        this.$wire.set('usersFilter', chosen ? [...others, String(id)] : others);
     },
 });
 

@@ -93,7 +93,7 @@
                         <h2 id="trip-albums-title" class="text-2xl font-bold text-gray-900">Les photos</h2>
                         <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             @foreach ($trip->albums as $album)
-                                @php($cover = $album->imagePath ?? $album->oldestPhoto?->thumb_path)
+                                @php($cover = $album->coverUrl())
                                 <li class="min-w-0">
                                     {{-- Toute la carte mène à l'album ; le bouton « Voir l'album » montre qu'elle se touche --}}
                                     <a href="{{ route('photos.index', ['albums' => [$album->id]]) }}"

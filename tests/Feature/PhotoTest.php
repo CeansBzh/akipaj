@@ -60,7 +60,8 @@ class PhotoTest extends TestCase
 
         Storage::disk('photos')->assertExists([basename($landscape->path), 'thumbs/'.basename($landscape->thumb_path)]);
         $this->get($landscape->path)->assertOk();
-        $this->get($landscape->thumb_path)->assertOk();
+        // Thumbnails are WebP, lighter than JPEG
+        $this->get($landscape->thumb_path)->assertOk()->assertHeader('Content-Type', 'image/webp');
 
         // The uploader is subscribed to the comments of each photo
         $this->assertTrue($user->isSubscribedTo($landscape));
@@ -110,17 +111,33 @@ class PhotoTest extends TestCase
         $this->actingAsMember();
         $photo = Photo::factory()->create();
         $fileName = basename($photo->path);
+        $thumbName = basename($photo->thumb_path);
 
         // URLs stored for the photos uploaded when the files were in the public storage
         $photoResponse = $this->get('/storage/photos/'.$fileName);
-        $thumbResponse = $this->get('/storage/photos/thumbs/thumb_'.$fileName);
+        $thumbResponse = $this->get('/storage/photos/thumbs/'.$thumbName);
 
         $photoResponse->assertOk()->assertHeader('Content-Type', 'image/jpeg');
         $this->assertSame(Storage::disk('photos')->get($fileName), $photoResponse->streamedContent());
         $this->assertTrue($photoResponse->headers->hasCacheControlDirective('private'));
 
-        $thumbResponse->assertOk()->assertHeader('Content-Type', 'image/jpeg');
-        $this->assertSame(Storage::disk('photos')->get('thumbs/thumb_'.$fileName), $thumbResponse->streamedContent());
+        $thumbResponse->assertOk()->assertHeader('Content-Type', 'image/webp');
+        $this->assertSame(Storage::disk('photos')->get('thumbs/'.$thumbName), $thumbResponse->streamedContent());
+    }
+
+    public function test_files_are_handed_to_the_web_server_when_x_sendfile_is_enabled(): void
+    {
+        config(['filesystems.disks.photos.x_sendfile' => true]);
+        $this->actingAsMember();
+        $photo = Photo::factory()->create();
+
+        $response = $this->get($photo->thumb_path);
+
+        $response->assertOk()
+            ->assertHeader('X-Sendfile', Storage::disk('photos')->path($photo->thumbFileName()))
+            ->assertHeader('Content-Type', 'image/webp');
+        $this->assertSame('', $response->getContent());
+        $this->assertTrue($response->headers->hasCacheControlDirective('private'));
     }
 
     public function test_visitors_are_redirected_to_login_from_the_files_of_a_photo(): void

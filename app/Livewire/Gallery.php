@@ -19,8 +19,12 @@ use Livewire\Component;
 /**
  * Galerie des photos du club : filtrable par matelot et par album, regroupée par jour, par album ou pas du tout.
  *
- * Les photos se chargent par pages de 100 dans l'îlot « photos ». Une page de plus s'ajoute à la suite des autres
- * sans les renvoyer ; un changement de filtre, de regroupement ou d'ordre repart de la première page.
+ * Les photos se chargent dans l'îlot « photos » : une première page courte, pour qu'un album choisi s'affiche vite,
+ * puis des pages de 100. Une page de plus s'ajoute à la suite des autres sans les renvoyer ; un changement de filtre,
+ * de regroupement ou d'ordre repart de la première page.
+ *
+ * Le bandeau des albums, la liste des matelots des filtres et les autres listes qui ne changent pas avec les filtres
+ * sont des îlots rendus une seule fois : un changement de filtre ne les recalcule pas et ne les renvoie pas.
  *
  * @property-read Collection<int, Album> $albums
  * @property-read Collection<int, User> $uploaders
@@ -32,7 +36,12 @@ class Gallery extends Component
     use AuthorizesRequests;
 
     /**
-     * Nombre de photos chargées à la fois.
+     * Nombre de photos de la première page : de quoi remplir l'écran sans attendre les suivantes.
+     */
+    public const FIRST_PAGE_SIZE = 40;
+
+    /**
+     * Nombre de photos de chacune des pages suivantes.
      */
     public const PER_PAGE = 100;
 
@@ -90,6 +99,13 @@ class Gallery extends Component
     protected ?int $appendedPage = null;
 
     /**
+     * Nombre de photos filtrées de chaque album, calculé une fois par requête (voir groupCounts()).
+     *
+     * @var array<string, int>|null
+     */
+    protected ?array $groupCountsMemo = null;
+
+    /**
      * Un lien vers une photo (?photo=12, où mène l'adresse d'une photo) charge assez de pages pour qu'elle soit
      * dans la mosaïque : la visionneuse s'ouvre alors sur elle (resources/js/gallery.js).
      */
@@ -101,7 +117,7 @@ class Gallery extends Component
             $position = $this->orderedPhotos()->pluck('photos.id')->search($linkedPhotoId);
 
             if ($position !== false) {
-                $this->loadedPages = intdiv($position, self::PER_PAGE) + 1;
+                $this->loadedPages = self::pageOf($position);
             }
         }
     }
@@ -273,8 +289,8 @@ class Gallery extends Component
         }
 
         $firstPage = $this->appendedPage ?? 1;
-        $offset = ($firstPage - 1) * self::PER_PAGE;
-        $limit = ($this->loadedPages - $firstPage + 1) * self::PER_PAGE;
+        $offset = self::pageOffset($firstPage);
+        $limit = self::pageOffset($this->loadedPages + 1) - $offset;
 
         // La photo d'avant la page dit si son premier groupe continue celui de la page précédente
         $photos = $this->orderedPhotos()
@@ -364,7 +380,7 @@ class Gallery extends Component
      */
     protected function groupCounts(): array
     {
-        return $this->filteredPhotos()
+        return $this->groupCountsMemo ??= $this->filteredPhotos()
             ->selectRaw('photos.album_id, count(*) as total')
             ->groupBy('photos.album_id')
             ->pluck('total', 'photos.album_id')
@@ -372,14 +388,33 @@ class Gallery extends Component
             ->all();
     }
 
+    /**
+     * Rang, à partir de 0, de la première photo d'une page.
+     */
+    public static function pageOffset(int $page): int
+    {
+        return $page <= 1 ? 0 : self::FIRST_PAGE_SIZE + ($page - 2) * self::PER_PAGE;
+    }
+
+    /**
+     * Page, à partir de 1, de la photo de ce rang (à partir de 0).
+     */
+    public static function pageOf(int $position): int
+    {
+        return $position < self::FIRST_PAGE_SIZE ? 1 : intdiv($position - self::FIRST_PAGE_SIZE, self::PER_PAGE) + 2;
+    }
+
     public function render(): View
     {
-        $photoCount = $this->filteredPhotos()->count();
-        $this->lastPage = max(1, (int) ceil($photoCount / self::PER_PAGE));
+        // Le nombre de photos de chaque album sert aussi aux titres des groupes : il donne le total sans autre requête
+        $photoCount = array_sum($this->groupCounts());
+        $this->lastPage = $photoCount > 0 ? self::pageOf($photoCount - 1) : 1;
 
         return view('livewire.gallery', [
             'photoCount' => $photoCount,
-            'filteredUsers' => $this->uploaders->whereIn('id', $this->usersFilter)->values(),
+            'filteredUsers' => $this->usersFilter
+                ? User::whereIn('id', $this->usersFilter)->orderBy('name')->get()
+                : collect(),
             'filteredAlbums' => $this->albumsFilter
                 ? Album::whereIn('id', $this->albumsFilter)->orderByDesc('date')->get(['id', 'title'])
                 : collect(),

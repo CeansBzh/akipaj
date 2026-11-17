@@ -103,11 +103,16 @@ class AlbumTest extends TestCase
         $newPath = (string) $album->refresh()->imagePath;
         Storage::disk('local')->assertMissing('public/albums/old.jpg');
         Storage::disk('local')->assertExists('public/albums/'.basename($newPath));
+        // A small copy of the cover is shown in the gallery strip and on trip pages
+        $coverThumb = 'public/albums/thumbs/albums-'.pathinfo($newPath, PATHINFO_FILENAME).'.webp';
+        $this->assertSame('/storage/albums/thumbs/'.basename($coverThumb), $album->cover_thumb_path);
+        Storage::disk('local')->assertExists($coverThumb);
 
         $this->put(route('albums.update', $album), $data + ['remove_image' => '1'])->assertSessionHasNoErrors();
 
         $this->assertNull($album->refresh()->imagePath);
-        Storage::disk('local')->assertMissing('public/albums/'.basename($newPath));
+        $this->assertNull($album->cover_thumb_path);
+        Storage::disk('local')->assertMissing(['public/albums/'.basename($newPath), $coverThumb]);
     }
 
     public function test_members_can_delete_an_album_containing_only_their_photos(): void

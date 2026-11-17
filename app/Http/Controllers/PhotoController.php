@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response as FileResponse;
 
 class PhotoController extends Controller
 {
@@ -60,22 +60,20 @@ class PhotoController extends Controller
             // Pour chaque fichier enregistrement dans le stockage privé des photos
             $imageResource = imagecreatefromstring($file->getContent());
             imagejpeg($imageResource, $disk->path($file->hashName()));
-            // Enregistrement de la miniature
+            // Enregistrement de la vignette, en WebP quand c'est possible
             $width = imagesx($imageResource);
             $height = imagesy($imageResource);
-            // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
-            $ratio = min(450 / $width, 450 / $height);
-            $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
-            imagejpeg($thumbResource, $disk->path('thumbs/thumb_'.$file->hashName()));
+            $thumbName = 'thumbs/thumb_'.pathinfo($file->hashName(), PATHINFO_FILENAME).'.'.Photo::thumbnailExtension();
+            [$thumbWidth, $thumbHeight] = Photo::writeThumbnail($imageResource, $disk->path($thumbName));
             // Création d'une nouvelle photo
             $photo = new Photo;
             $photo->title = $file->getClientOriginalName();
             $photo->path = route('photos.file', $file->hashName(), false);
-            $photo->thumb_path = route('photos.file', 'thumbs/thumb_'.$file->hashName(), false);
+            $photo->thumb_path = route('photos.file', $thumbName, false);
             $photo->width = $width;
             $photo->height = $height;
-            $photo->thumb_width = imagesx($thumbResource);
-            $photo->thumb_height = imagesy($thumbResource);
+            $photo->thumb_width = $thumbWidth;
+            $photo->thumb_height = $thumbHeight;
             // Si les données exif sont présentes
             if (is_array($exif)) {
                 if (isset($exif['DateTimeOriginal']) && $exif['DateTimeOriginal'] != '0000:00:00 00:00:00') {
@@ -120,7 +118,7 @@ class PhotoController extends Controller
     /**
      * Send the file of a photo or of its thumbnail, which isn't publicly accessible.
      */
-    public function file(string $path): StreamedResponse
+    public function file(string $path): FileResponse
     {
         return Photo::fileResponse($path);
     }

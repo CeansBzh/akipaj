@@ -57,6 +57,7 @@ class AlbumController extends Controller
             $imageName = time().'.'.$request->image->extension();
             $path = $request->file('image')->storeAs('public/albums', $imageName);
             $album->imagePath = Storage::url($path);
+            $album->refreshCoverThumbnail();
         }
         $album->save();
         // Association de la sortie avec l'album si elle est renseignée.
@@ -110,6 +111,9 @@ class AlbumController extends Controller
             $imageName = time().'.'.$request->image->extension();
             $path = $request->file('image')->storeAs('public/albums', $imageName);
             $album->imagePath = Storage::url($path);
+        }
+        if ($album->isDirty('imagePath')) {
+            $album->refreshCoverThumbnail();
         }
         $album->save();
         // Modification des sorties associées à l'album.

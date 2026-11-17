@@ -1,21 +1,6 @@
-@use('App\Models\Album')
-
 @php
     $selectedAlbum = $this->selectedAlbum;
     $activeFilterCount = count($usersFilter) + count($albumsFilter);
-    $comboboxAlbums = $this->albums
-        ->map(
-            fn(Album $album) => [
-                'id' => $album->id,
-                'title' => $album->title,
-                'details' =>
-                    ucfirst($album->date->isoFormat('MMMM YYYY')) .
-                    ' · ' .
-                    $album->photos_count .
-                    ($album->photos_count > 1 ? ' photos' : ' photo'),
-            ],
-        )
-        ->values();
     $pill =
         'inline-flex min-h-11 items-center gap-2 rounded-full py-2 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700';
     $primaryColors = 'bg-primary-700 text-white hover:bg-primary-800';
@@ -60,11 +45,32 @@
 
     <h1 class="sr-only">Photos</h1>
 
-    {{-- Bandeau des albums, du plus récent au plus ancien : un album touché filtre la galerie --}}
+    {{--
+        Bandeau des albums, du plus récent au plus ancien : un album touché filtre la galerie.
+        Îlot rendu une seule fois (un changement de filtre ne le renvoie pas) : l'album choisi y est marqué par Alpine,
+        d'après $wire.albumsFilter, et dès le toucher, sans attendre la réponse du serveur.
+    --}}
+    @island(name: 'album-strip')
     @if ($this->albums->isNotEmpty())
         <section aria-labelledby="gallery-albums-title" class="mt-4 border-b sm:mt-8" x-data="{
             atStart: true,
             atEnd: false,
+            pendingId: undefined,
+            get selectedId() {
+                const filter = this.$wire.albumsFilter ?? [];
+                return filter.length === 1 ? Number(filter[0]) : null;
+            },
+            get shownId() {
+                return this.pendingId === undefined ? this.selectedId : this.pendingId;
+            },
+            async choose(id) {
+                this.pendingId = this.shownId === id ? null : id;
+                try {
+                    await this.$wire.selectAlbum(id);
+                } finally {
+                    this.pendingId = undefined;
+                }
+            },
             update() {
                 const strip = this.$refs.strip;
                 this.atStart = strip.scrollLeft < 8;
@@ -102,24 +108,18 @@
             <ul x-ref="strip" x-on:scroll.debounce.50ms="update()" x-on:resize.window.debounce.100ms="update()"
                 class="mt-3 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 pb-3 pt-1 sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8">
                 @foreach ($this->albums as $album)
-                    @php
-                        $isSelected = count($albumsFilter) === 1 && (int) reset($albumsFilter) === $album->id;
-                        $cover = $album->imagePath ?? $album->oldestPhoto?->thumb_path;
-                    @endphp
+                    @php($cover = $album->coverUrl())
                     <li class="w-60 shrink-0 snap-start sm:w-64" wire:key="strip-album-{{ $album->id }}">
-                        <button type="button" wire:click="selectAlbum({{ $album->id }})"
-                            aria-pressed="{{ $isSelected ? 'true' : 'false' }}" @class([
-                                'flex h-full w-full items-center gap-3 rounded-2xl p-2 pr-3 text-left ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-700',
-                                'bg-white ring-1 ring-gray-200 hover:bg-primary-50' => !$isSelected,
-                                'bg-primary-50 ring-2 ring-primary-700' => $isSelected,
-                            ])>
+                        <button type="button" x-on:click="choose({{ $album->id }})"
+                            x-bind:aria-pressed="shownId === {{ $album->id }} ? 'true' : 'false'"
+                            x-bind:class="shownId === {{ $album->id }} ? 'bg-primary-50 ring-2 ring-primary-700' : 'bg-white ring-1 ring-gray-200 hover:bg-primary-50'"
+                            class="focus-visible:outline-primary-700 flex h-full w-full items-center gap-3 rounded-2xl p-2 pr-3 text-left ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
                             <span class="relative size-16 shrink-0 overflow-hidden rounded-xl bg-gray-200">
                                 @if ($cover)
                                     <img src="{{ $cover }}" alt="" width="64" height="64"
                                         loading="lazy" decoding="async" class="size-full object-cover">
                                 @endif
-                                @if ($isSelected)
-                                    <span
+                                <span x-show="shownId === {{ $album->id }}" x-cloak
                                         class="bg-primary-900/50 absolute inset-0 flex items-center justify-center text-white">
                                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
@@ -127,7 +127,6 @@
                                             <path d="m5 12.5 4.5 4.5L19 7.5" />
                                         </svg>
                                     </span>
-                                @endif
                             </span>
                             <span class="min-w-0">
                                 <span
@@ -141,7 +140,7 @@
                         </button>
                     </li>
                 @endforeach
-                @can('create', Album::class)
+                @can('create', \App\Models\Album::class)
                     <li class="shrink-0 snap-start">
                         <a href="{{ route('albums.create') }}"
                             class="text-primary-800 hover:border-primary-700 hover:bg-primary-50 focus-visible:outline-primary-700 flex h-full min-h-20 items-center gap-2 whitespace-nowrap rounded-2xl border-2 border-dashed border-gray-300 px-5 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2">
@@ -156,6 +155,7 @@
             </ul>
         </section>
     @endif
+    @endisland
 
     @if ($selectedAlbum)
         @php
@@ -391,7 +391,7 @@
                 </div>
 
                 <div class="min-h-0 flex-1 space-y-6 overflow-y-auto px-5 py-5 lg:contents lg:space-y-0">
-                    <div class="relative" x-data="uploaderSelect(@js($this->uploaders->pluck('name')))" x-on:click.outside="close()"
+                    <div class="relative" x-data="uploaderSelect" x-on:click.outside="close()"
                         x-on:keydown.escape="if (open) { $event.stopPropagation(); close(true) }">
                         <p aria-hidden="true" class="mb-2 font-semibold text-gray-900 lg:hidden">Envoyées par</p>
                         <button type="button" x-ref="trigger" x-on:click="toggle()" x-bind:aria-expanded="open"
@@ -442,20 +442,27 @@
                                 class="focus:border-primary-700 focus:ring-primary-700 min-h-11 w-full rounded-full border-gray-300 px-4 py-2 text-base text-gray-900 placeholder:text-gray-500">
                             <fieldset class="mt-2">
                                 <legend class="sr-only">Envoyées par</legend>
+                                {{--
+                                    Liste rendue une seule fois. Les cases passent par Alpine et non par wire:model : dans un îlot,
+                                    wire:model ne rendrait que l'îlot, sans le nombre de photos ni le bouton des filtres.
+                                --}}
                                 <ul class="max-h-72 overflow-y-auto">
+                                    @island(name: 'uploader-options')
                                     @foreach ($this->uploaders as $uploader)
-                                        <li wire:key="filter-user-{{ $uploader->id }}"
+                                        <li wire:key="filter-user-{{ $uploader->id }}" data-uploader-name="{{ $uploader->name }}"
                                             x-show="matches(@js($uploader->name))">
                                             <label
                                                 class="hover:bg-primary-50 has-checked:bg-primary-50 has-focus-visible:outline-primary-700 has-focus-visible:outline-2 flex min-h-12 cursor-pointer items-center gap-3 rounded-xl px-2 py-1.5 text-gray-900 transition-colors">
-                                                <input type="checkbox" wire:model.live="usersFilter"
-                                                    value="{{ $uploader->id }}"
+                                                <input type="checkbox" value="{{ $uploader->id }}"
+                                                    x-bind:checked="isChosen({{ $uploader->id }})"
+                                                    x-on:change="choose({{ $uploader->id }}, $event.target.checked)"
                                                     class="text-primary-700 focus:ring-primary-700 size-5 shrink-0 rounded border-gray-400">
                                                 <x-user-avatar :user="$uploader" class="size-9" />
                                                 <span class="wrap-break-word min-w-0">{{ $uploader->name }}</span>
                                             </label>
                                         </li>
                                     @endforeach
+                                    @endisland
                                 </ul>
                                 <p x-show="matchCount === 0" x-cloak class="px-2 py-3 text-gray-700">
                                     Aucun matelot ne correspond.
@@ -464,7 +471,26 @@
                         </div>
                     </div>
 
-                    {{-- « Album » : un seul album, choisi en tapant une partie de son titre --}}
+                    {{--
+                        « Album » : un seul album, choisi en tapant une partie de son titre. Îlot rendu une seule fois :
+                        l'album choisi vient de $wire.albumsFilter.
+                    --}}
+                    @island(name: 'album-combobox')
+                    @php
+                        $comboboxAlbums = $this->albums
+                            ->map(
+                                fn(\App\Models\Album $album) => [
+                                    'id' => $album->id,
+                                    'title' => $album->title,
+                                    'details' =>
+                                        ucfirst($album->date->isoFormat('MMMM YYYY')) .
+                                        ' · ' .
+                                        $album->photos_count .
+                                        ($album->photos_count > 1 ? ' photos' : ' photo'),
+                                ],
+                            )
+                            ->values();
+                    @endphp
                     <div class="relative lg:w-72" x-data="albumCombobox(@js($comboboxAlbums))" x-on:click.outside="if (open) close()">
                         <label for="gallery-album-input" class="mb-2 block font-semibold text-gray-900 lg:sr-only">
                             Album
@@ -523,6 +549,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endisland
                 </div>
 
                 <div class="border-t border-gray-200 px-5 py-3 lg:hidden">
@@ -542,8 +569,11 @@
                 {{ number_format($photoCount, 0, ',', "\u{202F}") }} {{ $photoCount > 1 ? 'photos' : 'photo' }}
             </p>
 
+            {{-- Sa liste de tous les albums ne change pas avec les filtres : îlot rendu une seule fois --}}
             <div class="sm:ml-auto">
-                <x-add-photos-button />
+                @island(name: 'add-photos')
+                    <x-add-photos-button />
+                @endisland
             </div>
         </div>
     </div>
@@ -564,9 +594,12 @@
 
     {{--
         Mosaïque : une seule grille pour toutes les photos et les titres des groupes, qui prennent toute la largeur.
-        Chaque page chargée s'ajoute à la fin de l'îlot, donc de la grille.
+        Chaque page chargée s'ajoute à la fin de l'îlot, donc de la grille. Pendant qu'un filtre ou l'ordre change,
+        les photos affichées pâlissent : on voit tout de suite que la galerie se met à jour.
     --}}
-    <div class="@container mx-4 mt-6 sm:mx-6 lg:mx-8">
+    <div class="@container mx-4 mt-6 transition-opacity motion-reduce:transition-none sm:mx-6 lg:mx-8"
+        wire:loading.delay.shortest.class="opacity-40" wire:loading.attr="aria-busy"
+        wire:target="selectAlbum, toggleSort, resetFilters, usersFilter, albumsFilter">
         <div class="photo-masonry" data-gallery-grid>
             @island(name: 'photos', always: true)
                 @foreach ($this->photoGroups as $group)
@@ -598,4 +631,14 @@
     </div>
 
     @include('livewire.partials.gallery-lightbox')
+
+    {{-- Matelots que la visionneuse montre sous chaque photo : îlot rendu une seule fois --}}
+    @island(name: 'lightbox-uploaders')
+        @foreach ($this->uploaders as $uploader)
+            <template data-gallery-uploader="{{ $uploader->id }}" wire:key="lightbox-uploader-{{ $uploader->id }}">
+                <x-user-avatar :user="$uploader" class="size-9" />
+                <span class="font-semibold">{{ $uploader->name }}</span>
+            </template>
+        @endforeach
+    @endisland
 </div>

@@ -41,13 +41,11 @@ class PhotoFactory extends Factory
         $disk->makeDirectory('thumbs');
         $imageResource = $this->generateImage();
         imagejpeg($imageResource, $disk->path($fileName));
-        // Enregistrement de la miniature
+        // Enregistrement de la vignette
         $width = imagesx($imageResource);
         $height = imagesy($imageResource);
-        // Calcul du ratio de redimensionnement: on conserve le format de l'image en limitant la largeur et la hauteur à 450px
-        $ratio = min(450 / $width, 450 / $height);
-        $thumbResource = imagescale($imageResource, intval($ratio * $width), intval($ratio * $height));
-        imagejpeg($thumbResource, $disk->path('thumbs/thumb_'.$fileName));
+        $thumbName = 'thumbs/thumb_'.pathinfo($fileName, PATHINFO_FILENAME).'.'.Photo::thumbnailExtension();
+        [$thumbWidth, $thumbHeight] = Photo::writeThumbnail($imageResource, $disk->path($thumbName));
 
         // Probabilité d'avoir des coordonnées GPS
         $hasCoordinates = fake()->boolean(50);
@@ -57,11 +55,11 @@ class PhotoFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
             'title' => fake()->sentence,
             'path' => route('photos.file', $fileName, false),
-            'thumb_path' => route('photos.file', 'thumbs/thumb_'.$fileName, false),
+            'thumb_path' => route('photos.file', $thumbName, false),
             'width' => $width,
             'height' => $height,
-            'thumb_width' => imagesx($thumbResource),
-            'thumb_height' => imagesy($thumbResource),
+            'thumb_width' => $thumbWidth,
+            'thumb_height' => $thumbHeight,
             'legend' => fake()->boolean(50) ? fake()->paragraph : null,
             'latitude' => $hasCoordinates ? fake()->latitude : null,
             'longitude' => $hasCoordinates ? fake()->longitude : null,

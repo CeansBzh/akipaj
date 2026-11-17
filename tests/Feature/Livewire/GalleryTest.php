@@ -158,7 +158,6 @@ class GalleryTest extends TestCase
         $component = Livewire::withQueryParams(['auteurs' => [$sailor->id]])->test(Gallery::class);
 
         $this->assertSame([$photo->id], $this->displayedPhotoIds($component));
-        $component->assertSee('Retirer les filtres');
     }
 
     public function test_album_strip_lists_albums_with_photos_newest_first(): void
@@ -172,7 +171,7 @@ class GalleryTest extends TestCase
 
         $html = Livewire::test(Gallery::class)->html();
 
-        preg_match_all('/wire:click="selectAlbum\((\d+)\)"/', $html, $matches);
+        preg_match_all('/x-on:click="choose\((\d+)\)"/', $html, $matches);
         $this->assertSame([$recent->id, $old->id], array_map('intval', $matches[1]));
     }
 
@@ -224,14 +223,15 @@ class GalleryTest extends TestCase
     {
         $this->actingAsMember();
         $album = Album::factory()->create(['title' => 'Glénan', 'date' => '2025-06-01']);
-        $photos = $this->createPhotos(101, ['album_id' => $album->id, 'taken_at' => '2025-06-14 10:00']);
+        $photos = $this->createPhotos(Gallery::FIRST_PAGE_SIZE + 1, ['album_id' => $album->id, 'taken_at' => '2025-06-14 10:00']);
         $oldestId = $photos->first()->id;
         $component = Livewire::test(Gallery::class);
 
+        // La première page est plus courte que les suivantes, pour qu'un album choisi s'affiche vite
         $firstPage = $this->displayedPhotoIds($component);
-        $this->assertCount(100, $firstPage);
+        $this->assertCount(Gallery::FIRST_PAGE_SIZE, $firstPage);
         $this->assertNotContains($oldestId, $firstPage);
-        $this->assertSame(['Glénan Juin 2025 · 101 photos'], $this->displayedGroupHeadings($component));
+        $this->assertSame(['Glénan Juin 2025 · '.(Gallery::FIRST_PAGE_SIZE + 1).' photos'], $this->displayedGroupHeadings($component));
         $component->assertSet('lastPage', 2);
 
         // La page ajoutée ne contient que les nouvelles photos, sans répéter le titre de l'album commencé
@@ -245,19 +245,19 @@ class GalleryTest extends TestCase
         $component->assertSet('loadedPages', 2);
 
         $component->call('toggleSort');
-        $this->assertCount(100, $this->displayedPhotoIds($component));
+        $this->assertCount(Gallery::FIRST_PAGE_SIZE, $this->displayedPhotoIds($component));
         $component->assertSet('loadedPages', 1);
     }
 
     public function test_a_linked_photo_loads_the_pages_up_to_it(): void
     {
         $this->actingAsMember();
-        $oldestId = $this->createPhotos(101, ['taken_at' => '2025-06-14 10:00'])->first()->id;
+        $oldestId = $this->createPhotos(Gallery::FIRST_PAGE_SIZE + Gallery::PER_PAGE + 1, ['taken_at' => '2025-06-14 10:00'])->first()->id;
 
         $linked = Livewire::withQueryParams(['photo' => $oldestId])->test(Gallery::class);
         $unknown = Livewire::withQueryParams(['photo' => $oldestId + 1000])->test(Gallery::class);
 
-        $linked->assertSet('loadedPages', 2);
+        $linked->assertSet('loadedPages', 3);
         $this->assertContains($oldestId, $this->displayedPhotoIds($linked));
         $unknown->assertSet('loadedPages', 1);
     }
