@@ -55,14 +55,9 @@
                         </div>
 
                         @foreach ($tripsByYear as $year => $yearTrips)
-                            @if (!$todayIsPlaced && $today->year > $year)
-                                @include('trip.partials.today-divider', ['class' => 'mt-14 lg:mt-20'])
-                                @php($todayIsPlaced = true)
-                            @endif
-
                             <section id="annee-{{ $year }}" data-timeline-anchor="year-{{ $year }}"
                                 aria-labelledby="annee-{{ $year }}-titre"
-                                class="trip-year mt-10 scroll-mt-4 lg:mt-20 lg:first-of-type:mt-12">
+                                class="trip-year mt-10 first-of-type:mt-2 scroll-mt-4 lg:mt-20 lg:first-of-type:mt-12">
                                 <h2 id="annee-{{ $year }}-titre"
                                     class="trip-year-heading top-below-nav-0 sticky z-20 -mx-4 flex items-baseline gap-3 pb-10 px-4 pt-3 sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:p-0">
                                     <span
@@ -74,19 +69,11 @@
 
                                 <div class="flex flex-col gap-10 lg:mt-10 lg:gap-16">
                                     @foreach ($yearTrips as $trip)
-                                        @if (!$todayIsPlaced && $trip->start_date->lte($today))
-                                            @include('trip.partials.today-divider')
-                                            @php($todayIsPlaced = true)
-                                        @endif
                                         <x-trip-entry :trip="$trip" />
                                     @endforeach
                                 </div>
                             </section>
                         @endforeach
-
-                        @unless ($todayIsPlaced)
-                            @include('trip.partials.today-divider', ['class' => 'mt-14 lg:mt-20'])
-                        @endunless
                     </div>
                 </div>
             @endif

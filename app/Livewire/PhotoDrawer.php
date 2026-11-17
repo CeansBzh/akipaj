@@ -52,12 +52,10 @@ class PhotoDrawer extends Component
     public ?int $commentIdToDelete = null;
 
     /**
-     * Dernier lien de partage créé pour la photo montrée, et sa date d'expiration.
-     *
-     * @var array{url: string, expiresAt: string}|null
+     * Lien de partage créé pour la photo montrée.
      */
     #[Locked]
-    public ?array $shareLink = null;
+    public ?string $shareLinkUrl = null;
 
     /**
      * Vrai si le matelot reçoit par e-mail les nouveaux commentaires de la photo.
@@ -73,7 +71,7 @@ class PhotoDrawer extends Component
         $this->authorize('view', $photo);
 
         $this->photoId = $photo->id;
-        $this->reset('isEditingLegend', 'legend', 'comment', 'commentIdToDelete', 'shareLink');
+        $this->reset('isEditingLegend', 'legend', 'comment', 'commentIdToDelete', 'shareLinkUrl');
         $this->resetValidation();
         $this->isSubscribed = auth()->user()->isSubscribedTo($photo);
         unset($this->photo, $this->comments);
@@ -181,19 +179,19 @@ class PhotoDrawer extends Component
     }
 
     /**
-     * Crée un nouveau lien qui montre la photo à qui n'a pas de compte, jusqu'à son expiration.
+     * Crée le lien qui montre la photo à qui n'a pas de compte, jusqu'à son expiration.
+     * Un seul lien par photo montrée : un nouvel appel garde le premier.
      */
     public function createShareLink(): void
     {
+        if ($this->shareLinkUrl !== null) {
+            return;
+        }
+
         $photo = $this->shownPhoto();
         $this->authorize('share', $photo);
 
-        $share = Share::createFor($photo, auth()->user());
-
-        $this->shareLink = [
-            'url' => route('shares.show', $share),
-            'expiresAt' => $share->expires_at->isoFormat('dddd D MMMM YYYY [à] H[h]mm'),
-        ];
+        $this->shareLinkUrl = route('shares.show', Share::createFor($photo, auth()->user()));
     }
 
     public function updatedIsSubscribed(bool $isSubscribed): void

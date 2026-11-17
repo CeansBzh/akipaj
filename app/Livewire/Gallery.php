@@ -72,9 +72,9 @@ class Gallery extends Component
     public int $lastPage = 1;
 
     /**
-     * Dernier lien de partage créé pour un album, avec cet album et la date d'expiration du lien.
+     * Lien de partage créé pour un album, avec cet album.
      *
-     * @var array{albumId: int, url: string, expiresAt: string}|null
+     * @var array{albumId: int, url: string}|null
      */
     #[Locked]
     public ?array $albumShareLink = null;
@@ -163,19 +163,21 @@ class Gallery extends Component
     }
 
     /**
-     * Crée un nouveau lien qui montre les photos de l'album choisi à qui n'a pas de compte, jusqu'à son expiration.
+     * Crée le lien qui montre les photos de l'album choisi à qui n'a pas de compte, jusqu'à son expiration.
+     * Un seul lien par album : un nouvel appel garde le premier.
      */
     public function shareAlbum(): void
     {
         $album = $this->selectedAlbum ?? abort(404);
         $this->authorize('share', $album);
 
-        $share = Share::createFor($album, auth()->user());
+        if (($this->albumShareLink['albumId'] ?? null) === $album->id) {
+            return;
+        }
 
         $this->albumShareLink = [
             'albumId' => $album->id,
-            'url' => route('shares.show', $share),
-            'expiresAt' => $share->expires_at->isoFormat('dddd D MMMM YYYY [à] H[h]mm'),
+            'url' => route('shares.show', Share::createFor($album, auth()->user())),
         ];
     }
 
@@ -255,7 +257,8 @@ class Gallery extends Component
 
     /**
      * Photos rendues par l'îlot, en groupes qui portent leur titre : un jour, un album, ou un seul groupe sans titre.
-     * Un groupe commencé sur la page précédente continue sans répéter son titre.
+     * Un groupe commencé sur la page précédente continue sans répéter son titre. Un album choisi seul est
+     * déjà présenté au-dessus de ses photos : son groupe n'a pas de titre.
      *
      * Propriété calculée, et non méthode publique : elle ne peut pas être appelée depuis le navigateur,
      * qui recevrait alors les photos et leurs matelots tels quels.
@@ -284,16 +287,18 @@ class Gallery extends Component
         $previousKey = $offset > 0 && $photos->isNotEmpty() ? $this->groupKey($photos->shift()) : null;
 
         $groupCounts = $this->groupCounts();
+        $hasGroupTitles = count($this->albumsFilter) !== 1;
         $groups = [];
 
         foreach ($photos as $photo) {
             $key = $this->groupKey($photo);
+            $isTitled = $hasGroupTitles && $key !== $previousKey;
 
             if ($groups === [] || $groups[array_key_last($groups)]['key'] !== $key) {
                 $groups[] = [
                     'key' => $key,
-                    'title' => $key === $previousKey ? null : $this->groupTitle($photo),
-                    'details' => $key === $previousKey ? null : $this->groupDetails($photo, $groupCounts[$key] ?? 0),
+                    'title' => $isTitled ? $this->groupTitle($photo) : null,
+                    'details' => $isTitled ? $this->groupDetails($photo, $groupCounts[$key] ?? 0) : null,
                     'photos' => [],
                 ];
             }

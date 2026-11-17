@@ -3,8 +3,11 @@ import './bootstrap';
 // Livewire bundles Alpine (with the collapse plugin) and exposes window.Livewire and window.Alpine
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import mainNavigation from './navigation';
+import { albumCombobox, uploaderSelect } from './gallery-filters';
 
 Alpine.data('mainNavigation', mainNavigation);
+Alpine.data('albumCombobox', albumCombobox);
+Alpine.data('uploaderSelect', uploaderSelect);
 
 Livewire.start();
 

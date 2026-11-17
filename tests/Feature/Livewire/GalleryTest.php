@@ -100,6 +100,19 @@ class GalleryTest extends TestCase
         );
     }
 
+    public function test_an_album_chosen_alone_has_no_group_title_above_its_photos(): void
+    {
+        $this->actingAsMember();
+        $album = Album::factory()->create(['title' => 'Glénan']);
+        Photo::factory()->for($album)->create();
+        Photo::factory()->for(Album::factory())->create();
+
+        $component = Livewire::test(Gallery::class)->set('albumsFilter', [$album->id]);
+
+        $this->assertSame([], $this->displayedGroupHeadings($component));
+        $component->assertSeeHtml('id="gallery-album-title"');
+    }
+
     public function test_unknown_order_in_the_url_falls_back_to_the_default(): void
     {
         $this->actingAsMember();
@@ -145,7 +158,7 @@ class GalleryTest extends TestCase
         $component = Livewire::withQueryParams(['auteurs' => [$sailor->id]])->test(Gallery::class);
 
         $this->assertSame([$photo->id], $this->displayedPhotoIds($component));
-        $component->assertSee('Voir toutes les photos');
+        $component->assertSee('Retirer les filtres');
     }
 
     public function test_album_strip_lists_albums_with_photos_newest_first(): void

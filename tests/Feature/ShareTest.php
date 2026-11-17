@@ -17,7 +17,7 @@ class ShareTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_members_create_a_new_seven_day_link_for_a_photo_on_each_click(): void
+    public function test_members_create_a_single_seven_day_link_for_a_photo(): void
     {
         $member = $this->actingAsMember();
         $photo = Photo::factory()->create();
@@ -28,15 +28,11 @@ class ShareTest extends TestCase
             ->call('createShareLink')
             ->call('createShareLink');
 
-        $shares = $photo->shares()->get();
-        $this->assertCount(2, $shares);
-        $this->assertNotSame($shares[0]->token, $shares[1]->token);
-        foreach ($shares as $share) {
-            $this->assertTrue($share->user->is($member));
-            $this->assertSame(7, $share->expires_in_days);
-            $this->assertTrue($share->expires_at->eq(now()->addDays(7)));
-        }
-        $component->assertSee(route('shares.show', $shares[1]));
+        $share = $photo->shares()->sole();
+        $this->assertTrue($share->user->is($member));
+        $this->assertSame(7, $share->expires_in_days);
+        $this->assertTrue($share->expires_at->eq(now()->addDays(7)));
+        $component->assertSee(route('shares.show', $share))->assertDontSee('Créer un lien de partage');
     }
 
     public function test_members_create_a_link_for_the_selected_album(): void
@@ -46,6 +42,7 @@ class ShareTest extends TestCase
 
         Livewire::withQueryParams(['albums' => [$album->id]])
             ->test(Gallery::class)
+            ->call('shareAlbum')
             ->call('shareAlbum')
             ->assertSee(route('shares.show', $album->shares()->sole()));
     }
