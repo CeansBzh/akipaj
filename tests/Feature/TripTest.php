@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\BoatTypeEnum;
 use App\Models\Album;
 use App\Models\Boat;
 use App\Models\Photo;
@@ -94,7 +95,7 @@ class TripTest extends TestCase
             'users' => [$sailor->id],
             'albums' => [$album->id],
             'boats' => [
-                ['name' => 'Pen Duick', 'type' => 'Ketch', 'year' => 1898, 'crew' => 4],
+                ['name' => 'Pen Duick', 'model' => 'Ketch aurique', 'type' => 'ketch', 'year' => 1898, 'crew' => 4],
                 ['name' => 'Belle Poule'],
             ],
             'image' => UploadedFile::fake()->image('trip.jpg'),
@@ -118,8 +119,8 @@ class TripTest extends TestCase
             'end_date' => '2023-07-01',
             'location' => str_repeat('a', 256),
             'users' => [999],
-            'boats' => [['type' => 'Ketch']],
-        ])->assertSessionHasErrors(['title', 'description', 'end_date', 'location', 'users.0', 'boats.0.name']);
+            'boats' => [['model' => 'Sun Odyssey 36i', 'type' => 'Sun Odyssey 36i']],
+        ])->assertSessionHasErrors(['title', 'description', 'end_date', 'location', 'users.0', 'boats.0.name', 'boats.0.type']);
     }
 
     public function test_admin_can_update_a_trip_and_its_boats(): void
@@ -134,7 +135,7 @@ class TripTest extends TestCase
         $this->put(route('trips.update', $trip), array_merge($this->validData(), [
             'users' => [$sailor->id],
             'boats' => [
-                ['id' => (string) $kept->id, 'name' => 'Nouveau nom', 'type' => null, 'year' => null, 'builder' => null, 'renter' => null, 'city' => null, 'crew' => 3],
+                ['id' => (string) $kept->id, 'name' => 'Nouveau nom', 'model' => 'Lagoon 42', 'type' => 'catamaran', 'year' => null, 'builder' => null, 'renter' => null, 'city' => null, 'crew' => 3],
                 ['id' => null, 'name' => 'Nouveau bateau', 'type' => null, 'year' => null, 'builder' => null, 'renter' => null, 'city' => null, 'crew' => null],
             ],
         ]))->assertSessionHasNoErrors()->assertRedirect(route('trips.show', $trip));
@@ -144,6 +145,8 @@ class TripTest extends TestCase
         $this->assertSame('Port de Brest', $trip->location);
         $this->assertSame([$sailor->id], $trip->users()->pluck('users.id')->all());
         $this->assertSame('Nouveau nom', $kept->refresh()->name);
+        $this->assertSame('Lagoon 42', $kept->model);
+        $this->assertSame(BoatTypeEnum::CATAMARAN, $kept->type);
         $this->assertModelMissing($removed);
         $this->assertEqualsCanonicalizing(['Nouveau nom', 'Nouveau bateau'], $trip->boats()->pluck('name')->all());
     }
@@ -242,7 +245,8 @@ class TripTest extends TestCase
         $trip = Trip::factory()->create();
         Boat::factory()->for($trip)->create([
             'name' => 'Pen Duick',
-            'type' => 'Ketch',
+            'model' => 'Lagoon 42',
+            'type' => BoatTypeEnum::CATAMARAN,
             'year' => 1898,
             'builder' => null,
             'renter' => 'Loc Mer',
@@ -252,7 +256,8 @@ class TripTest extends TestCase
 
         $this->get(route('trips.show', $trip))
             ->assertOk()
-            ->assertSeeInOrder(['Le bateau', 'Pen Duick', 'Ketch', 'Année', '1898', 'Loueur', 'Loc Mer', 'Port', 'Lorient', 'Équipage', '4 personnes'])
+            ->assertSee('viewBox="0 0 400 585"', false)
+            ->assertSeeInOrder(['Le bateau', 'Pen Duick', 'Lagoon 42', 'Type', 'Catamaran', 'Année', '1898', 'Loueur', 'Loc Mer', 'Port', 'Lorient', 'Équipage', '4 personnes'])
             ->assertDontSee('Constructeur');
     }
 

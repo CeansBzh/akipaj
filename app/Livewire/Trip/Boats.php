@@ -10,7 +10,7 @@ class Boats extends Component
 
     public function addBoat()
     {
-        $this->boats[] = ['name' => '', 'type' => '', 'year' => '', 'builder' => '', 'renter' => '', 'city' => '', 'crew' => ''];
+        $this->boats[] = ['name' => '', 'model' => '', 'type' => '', 'year' => '', 'builder' => '', 'renter' => '', 'city' => '', 'crew' => ''];
     }
 
     public function deleteBoat($index)

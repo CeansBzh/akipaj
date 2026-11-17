@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\BoatTypeEnum;
 use App\Models\Boat;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +20,8 @@ class BoatFactory extends Factory
     {
         return [
             'name' => fake()->sentence,
-            'type' => fake()->sentence,
+            'model' => fake()->words(2, true),
+            'type' => fake()->randomElement(BoatTypeEnum::cases()),
             'year' => fake()->year,
             'builder' => fake()->word,
             'renter' => fake()->word,

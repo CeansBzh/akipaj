@@ -146,7 +146,7 @@ class TripController extends Controller
             foreach ($request->boats as $boat) {
                 $savedBoatIds[] = $trip->boats()->updateOrCreate(
                     ['id' => isset($boat['id']) ? (int) $boat['id'] : null],
-                    ['name' => $boat['name'], 'type' => $boat['type'], 'year' => $boat['year'], 'builder' => $boat['builder'], 'renter' => $boat['renter'], 'city' => $boat['city'], 'crew' => $boat['crew']]
+                    ['name' => $boat['name'], 'model' => $boat['model'] ?? null, 'type' => $boat['type'] ?? null, 'year' => $boat['year'], 'builder' => $boat['builder'], 'renter' => $boat['renter'], 'city' => $boat['city'], 'crew' => $boat['crew']]
                 )->id;
             }
             // Suppression des bateaux supprimés (ceux qui n'ont pas été envoyés)
