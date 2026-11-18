@@ -6,7 +6,7 @@
         "dev": "vite",
         "build": "vite build",
         "prettier": "prettier --write \"resources/**/*.{blade.php,js,css}\" \"*.{js,json}\"",
-        "deploy": "npm run build && git stash && git checkout production && git merge master && git push && git checkout master && git stash pop"
+        "deploy": "git fetch origin && git push origin origin/master:production"
     },
     "devDependencies": {
         "@shufo/prettier-plugin-blade": "^1.5.7",
