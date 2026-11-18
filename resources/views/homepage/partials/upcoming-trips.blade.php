@@ -1,7 +1,4 @@
-@php
-    $trips = App\Models\Trip::upcoming()->orderBy('start_date')->get();
-@endphp
-
+{{-- $trips : les sorties à venir, de la plus proche à la plus lointaine, chargées par les onglets --}}
 <section class="mx-auto flex max-w-4xl flex-col gap-8">
     @if ($trips->isEmpty())
         <p class="p-12 text-center text-gray-600">Aucune sortie à venir.</p>

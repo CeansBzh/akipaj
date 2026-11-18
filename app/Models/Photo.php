@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Commentable;
+use GdImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class Photo extends Model
 {
@@ -34,6 +35,41 @@ class Photo extends Model
     ];
 
     protected $cascadeDeletes = [];
+
+    /**
+     * Plus grand côté des vignettes de la galerie, en pixels.
+     */
+    public const THUMB_SIZE = 450;
+
+    /**
+     * Extension des nouvelles vignettes : WebP, plus léger, quand le PHP du serveur sait l'écrire, sinon JPEG.
+     */
+    public static function thumbnailExtension(): string
+    {
+        return function_exists('imagewebp') && (gd_info()['WebP Support'] ?? false) ? 'webp' : 'jpg';
+    }
+
+    /**
+     * Écrit dans $path une copie réduite de l'image, dont ni la largeur ni la hauteur ne dépassent $maxSize
+     * (une image plus petite garde sa taille), en WebP ou en JPEG selon l'extension de $path.
+     *
+     * @return array{int, int} Largeur et hauteur de la vignette
+     */
+    public static function writeThumbnail(GdImage $image, string $path, int $maxSize = self::THUMB_SIZE): array
+    {
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $ratio = min(1, $maxSize / $width, $maxSize / $height);
+        $thumbnail = imagescale($image, max(1, intval($ratio * $width)), max(1, intval($ratio * $height)));
+
+        if (str_ends_with($path, '.webp')) {
+            imagewebp($thumbnail, $path, 75);
+        } else {
+            imagejpeg($thumbnail, $path, 80);
+        }
+
+        return [imagesx($thumbnail), imagesy($thumbnail)];
+    }
 
     /**
      * Get the album that owns the photo.
@@ -140,19 +176,31 @@ class Photo extends Model
 
     /**
      * Envoie un fichier du disque des photos, qui n'est pas public, ou une erreur 404 s'il est introuvable.
+     * Quand le serveur web le permet (mod_xsendfile, réglage PHOTOS_X_SENDFILE), PHP ne lit pas le fichier :
+     * il vérifie seulement l'accès et laisse le serveur web l'envoyer.
      *
      * @param  array<string, string>  $headers
      */
-    public static function fileResponse(string $path, array $headers = []): StreamedResponse
+    public static function fileResponse(string $path, array $headers = []): Response
     {
         $disk = Storage::disk('photos');
 
         abort_unless($disk->fileExists($path), 404);
 
         // Les noms des fichiers sont uniques : le navigateur peut les garder, mais pas les caches partagés
-        return $disk->response($path, headers: [
+        $headers = [
             'Cache-Control' => 'private, max-age=31536000, immutable',
             ...$headers,
-        ]);
+        ];
+
+        if (config('filesystems.disks.photos.x_sendfile')) {
+            return response('', 200, [
+                'Content-Type' => $disk->mimeType($path),
+                'X-Sendfile' => $disk->path($path),
+                ...$headers,
+            ]);
+        }
+
+        return $disk->response($path, headers: $headers);
     }
 }

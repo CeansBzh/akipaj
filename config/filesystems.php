@@ -47,6 +47,8 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/photos'),
             'throw' => false,
+            // Laisse Apache envoyer les fichiers (mod_xsendfile) une fois l'accès vérifié par Laravel
+            'x_sendfile' => (bool) env('PHOTOS_X_SENDFILE', false),
         ],
 
         's3' => [

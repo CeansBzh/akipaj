@@ -88,9 +88,3 @@
     </p>
 </template>
 
-@foreach ($this->uploaders as $uploader)
-    <template data-gallery-uploader="{{ $uploader->id }}" wire:key="lightbox-uploader-{{ $uploader->id }}">
-        <x-user-avatar :user="$uploader" class="size-9" />
-        <span class="font-semibold">{{ $uploader->name }}</span>
-    </template>
-@endforeach

@@ -3,19 +3,16 @@
 {{--
     Bateau d'une sortie : son plan au trait sur un papier quadrillé, puis sa fiche.
     Le plan suit le type du bateau (catamaran, ketch, sinon sloop) ; un bateau sur deux est dessiné dans l'autre sens.
+    Sous le nom, le modèle du bateau, sinon son type.
     Le plan est décoratif : le nom et les caractéristiques sont écrits dans la fiche.
 --}}
 
 @php
-    $boatType = Str::lower((string) $boat->type);
-    $rig = match (true) {
-        Str::contains($boatType, 'cata') => 'catamaran',
-        Str::contains($boatType, ['ketch', 'yawl', 'goélette', 'goelette']) => 'ketch',
-        default => 'sloop',
-    };
+    $rig = $boat->type?->drawing() ?? 'sloop';
 
     $facts = array_filter(
         [
+            'Type' => $boat->model ? $boat->type?->label() : null,
             'Année' => $boat->year,
             'Constructeur' => $boat->builder,
             'Loueur' => $boat->renter,
@@ -35,8 +32,8 @@
 
         <div>
             <h3 class="wrap-break-word text-xl font-bold text-gray-900">{{ $boat->name }}</h3>
-            @if ($boat->type)
-                <p class="mt-1 wrap-break-word text-gray-600">{{ $boat->type }}</p>
+            @if ($boat->model || $boat->type)
+                <p class="mt-1 wrap-break-word text-gray-600">{{ $boat->model ?: $boat->type->label() }}</p>
             @endif
 
             @if ($facts)

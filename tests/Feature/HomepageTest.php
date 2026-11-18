@@ -92,7 +92,30 @@ class HomepageTest extends TestCase
 
         $this->get('/')
             ->assertOk()
-            ->assertSeeInOrder(['Aucune sortie à venir.', 'Régate terminée']);
+            ->assertSee('Régate terminée')
+            ->assertSee('Aucune sortie à venir.');
+    }
+
+    public function test_the_last_trips_come_first_when_no_trip_is_upcoming(): void
+    {
+        $this->actingAsMember();
+        Trip::factory()->create(['start_date' => now()->subDays(3), 'end_date' => now()->subDay()]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSeeInOrder(['Dernières sorties', 'Programme'])
+            ->assertSee('openTab: 2', false);
+    }
+
+    public function test_the_programme_comes_first_when_a_trip_is_upcoming(): void
+    {
+        $this->actingAsMember();
+        Trip::factory()->create(['start_date' => now()->addWeek(), 'end_date' => now()->addWeek()]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSeeInOrder(['Programme', 'Dernières sorties'])
+            ->assertSee('openTab: 1', false);
     }
 
     public function test_trips_join_the_last_trips_only_after_their_last_day(): void

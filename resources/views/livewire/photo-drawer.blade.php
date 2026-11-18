@@ -315,24 +315,22 @@
                                     {{ App\Models\Share::DEFAULT_EXPIRY_DAYS }}
                                     jours.
                                 </p>
-                                @can('share', $photo)
-                                    <button type="button" wire:click="createShareLink" wire:loading.attr="disabled"
-                                        wire:target="createShareLink"
-                                        class="{{ $shareLink ? $secondaryButton : $primaryButton }} mt-4">
-                                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
-                                            class="size-5 shrink-0">
-                                            <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
-                                            <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
-                                        </svg>
-                                        {{ $shareLink ? 'Créer un autre lien' : 'Créer un lien de partage' }}
-                                    </button>
-                                @endcan
-                                @if ($shareLink)
-                                    <x-share-link :url="$shareLink['url']" dark class="mt-5"
-                                        wire:key="photo-drawer-share-{{ $shareLink['url'] }}">
-                                        <p class="mt-2 text-gray-300">Valable jusqu'au {{ $shareLink['expiresAt'] }}.</p>
-                                    </x-share-link>
+                                @if ($shareLinkUrl)
+                                    <x-share-link :url="$shareLinkUrl" dark class="mt-5"
+                                        wire:key="photo-drawer-share-{{ $shareLinkUrl }}" />
+                                @else
+                                    @can('share', $photo)
+                                        <button type="button" wire:click="createShareLink" wire:loading.attr="disabled"
+                                            wire:target="createShareLink" class="{{ $primaryButton }} mt-4">
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+                                                class="size-5 shrink-0">
+                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                            </svg>
+                                            Créer un lien de partage
+                                        </button>
+                                    @endcan
                                 @endif
                             </section>
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Trip;
 
+use App\Enums\BoatTypeEnum;
 use App\Rules\RichTextLength;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTripRequest extends FormRequest
 {
@@ -43,7 +45,8 @@ class UpdateTripRequest extends FormRequest
             'boats' => 'nullable|array',
             'boats.*.id' => 'nullable|integer|distinct|exists:boats,id',
             'boats.*.name' => 'required_with:boats|max:255',
-            'boats.*.type' => 'nullable|max:255',
+            'boats.*.model' => 'nullable|max:255',
+            'boats.*.type' => ['nullable', Rule::enum(BoatTypeEnum::class)],
             'boats.*.year' => 'nullable|integer',
             'boats.*.builder' => 'nullable|max:255',
             'boats.*.renter' => 'nullable|max:255',

@@ -1,6 +1,6 @@
 {{--
     Collée en haut de l'écran, la barre se range quand on descend dans la page et revient dès qu'on remonte
-    (resources/js/navigation.js). Sans transform pour la ranger : la fenêtre de recherche, fixe, est dans la barre.
+    (resources/js/navigation.js).
 --}}
 <nav x-data="mainNavigation" x-bind:data-hidden="isHidden" x-bind:data-scrolled="isScrolled"
     class="data-hidden:-top-(--nav-height) data-scrolled:not-data-hidden:shadow-sm sticky top-0 z-40 bg-white transition-[top,box-shadow] duration-300 ease-out motion-reduce:transition-none">
@@ -18,49 +18,50 @@
             <span class="sr-only">Retour à l'accueil</span>
         </a>
         <div class="flex items-center gap-5 md:order-2">
-            {{-- Search bar --}}
-            <livewire:search-input />
-            {{-- User dropdown --}}
-            <x-dropdown align="right" width="48">
-                <x-slot name="trigger">
-                    <button type="button" id="user-menu-button"
-                        class="focus:ring-primary-200 flex rounded-full bg-gray-800 text-sm focus:ring-4">
-                        <span class="sr-only">Ouvrir le menu utilisateur</span>
-                        <x-user-avatar :user="Auth::user()" class="size-8" />
-                    </button>
-                </x-slot>
-                <x-slot name="content">
-                    <div class="px-4 py-3">
-                        <span class="block text-sm text-gray-900">{{ Auth::user()->name }}</span>
-                        <span class="block truncate text-sm font-medium text-gray-500">{{ Auth::user()->email }}</span>
-                    </div>
-                    <ul class="py-1" aria-labelledby="user-menu-button">
-                        <li>
-                            <x-dropdown-link :href="route('profile.show', Auth::user()->name)" :aria-current="request()->routeIs('profile.show') ? 'page' : ''">
-                                {{ __('Mon profil') }}
-                            </x-dropdown-link>
-                        </li>
-                        @if (Auth::user()->isAdmin())
+            {{-- User dropdown (sur téléphone, le compte est dans le menu principal) --}}
+            <div class="hidden md:block">
+                <x-dropdown align="right" width="48">
+                    <x-slot name="trigger">
+                        <button type="button" id="user-menu-button"
+                            class="focus:ring-primary-200 flex rounded-full bg-gray-800 text-sm focus:ring-4">
+                            <span class="sr-only">Ouvrir le menu utilisateur</span>
+                            <x-user-avatar :user="Auth::user()" class="size-8" />
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        <div class="px-4 py-3">
+                            <span class="block text-sm text-gray-900">{{ Auth::user()->name }}</span>
+                            <span
+                                class="block truncate text-sm font-medium text-gray-500">{{ Auth::user()->email }}</span>
+                        </div>
+                        <ul class="py-1" aria-labelledby="user-menu-button">
                             <li>
-                                <x-dropdown-link :href="route('admin.index')">
-                                    {{ __('Panneau admin') }}
+                                <x-dropdown-link :href="route('profile.show', Auth::user()->name)" :aria-current="request()->routeIs('profile.show') ? 'page' : ''">
+                                    {{ __('Mon profil') }}
                                 </x-dropdown-link>
                             </li>
-                        @endif
-                        {{-- Authentication --}}
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                            @if (Auth::user()->isAdmin())
+                                <li>
+                                    <x-dropdown-link :href="route('admin.index')">
+                                        {{ __('Panneau admin') }}
+                                    </x-dropdown-link>
+                                </li>
+                            @endif
+                            {{-- Authentication --}}
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
                                             this.closest('form').submit();">
-                                    {{ __('Déconnexion') }}
-                                </x-dropdown-link>
-                            </form>
-                        </li>
-                    </ul>
-                </x-slot>
-            </x-dropdown>
+                                        {{ __('Déconnexion') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </li>
+                        </ul>
+                    </x-slot>
+                </x-dropdown>
+            </div>
             {{-- Main menu burger button --}}
             <button type="button" @click="open = !open"
                 class="focus:outline-hidden inline-flex items-center rounded-lg text-sm text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 md:hidden"
@@ -99,6 +100,37 @@
                     <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
                         Matelots
                     </x-nav-link>
+                </li>
+                {{-- Compte, sur téléphone seulement --}}
+                <li class="mt-3 border-t border-gray-200 pt-3 md:hidden">
+                    <div class="flex items-center gap-3 px-3 py-2">
+                        <x-user-avatar :user="Auth::user()" class="size-10" />
+                        <div class="min-w-0">
+                            <span class="block font-medium text-gray-900">{{ Auth::user()->name }}</span>
+                            <span class="block truncate text-sm text-gray-600">{{ Auth::user()->email }}</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="md:hidden">
+                    <x-nav-link :href="route('profile.show', Auth::user()->name)" :active="request()->routeIs('profile.show')">
+                        Mon profil
+                    </x-nav-link>
+                </li>
+                @if (Auth::user()->isAdmin())
+                    <li class="md:hidden">
+                        <x-nav-link :href="route('admin.index')" :active="false">
+                            Panneau admin
+                        </x-nav-link>
+                    </li>
+                @endif
+                <li class="md:hidden">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="block w-full rounded-sm py-2 pl-3 pr-4 text-left text-gray-700 hover:bg-gray-100">
+                            Déconnexion
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>

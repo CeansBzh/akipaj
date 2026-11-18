@@ -14,7 +14,7 @@
                             <x-input-label for="name_input_{{ $index }}" value="Nom" class="sr-only" />
                             <input id="name_input_{{ $index }}" name="boats[{{ $index }}][name]"
                                 type="text" wire:model="boats.{{ $index }}.name"
-                                class="w-full border-gray-300 font-medium focus:border-sky-500 focus:ring-sky-500"
+                                class="w-full border-gray-300 font-medium focus:border-primary-500 focus:ring-primary-500"
                                 maxlength="255" required>
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
                             <input type="hidden" name="boats[{{ $index }}][id]"
@@ -27,10 +27,28 @@
                     @foreach ($boats as $index => $boat)
                         <td>
                             <x-input-label for="type_input_{{ $index }}" value="Type" class="sr-only" />
-                            <input id="type_input_{{ $index }}" name="boats[{{ $index }}][type]"
-                                type="text" wire:model="boats.{{ $index }}.type"
-                                class="w-full border-gray-300 focus:border-sky-500 focus:ring-sky-500" maxlength="255">
-                            <x-input-error class="mt-2" :messages="$errors->get('type')" />
+                            <select id="type_input_{{ $index }}" name="boats[{{ $index }}][type]"
+                                wire:model="boats.{{ $index }}.type"
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500">
+                                <option value="">Non précisé</option>
+                                @foreach (\App\Enums\BoatTypeEnum::cases() as $boatType)
+                                    <option value="{{ $boatType->value }}">{{ $boatType->label() }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('boats.' . $index . '.type')" />
+                        </td>
+                    @endforeach
+                </tr>
+                <tr class="border-b border-gray-200">
+                    <th scope="row" class="bg-gray-50 px-6 py-3 text-xs uppercase text-gray-800">Modèle</th>
+                    @foreach ($boats as $index => $boat)
+                        <td>
+                            <x-input-label for="model_input_{{ $index }}" value="Modèle" class="sr-only" />
+                            <input id="model_input_{{ $index }}" name="boats[{{ $index }}][model]"
+                                type="text" wire:model="boats.{{ $index }}.model"
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500" maxlength="255"
+                                placeholder="Sun Odyssey 36i">
+                            <x-input-error class="mt-2" :messages="$errors->get('boats.' . $index . '.model')" />
                         </td>
                     @endforeach
                 </tr>
@@ -41,7 +59,7 @@
                             <x-input-label for="year_input_{{ $index }}" value="Année" class="sr-only" />
                             <input id="year_input_{{ $index }}" name="boats[{{ $index }}][year]"
                                 type="number" wire:model="boats.{{ $index }}.year"
-                                class="w-full border-gray-300 focus:border-sky-500 focus:ring-sky-500" min="1"
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500" min="1"
                                 max="9999">
                             <x-input-error class="mt-2" :messages="$errors->get('year')" />
                         </td>
@@ -55,7 +73,7 @@
                                 class="sr-only" />
                             <input id="builder_input_{{ $index }}" name="boats[{{ $index }}][builder]"
                                 type="text" wire:model="boats.{{ $index }}.builder"
-                                class="w-full border-gray-300 focus:border-sky-500 focus:ring-sky-500" maxlength="255">
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500" maxlength="255">
                             <x-input-error class="mt-2" :messages="$errors->get('builder')" />
                         </td>
                     @endforeach
@@ -67,7 +85,7 @@
                             <x-input-label for="renter_input_{{ $index }}" value="Loueur" class="sr-only" />
                             <input id="renter_input_{{ $index }}" name="boats[{{ $index }}][renter]"
                                 type="text" wire:model="boats.{{ $index }}.renter"
-                                class="w-full border-gray-300 focus:border-sky-500 focus:ring-sky-500" maxlength="255">
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500" maxlength="255">
                             <x-input-error class="mt-2" :messages="$errors->get('renter')" />
                         </td>
                     @endforeach
@@ -79,7 +97,7 @@
                             <x-input-label for="city_input_{{ $index }}" value="Loueur" class="sr-only" />
                             <input id="city_input_{{ $index }}" name="boats[{{ $index }}][city]"
                                 type="text" wire:model="boats.{{ $index }}.city"
-                                class="w-full border-gray-300 focus:border-sky-500 focus:ring-sky-500" maxlength="255">
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500" maxlength="255">
                             <x-input-error class="mt-2" :messages="$errors->get('city')" />
                         </td>
                     @endforeach
@@ -92,7 +110,7 @@
                                 class="sr-only" />
                             <input id="crew_input_{{ $index }}" name="boats[{{ $index }}][crew]"
                                 type="number" wire:model="boats.{{ $index }}.crew"
-                                class="w-full border-gray-300 focus:border-sky-500 focus:ring-sky-500" min="0"
+                                class="w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500" min="0"
                                 max="9999">
                             <x-input-error class="mt-2" :messages="$errors->get('crew')" />
                         </td>

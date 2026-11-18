@@ -311,3 +311,38 @@ trix-toolbar .trix-button-group.trix-button-group--file-tools {
         scroll-behavior: smooth;
     }
 }
+
+/*
+ * Titre d'une année de la liste des sorties, collé en haut de l'écran sur téléphone : transparent tant qu'il est
+ * plus bas que le premier quart de l'écran, il prend ensuite peu à peu un fond blanc, qui s'efface vers le bas
+ * sur le dernier quart de sa hauteur, jusqu'à se coller sous la barre de navigation.
+ * La progression suit la position de la section de l'année (classe trip-year), qui ne se colle pas, elle.
+ */
+@keyframes trip-year-heading-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@layer components {
+    @variant max-lg {
+        .trip-year {
+            view-timeline: --trip-year block;
+        }
+
+        .trip-year-heading::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image: linear-gradient(to bottom, var(--color-white) 50%, transparent);
+            animation: trip-year-heading-fade-in linear both;
+            animation-timeline: --trip-year;
+            animation-range: cover 75dvh cover calc(100dvh - var(--nav-offset, 0px));
+        }
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BoatTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,12 +18,22 @@ class Boat extends Model
      */
     protected $fillable = [
         'name',
+        'model',
         'type',
         'year',
         'builder',
         'renter',
         'city',
         'crew',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'type' => BoatTypeEnum::class,
     ];
 
     /**

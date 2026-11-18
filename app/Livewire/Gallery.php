@@ -2,8 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Enums\GalleryGroupingEnum;
-use App\Enums\GallerySortEnum;
 use App\Models\Album;
 use App\Models\Photo;
 use App\Models\Share;
@@ -21,11 +19,14 @@ use Livewire\Component;
 /**
  * Galerie des photos du club : filtrable par matelot et par album, regroupée par jour, par album ou pas du tout.
  *
- * Les photos se chargent par pages de 100 dans l'îlot « photos ». Une page de plus s'ajoute à la suite des autres
- * sans les renvoyer ; un changement de filtre, de regroupement ou d'ordre repart de la première page.
+ * Les photos se chargent dans l'îlot « photos » : une première page courte, pour qu'un album choisi s'affiche vite,
+ * puis des pages de 100. Une page de plus s'ajoute à la suite des autres sans les renvoyer ; un changement de filtre,
+ * de regroupement ou d'ordre repart de la première page.
+ *
+ * Le bandeau des albums, la liste des matelots des filtres et les autres listes qui ne changent pas avec les filtres
+ * sont des îlots rendus une seule fois : un changement de filtre ne les recalcule pas et ne les renvoie pas.
  *
  * @property-read Collection<int, Album> $albums
- * @property-read Collection<int, Album> $uploadAlbums
  * @property-read Collection<int, User> $uploaders
  * @property-read ?Album $selectedAlbum
  * @property-read list<array{key: string, title: ?string, details: ?string, photos: list<Photo>}> $photoGroups
@@ -35,7 +36,12 @@ class Gallery extends Component
     use AuthorizesRequests;
 
     /**
-     * Nombre de photos chargées à la fois.
+     * Nombre de photos de la première page : de quoi remplir l'écran sans attendre les suivantes.
+     */
+    public const FIRST_PAGE_SIZE = 40;
+
+    /**
+     * Nombre de photos de chacune des pages suivantes.
      */
     public const PER_PAGE = 100;
 
@@ -57,13 +63,7 @@ class Gallery extends Component
     public array $albumsFilter = [];
 
     /**
-     * Regroupement des photos, une valeur de GalleryGroupingEnum.
-     */
-    #[Url(as: 'vue', except: 'jour')]
-    public string $grouping = 'jour';
-
-    /**
-     * Ordre des photos, une valeur de GallerySortEnum.
+     * Ordre des photos selon la date de prise de vue : « recentes » (par défaut) ou « anciennes » (?tri=anciennes).
      */
     #[Url(as: 'tri', except: 'recentes')]
     public string $sort = 'recentes';
@@ -81,9 +81,9 @@ class Gallery extends Component
     public int $lastPage = 1;
 
     /**
-     * Dernier lien de partage créé pour un album, avec cet album et la date d'expiration du lien.
+     * Lien de partage créé pour un album, avec cet album.
      *
-     * @var array{albumId: int, url: string, expiresAt: string}|null
+     * @var array{albumId: int, url: string}|null
      */
     #[Locked]
     public ?array $albumShareLink = null;
@@ -99,6 +99,13 @@ class Gallery extends Component
     protected ?int $appendedPage = null;
 
     /**
+     * Nombre de photos filtrées de chaque album, calculé une fois par requête (voir groupCounts()).
+     *
+     * @var array<string, int>|null
+     */
+    protected ?array $groupCountsMemo = null;
+
+    /**
      * Un lien vers une photo (?photo=12, où mène l'adresse d'une photo) charge assez de pages pour qu'elle soit
      * dans la mosaïque : la visionneuse s'ouvre alors sur elle (resources/js/gallery.js).
      */
@@ -110,7 +117,7 @@ class Gallery extends Component
             $position = $this->orderedPhotos()->pluck('photos.id')->search($linkedPhotoId);
 
             if ($position !== false) {
-                $this->loadedPages = intdiv($position, self::PER_PAGE) + 1;
+                $this->loadedPages = self::pageOf($position);
             }
         }
     }
@@ -142,6 +149,15 @@ class Gallery extends Component
         $this->loadedPages = 1;
     }
 
+    /**
+     * Passe des plus récentes aux plus anciennes photos d'abord, et inversement.
+     */
+    public function toggleSort(): void
+    {
+        $this->sort = $this->isOldestFirst() ? 'recentes' : 'anciennes';
+        $this->loadedPages = 1;
+    }
+
     #[On('resetFilters')]
     public function resetFilters(): void
     {
@@ -163,19 +179,21 @@ class Gallery extends Component
     }
 
     /**
-     * Crée un nouveau lien qui montre les photos de l'album choisi à qui n'a pas de compte, jusqu'à son expiration.
+     * Crée le lien qui montre les photos de l'album choisi à qui n'a pas de compte, jusqu'à son expiration.
+     * Un seul lien par album : un nouvel appel garde le premier.
      */
     public function shareAlbum(): void
     {
         $album = $this->selectedAlbum ?? abort(404);
         $this->authorize('share', $album);
 
-        $share = Share::createFor($album, auth()->user());
+        if (($this->albumShareLink['albumId'] ?? null) === $album->id) {
+            return;
+        }
 
         $this->albumShareLink = [
             'albumId' => $album->id,
-            'url' => route('shares.show', $share),
-            'expiresAt' => $share->expires_at->isoFormat('dddd D MMMM YYYY [à] H[h]mm'),
+            'url' => route('shares.show', Share::createFor($album, auth()->user())),
         ];
     }
 
@@ -205,14 +223,12 @@ class Gallery extends Component
         return ! $this->isAppending;
     }
 
-    public function groupingOption(): GalleryGroupingEnum
+    /**
+     * Vrai quand les plus anciennes photos viennent en premier ; toute autre valeur de l'adresse garde l'ordre par défaut.
+     */
+    public function isOldestFirst(): bool
     {
-        return GalleryGroupingEnum::tryFrom($this->grouping) ?? GalleryGroupingEnum::DAY;
-    }
-
-    public function sortOption(): GallerySortEnum
-    {
-        return GallerySortEnum::tryFrom($this->sort) ?? GallerySortEnum::NEWEST;
+        return $this->sort === 'anciennes';
     }
 
     /**
@@ -229,17 +245,6 @@ class Gallery extends Component
             ->orderByDesc('date')
             ->orderByDesc('id')
             ->get();
-    }
-
-    /**
-     * Tous les albums, vides compris, proposés par « Ajouter mes photos » quand la galerie n'est pas filtrée sur un album.
-     *
-     * @return Collection<int, Album>
-     */
-    #[Computed]
-    public function uploadAlbums(): Collection
-    {
-        return Album::orderByDesc('date')->orderByDesc('id')->get(['id', 'title', 'date']);
     }
 
     /**
@@ -268,7 +273,8 @@ class Gallery extends Component
 
     /**
      * Photos rendues par l'îlot, en groupes qui portent leur titre : un jour, un album, ou un seul groupe sans titre.
-     * Un groupe commencé sur la page précédente continue sans répéter son titre.
+     * Un groupe commencé sur la page précédente continue sans répéter son titre. Un album choisi seul est
+     * déjà présenté au-dessus de ses photos : son groupe n'a pas de titre.
      *
      * Propriété calculée, et non méthode publique : elle ne peut pas être appelée depuis le navigateur,
      * qui recevrait alors les photos et leurs matelots tels quels.
@@ -283,30 +289,32 @@ class Gallery extends Component
         }
 
         $firstPage = $this->appendedPage ?? 1;
-        $offset = ($firstPage - 1) * self::PER_PAGE;
-        $limit = ($this->loadedPages - $firstPage + 1) * self::PER_PAGE;
+        $offset = self::pageOffset($firstPage);
+        $limit = self::pageOffset($this->loadedPages + 1) - $offset;
 
         // La photo d'avant la page dit si son premier groupe continue celui de la page précédente
         $photos = $this->orderedPhotos()
             ->with('user')
             ->withCount('comments')
-            ->when($this->groupingOption() === GalleryGroupingEnum::ALBUM, fn (Builder $query) => $query->with('album'))
+            ->with('album')
             ->offset(max(0, $offset - 1))
             ->limit($offset > 0 ? $limit + 1 : $limit)
             ->get();
         $previousKey = $offset > 0 && $photos->isNotEmpty() ? $this->groupKey($photos->shift()) : null;
 
         $groupCounts = $this->groupCounts();
+        $hasGroupTitles = count($this->albumsFilter) !== 1;
         $groups = [];
 
         foreach ($photos as $photo) {
             $key = $this->groupKey($photo);
+            $isTitled = $hasGroupTitles && $key !== $previousKey;
 
             if ($groups === [] || $groups[array_key_last($groups)]['key'] !== $key) {
                 $groups[] = [
                     'key' => $key,
-                    'title' => $key === $previousKey ? null : $this->groupTitle($photo),
-                    'details' => $key === $previousKey ? null : $this->groupDetails($photo, $groupCounts[$key] ?? 0),
+                    'title' => $isTitled ? $this->groupTitle($photo) : null,
+                    'details' => $isTitled ? $this->groupDetails($photo, $groupCounts[$key] ?? 0) : null,
                     'photos' => [],
                 ];
             }
@@ -336,14 +344,13 @@ class Gallery extends Component
      */
     protected function orderedPhotos(): Builder
     {
-        $direction = $this->sortOption()->direction();
+        $direction = $this->isOldestFirst() ? 'asc' : 'desc';
 
         return $this->filteredPhotos()
             ->select('photos.*')
-            ->when($this->groupingOption() === GalleryGroupingEnum::ALBUM, fn (Builder $query) => $query
-                ->join('albums', 'albums.id', '=', 'photos.album_id')
-                ->orderBy('albums.date', $direction)
-                ->orderBy('albums.id', $direction))
+            ->join('albums', 'albums.id', '=', 'photos.album_id')
+            ->orderBy('albums.date', $direction)
+            ->orderBy('albums.id', $direction)
             ->orderByRaw('photos.taken_at is null')
             ->orderBy('photos.taken_at', $direction)
             ->orderBy('photos.id', $direction);
@@ -351,65 +358,63 @@ class Gallery extends Component
 
     protected function groupKey(Photo $photo): string
     {
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $photo->taken_at?->toDateString() ?? 'inconnue',
-            GalleryGroupingEnum::ALBUM => 'album-'.$photo->album_id,
-            GalleryGroupingEnum::NONE => 'toutes',
-        };
+        return 'album-'.$photo->album_id;
     }
 
-    protected function groupTitle(Photo $photo): ?string
+    protected function groupTitle(Photo $photo): string
     {
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $photo->taken_at ? ucfirst($photo->taken_at->isoFormat('dddd Do MMMM YYYY')) : 'Date inconnue',
-            GalleryGroupingEnum::ALBUM => $photo->album->title,
-            GalleryGroupingEnum::NONE => null,
-        };
+        return $photo->album->title;
     }
 
-    protected function groupDetails(Photo $photo, int $count): ?string
+    protected function groupDetails(Photo $photo, int $count): string
     {
         $photoCount = $count.' '.($count > 1 ? 'photos' : 'photo');
 
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $photoCount,
-            GalleryGroupingEnum::ALBUM => ucfirst($photo->album->date->isoFormat('MMMM YYYY')).' · '.$photoCount,
-            GalleryGroupingEnum::NONE => null,
-        };
+        return ucfirst($photo->album->date->isoFormat('MMMM YYYY')).' · '.$photoCount;
     }
 
     /**
-     * Nombre de photos filtrées de chaque groupe, indexé par la clé du groupe.
+     * Nombre de photos filtrées de chaque album, indexé par la clé du groupe.
      *
      * @return array<string, int>
      */
     protected function groupCounts(): array
     {
-        return match ($this->groupingOption()) {
-            GalleryGroupingEnum::DAY => $this->filteredPhotos()
-                ->selectRaw("coalesce(date(photos.taken_at), 'inconnue') as day, count(*) as total")
-                ->groupBy('day')
-                ->pluck('total', 'day')
-                ->map(fn ($total): int => (int) $total)
-                ->all(),
-            GalleryGroupingEnum::ALBUM => $this->filteredPhotos()
-                ->selectRaw('photos.album_id, count(*) as total')
-                ->groupBy('photos.album_id')
-                ->pluck('total', 'photos.album_id')
-                ->mapWithKeys(fn ($total, $albumId): array => ['album-'.$albumId => (int) $total])
-                ->all(),
-            GalleryGroupingEnum::NONE => [],
-        };
+        return $this->groupCountsMemo ??= $this->filteredPhotos()
+            ->selectRaw('photos.album_id, count(*) as total')
+            ->groupBy('photos.album_id')
+            ->pluck('total', 'photos.album_id')
+            ->mapWithKeys(fn ($total, $albumId): array => ['album-'.$albumId => (int) $total])
+            ->all();
+    }
+
+    /**
+     * Rang, à partir de 0, de la première photo d'une page.
+     */
+    public static function pageOffset(int $page): int
+    {
+        return $page <= 1 ? 0 : self::FIRST_PAGE_SIZE + ($page - 2) * self::PER_PAGE;
+    }
+
+    /**
+     * Page, à partir de 1, de la photo de ce rang (à partir de 0).
+     */
+    public static function pageOf(int $position): int
+    {
+        return $position < self::FIRST_PAGE_SIZE ? 1 : intdiv($position - self::FIRST_PAGE_SIZE, self::PER_PAGE) + 2;
     }
 
     public function render(): View
     {
-        $photoCount = $this->filteredPhotos()->count();
-        $this->lastPage = max(1, (int) ceil($photoCount / self::PER_PAGE));
+        // Le nombre de photos de chaque album sert aussi aux titres des groupes : il donne le total sans autre requête
+        $photoCount = array_sum($this->groupCounts());
+        $this->lastPage = $photoCount > 0 ? self::pageOf($photoCount - 1) : 1;
 
         return view('livewire.gallery', [
             'photoCount' => $photoCount,
-            'filteredUsers' => $this->uploaders->whereIn('id', $this->usersFilter)->values(),
+            'filteredUsers' => $this->usersFilter
+                ? User::whereIn('id', $this->usersFilter)->orderBy('name')->get()
+                : collect(),
             'filteredAlbums' => $this->albumsFilter
                 ? Album::whereIn('id', $this->albumsFilter)->orderByDesc('date')->get(['id', 'title'])
                 : collect(),

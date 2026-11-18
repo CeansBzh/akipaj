@@ -9,7 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response as FileResponse;
 
 /**
  * Pages ouvertes par un lien de partage, sans compte : une photo seule dans la visionneuse, ou les photos d'un album.
@@ -92,7 +92,7 @@ class ShareController extends Controller
     /**
      * Fichier d'une photo que le lien ouvre.
      */
-    public function file(Share $share, Photo $photo): StreamedResponse
+    public function file(Share $share, Photo $photo): FileResponse
     {
         $this->ensureGrantsAccess($share, $photo);
 
@@ -102,7 +102,7 @@ class ShareController extends Controller
     /**
      * Vignette d'une photo que le lien ouvre.
      */
-    public function thumbnail(Share $share, Photo $photo): StreamedResponse
+    public function thumbnail(Share $share, Photo $photo): FileResponse
     {
         $this->ensureGrantsAccess($share, $photo);
 

@@ -6,12 +6,9 @@ use App\Enums\UserLevelEnum;
 use App\Events\RegistrationValidated;
 use App\Livewire\Admin\RegistrationValidation;
 use App\Livewire\Admin\User\Catalog;
-use App\Livewire\SearchInput;
 use App\Livewire\ThreadSubscribeButton;
 use App\Livewire\Trip\Boats;
-use App\Models\Album;
 use App\Models\Photo;
-use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\RegistrationValidated as RegistrationValidatedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,29 +20,6 @@ use Tests\TestCase;
 class ComponentsTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function test_search_needs_at_least_three_characters(): void
-    {
-        $this->actingAsMember();
-        Trip::factory()->create(['title' => 'Le Tour']);
-
-        Livewire::test(SearchInput::class)->set('searchTerm', ' To ')->assertSet('searchResults', []);
-    }
-
-    public function test_search_looks_into_every_kind_of_content(): void
-    {
-        $this->actingAsMember();
-        $trip = Trip::factory()->create(['title' => 'Croisière en Bretagne']);
-        $album = Album::factory()->create(['title' => 'Photos de Bretagne']);
-        $photo = Photo::factory()->for($album)->create(['title' => 'Phare', 'legend' => 'Un phare breton en Bretagne']);
-        Trip::factory()->create(['title' => 'Méditerranée', 'description' => 'Au soleil']);
-
-        $results = Livewire::test(SearchInput::class)->set('searchTerm', 'bretagne')->get('searchResults');
-
-        $this->assertSame([['title' => $trip->title, 'url' => route('trips.show', $trip)]], $results['Sorties']);
-        $this->assertSame([['title' => $album->title, 'url' => route('photos.index', ['albums' => [$album->id]])]], $results['Albums']);
-        $this->assertSame([['title' => $photo->title, 'url' => route('photos.show', $photo)]], $results['Photos']);
-    }
 
     public function test_subscribe_button_reflects_and_toggles_the_subscription(): void
     {

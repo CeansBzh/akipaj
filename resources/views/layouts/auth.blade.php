@@ -52,11 +52,7 @@
         <main class="flex flex-1 flex-col items-center justify-center px-4 pb-12 pt-6 sm:px-6">
             <div class="w-full max-w-md">
                 <div class="flex flex-col items-center text-center">
-                    <x-application-logo class="bg-primary-700 h-16 rounded-2xl px-3 py-2.5 shadow-md" />
                     <h1 class="mt-6 text-balance text-2xl font-bold sm:text-3xl">{{ $title }}</h1>
-                    @isset($intro)
-                        <p class="mt-3 max-w-prose text-pretty leading-relaxed text-gray-700">{{ $intro }}</p>
-                    @endisset
                 </div>
 
                 <div class="mt-8 rounded-3xl bg-white p-6 shadow-xl shadow-gray-900/5 ring-1 ring-gray-200 sm:p-8">
