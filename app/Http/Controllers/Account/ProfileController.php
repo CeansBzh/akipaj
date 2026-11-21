@@ -48,7 +48,7 @@ class ProfileController extends Controller
                 'tripCount' => $trips->count(),
                 // Une sortie en cours ne compte que ses jours déjà passés
                 'daysAboard' => $trips->sum(fn (Trip $trip): int => (int) $trip->start_date->diffInDays($trip->end_date->min(today())) + 1),
-                'coverImage' => $trips->first(fn (Trip $trip): bool => $trip->imagePath !== null)?->imagePath,
+                'coverTrip' => $trips->first(fn (Trip $trip): bool => $trip->imagePath !== null),
                 'nextTrip' => $user->trips()->notStarted()->orderBy('start_date')->first(),
                 'latestPhotos' => $user->photos()->with('album')->latest('taken_at')->latest('id')->take(6)->get(),
             ]);

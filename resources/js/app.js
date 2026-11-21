@@ -11,5 +11,5 @@ Alpine.data('uploaderSelect', uploaderSelect);
 
 Livewire.start();
 
-// Static images referenced in Blade with Vite::asset(): eager URL imports so Vite emits them in the manifest
-import.meta.glob(['../images/**', '../views/**/images/**'], { eager: true, query: '?url', import: 'default' });
+// Images et polices nommées dans Blade par Vite::asset() : importées en adresses pour que Vite les inscrive au manifeste
+import.meta.glob(['../images/**', '../views/**/images/**', '../fonts/*.woff2'], { eager: true, query: '?url', import: 'default' });

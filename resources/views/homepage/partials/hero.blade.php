@@ -34,10 +34,13 @@
                         {{-- Grand écran : image vide, pour ne pas télécharger cette photo qui y est cachée --}}
                         <source srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                             media="(min-width: 768px)">
-                        <source srcset="{{ Vite::asset('resources/views/homepage/images/hero.webp') }}"
-                            type="image/webp">
+                        {{-- La photo couvre toute la hauteur du bandeau (21rem) : affichée, elle n'est jamais moins large que 31,5rem --}}
                         <img class="h-full w-full object-cover text-transparent"
-                            src="{{ Vite::asset('resources/views/homepage/images/hero.jpg') }}"
+                            src="{{ Vite::asset('resources/views/homepage/images/hero.webp') }}"
+                            srcset="{{ Vite::asset('resources/views/homepage/images/hero-480.webp') }} 480w,
+                                {{ Vite::asset('resources/views/homepage/images/hero.webp') }} 767w,
+                                {{ Vite::asset('resources/images/hero/hero-md.webp') }} 1023w"
+                            sizes="max(100vw, 31.5rem)"
                             alt="Photo de la corse, prise depuis la mer, montrant 3 bateaux naviguants devant de belles falaises."
                             width="767" height="511" fetchpriority="high">
                     </picture>

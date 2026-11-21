@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Album;
 use App\Models\Photo;
+use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -55,5 +56,21 @@ class CreateThumbnailsTest extends TestCase
         $this->assertSame('/storage/albums/thumbs/trips-cover.webp', $album->refresh()->cover_thumb_path);
         $this->assertSame([Album::COVER_THUMB_SIZE, 450], array_slice(getimagesize(Storage::path('public/albums/thumbs/trips-cover.webp')), 0, 2));
         $this->assertSame('/storage/albums/thumbs/trips-cover.webp', $album->coverUrl());
+    }
+
+    public function test_trip_cover_images_get_their_webp_copies(): void
+    {
+        Storage::fake('local');
+        Storage::putFileAs('public/trips', UploadedFile::fake()->image('cover.jpg', 1000, 750), 'cover.jpg');
+        $trip = Trip::factory()->create(['imagePath' => '/storage/trips/cover.jpg', 'image_sizes' => null]);
+
+        $this->artisan('photos:thumbnails')->assertSuccessful();
+
+        $this->assertSame([
+            480 => 'public/trips/sizes/cover-480.webp',
+            960 => 'public/trips/sizes/cover-960.webp',
+            1000 => 'public/trips/sizes/cover-1000.webp',
+        ], $trip->refresh()->image_sizes);
+        $this->assertSame([480, 360], array_slice(getimagesize(Storage::path('public/trips/sizes/cover-480.webp')), 0, 2));
     }
 }

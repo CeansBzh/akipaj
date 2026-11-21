@@ -13,9 +13,9 @@
 
     <a href="{{ route('trips.show', $trip) }}"
         class="h-(--ticket-photo-height) focus-visible:outline-primary-400 group relative isolate flex flex-col justify-between gap-3 overflow-hidden p-4 focus-visible:outline-4 focus-visible:-outline-offset-4 md:h-auto md:min-h-72">
-        <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
+        <x-trip-cover :trip="$trip" sizes="(min-width: 768px) min(60vw, 34rem), 100vw"
             class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-            loading="{{ $eager ? 'eager' : 'lazy' }}" decoding="async">
+            :loading="$eager ? 'eager' : 'lazy'" decoding="async" />
         <div class="bg-linear-to-t absolute inset-0 -z-10 from-gray-950/80 via-gray-950/20 to-transparent"></div>
 
         <p @class([

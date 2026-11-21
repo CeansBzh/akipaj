@@ -61,14 +61,21 @@ class Photo extends Model
         $height = imagesy($image);
         $ratio = min(1, $maxSize / $width, $maxSize / $height);
         $thumbnail = imagescale($image, max(1, intval($ratio * $width)), max(1, intval($ratio * $height)));
-
-        if (str_ends_with($path, '.webp')) {
-            imagewebp($thumbnail, $path, 75);
-        } else {
-            imagejpeg($thumbnail, $path, 80);
-        }
+        self::writeImage($thumbnail, $path);
 
         return [imagesx($thumbnail), imagesy($thumbnail)];
+    }
+
+    /**
+     * Enregistre l'image dans $path, en WebP ou en JPEG selon l'extension de $path.
+     */
+    public static function writeImage(GdImage $image, string $path): void
+    {
+        if (str_ends_with($path, '.webp')) {
+            imagewebp($image, $path, 75);
+        } else {
+            imagejpeg($image, $path, 80);
+        }
     }
 
     /**

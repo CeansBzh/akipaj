@@ -122,7 +122,7 @@
         </div>
 
         <div class="relative" x-show="!imageRemoved">
-            <img id="image_display" src="{{ $trip->imagePath }}"
+            <img id="image_display" src="{{ $trip->coverUrl(960) }}"
                 alt="Image de couverture de la sortie {{ $trip->title }}"
                 class="h-64 w-full rounded-xl object-cover">
             <button type="button" class="group" x-on:click.prevent="removeImage">

@@ -64,6 +64,7 @@ class TripController extends Controller
             $imageName = time().'.'.$request->image->extension();
             $path = $request->file('image')->storeAs('public/trips', $imageName);
             $trip->imagePath = Storage::url($path);
+            $trip->refreshCoverSizes();
         }
         $trip->save();
         // Attach albums
@@ -131,6 +132,10 @@ class TripController extends Controller
             $path = $request->file('image')->storeAs('public/trips', $imageName);
             $trip->imagePath = Storage::url($path);
         }
+        // Copies réduites de la nouvelle image, ou suppression de celles de l'image retirée
+        if ($trip->isDirty('imagePath')) {
+            $trip->refreshCoverSizes();
+        }
         // Modification des albums
         if ($request->has('albums')) {
             $trip->albums()->sync($request->albums);
@@ -175,6 +180,7 @@ class TripController extends Controller
             $filePath = 'public/trips/'.basename($trip->imagePath);
             Storage::delete($filePath);
         }
+        $trip->deleteCoverSizes();
         // Remove albums
         $trip->albums()->detach();
         // Remove users
