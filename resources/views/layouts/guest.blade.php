@@ -8,12 +8,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Nunito:wght@200;300;400;500&display=swap"
-        rel="stylesheet">
+    {{-- Police du texte, demandée sans attendre la feuille de style (polices déclarées dans app.css) --}}
+    <link rel="preload" href="{{ Vite::asset('resources/fonts/nunito-latin.woff2') }}" as="font" type="font/woff2"
+        crossorigin>
 
     <!-- Scripts -->
     @livewireStyles

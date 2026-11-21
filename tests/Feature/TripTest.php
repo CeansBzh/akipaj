@@ -191,6 +191,114 @@ class TripTest extends TestCase
         Storage::disk('local')->assertMissing('public/trips/old.jpg');
     }
 
+    public function test_uploaded_cover_image_gets_webp_copies_never_wider_than_the_original(): void
+    {
+        $this->actingAsAdmin();
+
+        $this->post(route('trips.store'), array_merge($this->validData(), [
+            'image' => UploadedFile::fake()->image('trip.jpg', 1200, 800),
+        ]))->assertSessionHasNoErrors();
+
+        $trip = Trip::where('title', 'Tour de Bretagne')->firstOrFail();
+        $this->assertSame([480, 960, 1200], array_keys($trip->image_sizes));
+        $this->assertSame([960, 640], array_slice(getimagesize(Storage::path($trip->image_sizes[960])), 0, 2));
+        $this->assertSame('image/webp', Storage::mimeType($trip->image_sizes[1200]));
+    }
+
+    public function test_cover_image_copies_are_turned_upright_as_the_photo_was_shot(): void
+    {
+        $this->actingAsAdmin();
+        // Photo de 300 × 200 pixels prise appareil tourné : son EXIF demande de la tourner d'un quart de tour à droite
+        $image = imagecreatetruecolor(300, 200);
+        ob_start();
+        imagejpeg($image);
+        $jpeg = (string) ob_get_clean();
+        $tiff = "MM\x00\x2A\x00\x00\x00\x08\x00\x01\x01\x12\x00\x03\x00\x00\x00\x01\x00\x06\x00\x00\x00\x00\x00\x00";
+        $exif = "\xFF\xE1".pack('n', 8 + strlen($tiff))."Exif\x00\x00".$tiff;
+
+        $this->post(route('trips.store'), array_merge($this->validData(), [
+            'image' => UploadedFile::fake()->createWithContent('portrait.jpg', substr($jpeg, 0, 2).$exif.substr($jpeg, 2)),
+        ]))->assertSessionHasNoErrors();
+
+        $trip = Trip::where('title', 'Tour de Bretagne')->firstOrFail();
+        $this->assertSame([200, 300], array_slice(getimagesize(Storage::path($trip->image_sizes[200])), 0, 2));
+    }
+
+    public function test_replacing_the_cover_image_replaces_its_copies(): void
+    {
+        $this->actingAsAdmin();
+        Storage::put('public/trips/sizes/old-480.webp', 'copy');
+        $trip = Trip::factory()->create([
+            'imagePath' => '/storage/trips/old.jpg',
+            'image_sizes' => [480 => 'public/trips/sizes/old-480.webp'],
+        ]);
+
+        $this->put(route('trips.update', $trip), array_merge($this->validData(), [
+            'image' => UploadedFile::fake()->image('new.jpg', 600, 400),
+        ]))->assertSessionHasNoErrors();
+
+        Storage::assertMissing('public/trips/sizes/old-480.webp');
+        $this->assertSame([480, 600], array_keys($trip->refresh()->image_sizes));
+    }
+
+    public function test_removing_the_cover_image_deletes_its_copies(): void
+    {
+        $this->actingAsAdmin();
+        Storage::put('public/trips/old.jpg', 'image');
+        Storage::put('public/trips/sizes/old-480.webp', 'copy');
+        $trip = Trip::factory()->create([
+            'imagePath' => '/storage/trips/old.jpg',
+            'image_sizes' => [480 => 'public/trips/sizes/old-480.webp'],
+        ]);
+
+        $this->put(route('trips.update', $trip), array_merge($this->validData(), ['remove_image' => 'true']))
+            ->assertSessionHasNoErrors();
+
+        Storage::assertMissing('public/trips/sizes/old-480.webp');
+        $trip->refresh();
+        $this->assertNull($trip->imagePath);
+        $this->assertNull($trip->image_sizes);
+    }
+
+    public function test_deleting_a_trip_deletes_its_cover_image_copies(): void
+    {
+        $this->actingAsAdmin();
+        Storage::put('public/trips/sizes/old-480.webp', 'copy');
+        $trip = Trip::factory()->create([
+            'imagePath' => '/storage/trips/old.jpg',
+            'image_sizes' => [480 => 'public/trips/sizes/old-480.webp'],
+        ]);
+
+        $this->delete(route('trips.destroy', $trip))->assertRedirect(route('trips.index'));
+
+        Storage::assertMissing('public/trips/sizes/old-480.webp');
+    }
+
+    public function test_trip_page_lets_the_browser_choose_among_the_cover_image_copies(): void
+    {
+        $this->actingAsMember();
+        $trip = Trip::factory()->create([
+            'imagePath' => '/storage/trips/cover.jpg',
+            'image_sizes' => [480 => 'public/trips/sizes/cover-480.webp', 960 => 'public/trips/sizes/cover-960.webp'],
+        ]);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSee('src="/storage/trips/sizes/cover-960.webp"', false)
+            ->assertSee('srcset="/storage/trips/sizes/cover-480.webp 480w, /storage/trips/sizes/cover-960.webp 960w"', false);
+    }
+
+    public function test_trip_page_falls_back_to_the_original_cover_image_until_its_copies_exist(): void
+    {
+        $this->actingAsMember();
+        $trip = Trip::factory()->create(['imagePath' => '/storage/trips/cover.jpg', 'image_sizes' => null]);
+
+        $this->get(route('trips.show', $trip))
+            ->assertOk()
+            ->assertSee('src="/storage/trips/cover.jpg"', false)
+            ->assertDontSee('srcset=', false);
+    }
+
     public function test_trip_page_renders_the_description_formatting_without_scripts(): void
     {
         $this->actingAsMember();

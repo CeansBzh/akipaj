@@ -83,7 +83,7 @@ class ProfileTest extends TestCase
         $this->assertSame([$lastYearTrip->id], $tripsByYear[2025]->pluck('id')->all());
         // 3 jours en août, 3 jours en mai, et les 2 premiers jours de la sortie en cours
         $this->assertSame(8, $response->viewData('daysAboard'));
-        $this->assertSame('/storage/trips/printemps.jpg', $response->viewData('coverImage'));
+        $this->assertTrue($response->viewData('coverTrip')->is($finishedTrip));
         $this->assertTrue($response->viewData('nextTrip')->is($nextTrip));
     }
 

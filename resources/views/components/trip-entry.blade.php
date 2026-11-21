@@ -23,9 +23,10 @@
 
     {{-- La photo et ses voiles sont découpés à part : la carte garde ses proportions, mais s'allonge si son texte le demande --}}
     <div class="bg-primary-100 absolute inset-0 -z-10 overflow-hidden rounded-3xl">
-        <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt="" width="1200"
-            height="900" loading="lazy" decoding="async"
-            class="size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03]">
+        <x-trip-cover :trip="$trip"
+            sizes="(min-width: 1536px) 58.5rem, (min-width: 1280px) 49.5rem, (min-width: 1024px) calc((100vw - 20rem) * 1.125), (min-width: 640px) calc((100vw - 3rem) * 1.125), calc((100vw - 2rem) * 1.875)"
+            width="1200" height="900" loading="lazy" decoding="async"
+            class="size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03]" />
         {{-- Flou progressif et dégradé sombre sous le texte, pour qu'il reste lisible sur n'importe quelle photo --}}
         <div
             class="mask-[linear-gradient(to_top,#000_50%,transparent)] absolute inset-x-0 bottom-0 h-3/5 backdrop-blur-lg">

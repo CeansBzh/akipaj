@@ -11,9 +11,9 @@
 
         {{-- Bannière : la photo de la sortie en grand, sans autre texte posé dessus que le bouton de retour --}}
         <div class="relative lg:mx-auto lg:max-w-6xl lg:px-8 lg:pt-6">
-            <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt="" width="1600"
-                height="700" fetchpriority="high" decoding="async"
-                class="bg-primary-100 lg:h-112 h-64 w-full object-cover sm:h-80 lg:rounded-3xl">
+            <x-trip-cover :trip="$trip" sizes="(min-width: 1024px) min(calc(100vw - 4rem), 68rem), max(100vw, 24rem)"
+                width="1600" height="700" fetchpriority="high" decoding="async"
+                class="bg-primary-100 lg:h-112 h-64 w-full object-cover sm:h-80 lg:rounded-3xl" />
             <a href="{{ route('trips.index') }}"
                 class="absolute left-4 top-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-white/85 py-2 pl-3 pr-5 font-semibold text-gray-900 shadow-sm backdrop-blur-md transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:left-12 lg:top-10">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

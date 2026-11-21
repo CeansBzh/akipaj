@@ -15,16 +15,24 @@
     <ul class="flex flex-wrap rounded-md bg-white text-center shadow-lg sm:m-5">
         @foreach ($tabs as $tab)
             <li class="flex-1" @click="openTab = {{ $tab['id'] }}">
-                <button class="text-primary-500 hover:text-primary-800 inline-block bg-white px-4 py-2 font-semibold"
-                    :class="{ 'text-primary-800 border-primary-800 border-b-2': openTab === {{ $tab['id'] }} }">
+                <button @class([
+                    'hover:text-primary-900 inline-block bg-white px-4 py-2 font-semibold',
+                    'text-primary-800 border-primary-800 border-b-2' => $loop->first,
+                    'text-primary-700' => !$loop->first,
+                ])
+                    :class="{
+                        'text-primary-800 border-primary-800 border-b-2': openTab === {{ $tab['id'] }},
+                        'text-primary-700': openTab !== {{ $tab['id'] }},
+                    }">
                     {{ $tab['label'] }}
                 </button>
             </li>
         @endforeach
     </ul>
-    <div class="p-5" x-cloak>
+    <div class="p-5">
+        {{-- L'onglet ouvert par défaut est visible avant le démarrage d'Alpine : la page ne saute pas à son arrivée --}}
         @foreach ($tabs as $tab)
-            <div x-show="openTab === {{ $tab['id'] }}">
+            <div x-show="openTab === {{ $tab['id'] }}" @if (!$loop->first) x-cloak @endif>
                 @include($tab['view'], ['trips' => $upcomingTrips])
             </div>
         @endforeach

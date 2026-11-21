@@ -11,9 +11,9 @@
     {{ $attributes->class(['group relative isolate flex h-full min-h-80 flex-col justify-between gap-6 overflow-hidden rounded-3xl p-4 text-white shadow-lg shadow-gray-900/15']) }}>
     <x-trip-to-agenda :trip="$trip" />
 
-    <img src="{{ $trip->imagePath ?? Vite::asset('resources/images/index_2.jpg') }}" alt=""
+    <x-trip-cover :trip="$trip" sizes="(min-width: 640px) 30rem, max(30rem, 100vw - 2.5rem)"
         class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-        loading="lazy" decoding="async">
+        loading="lazy" decoding="async" />
     {{-- Flou progressif et dégradé sombre sous le texte, pour qu'il reste lisible sur n'importe quelle photo --}}
     <div
         class="mask-[linear-gradient(to_top,#000_45%,transparent)] absolute inset-x-0 bottom-0 -z-10 h-3/4 backdrop-blur-lg">

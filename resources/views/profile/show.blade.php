@@ -9,9 +9,10 @@
     <div class="bg-white pb-20">
         {{-- Bannière : la photo de sa dernière sortie, ou la mer dessinée au trait s'il n'en a pas encore fait --}}
         <div class="relative lg:mx-auto lg:max-w-6xl lg:px-8 lg:pt-6">
-            @if ($coverImage)
-                <img src="{{ $coverImage }}" alt="" width="1600" height="500" fetchpriority="high"
-                    decoding="async" class="bg-primary-100 h-44 w-full object-cover sm:h-60 lg:h-72 lg:rounded-3xl">
+            @if ($coverTrip)
+                <x-trip-cover :trip="$coverTrip" sizes="(min-width: 1024px) min(calc(100vw - 4rem), 68rem), 100vw"
+                    width="1600" height="500" fetchpriority="high" decoding="async"
+                    class="bg-primary-100 h-44 w-full object-cover sm:h-60 lg:h-72 lg:rounded-3xl" />
             @else
                 <div class="bg-primary-100 relative h-44 overflow-hidden sm:h-60 lg:h-72 lg:rounded-3xl">
                     <x-sea-swell class="text-primary-900/20 absolute inset-x-0 bottom-0 h-4/5" />

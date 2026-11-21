@@ -4,23 +4,26 @@ namespace App\Console\Commands;
 
 use App\Models\Album;
 use App\Models\Photo;
+use App\Models\Trip;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Passe les vignettes des photos envoyées avant le WebP à ce format, plus léger, et crée les vignettes
- * des couvertures d'albums qui n'en ont pas encore. Peut être relancée : elle ne refait que ce qui manque.
+ * Passe les vignettes des photos envoyées avant le WebP à ce format, plus léger, crée les vignettes
+ * des couvertures d'albums qui n'en ont pas encore et les copies réduites des images de couverture des sorties.
+ * Peut être relancée : elle ne refait que ce qui manque.
  */
 #[Signature('photos:thumbnails')]
-#[Description('Crée les vignettes WebP des photos et les vignettes des couvertures d\'albums qui manquent')]
+#[Description('Crée les vignettes WebP des photos, des couvertures d\'albums et des images des sorties qui manquent')]
 class CreateThumbnails extends Command
 {
     public function handle(): int
     {
         $this->convertPhotoThumbnails();
         $this->createAlbumCoverThumbnails();
+        $this->createTripCoverSizes();
 
         return self::SUCCESS;
     }
@@ -94,5 +97,24 @@ class CreateThumbnails extends Command
         }
 
         $this->info("Vignettes de couvertures d'albums créées : {$created}.");
+    }
+
+    /**
+     * Crée les copies réduites des images de couverture des sorties qui n'en ont pas encore.
+     */
+    protected function createTripCoverSizes(): void
+    {
+        $created = 0;
+
+        foreach (Trip::whereNotNull('imagePath')->whereNull('image_sizes')->get() as $trip) {
+            $trip->refreshCoverSizes();
+
+            if ($trip->image_sizes) {
+                $trip->saveQuietly();
+                $created++;
+            }
+        }
+
+        $this->info("Images de sorties réduites : {$created}.");
     }
 }

@@ -1,6 +1,5 @@
 @php
     $trips = App\Models\Trip::finished()->orderByDesc('end_date')->limit(3)->get();
-    $defaultImage = Vite::asset('resources/images/index_2.jpg');
 @endphp
 
 <section class="mx-auto max-w-md md:max-w-none">
@@ -18,9 +17,9 @@
             <li class="md:flex-[1.3]">
                 <article
                     class="group relative isolate flex h-full min-h-96 flex-col justify-end gap-2 overflow-hidden p-6 text-white shadow-md">
-                    <img src="{{ $latestTrip->imagePath ?? $defaultImage }}" alt=""
+                    <x-trip-cover :trip="$latestTrip" sizes="(min-width: 768px) 43rem, 36rem"
                         class="absolute inset-0 -z-10 size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-                        loading="lazy" decoding="async">
+                        loading="lazy" decoding="async" />
                     <div class="bg-linear-to-t absolute inset-0 -z-10 from-gray-950/85 via-gray-950/40 to-transparent">
                     </div>
 
@@ -45,9 +44,9 @@
                 <li class="md:flex-1">
                     <article class="group relative flex h-full flex-col overflow-hidden bg-white shadow-md">
                         <div class="aspect-3/2 overflow-hidden">
-                            <img src="{{ $trip->imagePath ?? $defaultImage }}" alt=""
+                            <x-trip-cover :trip="$trip" sizes="(min-width: 768px) min(30vw, 23rem), min(100vw, 28rem)"
                                 class="size-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-                                loading="lazy" decoding="async">
+                                loading="lazy" decoding="async" />
                         </div>
                         <div class="flex grow flex-col gap-2 p-5">
                             <p class="text-primary-700 font-semibold">

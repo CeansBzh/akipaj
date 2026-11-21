@@ -28,3 +28,10 @@
     RewriteCond %{HTTP_HOST} ^www.akipaj.fr [NC]
     RewriteRule ^(.*) https://akipaj.fr/$1 [L,R=301,QSA]
 </IfModule>
+
+<IfModule mod_headers.c>
+    <If "%{REQUEST_URI} =~ m#^/build/assets/#">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header unset Expires
+    </If>
+</IfModule>
